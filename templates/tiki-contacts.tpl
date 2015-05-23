@@ -17,7 +17,7 @@
 <form action="tiki-contacts.php" method="post" id="editform" name='editform_contact' style="clear:both;margin:5px;display:{if $contactId}block{else}none{/if};">
 	<input type="hidden" name="locSection" value="contacts">
 	<input type="hidden" name="contactId" value="{$contactId|escape}">
-
+	
 	<table class="formcolor">
 		<tbody id='tbody_editcontact'>
 			<tr>
@@ -76,18 +76,8 @@
 {include file='find.tpl'}
 
 {initials_filter_links}
-{* Use css menus as fallback for item dropdown action menu if javascript is not being used *}
-{if $prefs.javascript_enabled !== 'y'}
-	{$js = 'n'}
-	{$libeg = '<li>'}
-	{$liend = '</li>'}
-{else}
-	{$js = 'y'}
-	{$libeg = ''}
-	{$liend = ''}
-{/if}
-<div class="{if $js === 'y'}table-responsive{/if}"> {*the table-responsive class cuts off dropdown menus *}
-<table class="table normal table-striped table-hover">
+<div class="table-responsive">
+<table class="table normal">
 	<tr>
 		{assign var=numbercol value=4}
 		<th>
@@ -110,16 +100,16 @@
 				</th>
 			{/if}
 		{/foreach}
-
+		
 		{if $view eq 'list'}
 			{assign var=numbercol value=$numbercol+1}
 			<th>{tr}Groups{/tr}</th>
 		{/if}
-
+		
 		{assign var=numbercol value=$numbercol+1}
-		<th></th>
+		<th>{tr}Action{/tr}</th>
 	</tr>
-
+	
 
 	{foreach key=k item=channels from=$all}
 		{if count($channels)}
@@ -169,34 +159,15 @@
 							{/if}
 						</td>
 					{/if}
-
+					
 					<td class="action">
-						{capture name=contact_actions}
-							{strip}
-								{if $channels[user].user eq $user or $tiki_p_admin eq 'y'}
-									{if $channels[user].user eq $user}
-										{$libeg}<a href="tiki-contacts.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;find={$find}&amp;contactId={$channels[user].contactId}">
-											{icon name='edit' _menu_text='y' _menu_icon='y' alt="{tr}Edit{/tr}"}
-										</a>{$liend}
-									{/if}
-									{$libeg}<a href="tiki-contacts.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;find={$find}&amp;remove={$channels[user].contactId}">
-										{icon name='remove' _menu_text='y' _menu_icon='y' alt="{tr}Remove{/tr}"}
-									</a>{$liend}
-								{/if}
-							{/strip}
-						{/capture}
-						{if $js === 'n'}<ul class="cssmenu_horiz"><li>{/if}
-						<a
-							class="tips"
-							title="{tr}Actions{/tr}"
-							href="#"
-							{if $js === 'y'}{popup delay="0|2000" fullhtml="1" center=true text=$smarty.capture.contact_actions|escape:"javascript"|escape:"html"}{/if}
-							style="padding:0; margin:0; border:0"
-						>
-							{icon name='wrench'}
-						</a>
-						{if $js === 'n'}
-							<ul class="dropdown-menu" role="menu">{$smarty.capture.contact_actions}</ul></li></ul>
+						{if $channels[user].user eq $user}
+							<a href="tiki-contacts.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;find={$find}&amp;contactId={$channels[user].contactId}" title="{tr}Edit{/tr}">
+								{icon _id='page_edit'}
+							</a>
+							<a href="tiki-contacts.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;find={$find}&amp;remove={$channels[user].contactId}" style="margin-left:20px;" title="{tr}Delete{/tr}">{icon _id='cross' alt="{tr}Delete{/tr}"}</a>
+						{elseif $tiki_p_admin eq 'y'}
+							<a href="tiki-contacts.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;find={$find}&amp;remove={$channels[user].contactId}" style="margin-left:36px;" title="{tr}Delete{/tr}">{icon _id='cross_admin' alt="{tr}Delete{/tr}"}</a>
 						{/if}
 					</td>
 				</tr>
@@ -268,7 +239,7 @@
 		tr.appendChild(td);
 
 		var tbody=document.getElementById('tbody_editcontact');
-		tbody.insertBefore(tr, document.getElementById('tr_exts'));
+		tbody.insertBefore(tr, document.getElementById('tr_exts'));	
 	}
 
 	function ext_select() {

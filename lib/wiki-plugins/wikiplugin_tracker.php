@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -39,13 +39,6 @@ function wikiplugin_tracker_info()
 				'separator' => ':',
 				'default' => 'Save'
 			),
-            'action_style' => array(
-                'required' => false,
-                'name' => tra('Action Style'),
-                'description' => tra('Sets button style classes for action buttons. Must be same count as action. Ex: "btn btn-primary:btn btn-success:btn btn-default pull-right"'),
-                'separator' => ':',
-                'default' => 'btn btn-default'
-            ),
 			'showtitle' => array(
 				'required' => false,
 				'name' => tra('Show Title'),
@@ -472,24 +465,17 @@ function wikiplugin_tracker($data, $params)
 		}
 	}
 
-    if (!isset($action)) {
-        $action = array('Save');
-    }
-    if (!is_array($action)) {
-        $action = array( $action );
-    }
+	if (!isset($action)) {
+		$action = array('Save');
+	}
+	if (!is_array($action)) {
+		$action = array( $action );
+	}
 
 	$dynamicSave = false;
 	if (count($action) == 1 && reset($action) == 'NONE') {
 		$action = array();
 		$dynamicSave = true;
-	}
-
-	if (!isset($action_style)) {
-		$action_style = array();
-		foreach ($action as $ac){
-			$action_style[] = 'btn btn-default';
-		}
 	}
 
 	if (isset($preview)) {
@@ -1027,6 +1013,7 @@ function wikiplugin_tracker($data, $params)
 					}
 					if (empty($url)) {
 						if (!empty($_REQUEST['ajax_add'])) {	// called by tracker ItemLink fields when adding new list items
+							global $access;
 							while ( ob_get_level() ) {
 								ob_end_clean();
 							}
@@ -1037,7 +1024,6 @@ function wikiplugin_tracker($data, $params)
 							}
 							// Need to add newly created itemId for item link selector
 							$ins_fields['itemId'] = $rid;
-							$access = TikiLib::lib('access');
 							$access->output_serialized($ins_fields);
 							ob_end_flush();
 							die;
@@ -1049,7 +1035,7 @@ function wikiplugin_tracker($data, $params)
 							}
 							$url .= "&ok=y&iTRACKER=$iTRACKER";
 							$url .= "#wikiplugin_tracker$iTRACKER";
-							TikiLib::lib('access')->redirect($url);
+							header("Location: $url");
 							exit;
 						} else {
 							return '';
@@ -1070,7 +1056,7 @@ function wikiplugin_tracker($data, $params)
 								$url[$key] = str_replace('itemId', 'itemId='.$rid, $url[$key]);
 							}
 						}
-						TikiLib::lib('access')->redirect($url[$key]);
+						header('Location: '.$url[$key]);
 						exit;
 					}
 					/* ------------------------------------- end save the item ---------------------------------- */
@@ -1155,7 +1141,7 @@ function wikiplugin_tracker($data, $params)
 						}
 					}
 					if (!$ok) {
-						$back .= '<div class="alert alert-warning"><strong>' . tra('Incorrect fieldId:').' '.$l .'</strong>.<br> '.  tra("Please ensure you are using the correct field ID and that it is properly included in the template, if any."). '</div>';
+						$back .= '<div class="alert alert-warning">' . tra('Incorrect fieldId:').' '.$l . '</div>';
 					}
 				}
 			} elseif (empty($fields) && empty($wiki) && empty($tpl)) {
@@ -1207,11 +1193,6 @@ function wikiplugin_tracker($data, $params)
 					// if in registration and creating a user tracker item for the new user
 					// remove the user if they did not complete the tracker correctly
 					$userlib->remove_user($userField['value']);
-					if ( $prefs['eponymousGroups'] == 'y' ) {
-						// eponymous group will contain only this (former) user so remove that too
-						$userlib->remove_group($userField['value']);
-					}
-
 					$user = '';								// needed to re-include the captcha inputs
 					$hidden_fieldId = array();				// remove hidden user fields which are otherwise required
 					foreach ($flds['data'] as $k => $v) {	// remove the login field otherwise it gets rendered in the form also required
@@ -1239,14 +1220,15 @@ function wikiplugin_tracker($data, $params)
 			$smarty->assign('trackerEditFormId', $iTRACKER);
 
 		if (!empty($params['_ajax_form_ins_id'])) {
-			$headerlib = TikiLib::lib('header');
+			global $headerlib;									// when called via AJAX take a copy of the JS so far to allow collection
 			$old_js['js'] = $headerlib->js;						// of tracker form JS into a function to initialise it when the dialog is created
 			$old_js['jq_onready'] = $headerlib->jq_onready;
 			$headerlib->clear_js();								// so store existing js for later and clear
 		}
 
 			if ($prefs['feature_jquery'] == 'y' && $prefs['feature_jquery_validation'] == 'y') {
-				$validatorslib = TikiLib::lib('validators');
+				global $validatorslib;
+				include_once('lib/validatorslib.php');
 				$customvalidation = '';
 				$customvalidation_m = '';
 				if ($registration == 'y') {
@@ -1353,7 +1335,7 @@ function wikiplugin_tracker($data, $params)
 			if (isset($_REQUEST['register']))
 				$back.= '<input type="hidden" name="register" value="'.$_REQUEST["register"].'" />';
 			if ($showtitle == 'y') {
-				$back.= '<div class="h1">'.$tracker["name"].'</div>';
+				$back.= '<div class="titlebar">'.$tracker["name"].'</div>';
 			}
 			if ($showdesc == 'y' && $tracker['description']) {
 
@@ -1479,6 +1461,9 @@ function wikiplugin_tracker($data, $params)
 							}
 							break;
 						}
+						if (!$isTextOnSameRow) {
+							 $back.= " colspan='2'";
+						}
 
 						if (!empty($colwidth)) {
 							$back .= " width='".$colwidth."'";
@@ -1497,16 +1482,12 @@ function wikiplugin_tracker($data, $params)
 							$back.= '<div class="col-md-9 tracker_input_value tracker_field' . $f['fieldId'] . '">'; // '</td><td class="tracker_input_value">';
 						}
 
-						$back .= wikiplugin_tracker_render_input($f, $item, $dynamicSave)."</div>"; // chibaguy added /divs
-
-						if ($isTextOnSameRow) {
-							$back .= '</div>';
-						}
+						$back .= wikiplugin_tracker_render_input($f, $item, $dynamicSave)."</div></div>"; // chibaguy added /divs
 					}
 
 					if ($f['type'] != 'S' && empty($tpl) && empty($wiki)) {
 						if ($showfieldsdesc == 'y') {
-							$back .= '<div class="form-group tracker-help-block"><div class="col-md-3 control-label sr-only">Label</div><div class="col-md-9 trackerplugindesc help-block">';
+							$back .= '<div class="trackerplugindesc">';
 
 							if ($f['descriptionIsParsed'] == 'y') {
 								$back .= $tikilib->parse_data($f['description']);
@@ -1514,7 +1495,7 @@ function wikiplugin_tracker($data, $params)
 								$back .= tra($f['description']);
 							}
 
-							$back .= '</div></div>';
+							$back .= '</div>';
 						}
 					}
 				}
@@ -1556,6 +1537,9 @@ FILL;
 					$back .= '<span class="alert-warning">' . tr('Missing wiki template page "%0"', htmlspecialchars($wiki)) . '</span>';
 				}
 			}
+			include_once('lib/smarty_tiki/function.trackerheader.php');
+			$back .= smarty_function_trackerheader(array('level'=>-1, 'title'=>'', 'inTable' => '' ), $smarty);
+
 
 			$smarty->assign('showmandatory', $showmandatory);
 
@@ -1565,14 +1549,14 @@ FILL;
 				) {
 				// in_tracker session var checking is for tiki-register.php
 				$smarty->assign('antibot_table', empty($wiki) && empty($tpl)?'n': 'y');
-				$captchalib = TikiLib::lib('captcha');
+				include_once('lib/captcha/captchalib.php');
 				$smarty->assign('captchalib', $captchalib);
 				$back .= $smarty->fetch('antibot.tpl');
 			}
 			$back .= '</div>';
 
 			if ($params['formtag'] == 'y') {
-				$back .= '<div class="form-group"><div class="col-md-3"></div><div class="input_submit_container col-md-9 btn-bar">';
+				$back .= '<div class="input_submit_container text-center btn-bar">';
 
 				if (!empty($reset)) {
 					$back .= '<input class="button submit preview" type="reset" name="tr_reset" value="'.tra($reset).'" />';
@@ -1580,13 +1564,13 @@ FILL;
 				if (!empty($preview)) {
 					$back .= '<input class="btn btn-default button submit preview" type="submit" name="tr_preview" value="'.tra($preview).'" />';
 				}
-                foreach ($action as $key=>$act) {
-                    $back .= '<input class="button submit '.$action_style[$key].'" type="submit" name="action'.$key.'" value="'.tra($act).'" onclick="needToConfirm=false" />';
-                }
-				$back .= '</div></div>';
+				foreach ($action as $key=>$act) {
+					$back .= '<input class="btn btn-default button submit" type="submit" name="action'.$key.'" value="'.tra($act).'" onclick="needToConfirm=false" />';
+				}
+				$back .= '</div>';
 			}
 			if ($showmandatory == 'y' and $onemandatory) {
-				$back.= "<div class='form-group'><div class='col-md-3'></div><div class='col-md-9'><div class='text-center alert alert-danger'><em>".tra("Fields marked with an * are mandatory.")."</em></div></div></div>";
+				$back.= "<div class='text-center'><em class='mandatory_note'>".tra("Fields marked with an * are mandatory.")."</em></div>";
 			}
 			if ($params['formtag'] == 'y') {
 				$back.= '</form>';
@@ -1610,7 +1594,7 @@ FILL;
 			$smarty->assign('wikiplugin_tracker', $trackerId);//used in vote plugin
 		$id = ' id="wikiplugin_tracker'.$iTRACKER.'"';
 		if ($showtitle == 'y') {
-			$back.= '<div class="h1"'.$id.'>'.$tracker["name"].'</div>';
+			$back.= '<div class="titlebar"'.$id.'>'.$tracker["name"].'</div>';
 			$id = '';
 		}
 		if ($showdesc == 'y') {
@@ -1641,15 +1625,18 @@ function wikiplugin_tracker_render_input($f, $item, $dynamicSave)
 	$input = $handler->renderInput(array('inTable' => 'n', 'pluginTracker' => 'y'));
 
 	if ($dynamicSave && $item['itemId']) {
+		$servicelib = TikiLib::lib('service');
 		$input = new Tiki_Render_Editable(
 			$input,
 			array(
 				'layout' => 'block',
-				'object_store_url' => array(
-					'controller' => 'tracker',
-					'action' => 'update_item',
-					'trackerId' => $f['trackerId'],
-					'itemId' => $item['itemId'],
+				'object_store_url' => $servicelib->getUrl(
+					array(
+						'controller' => 'tracker',
+						'action' => 'update_item',
+						'trackerId' => $f['trackerId'],
+						'itemId' => $item['itemId'],
+					)
 				),
 			)
 		);

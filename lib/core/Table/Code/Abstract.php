@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -29,7 +29,6 @@ class Table_Code_Abstract
 	protected static $sortcol;
 	protected static $filters;
 	protected static $filtercol;
-	protected static $usecolselector;
 	protected static $group;
 	protected static $pager;
 	protected static $ajax;
@@ -37,6 +36,7 @@ class Table_Code_Abstract
 	protected static $level1;
 	protected static $level2;
 	protected $subclasses;
+	protected static $tempcode;
 	protected $t = "\t";
 	protected $nt = "\n\t";
 	protected $nt2 = "\n\t\t";
@@ -58,18 +58,17 @@ class Table_Code_Abstract
 			self::$tid = 'table#' . $settings['id'];
 			//overall sort on unless sort type set to false
 			self::$sorts = isset($settings['sorts']['type']) && $settings['sorts']['type'] === false ? false : true;
-			self::$sortcol = isset(self::$s['columns']) && count(array_column(self::$s['columns'], 'sort')) > 0;
+			self::$sortcol = isset(self::$s['columns']) && count(array_column(self::$s['columns'], 'sort')) > 0 ? true : false;
+
 			//filter, group, pager and ajax off unless type is set and is not false
 			self::$filters = empty($settings['filters']['type']) ? false : true;
-			self::$filtercol = isset(self::$s['columns']) && count(array_column(self::$s['columns'], 'filter')) > 0;
-			//whether to use array index to identify columns or a selector (id, class, etc.)
-			//generally index used for plugins where columns are set by user and selectors are used with tables with
-			//smarty templates to keep from recreating tpl logic that determine which columns are shown
-			self::$usecolselector = !isset(self::$s['usecolselector']) || self::$s['usecolselector'] !== false;
+			self::$filtercol = isset(self::$s['columns']) && count(array_column(self::$s['columns'], 'filter')) > 0 ? true : false;
 			self::$pager = empty($settings['pager']['type']) ? false : true;
 			global $prefs;
-			self::$ajax = $settings['ajax']['type'] === true && $prefs['feature_ajax'] === 'y';
-			self::$group = self::$sorts && isset($settings['sorts']['group']) && $settings['sorts']['group'] === true;
+			self::$ajax = $settings['ajax']['type'] === true && $prefs['feature_ajax'] === 'y'? true : false;
+			//TODO allow for use of group headers with ajax when tablesorter bug 437 is fixed
+			self::$group = self::$sorts && !self::$ajax && isset($settings['sorts']['group'])
+			&& $settings['sorts']['group'] === true ? true : false;
 		}
 	}
 
@@ -102,12 +101,6 @@ class Table_Code_Abstract
 	 */
 	protected function iterate(array $data, $start = '', $finish = '', $before = '\'' , $after = '\'', $separator = ', ')
 	{
-		// if $data is just emtpy, count($data) equals 1. So need to check for type. 
-		if (!is_array($data)) {
-			$ret = $start. $before. $after. $finish;
-			return $ret;
-		}
-		
 		$c = count($data);
 		$i = 0;
 		$ret = '';

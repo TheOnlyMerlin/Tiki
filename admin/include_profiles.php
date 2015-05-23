@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 		foreach ($_POST as $key => $value) {
 			if ($key != 'url' && $key != 'forget') {
-				$data[$key] = $value;
+				$data[str_replace('_', ' ', $key) ] = $value;
 			}
 		}
 		set_time_limit(0);
@@ -51,9 +51,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			header('Location: ' . $target);
             exit;
 		} else {
-			$profilefeedback = $installer->getFeedback();
-			if (count($profilefeedback) > 0) {
-				$smarty->assign_by_ref('profilefeedback', $profilefeedback);
+			if (count($installer->getFeedback()) > 0) {
+				$smarty->assign_by_ref('profilefeedback', $installer->getFeedback());
 			}
 			// need to reload sources as cache is cleared after install
 			$sources = $list->getSources();
@@ -80,9 +79,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			header('Location: ' . $target);
             exit;
 		} else {
-			$profilefeedback = $installer->getFeedback();
-			if (count($profilefeedback) > 0) {
-				$smarty->assign_by_ref('profilefeedback', $profilefeedback);
+			if (count($installer->getFeedback()) > 0) {
+				$smarty->assign_by_ref('profilefeedback', $installer->getFeedback());
 			}
 			// need to reload sources as cache is cleared after install
 			$sources = $list->getSources();
@@ -114,9 +112,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			header('Location: ' . $target);
             exit;
 		} else {
-			$profilefeedback = $installer->getFeedback();
-			if (count($profilefeedback) > 0) {
-				$smarty->assign_by_ref('profilefeedback', $profilefeedback);
+			if (count($installer->getFeedback()) > 0) {
+				$smarty->assign_by_ref('profilefeedback', $installer->getFeedback());
 			}
 		}
 	} // }}}
@@ -255,7 +252,8 @@ if ($openSources == count($sources)) {
 }
 $smarty->assign('tikiMajorVersion', substr($TWV->version, 0, 2));
 
-$modlib = TikiLib::lib('mod');
+global $modlib;
+include_once('lib/modules/modlib.php');
 $modified = $prefslib->getModifiedPrefsForExport(!empty($_REQUEST['export_show_added']) ? true : false);
 $smarty->assign('modified_list', $modified);
 

@@ -1,9 +1,10 @@
 {* $Id$ *}
 {* include file for module edit form - to be called by ajax *}
 
-<div class="module_selector form-group">
-	<label for="assign_name">{tr}Module Name{/tr}</label>
-	<select id="assign_name" name="assign_name" class="form-control">
+			
+<div class="module_selector">
+	<label for="assign_name"><strong>{tr}Module Name{/tr}</strong></label>
+	<select id="assign_name" name="assign_name">
 		<option value=""></option>
 		{foreach key=name item=info from=$all_modules_info}
 			<option value="{$name|escape}" {if $assign_name eq $name || $assign_selected eq $name}selected="selected"{/if}>{$info.name}</option>
@@ -23,32 +24,32 @@
 		{else}
 		{/if}
 		<fieldset id="param_section_basic">
-			<div class="clearfix form-group">
+			<div class="admin2cols adminoptionbox clearfix">
 				<label for="assign_position">{tr}Position{/tr}</label>
-				<select id="assign_position" name="assign_position" class="form-control">
+				<select id="assign_position" name="assign_position">
 					{foreach from=$module_zone_list key=code item=zone}
 						<option value="{$code|escape}"{if $code eq $assign_position} selected="selected"{/if}>{$zone.name|escape}</option>
 					{/foreach}
 				</select>
 			</div>
 
-			<div class="clearfix form-group">
+			<div class="admin2cols adminoptionbox clearfix">
 				<label for="assign_order">{tr}Order{/tr}</label>
-				<select id="assign_order" name="assign_order" class="form-control">
+				<select id="assign_order" name="assign_order">
 					{section name=ix loop=$orders}
 						<option value="{$orders[ix]|escape}" {if $assign_order eq $orders[ix]}selected="selected"{/if}>{$orders[ix]}</option>
 					{/section}
 				</select>
 			</div>
 
-			<div class="clearfix form-group">
+			<div class="admin2cols adminoptionbox clearfix">
 				<label for="assign_cache">{tr}Cache Time{/tr} ({tr}secs{/tr})</label>
-				<input type="text" id="assign_cache" name="assign_cache" class="form-control" value="{$assign_cache|escape}">
+				<input type="text" id="assign_cache" name="assign_cache" value="{$assign_cache|escape}">
 			</div>
 			{if !isset($assign_info.type) or $assign_info.type neq 'function'}
-				<div class="clearfix form-group">
+				<div class="admin2cols adminoptionbox clearfix">
 					<label for="assign_rows">{tr}Rows{/tr}</label>
-					<input type="text" id="assign_rows" name="assign_rows" value="{$assign_rows|escape}" class="form-control">
+					<input type="text" id="assign_rows" name="assign_rows" value="{$assign_rows|escape}">
 				</div>
 			{/if}
 			<div class="admin2cols adminoptionbox clearfix">
@@ -66,7 +67,7 @@
 					{/if}
 					{if $prefs.modallgroups eq 'y'}
 						<div class="panel panel-default"><div class="panel-body">
-							{icon name="information" style="vertical-align:middle;float:left"} {tr}The{/tr} <a class="rbox-link" href="tiki-admin.php?page=module">{tr}Display Modules to All Groups{/tr}</a> {tr}setting will override your selection of specific groups.{/tr}
+							{icon _id=information style="vertical-align:middle;float:left"} {tr}The{/tr} <a class="rbox-link" href="tiki-admin.php?page=module">{tr}Display Modules to All Groups{/tr}</a> {tr}setting will override your selection of specific groups.{/tr}
 						</div></div>
 						<br>
 					{/if}
@@ -90,7 +91,7 @@
 							</option>
 						</select>
 						<div class="panel panel-default"><div class="panel-body">
-							{icon name="information" style="vertical-align:middle;float:left;"}{tr}Because <a class="rbox-link" href="tiki-admin.php?page=module">Users can Configure Modules</a>, select either{/tr} &quot;{tr}Displayed now for all eligible users even with personal assigned modules{/tr}&quot; {tr}or{/tr} &quot;{tr}Displayed now, can't be unassigned{/tr}&quot; {tr}to make sure users will notice any newly assigned modules.{/tr}
+							{icon _id=information style="vertical-align:middle;float:left;"}{tr}Because <a class="rbox-link" href="tiki-admin.php?page=module">Users can Configure Modules</a>, select either{/tr} &quot;{tr}Displayed now for all eligible users even with personal assigned modules{/tr}&quot; {tr}or{/tr} &quot;{tr}Displayed now, can't be unassigned{/tr}&quot; {tr}to make sure users will notice any newly assigned modules.{/tr}
 						</div></div>
 					</div>
 				{/if}
@@ -124,15 +125,15 @@
 					</div>
 					<div class="q234">
 						<textarea id="assign_params" name="assign_params" rows="1" cols="60" >{$assign_params|escape}</textarea>
-						{self_link um_edit=$assign_name cookietab="2" _anchor="editcreate"}{tr}Edit custom module{/tr} {icon name="next"}{/self_link}
+						{self_link um_edit=$assign_name cookietab="2" _anchor="editcreate"}{tr}Edit custom module{/tr} {icon _id="arrow_right"}{/self_link}
 					</div>
 				</div>
 			{/if}
-		<div class="form-group clearfix">
-			<div class="pull-right">
-				<input type="submit" class="btn btn-default btn-sm" name="preview" value="{tr}Preview{/tr}" onclick="needToConfirm=false;">
-				<input type="submit" class="btn btn-primary btn-sm" name="assign" value="{tr}Assign{/tr}" onclick="needToConfirm=false;">
-			</div>
-		</div>
+                <div class="form-group clearfix">
+                    <div class="pull-right">
+			            <input type="submit" class="btn btn-default btn-sm" name="preview" value="{tr}Preview{/tr}" onclick="needToConfirm=false;">
+			            <input type="submit" class="btn btn-default btn-sm" name="assign" value="{tr}Assign{/tr}" onclick="needToConfirm=false;">
+		            </div>
+                </div>
 	{/if}
 </div>

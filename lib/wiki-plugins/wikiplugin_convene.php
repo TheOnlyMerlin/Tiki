@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -56,9 +56,7 @@ function wikiplugin_convene_info()
 
 function wikiplugin_convene($data, $params)
 {
-	global $page, $tiki_p_edit;
-	$headerlib = TikiLib::lib('header');
-	$tikilib = TikiLib::lib('tiki');
+	global $tikilib, $headerlib, $page, $tiki_p_edit;
 
 	static $conveneI = 0;
 	++$conveneI;
@@ -171,13 +169,13 @@ function wikiplugin_convene($data, $params)
 		$userList .= "<td>". ($tiki_p_edit == 'y' ? "<button class='conveneUpdateUser$i icon btn btn-default btn-sm'><img src='img/icons/pencil.png' class='icon' width='16' height='16' title='" . tr("Edit User/Save changes") . "' /></button><button data-user='$user' title='" . tr("Delete User") . "' class='conveneDeleteUser$i icon btn btn-default btn-sm'><img src='img/icons/delete.png' class='icon' width='16' height='16' /></button> " : "") . $user . "</td>";
 		foreach ($row as $stamp => $vote) {
 			if ($vote == 1) {
-				$class = 	"convene-ok text-center label-success";
+				$class = 	"{*ui-state-default *}convene-ok text-center alert-success";
 				$text = 	"<img src='img/icons/tick.png' alt='" . tr('Ok') . "' class='vote icon' width='16' height='16' />";
 			} elseif ($vote == -1) {
-				$class = 	"convene-no text-center label-danger";
+				$class = 	"{*ui-state-default *}convene-no text-center alert-danger";
 				$text = 	"<img src='img/icons/cross.png' alt='" . tr('Not ok') . "' class='vote icon' width='16' height='16' />";
 			} else {
-				$class = 	"convene-unconfirmed text-center label-default";
+				$class = 	"{*ui-state-default *}convene-unconfirmed text-center alert-warning";
 				$text = 	"<img src='img/icons/grey_question.png' alt='" . tr('Unconfirmed') . "' class='vote icon' width='16' height='16' />";
 			}
 

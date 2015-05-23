@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -99,7 +99,8 @@ class TikiAccessLib extends TikiLib
 		$perms = Perms::get();
 
 		if ( $perms->admin && isset($_REQUEST['check_feature']) && isset($_REQUEST['lm_preference']) ) {
-			$prefslib = TikiLib::lib('prefs');
+			global $prefslib; require_once 'lib/prefslib.php';
+
 			$prefslib->applyChanges((array) $_REQUEST['lm_preference'], $_REQUEST);
 		}
 
@@ -130,7 +131,7 @@ class TikiAccessLib extends TikiLib
 		}
 
 		if ( !$allowed ) {
-			$smarty = TikiLib::lib('smarty');
+			global $smarty;
 
 			if ( $perms->admin ) {
 				$smarty->assign('required_preferences', $features);
@@ -291,30 +292,14 @@ class TikiAccessLib extends TikiLib
 	 * @access public
 	 * @return void
 	 */
-	function check_authenticity($confirmation_text = '', $returnHtml = true)
+	function check_authenticity($confirmation_text = '')
 	{
-		global $prefs, $jitRequest;
-		if (isset($_REQUEST['daconfirm'])) {
-			$daconfirm = $_REQUEST['daconfirm'];
-		} elseif (isset($jitRequest['daconfirm'])) {
-			$daconfirm = $jitRequest->daconfirm->alpha();
-		}
-		if ($prefs['feature_ticketlib2'] == 'y' || $returnHtml === false) {
-			if (isset($daconfirm)) {
-				if ($returnHtml) {
-					key_check();
-				} else {
-					$ret = key_check(null, false);
-				}
+		global $prefs;
+		if ($prefs['feature_ticketlib2'] == 'y') {
+			if (isset($_REQUEST['daconfirm'])) {
+				key_check();
 			} else {
-				if ($returnHtml) {
-					key_get(null, $confirmation_text);
-				} else {
-					$ret = key_get(null, null, null, false);
-				}
-			}
-			if (!$returnHtml) {
-				return $ret;
+				key_get(null, $confirmation_text);
 			}
 		}
 	}
@@ -324,8 +309,7 @@ class TikiAccessLib extends TikiLib
      */
     function check_ticket()
 	{
-		global $prefs, $user;
-		$smarty = TikiLib::lib('smarty');
+		global $smarty, $prefs, $user;
 
 		if ($prefs['feature_ticketlib2'] == 'y') {
 			if (empty($user) || (isset($_REQUEST['ticket']) && isset($_SESSION['ticket']) && $_SESSION['ticket'] == $_REQUEST['ticket'])) {
@@ -415,9 +399,6 @@ class TikiAccessLib extends TikiLib
 						($prefs['permission_denied_login_box'] == 'y' || !empty($prefs['permission_denied_url']))
 			) {
 				$_SESSION['loginfrom'] = $_SERVER['REQUEST_URI'];
-				if ($prefs['login_autologin'] == 'y' && $prefs['login_autologin_redirectlogin'] == 'y' && !empty($prefs['login_autologin_redirectlogin_url'])) {
-					$this->redirect($prefs['login_autologin_redirectlogin_url']);
-				}
 			}
 
 			$smarty->assign('errortitle', $detail['errortitle']);
@@ -425,9 +406,8 @@ class TikiAccessLib extends TikiLib
 			$smarty->assign('errortype', $detail['code']);
 			$check = key_get(null, null, null, false);
 			$smarty->assign('ticket', $check['ticket']);
-			if ( isset( $detail['page'] ) ) {
+			if ( isset( $detail['page'] ) )
 				$smarty->assign('page', $page);
-			}
 			$smarty->display("error.tpl");
 		}
 		die;
@@ -493,8 +473,6 @@ class TikiAccessLib extends TikiLib
 				$_SESSION['msg'] = $msg;
 			}
 		}
-
-		TikiLib::events()->trigger('tiki.process.redirect');
 
 		session_write_close();
 		if (headers_sent()) {
@@ -778,3 +756,4 @@ class TikiAccessLib extends TikiLib
 		}
 	}
 }
+global $access; $access = new TikiAccessLib;

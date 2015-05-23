@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -399,7 +399,7 @@ class Tiki_Profile
 				if ( is_numeric($key) )
 					$old[] = $value;
 				else
-					$old[$key] = $this->mergeData(isset($old[$key]) ? $old[$key] : null, $value);	
+					$this->mergeData(isset($old[$key]) ? $old[$key] : null, $value);	
 			}
 
 			return $old;
@@ -815,13 +815,9 @@ class Tiki_Profile
 		);
 	} // }}}
 
-	function getProfileKey($prefix = true) // {{{
+	function getProfileKey() // {{{
 	{
-		if (!$prefix) {
-			return self::getProfileKeyfor($this->domain, $this->profile);
-		} else {
-			return self::getProfileKeyfor($this->domain, $this->withPrefix($this->profile));
-		}
+		return self::getProfileKeyfor($this->domain, $this->withPrefix($this->profile));
 	} // }}}
 	
 	function getObjectSymbolDetails($type, $value) // Based on an objectType (eg: menu) and an objectId (eg: Id of a menu) query tiki_profile_symbols table and return domain, profile and object information

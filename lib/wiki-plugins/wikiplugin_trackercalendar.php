@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -183,13 +183,13 @@ function wikiplugin_trackercalendar_info()
 				'filter' => 'alpha',
 				'default' => 'month',
 				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Agenda by Months'), 'value' => 'month'),
-					array('text' => tra('Agenda by Weeks'), 'value' => 'agendaWeek'),
-					array('text' => tra('Agenda by Days'), 'value' => 'agendaDay'),
-					array('text' => tra('Resources by Months'), 'value' => 'resourceMonth'),
-					array('text' => tra('Resources by Weeks'), 'value' => 'resourceWeek'),
-					array('text' => tra('Resources by Days'), 'value' => 'resourceDay')
+                    array('text' => '', 'value' => ''),
+                    array('text' => tra('Agenda by Months'), 'value' => 'month'),
+                    array('text' => tra('Agenda by Weeks'), 'value' => 'agendaWeek'),
+                    array('text' => tra('Agenda by Days'), 'value' => 'agendaDay'),
+                    array('text' => tra('Resources by Months'), 'value' => 'resourceMonth'),
+                    array('text' => tra('Resources by Weeks'), 'value' => 'resourceWeek'),
+                    array('text' => tra('Resources by Days'), 'value' => 'resourceDay')
 				)
 			),
 			'dYear' => array(
@@ -220,18 +220,6 @@ function wikiplugin_trackercalendar_info()
 				'default' => 0,
 				'filter' => 'int',
 			),
-			'weekends' => array(
-				'required' => false,
-				'name' => tra('Show Weekends'),
-				'description' => tra('Display Saturdays and Sundays (shown by default)'),
-				'filter' => 'alpha',
-				'default' => 'y',
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
-					array('text' => tra('No'), 'value' => 'n')
-				)
-			),
 		),
 	);
 }
@@ -241,7 +229,7 @@ function wikiplugin_trackercalendar($data, $params)
 	static $id = 0;
 	$headerlib = TikiLib::lib('header');
 	$headerlib->add_cssfile('vendor_extra/fullcalendar-resourceviews/fullcalendar/fullcalendar.css');
-	$headerlib->add_jsfile('vendor_extra/fullcalendar-resourceviews/fullcalendar/fullcalendar.min.js', true);
+	$headerlib->add_jsfile('vendor_extra/fullcalendar-resourceviews/fullcalendar/fullcalendar.min.js');
 
 	$jit = new JitFilter($params);
 	$definition = Tracker_Definition::get($jit->trackerId->int());
@@ -339,7 +327,6 @@ function wikiplugin_trackercalendar($data, $params)
 
 	$params['addAllFields'] = empty($params['addAllFields']) ? 'y' : $params['addAllFields'];
 	$params['useSessionStorage'] = empty($params['useSessionStorage']) ? 'y' : $params['useSessionStorage'];
-	$params['weekends'] = empty($params['weekends']) ? 'y' : $params['weekends'];
 
 	$smarty = TikiLib::lib('smarty');
 	$smarty->assign(
@@ -370,7 +357,6 @@ function wikiplugin_trackercalendar($data, $params)
 			'addAllFields' => $params['external'] === 'y' ? $params['addAllFields'] : '',
 			'useSessionStorage' => $params['external'] === 'y' ? $params['useSessionStorage'] : '',
 			'timeFormat' => $prefs['display_12hr_clock'] === 'y' ? 'h(:mm)TT' : 'HH:mm',
-			'weekends' => $params['weekends'] === 'y' ? 1 : 0,
 		)
 	);
 	return $smarty->fetch('wiki-plugins/trackercalendar.tpl');
@@ -380,6 +366,6 @@ function wikiplugin_trackercalendar_get_resources($field)
 {
 	$db = TikiDb::get();
 
-	return $db->fetchAll('SELECT DISTINCT LOWER(value) as id, value as name FROM tiki_tracker_item_fields WHERE fieldId = ? ORDER BY  value', $field['fieldId']);
+	return $db->fetchAll('SELECT DISTINCT value as id, value as name FROM tiki_tracker_item_fields WHERE fieldId = ? ORDER BY  value', $field['fieldId']);
 }
 

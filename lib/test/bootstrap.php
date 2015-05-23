@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -83,7 +83,7 @@ if (!$installer->tableExists('tiki_preferences')) {
 
 $pwd = getcwd();
 chdir(dirname(__FILE__) . '/../..');
-$smarty = TikiLib::lib('smarty');
+global $smarty;
 require_once 'lib/init/smarty.php';
 $smarty->addPluginsDir('../smarty_tiki/');
 $cachelib = TikiLib::lib('cache');
@@ -91,7 +91,7 @@ $wikilib = TikiLib::lib('wiki');
 $userlib = TikiLib::lib('user');
 $headerlib = TikiLib::lib('header');
 require_once 'lib/init/tra.php';
-$access = TikiLib::lib('access');
+require_once 'lib/tikiaccesslib.php';
 
 $_SESSION = array(
 		'u_info' => array(

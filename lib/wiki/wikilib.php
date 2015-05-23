@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -62,28 +62,6 @@ class WikiLib extends TikiLib
 		}
 
 		return $ret;
-	}
-
-	function get_page_by_slug($slug)
-	{
-		$pages = TikiDb::get()->table('tiki_pages');
-		$found = $pages->fetchOne('pageName', ['pageSlug' => $slug]);
-
-		if ($found) {
-			return $found;
-		}
-
-		if ( function_exists('utf8_encode') ) {
-			$slug_utf8 = utf8_encode($slug);
-			if ($slug != $slug_utf8) {
-				$found = $pages->fetchOne('pageName', ['pageSlug' => $slug_utf8]);
-				if ($found) {
-					return $found;
-				}
-			}
-		}
-
-		return $slug;
 	}
 
 	public function get_creator($name)
@@ -252,12 +230,11 @@ class WikiLib extends TikiLib
 
 		// 1st rename the page in tiki_pages, using a tmpname inbetween for
 		// rename pages like ThisTestpage to ThisTestPage
-		$query = 'update `tiki_pages` set `pageName`=?, `pageSlug`=NULL where `pageName`=?';
+		$query = 'update `tiki_pages` set `pageName`=? where `pageName`=?';
 		$this->query($query, array( $tmpName, $oldName ));
 
-		$slug = TikiLib::lib('slugmanager')->generate($prefs['wiki_url_scheme'], $newName);
-		$query = 'update `tiki_pages` set `pageName`=?, `pageSlug`=? where `pageName`=?';
-		$this->query($query, array( $newName, $slug, $tmpName ));
+		$query = 'update `tiki_pages` set `pageName`=? where `pageName`=?';
+		$this->query($query, array( $newName, $tmpName ));
 
 		// correct pageName in tiki_history, using a tmpname inbetween for
 		// rename pages like ThisTestpage to ThisTestPage
@@ -509,13 +486,13 @@ class WikiLib extends TikiLib
 
 				$canBeRefreshed = true;
 			} else {
-				$jsFile1 = $headerlib->getJsFilesWithScriptTags();
+				$jsFile1 = $headerlib->getJsfiles();
 				$js1 = $headerlib->getJs();
-				$info['outputType'] = $tikilib->getOne ("SELECT `outputType` FROM `tiki_output` WHERE `entityId` = ? AND `objectType` = ? AND `version` = ?", array($info['pageName'], 'wikiPage', $info['version']));
-				$content = (new WikiLibOutput($info, $info['data'],$parse_options))->parsedValue;
+                $info['outputType'] = $tikilib->getOne ("SELECT `outputType` FROM `tiki_output` WHERE `entityId` = ? AND `objectType` = ? AND `version` = ?", array($info['pageName'], 'wikiPage', $info['version']));
+                $content = (new WikiLibOutput($info, $info['data'],$parse_options))->parsedValue;
 
 				// get any JS added to headerlib during parse_data and add to the bottom of the data to cache
-				$jsFile2 = $headerlib->getJsFilesWithScriptTags();
+				$jsFile2 = $headerlib->getJsfiles();
 				$js2 = $headerlib->getJs();
 
 				$jsFile = array_diff($jsFile2, $jsFile1);
@@ -1205,9 +1182,7 @@ class WikiLib extends TikiLib
 		 	}
 		 }
 
-		$pages = TikiDb::get()->table('tiki_pages');
-		$page = $pages->fetchOne('pageSlug', ['pageName' => $page]) ?: $page;
-		$href = "$script_name?page=" . $page;
+		$href = "$script_name?page=" . urlencode($page);
 
 		if (isset($prefs['feature_wiki_use_date_links']) && $prefs['feature_wiki_use_date_links'] == 'y') {
 			if (isset($_REQUEST['date'])) {

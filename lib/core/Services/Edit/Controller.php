@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -403,28 +403,5 @@ $(window).load(function(){
 			'title' => tr('Edit Help'),
 			'help_sections' => $help_sections,
 		);
-	}
-
-	function action_inline_dialog($input)
-	{
-		$smarty = TikiLib::lib('smarty');
-		$smarty->loadPlugin('smarty_function_service_inline');
-
-		$display = [];
-		foreach ($input->fields as $field) {
-			$html = smarty_function_service_inline($field->fetch->text(), $smarty);
-			$display[] = [
-				'label' => $field->label->text(),
-				'field' => new Tiki_Render_Editable($html, [
-					'layout' => 'dialog',
-					'object_store_url' => $field->store->text(),
-				]),
-			];
-		}
-
-		return [
-			'title' => tr('Edit'),
-			'fields' => $display,
-		];
 	}
 }

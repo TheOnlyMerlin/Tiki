@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -7,7 +7,38 @@
 
 function prefs_global_list($partial = false)
 {
+	global $tikilib, $url_host;
+
+	$all_styles = array();
+	$languages = array();
+
+	if (! $partial) {
+		$all_styles = $tikilib->list_styles();
+		$languages = $tikilib->list_languages(false, null, true);
+	}
+
+	$styles = array();
+
+	foreach ($all_styles as $style) {
+		$styles[$style] = substr($style, 0, strripos($style, '.css'));
+	}
+	
+	$map = array();
+
+	foreach ( $languages as $lang ) {
+		$map[ $lang['value'] ] = $lang['name'];
+	}
+
 	return array(
+		'style' => array(
+			'name' => tra('Theme'),
+            'description' => tra('Theme of the site, sometimes called a style, skin or CSS. See http://themes.tiki.org for more information.'),
+            'type' => 'list',
+			'help' => 'Themes',
+			'options' => $styles,
+			'default' => 'fivealive-lite.css',
+			'tags' => array('basic'),
+		),
 		'browsertitle' => array(
 			'name' => tra('Browser title'),
 			'description' => tra('Label visible in the browser\'s title bar on all pages. Also appears in search engines.'),
@@ -53,6 +84,16 @@ function prefs_global_list($partial = false)
 			),
 			'keywords' => 'group home page pages',
 			'default' => 'n',
+		),
+		'language' => array(
+			'name' => tra('Default language'),
+			'description' => tra('Site language used when no other language is specified by the user.'),
+			'filter' => 'lang',
+			'help' => 'I18n',
+			'type' => 'list',
+			'options' => $map,
+			'default' => 'en',
+			'tags' => array('basic'),
 		),
 		'cachepages' => array(
 			'name' => tra('Cache external pages'),
@@ -186,8 +227,8 @@ function prefs_global_list($partial = false)
 			'tags' => array('basic'),
 		),
 		'useGroupTheme' => array(
-			'name' => tra('Group Theme'),
-            'description' => tra('Each group can have its theme'),
+			'name' => tra('Each group can have its theme'),
+            'description' => tra(''),
 			'type' => 'flag',
 			'default' => 'n',
 		),
@@ -309,7 +350,6 @@ function prefs_global_list($partial = false)
 			'hint' => tra("The group will be named identical to the user's username"),
 			'help' => 'Groups',
 			'default' => 'n',
-			'keywords' => 'eponymous groups',
 		),
 		'syncGroupsWithDirectory' => array(
 			'name' => tra('Synchronize Tiki groups with a directory'),
@@ -456,5 +496,8 @@ function feature_home_pages($partial = false)
 		$tikiIndex['tiki-view_forum.php?forumId=' . $prefs['home_forum']] = tra('Forum:') . $home_forum_name;
 	}
 	
+	// Custom home
+	$tikiIndex['tiki-custom_home.php'] = tra('Custom home');
+
 	return $tikiIndex;
 }

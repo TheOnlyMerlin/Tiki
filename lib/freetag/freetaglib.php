@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -204,7 +204,8 @@ class FreetagLib extends ObjectLib
 
 																		)
 	{
-		global $tiki_p_admin, $user, $prefs;
+
+		global $tiki_p_admin, $user, $smarty, $prefs;
 		$objectIds = explode(':',$objectId);
 		if (!isset($tagArray) || !is_array($tagArray)) {
 			return false;

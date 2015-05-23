@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -20,7 +20,8 @@ function prefs_home_list($partial = false)
 		'home_forum' => array(
 			'name' => tra('Home Forum (main forum)'),
             'description' => tra(''),
-			'type' => 'text',
+			'type' => 'list',
+			'options' => $partial ? array() : listforum_pref(),
 			'default' => 0,
 			'profile_reference' => 'forum',
 		),
@@ -94,6 +95,29 @@ function listfgal_pref()
 	}
 
 	return $listfgals;
+}
+
+/**
+ * listforum_pref: retrieve the list of forums for the home_forum preference
+ *
+ * @access public
+ * @return array: forumId => name(truncated)
+ */
+function listforum_pref()
+{
+	$allforums = TikiLib::lib('comments')->list_forums(0, -1, 'name_desc', '');
+
+	$listforums = array('' => 'None');
+
+	if ($allforums['cant'] > 0) {
+		foreach ($allforums['data'] as $oneforum) {
+			$listforums[ $oneforum['forumId'] ] = substr($oneforum['name'], 0, 30);
+		}
+	} else {
+		$listforums[''] = tra('No forum available (create one first)');
+	}
+
+	return $listforums;
 }
 
 /**

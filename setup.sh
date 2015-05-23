@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+# (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 #
 # All Rights Reserved. See copyright.txt for details and a complete list of authors.
 # Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -20,13 +20,6 @@ DEBUG_UNIX=0 # production mode
 #DEBUG_UNIX=1 # debugging mode
 DEBUG_PREFIX='D>'
 ECHOFLAG=1 # one empty line before printing used options in debugging mode
-PATCHCOMPOSERFLAG="0" # patch composer.phar to avoid the warnings
-                      # unfortunately, this file checks its own signature
-                      # and thus does not allow modifications
-# log composer instead of screen out# log composer instead of screen outputput
-LOGCOMPOSERFLAG="0" # default for composer output 
-TIKI_COMPOSER_INSTALL_LOG=tiki-composer-install.log
-TIKI_COMPOSER_SELF_UPDATE_LOG=tiki-composer-self-update.log
 
 # part 1 - preliminaries
 # ----------------------
@@ -269,8 +262,8 @@ check_distribution
 # part 3 - default and writable subdirs
 # -------------------------------------
 
-DIR_LIST_DEFAULT="addons admin db doc dump files img installer lang lib maps modules permissioncheck temp templates templates_c tests themes tiki_tests vendor vendor_extra whelp"
-DIR_LIST_WRITABLE="db dump img/wiki img/wiki_up img/trackers modules/cache temp temp/cache temp/public templates_c templates themes maps whelp mods files tiki_tests/tests temp/unified-index"
+DIR_LIST_DEFAULT="admin css db doc dump files img installer lang lib maps modules permissioncheck styles temp templates templates_c tests tiki_tests vendor vendor_extra whelp"
+DIR_LIST_WRITABLE="db dump img/wiki img/wiki_up img/trackers modules/cache temp temp/cache temp/public templates_c templates styles maps whelp mods files tiki_tests/tests temp/unified-index"
 DIRS=${DIR_LIST_WRITABLE}
 
 # part 4 - several functions
@@ -503,19 +496,10 @@ composer_core()
 		then
 			curl -s https://getcomposer.org/installer | php -- --install-dir=temp
 		else
-			# todo : if exists php;
 			php -r "eval('?>'.file_get_contents('https://getcomposer.org/installer'));" -- --install-dir=temp
 		fi
-		# if PATCHCOMPOSERFLAG then modify temp/composer.phar to avoid the warnings
-		# this hack is not yet possible because of a self signature check in temp/composer.phar
 	else
-		# todo : if exists php;
-		if [ ${LOGCOMPOSERFLAG} = "0" ] ; then
-			php temp/composer.phar self-update
-		fi
-		if [ ${LOGCOMPOSERFLAG} = "1" ] ; then
-			php temp/composer.phar self-update > ${TIKI_COMPOSER_SELF_UPDATE_LOG}
-		fi
+		php temp/composer.phar self-update
 	fi
 
 	if [ ! -f temp/composer.phar ];
@@ -529,57 +513,21 @@ composer_core()
 	fi
 
 	N=0
-	# todo : move "if exists php;" to function composer
 	if exists php;
 	then
-		if [ ${LOGCOMPOSERFLAG} = "0" ] ; then
-			#until php -dmemory_limit=-1 temp/composer.phar install --prefer-dist
-			until php -dmemory_limit=-1 temp/composer.phar install --prefer-dist 2>&1 | sed '/Warning: Ambiguous class resolution/d'
-			# setting memory_limit here prevents suhosin ALERT - script tried to increase memory_limit to 536870912 bytes
-			do
-				if [ $N -eq 7 ];
-				then
-					#exit
-					return
-				else
-					echo "Composer failed, retrying in 5 seconds, for a few times. Hit Ctrl-C to cancel."
-					sleep 5
-				fi
-				N=$((N+1))
-			done
-		fi
-		if [ ${LOGCOMPOSERFLAG} = "1" ] ; then
-			until php -dmemory_limit=-1 temp/composer.phar install --prefer-dist > ${TIKI_COMPOSER_INSTALL_LOG}
-			# setting memory_limit here prevents suhosin ALERT - script tried to increase memory_limit to 536870912 bytes
-			do
-				if [ $N -eq 7 ];
-				then
-					#exit
-					return
-				else
-					echo "Composer failed, retrying in 5 seconds, for a few times. Hit Ctrl-C to cancel."
-					sleep 5
-				fi
-				N=$((N+1))
-			done
-		fi
-		if [ ${LOGCOMPOSERFLAG} = "2" ] ; then
-			echo "Suppress output lines with 'Warning: Ambiguous class resolution'\n..."
-			#until php -dmemory_limit=-1 temp/composer.phar install --prefer-dist | sed '/Warning: Ambiguous class resolution/d'
-			until php -dmemory_limit=-1 temp/composer.phar install --prefer-dist
-			# setting memory_limit here prevents suhosin ALERT - script tried to increase memory_limit to 536870912 bytes
-			do
-				if [ $N -eq 7 ];
-				then
-					#exit
-					return
-				else
-					echo "Composer failed, retrying in 5 seconds, for a few times. Hit Ctrl-C to cancel."
-					sleep 5
-				fi
-				N=$((N+1))
-			done
-		fi
+		until php -dmemory_limit=-1 temp/composer.phar install --prefer-dist
+		# setting memory_limit here prevents suhosin ALERT - script tried to increase memory_limit to 536870912 bytes
+		do
+			if [ $N -eq 7 ];
+			then
+				#exit
+				return
+			else
+				echo "Composer failed, retrying in 5 seconds, for a few times. Hit Ctrl-C to cancel."
+				sleep 5
+			fi
+			N=$((N+1))
+		done
 	fi
 	#exit
 	return
@@ -587,7 +535,6 @@ composer_core()
 
 composer()
 {
-	# todo : if exists php;
 	# insert php cli version check here
 	# http://dev.tiki.org/item4721
 	PHP_OPTION="--version"
@@ -956,9 +903,7 @@ tiki_setup_default_menu() {
 
 Composer: If you are installing via a released Tiki package (zip, tar.gz, tar.bz2, 7z), you can and should skip using Composer. If you are installing and upgrading via SVN, you need to run Composer after 'svn checkout' and 'svn upgrade'. More info at https://dev.tiki.org/Composer
   
- c run composer (log output on screen, not all warnings) and exit (recommended to be done first)
- L run composer (log output to logfile) and exit (recommended to be done first)
- V run composer (verbose log output on screen) and exit (recommended to be done first)
+ c run composer and exit (recommended to be done first)
 
 For all Tiki instances (via SVN or via a released package):
 
@@ -1016,10 +961,8 @@ tiki_setup_default() {
 			S)	WHAT=${OLDWHAT} ; clear ;;
 			f)	WHAT=$WHAT_NEXT_AFTER_f ; command_fix ;;
 			o)	WHAT=${DEFAULT_WHAT} ; command_open ;;
-			c)	WHAT=$WHAT_NEXT_AFTER_c ; LOGCOMPOSERFLAG="0" ; composer ;;
-			C)	WHAT=$WHAT_NEXT_AFTER_c ; LOGCOMPOSERFLAG="0" ; composer ;;
-			L)	WHAT=$WHAT_NEXT_AFTER_c ; LOGCOMPOSERFLAG="1" ; composer ;;
-			V)	WHAT=$WHAT_NEXT_AFTER_c ; LOGCOMPOSERFLAG="2" ; composer ;;
+			c)	WHAT=$WHAT_NEXT_AFTER_c ; composer ;;
+			C)	WHAT=$WHAT_NEXT_AFTER_c ; composer ;;
 			q)	echo ""; exit ;;
 			Q)	echo ""; exit ;;
 			x)	echo ""; exit ;;

@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -162,9 +162,7 @@ if (isset($_REQUEST['intertiki']) and in_array($_REQUEST['intertiki'], array_key
 				$user = $requestedUser;
 				if ($prefs['feature_userPreferences'] == 'y' && $prefs['feature_intertiki_import_preferences'] == 'y') {
 					$userprefslib = TikiLib::lib('userprefs');
-					if (!empty($avatarData)) {
-						$userprefslib->set_user_avatar($user, 'u', '', $user_details['info']['avatarName'], $user_details['info']['avatarSize'], $user_details['info']['avatarFileType'], $avatarData, false);
-					}
+					$userprefslib->set_user_avatar($user, 'u', '', $user_details['avatarName'], $user_details['avatarSize'], $user_details['avatarFileType'], $avatarData);
 					$userlib->set_user_preferences($user, $user_details['preferences']);
 				}
 				if ($prefs['feature_intertiki_import_groups'] == 'y') {

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -250,10 +250,6 @@ class TikiFilter_PreventXss implements Zend_Filter_Interface
 		}
 		// filter out the hex tags
 		$val = preg_replace($patterns, $replacements, $val);
-
-		if ($val === null) {
-			TikiLib::lib('errorreport')->report(tr('Filter error: "%0"', array_flip(get_defined_constants(true)['pcre'])[preg_last_error()]));
-		}
 		if ($val_before == $val) {
 			// no replacements were made, so exit the loop
 			$found = false;

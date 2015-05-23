@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -113,10 +113,6 @@ class SearchLib extends TikiLib
 			$h['lastModif'],
 			$h['pageName']
 		);
-
-		if (isset($h['cache'])) {
-			$sqlFields .= sprintf(', %s AS cache', $h['cache']);
-		}
 
 		if (isset($h['is_html'])) {
 			$sqlFields .= ', `is_html`';
@@ -270,23 +266,11 @@ class SearchLib extends TikiLib
 			$href = sprintf(urldecode($h['href']), urlencode($res['id1']), $res['id2']);
 
 			// taking first 240 chars of text can bring broken html tags, better remove all tags.
-			global $tikilib, $user;
-
-
-			//if user is null (anonymous) and there is cache, deliver that, otherwise lets get a parsed snippet
-			//this cuts down on resource usage considerably when pages are cached
-			$data = '';
-			if ($user === null && !empty($res['cache'])) {
-				$data = substr($tikilib->strip_tags($res['cache']), 0, 240);
-			}
-			else {
-				$data = $tikilib->get_snippet($res['data'], $res['outputType'], isset($res['is_html'])? $res['is_html']:'n');
-			}
-
+			global $tikilib;
 			$r = array(
 				'name' => $res['name'],
 				'pageName' => $res["pageName"],
-				'data' => $data,
+				'data' => $tikilib->get_snippet($res['data'], $res['outputType'], isset($res['is_html'])? $res['is_html']:'n'),
 				'hits' => $res["hits"],
 				'lastModif' => $res["lastModif"],
 				'href' => $href,
@@ -397,7 +381,6 @@ class SearchLib extends TikiLib
 			'from' => '`tiki_pages` p',
 			'name' => '`pageName`',
 			'data' => '`data`',
-			'cache' => '`cache`',
 			'hits' => 'p.`hits`', //'pageRank', pageRank is updated not very often since the line below is in comment
 			'lastModif' => '`lastModif`',
 			'id' => array('`pageName`'),
@@ -741,7 +724,7 @@ class SearchLib extends TikiLib
 			'objectKey' => '`blogId`',
 		);
 		$res = $this->_find($search_blogs, $words, $offset, $maxRecords, $fulltext, $filter, $boolean, tra('Blog'), $searchDate, $categId);
-		global $user;
+		global $user, $smarty;
 		include_once('tiki-sefurl.php');
 		foreach ($res['data'] as $i=>$r) {
 			$res['data'][$i]['href'] = filter_out_sefurl($r['href'], 'blog', $r['pageName']);
@@ -798,7 +781,7 @@ class SearchLib extends TikiLib
 		);
 
 		$ret = array('cant'=>$res['cant'], 'data'=>array());
-		global $user;
+		global $user, $smarty;
 		include_once('tiki-sefurl.php');
 
 		foreach ($res['data'] as $r) {
@@ -902,6 +885,7 @@ class SearchLib extends TikiLib
 		$itemFinal = array();
 
 		foreach ($ret['data'] as $i=>$res) {
+			global $smarty;
 			include_once('tiki-sefurl.php');
 			$res['href'] = filter_out_sefurl($res['href'], 'trackeritem', $res['name']);
 			if (($j = array_search($res['name'], $itemFinal)) === false) {

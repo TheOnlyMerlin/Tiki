@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -121,7 +121,7 @@ $smarty->display("tiki.tpl");
 
 function execute_module_translation() 
 { 
-	$smarty = TikiLib::lib('smarty');
+	global $smarty;
 	$module_reference = array(
 		'name' => 'translation',
 		'params' => '',
@@ -130,7 +130,7 @@ function execute_module_translation()
 		'moduleId' => 0
 	);
 
-	$modlib = TikiLib::lib('mod');
+	global $modlib; require_once 'lib/modules/modlib.php';	
 
 	$out = $modlib->execute_module($module_reference);
 	$smarty->assign('content_of_update_translation_section', $out);
@@ -158,7 +158,7 @@ function smarty_assign_default_target_lang($src_lang, $targ_lang_requested, $exi
 
 function smarty_assign_translation_name()
 {
-    $smarty = TikiLib::lib('smarty');
+    global $smarty;
 
     $translation_name = '';
     if (isset($_REQUEST['translation_name']))

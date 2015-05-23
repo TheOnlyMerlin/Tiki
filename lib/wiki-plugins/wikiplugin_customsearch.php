@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -109,7 +109,7 @@ function wikiplugin_customsearch_info()
 					array('text' => tra('Yes'), 'value' => '1'),
 				),
 				'filter' => 'digits',
-				'default' => '1',
+				'default' => '0',
 			),
 		),
 	);
@@ -142,7 +142,7 @@ function wikiplugin_customsearch($data, $params)
 		$params['requireinput'] = 0;
 	}
 	if (!isset($params['forcesortmode'])) {
-		$params['forcesortmode'] = 1;
+		$params['forcesortmode'] = 0;
 	}
 	if (!isset($_REQUEST["offset"])) {
 		$offset = 0;
@@ -174,21 +174,18 @@ function wikiplugin_customsearch($data, $params)
 	$definitionKey = md5($data);
 	$matches = WikiParser_PluginMatcher::match($data);
 	$query = new Search_Query;
-	$query->filterIdentifier('y', 'searchable');
 	$builder = new Search_Query_WikiBuilder($query);
 	$builder->apply($matches);
 
-	$paginationArguments = $builder->getPaginationArguments();
-
-	// Use maxRecords set in LIST parameters rather then global default if set.
+	// Use maxRecords set in LIST parameters rather then global default if set. 
 	if (isset($maxDefault) && $maxDefault) {
-		if (!empty($paginationArguments['max'])) {
-			$maxRecords = $paginationArguments['max'];
+		$paginationArgs = $builder->getPaginationArguments();
+		if (!empty($paginationArgs['max'])) {
+			$maxRecords = $paginationArgs['max'];
 		}
 	}
 	
 	$builder = new Search_Formatter_Builder;
-	$builder->setPaginationArguments($paginationArguments);
 	$builder->apply($matches);
 	$formatter = $builder->getFormatter();
 

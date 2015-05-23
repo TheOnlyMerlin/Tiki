@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -19,7 +19,6 @@ $access->check_permission_either(array('tiki_p_use_webmail', 'tiki_p_use_group_w
 require_once ('lib/webmail/net_pop3.php');
 require_once ('lib/mail/mimelib.php');
 include_once ('lib/webmail/tikimaillib.php');
-require_once ('lib/filegals/filegallib.php');
 
 // AJAX_TODO
 /**
@@ -733,22 +732,7 @@ END;
 ///////////////////////////////////////////////////////////////////////////////////////////
 
 if ($_REQUEST['locSection'] == 'compose') {
-// check if current has been set in the url	
-	if (isset($_REQUEST['current']) && !empty($_REQUEST['current'])) {
-		$current = $webmaillib->get_webmail_account($user, $_REQUEST['current']);
-	} else {
-		$current = $webmaillib->get_current_webmail_account($user);	
-	}
-// assign accountId and sending email so they are available to the smarty template and 
-// the accountId can be passed back from template so that different accounts can be used
-// 'on the fly' by using a 'current' identifier in the url
-	$smarty->assign('curacctId', $current['accountId']);
-// check if current fromEmail is not set and use login email instead
-	if ( $current['fromEmail'] != '' ) {
-		$smarty->assign('sendFrom', $current['fromEmail']);
-	} else {
-		$smarty->assign('sendFrom', trim($userlib->get_user_email($user)));
-	}
+	$current = $webmaillib->get_current_webmail_account($user);
 
 	if (!$current) {
 		handleWebmailRedirect('locSection=settings');
@@ -778,7 +762,7 @@ if ($_REQUEST['locSection'] == 'compose') {
 
 		if ($_REQUEST['attach1']) {
 			check_ticket('webmail');
-			$a1 = file_get_contents('temp/mail_attachs/' . $_REQUEST['attach1file']);
+			$a1 = $mail->getFile('temp/mail_attachs/' . $_REQUEST['attach1file']);
 
 			$mail->addAttachment($a1, $_REQUEST['attach1'], $_REQUEST['attach1type']);
 			@unlink('temp/mail_attachs/' . $_REQUEST['attach1file']);
@@ -786,7 +770,7 @@ if ($_REQUEST['locSection'] == 'compose') {
 
 		if ($_REQUEST['attach2']) {
 			check_ticket('webmail');
-			$a2 = file_get_contents('temp/mail_attachs/' . $_REQUEST['attach2file']);
+			$a2 = $mail->getFile('temp/mail_attachs/' . $_REQUEST['attach2file']);
 
 			$mail->addAttachment($a2, $_REQUEST['attach2'], $_REQUEST['attach2type']);
 			@unlink('temp/mail_attachs/' . $_REQUEST['attach2file']);
@@ -794,29 +778,13 @@ if ($_REQUEST['locSection'] == 'compose') {
 
 		if ($_REQUEST['attach3']) {
 			check_ticket('webmail');
-			$a3 = file_get_contents('temp/mail_attachs/' . $_REQUEST['attach3file']);
+			$a3 = $mail->getFile('temp/mail_attachs/' . $_REQUEST['attach3file']);
 
 			$mail->addAttachment($a3, $_REQUEST['attach3'], $_REQUEST['attach3type']);
 			@unlink('temp/mail_attachs/' . $_REQUEST['attach3file']);
 		}
-		
-		if ($_REQUEST['fattId']) {			
-			$filegallib = TikiLib::lib('filegal');
-			$filedata = $filegallib->get_file_info($_REQUEST['fattId']);
-			$a4 = file_get_contents($prefs['fgal_use_dir'].$filedata['path']);
-			
-			$mail->addAttachment($a4, $filedata['filename'], $filedata['filetype']);
-		}		
 
-		if ($_REQUEST['fattId']) {			
-			$filegallib = TikiLib::lib('filegal');
-			$filedata = $filegallib->get_file_info($_REQUEST['fattId']);
-			$a4 = file_get_contents($prefs['fgal_use_dir'].$filedata['path']);
-			
-			$mail->addAttachment($a4, $filedata['filename'], $filedata['filetype']);
-		}		
-
-	//	$mail->setSMTPParams($current['smtp'], $current['smtpPort'], '', $current['useAuth'], $current['username'], $current['pass']);   // commented out as a temporary fix - might need to do more later
+		$mail->setSMTPParams($current['smtp'], $current['smtpPort'], '', $current['useAuth'], $current['username'], $current['pass']);
 
 		if (isset($_REQUEST['useHTML']) && $_REQUEST['useHTML'] == 'on') {
 			$mail->setHTML($_REQUEST['body'], strip_tags($_REQUEST['body']));
@@ -1004,8 +972,6 @@ if ($_REQUEST['locSection'] == 'compose') {
 	$smarty->assign('attach1type', $_REQUEST['attach1type']);
 	$smarty->assign('attach2type', $_REQUEST['attach2type']);
 	$smarty->assign('attach3type', $_REQUEST['attach3type']);
-	$smarty->assign('fattId', $_REQUEST['fattId']);
-	$smarty->assign('pageaftersend', $_REQUEST['pageaftersend']);
 }
 
 include_once ('tiki-mytiki_shared.php');

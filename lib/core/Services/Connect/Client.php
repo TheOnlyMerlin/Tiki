@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -143,7 +143,7 @@ class Services_Connect_Client
 
 	function action_cancel($input)
 	{
-		$guid = $input->guid->text();
+		$guid = $input->guid->filter();
 		if ($guid) {
 			$this->connectlib->removeGuid($guid);
 			$r = $this->remote->cancel(array('connect_data' => array('guid' => $guid)));

@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -16,5 +16,13 @@ if ($prefs['feature_banning'] == 'y') {
 		$smarty->assign('msg', $msg);
 		$smarty->display("error.tpl");
 		die;
+	}
+}
+if ($prefs['layout_section'] == 'y') {
+	$section_elements = array('top_bar', 'bot_bar', 'left_column', 'right_column');
+	foreach ($section_elements as $element) {
+		if (isset($prefs[$section . '_' . $element])) {
+			$prefs['feature_' . $element] = $prefs[$section . '_' . $element];
+		}
 	}
 }

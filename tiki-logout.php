@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -26,10 +26,6 @@ if (!empty($_REQUEST['page'])) {
 	$out_page = $wikilib->sefurl($prefs['wikiHomePage']);
 } else {
 	$out_page = '';
-}
-
-if ($prefs['login_autologin'] == 'y' && $prefs['login_autologin_logoutremote'] == 'y' && !empty($_SESSION['autologin_base_url'])) {
-	$out_page = $_SESSION['autologin_base_url'] . 'tiki-logout.php';
 }
 
 $userlib->user_logout($user, false, $out_page);

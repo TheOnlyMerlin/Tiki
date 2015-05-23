@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -21,8 +21,8 @@ function module_last_visitors_info()
 		'description' => tra('Displays information about the specified number of users in decreasing order of last login time.'),
 		'params' => array(
 			'showavatars' => array(
-				'name' => tra('Show profile pictures'),
-				'description' => tra('If set to "y", show user profile pictures.') . ' ' . tra('Default:') . ' "n"'
+				'name' => tra('Show avatars'),
+				'description' => tra('If set to "y", show user avatars.') . ' ' . tra('Default:') . ' "n"'
 			),
 			'maxlen' => array(
 				'name' => tra('Maximum length'),

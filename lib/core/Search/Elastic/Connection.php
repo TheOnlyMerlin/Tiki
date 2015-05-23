@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -9,6 +9,7 @@ class Search_Elastic_Connection
 {
 	private $dsn;
 	private $dirty = array();
+	private $dirtyPercolator = false;
 
 	private $indices = array();
 
@@ -26,10 +27,11 @@ class Search_Elastic_Connection
 
 	function startBulk($size = 500)
 	{
+		$self = $this;
 		$this->bulk = new Search_Elastic_BulkOperation(
 			$size,
-			function ($data) {
-				$this->postBulk($data);
+			function ($data) use ($self) {
+				$self->postBulk($data);
 			}
 		);
 	}
@@ -74,22 +76,13 @@ class Search_Elastic_Connection
 		}
 	}
 
-	function search($index, array $query, array $args = [])
+	function search($index, array $query, $resultStart, $resultCount)
 	{
-		$indices = (array) $index;
-		foreach ($indices as $index) {
-			if (! empty($this->dirty[$index])) {
-				$this->refresh($index);
-			}
+		if (! empty($this->dirty[$index])) {
+			$this->refresh($index);
 		}
 
-		$index = implode(',', $indices);
-		return $this->get("/$index/_search?" . http_build_query($args, '', '&'), json_encode($query));
-	}
-
-	function scroll($scrollId, array $args = [])
-	{
-		return $this->post('/_search/scroll?' . http_build_query($args, '', '&'), $scrollId);
+		return $this->get("/$index/_search", json_encode($query));
 	}
 
 	function storeQuery($index, $name, $query)
@@ -120,60 +113,6 @@ class Search_Elastic_Connection
 		$type = $this->simplifyType($type);
 
 		$this->rawIndex($index, $type, $id, $data);
-	}
-
-	function assignAlias($alias, $targetIndex)
-	{
-		$this->flush();
-
-		$active = [];
-		$toRemove = [];
-		$current = $this->rawApi('/_aliases');
-		foreach ($current as $indexName => $info) {
-			if (isset($info->aliases->$alias)) {
-				$active[] = $indexName;
-				$toRemove[] = $indexName;
-			} elseif (0 === strpos($indexName, $alias . '_') && $indexName != $targetIndex) {
-				$toRemove[] = $indexName;
-			}
-		}
-		$actions = [
-			['add' => ['index' => $targetIndex, 'alias' => $alias]],
-		];
-
-		foreach ($active as $index) {
-			$actions[] = ['remove' => ['index' => $index, 'alias' => $alias]];
-		}
-
-		// Before assigning new alias, check there is not already an index matching alias name.
-		if (isset($current->$alias) && !$this->aliasExists($alias)) {
-			$this->deleteIndex($alias);
-		}
-
-		$this->post('/_aliases', json_encode([
-			'actions' => $actions,
-		]));
-
-		// Make sure the new index is fully active, then clean-up
-		$this->refresh($alias);
-
-		foreach ($toRemove as $old) {
-			$this->deleteIndex($old);
-		}
-	}
-
-	function isRebuilding($aliasName)
-	{
-		$current = $this->rawApi('/_aliases');
-		foreach ($current as $indexName => $info) {
-			$hasAlias = isset($info->aliases) && count((array) $info->aliases) > 0;
-			if (0 === strpos($indexName, $aliasName . '_') && ! $hasAlias) {
-				// Matching name, no alias, means currently rebuilding
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 	private function rawIndex($index, $type, $id, $data)
@@ -261,22 +200,8 @@ class Search_Elastic_Connection
 		return $this->get($path);
 	}
 
-	private function aliasExists($index)
-	{
-		try {
-			$this->get("/_alias/$index", "");
-		} catch (Search_Elastic_Exception $e) {
-			return false;
-		}
-		return true;
-	}
-
 	private function createIndex($index, callable $getIndex)
 	{
-		if ($this->aliasExists($index)) {
-			return;
-		}
-
 		try {
 			$this->put(
 				"/$index", json_encode($getIndex())
@@ -365,34 +290,12 @@ class Search_Elastic_Connection
 		$full = "{$this->dsn}$path";
 
 		$tikilib = TikiLib::lib('tiki');
-		try {
-			return $tikilib->get_http_client($full);
-		} catch (Zend_Exception $e) {
-			throw new Search_Elastic_TransportException($e->getMessage());
-		}
+		return $tikilib->get_http_client($full);
 	}
 
 	private function simplifyType($type)
 	{
 		return preg_replace('/[^a-z]/', '', $type);
-	}
-
-	/**
-	 * Store the dirty flags at the end of the request and restore them when opening the
-	 * connection within a single user session so that if a modification requires re-indexing,
-	 * the next page load will wait until indexing is done to show the results.
-	 */
-	function persistDirty(Tiki_Event_Manager $events)
-	{
-		if (isset($_SESSION['elastic_search_dirty'])) {
-			$this->dirty = $_SESSION['elastic_search_dirty'];
-			unset($_SESSION['elastic_search_dirty']);
-		}
-
-		// Before the HTTP request is closed
-		$events->bind('tiki.process.redirect', function () {
-			$_SESSION['elastic_search_dirty'] = $this->dirty;
-		});
 	}
 }
 

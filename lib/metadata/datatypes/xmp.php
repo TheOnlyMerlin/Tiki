@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -301,7 +301,7 @@ class Xmp
 								//in case a list item (li) has children - images tested so far don't seem to have this
 								//situation, so untested
 								$xmparray[$nodeitem->prefix][$nodeitem->localName] =
-									$this->xmpDomToArray($nodeitem->childNodes);
+									$nodeitem->xmpDomToArray($nodeitem->childNodes);
 							}
 						//fields like ['exif']['Flash'] go here, ie multiple items but not a list (li) inside of
 						//another element (like Seq, Bag or Alt)

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -33,11 +33,11 @@ class ModLib extends TikiLib
 
 	public $cssfiles  = array(
 		'calendar_new'	=> array (
-			'csspath'	=> 'themes/base_files/feature_css/calendar.css',
+			'csspath'	=> 'css/calendar.css',
 			'rank'		=> 20,
 		),
 		'action_calendar'	=> array (
-			'csspath'	=> 'themes/base_files/feature_css/calendar.css',
+			'csspath'	=> 'css/calendar.css',
 			'rank'		=> 20,
 		),
 	);
@@ -457,13 +457,6 @@ class ModLib extends TikiLib
 		$module_params['module_position'] = $module['position'];
 		$module_params['module_ord'] = $module['ord'];
 
-		if ($module['name'] == 'addon' && !empty($module_params['otherparams'])) {
-			parse_str($module_params['otherparams'], $other_params);
-			if (is_array($other_params)) {
-				$module_params = $module_params + $other_params;
-			}
-		}
-
 		if ( $prefs['user_flip_modules'] === 'n' ) {
 			$module_params['flip'] = 'n';
 		}
@@ -483,14 +476,14 @@ class ModLib extends TikiLib
      */
     function filter_active_module( $module )
 	{
-		global $section, $page, $prefs, $user;
-		$tikilib = TikiLib::lib('tiki');
+		global $section, $page, $prefs, $user, $tikilib;
+
 		// Validate preferences
 		$module_info = $this->get_module_info($module['name']);
 		$params = $module['params'];
 
 		if ( $prefs['feature_perspective'] == 'y' ) {
-			$perspectivelib = TikiLib::lib('perspective');
+			global $perspectivelib; require_once 'lib/perspectivelib.php';
 			$persp = $perspectivelib->get_current_perspective($prefs);
 			if (empty($persp)) {
 				$persp = 0;
@@ -782,6 +775,9 @@ class ModLib extends TikiLib
 
 		$cachelib = TikiLib::lib('cache');
 		$cacheKey = 'module.' . $moduleName . $prefs['language'];
+		if ($prefs['mobile_feature'] === 'y') {
+			$cacheKey .=  $prefs['mobile_mode'];
+		}
 		$info = $cachelib->getSerialized($cacheKey, 'module');
 
 		if ($info) {
@@ -1011,9 +1007,7 @@ class ModLib extends TikiLib
      */
     function execute_module( $mod_reference )
 	{
-		global $user, $prefs, $tiki_p_admin;
-		$smarty = TikiLib::lib('smarty');
-		$tikilib = TikiLib::lib('tiki');
+		global $smarty, $tikilib, $user, $prefs, $tiki_p_admin;
 
 		try {
 			$defaults = array(
@@ -1172,8 +1166,8 @@ class ModLib extends TikiLib
      */
     function get_user_module_content( $name, $module_params )
 	{
-		$smarty = TikiLib::lib('smarty');
-		$tikilib = TikiLib::lib('tiki');
+		global $tikilib, $smarty;
+
 		$smarty->assign('module_type', 'module');
 		$info = $this->get_user_module($name);
 		if (!empty($info)) {
@@ -1196,15 +1190,15 @@ class ModLib extends TikiLib
 
     function parse($info)
     {
-        global $prefs, $headerlib;
-		$tikilib = TikiLib::lib('tiki');
+        global $tikilib, $prefs, $headerlib;
+
         //allow for wikiLingo parsing, will only return 'y' if turned on AND enabled for this particular module
         if (isset($info['wikiLingo']) && $info['wikiLingo'] == 'y' && $prefs['feature_wikilingo'] == 'y') {
-	        //TODO: correct the paths for scripts and output them to the header
-	        $scripts = new WikiLingo\Utilities\Scripts();
-	        $parser = new WikiLingo\Parser($scripts);
-	        $info['data'] = $parser->parse($info['data']);
-	        $info['title'] = $parser->parse($info['title']);
+            //TODO: correct the paths for scripts and output them to the header
+            $scripts = new WikiLingo\Utilities\Scripts();
+            $parser = new WikiLingo\Parser($scripts);
+            $info['data'] = $parser->parse($info['data']);
+            $info['title'] = $parser->parse($info['title']);
 
 	        /* output css from wikiLingo in a literal so smarty doesn't throw up.
 	         * NOTE: this is not added to headerlib because it has already passed the opportunity to get more css
@@ -1260,7 +1254,7 @@ class ModLib extends TikiLib
      */
     function require_cache_build( $mod_reference, $cachefile )
 	{
-		$tikilib = TikiLib::lib('tiki');
+		global $tikilib;
 		return ! file_exists($cachefile)
 			|| ( $tikilib->now - filemtime($cachefile) ) >= $mod_reference['cache_time'];
 	}
@@ -1540,3 +1534,5 @@ function zone_is_empty($zoneName)
 	return true;
 }
 
+global $modlib;
+$modlib = new ModLib;

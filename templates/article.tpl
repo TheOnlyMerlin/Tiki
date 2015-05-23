@@ -9,7 +9,7 @@
 		{if $show_subtitle eq 'y' and $subtitle}
 			<div class="articlesubtitle">{$subtitle|escape}</div>
 		{/if}
-
+		
 		<span class="titleb">
 			{if $show_author eq 'y' && ($authorName or $author)}{tr}Author:{/tr} {if $authorName}{$authorName|escape}{else}{$author|username}{/if} - {/if}
 			{if $show_pubdate eq 'y' && $publishDate}{$publishDate|tiki_short_datetime:'Published At:'} - {/if}
@@ -23,12 +23,12 @@
 
 	{if $use_ratings eq 'y'}
 		<div class="articleheading">
-			{tr}Rating:{/tr}
+			{tr}Rating:{/tr} 
 			{repeat count=$rating}
-				{icon name='star'}
+				{icon _id='star' alt="{tr}star{/tr}"}
 			{/repeat}
 			{if $rating > $entrating}
-				{icon name='star-half'}
+				{icon _id='star_half' alt="{tr}half star{/tr}"}
 			{/if}
 			({$rating}/10)
 		</div>
@@ -41,74 +41,68 @@
 	{if $comment_can_rate_article eq 'y' and $prefs.article_user_rating eq 'y' && ($tiki_p_ratings_view_results eq 'y' or $tiki_p_admin eq 'y')}
 		{rating_result id=$articleId type=article}
 	{/if}
-
+	
 	{if $prefs.art_trailer_pos ne 'between'}{include file='article_trailer.tpl'}{/if}
 
 	<div class="articleheading">
 
-		<div class="{if $useImage eq 'y' and $hasImage eq 'n'}well well-sm{else}media-left{/if}">
-			{capture name=imgTitle}{if $show_image_caption eq 'y' and $image_caption}{$image_caption|escape}{elseif isset($topicName)}{tr}{$topicName}{/tr}{/if}{/capture}
-			{assign var="big_image" value=$prefs.art_header_text_pos eq 'below' && $list_image_x > 0}
-			{if $big_image}
-				<div class="imgbox" style="margin:auto; width:{$width}px">
-			{/if}
-
-			{* Show either a topic name, image OR a custom image (if there is a custom image or a topic). If a topic is set, link to it even if we show a custom image. *}
-			{if $topicId}
-				<a href="tiki-view_articles.php?topic={$topicId}" class="{if $useImage eq 'y' and $hasImage neq 'y'}{else}thumbnail{/if}{if $big_image} cboxElement{/if}" {if $isfloat eq 'y'} style="margin-right:20px; float:left;"{/if} title="{if $show_image_caption and $image_caption}{$image_caption|escape}{else}{tr}List all articles of this same topic:{/tr} {tr}{$topicName|escape}{/tr}{/if}">
-			{/if}
-			{if $useImage eq 'y'}
-				{if $hasImage eq 'y'}
-				{* display own article image *}{$style=''}
-				<img
-					alt="{$smarty.capture.imgTitle}"
-					src="article_image.php?image_type={if isset($preview) and $imageIsChanged eq 'y'}preview&amp;id={$previewId}{elseif isset($preview) and $subId}submission&amp;id={$subId}{else}article&amp;id={$articleId}{/if}"
-					{if $image_x > 0}{$style=$style|cat:"max-width:"|cat:$image_x|cat:"px;"}{/if}
-					{if $image_y > 0}{$style=$style|cat:"max-height:"|cat:$image_y|cat:"px;"}{/if} style="{$style}"
-				>
-				{else}
-				{* display just the topic name *}
-				{$topicName|escape}
+				<div class="garys">
+				{capture name=imgTitle}{if $show_image_caption eq 'y' and $image_caption}{$image_caption|escape}{elseif isset($topicName)}{tr}{$topicName}{/tr}{/if}{/capture}
+				{assign var="big_image" value=$prefs.art_header_text_pos eq 'below' && $list_image_x > 0}
+				{if $big_image}
+					 <div class="imgbox" style="margin:auto; width:{$width}px">
 				{/if}
-			{elseif $topicId}
-				{if $topics[$topicId].image_size > 0}
-					<img
-						{if $big_image}class="cboxElement"{/if}
-						alt="{tr}{$topicName}{/tr}"
-						src="article_image.php?image_type=topic&amp;id={$topicId}"
-					>
-				{else}
-					{tr}{$topics[$topicId].name|escape}{/tr}
+				
+				{* Show either a topic name, image OR a custom image (if there is a custom image or a topic). If a topic is set, link to it even if we show a custom image. *}
+				{if $topicId}
+					<a href="tiki-view_articles.php?topic={$topicId}" class="thumbnail{if $big_image} cboxElement{/if}" {if $isfloat eq 'y'} style="margin-right:4px;float:left;"{/if} title="{if $show_image_caption and $image_caption}{$image_caption|escape}{else}{tr}List all articles of this same topic:{/tr} {tr}{$topicName|escape}{/tr}{/if}">
 				{/if}
-			{/if}
-			{if $topicId}</a>{/if}
-
-			{if $big_image}
-				{if $show_image_caption eq 'y' and $image_caption || $image_x > 0}
-					<div class="center-block thumbcaption">
-						{if $image_x > 0}<div class="magnify"><a class="internal cboxElement" rel="box" href="article_image.php?image_type=article&amp;id={$articleId}">{icon name='view' title=$smarty.capture.imgTitle}</a></div>{/if}
+				{if $useImage eq 'y' and $hasImage eq 'y'}
+					{* display article image *}{$style=''}
+					<img 
+						 {*{if $big_image}class="cboxElement"{elseif $isfloat eq 'y'}{$style="margin-right:4px;float:left;"}{else}*}class="articleimage"{*{/if}*}
+						 alt="{$smarty.capture.imgTitle}"
+						 src="article_image.php?image_type={if isset($preview) and $imageIsChanged eq 'y'}preview&amp;id={$previewId}{elseif isset($preview) and $subId}submission&amp;id={$subId}{else}article&amp;id={$articleId}{/if}"
+						 {if $image_x > 0}{$style=$style|cat:"max-width:"|cat:$image_x|cat:"px;"}{/if}
+						 {if $image_y > 0}{$style=$style|cat:"max-height:"|cat:$image_y|cat:"px;"}{/if} style="{$style}">
+				{elseif $topicId}
+						{if $topics[$topicId].image_size > 0}
+							<img 
+								 {if $big_image}class="cboxElement"{*{elseif $isfloat eq 'y'}style="margin-right:4px;float:left;"*}{else}class="articleimage"{/if}
+								 alt="{tr}{$topicName}{/tr}"
+								 src="article_image.php?image_type=topic&amp;id={$topicId}">
+					{else}
+						{tr}{$topics[$topicId].name|escape}{/tr}
+					{/if}
+				{/if}
+				{if $topicId}</a>{/if}
+				
+				{if $big_image}
+					{if $show_image_caption eq 'y' and $image_caption || $image_x > 0}
+						<div class="center-block thumbcaption">
+						{if $image_x > 0}<div class="magnify"><a class="internal cboxElement" rel="box" href="article_image.php?image_type=article&amp;id={$articleId}">{icon _id='magnifier' title=$smarty.capture.imgTitle}</a></div>{/if}
 						{if $show_image_caption eq 'y' and $image_caption}{$image_caption|escape}{else}&nbsp;{/if}
+						</div>
+					{/if}
 					</div>
 				{/if}
-				</div> {* class="imgbox" *}
-			{/if}
-			{if $prefs.art_header_text_pos eq 'below' && $list_image_x > 0}
-				</div></div><div class="media-body">
-			{elseif $isfloat eq 'n' and $topics[$topicId].image_size > 0}
-				</div>
-				<div class="table-cell media-body">
-			{/if}
-			<div class="articleheadingtext">
-				{if $article_attributes}
-					<div class="articleattributes">
-						{foreach from=$article_attributes key=attname item=attvalue}
+				{if  $prefs.art_header_text_pos eq 'below' && $list_image_x > 0}
+					 </div></div><div class="garys">
+				{elseif $isfloat eq 'n' and $topics[$topicId].image_size > 0}
+					</div>
+					<div class="table-cell">
+				{/if}
+				<div class="articleheadingtext">
+					{if $article_attributes}
+						<div class="articleattributes">
+							{foreach from=$article_attributes key=attname item=attvalue}
 							{$attname|escape}: {$attvalue|escape}<br>
-						{/foreach}
-					</div>
-				{/if}
-				{$parsed_heading}
-			</div>
-		</div>
+							{/foreach}
+						</div>
+					{/if}
+					{$parsed_heading}
+				</div>
+				</div>
 
 	</div>
 
@@ -121,26 +115,18 @@
 				{tr}You do not have permission to read complete articles.{/tr}
 			</div>
 		{/if}
-
+	
 		{if $prefs.article_paginate eq 'y' and $pages > 1}
 			<div align="center">
-				<a href="{$articleId|sefurl:article:with_next}page={$first_page}" class="tips" title=":{tr}First page{/tr}">
-					{icon name="backward_step"}
-				</a>
+				<a href="{$articleId|sefurl:article:with_next}page={$first_page}"><img src='img/icons/resultset_first.png' alt="{tr}First page{/tr}" title="{tr}First page{/tr}" width='16' height='16'></a>
 
-				<a href="{$articleId|sefurl:article:with_next}page={$prev_page}" class="tips" title=":{tr}Previous page{/tr}">
-					{icon name='backward'}
-				</a>
+				<a href="{$articleId|sefurl:article:with_next}page={$prev_page}">{icon _id='resultset_previous' alt="{tr}Previous page{/tr}"}</a>
 
 				<small>{tr}page:{/tr}{$pagenum}/{$pages}</small>
 
-				<a href="{$articleId|sefurl:article:with_next}page={$next_page}" class="tips" title=":{tr}Next page{/tr}">
-					{icon name='forward'}
-				</a>
+				<a href="{$articleId|sefurl:article:with_next}page={$next_page}">{icon _id='resultset_next' alt="{tr}Next page{/tr}"}</a>
 
-				<a href="{$articleId|sefurl:article:with_next}page={$last_page}" class="tips" title=":{tr}Last page{/tr}">
-					{icon name='forward_step'}
-				</a>
+				<a href="{$articleId|sefurl:article:with_next}page={$last_page}"><img src='img/icons/resultset_last.png' alt="{tr}Last page{/tr}" title="{tr}Last page{/tr}" width='16' height='16'></a>
 			</div>
 		{/if}
 	</div>
@@ -154,7 +140,7 @@
 	{if isset($related_articles)}
 		<div class="related_articles">
 			<h4>{tr}Related content:{/tr}</h4>
-			<ul>
+			<ul>	
 				{foreach from=$related_articles item=related}
 					<li>{self_link articleId=$related.articleId}{$related.name}{/self_link}</li>
 				{/foreach}

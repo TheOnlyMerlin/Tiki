@@ -1,27 +1,15 @@
 {* $Id$ *}
-{title admpage="articles" url="tiki-article_types.php" help=Articles}{tr}Article Types{/tr}{/title}
-<div class="t_navbar margin-bottom-md">
-	{if $tiki_p_admin eq 'y' or $tiki_p_admin_cms eq 'y'}
-		{button href="tiki-list_articles.php" class="btn btn-default btn-sm" _text="{tr}List Articles{/tr}"}
-		{button href="tiki-admin_topics.php" class="btn btn-default btn-sm" _text="{tr}Article Topics{/tr}"}
-	{/if}
-</div>
-<form enctype="multipart/form-data" action="tiki-article_types.php" method="post" role="form" class="form">
-	<h2>{tr}Add Type{/tr}</h2>
-		<div class="form-group">
-			<div class="input-group">
-				<input type="text" name="new_type" class="form-control" placeholder="{tr}Add article type{/tr}...">
-				<div class="input-group-btn">
-					<button type="submit" class="btn btn-primary" name="add_type">{tr}Add{/tr}</button>
-				</div>
-			</div>
-		</div>
-	<h2>{tr}Types{/tr}</h2>
-	{section name=user loop=$types}
-		<h3>{tr}{$types[user].type|escape}{/tr}</h3>
-		<a class="link" href="tiki-view_articles.php?type={$types[user].type|escape:url}">{tr}View articles with this type{/tr}</a>
-			<div class="table-responsive article-types">
-				<table class="table normal table-striped table-hover">
+{title admpage="articles" url="tiki-article_types.php" help=Articles}{tr}Admin Article Types{/tr}{/title}
+
+{tabset name='tabs_articletypes'}
+	{tab name="{tr}Article Types{/tr}"}
+        <h2>{tr}Article Types{/tr}</h2>
+	<form enctype="multipart/form-data" action="tiki-article_types.php" method="post">
+		{section name=user loop=$types}
+			<h3>{tr}{$types[user].type|escape}{/tr}</h3>
+			<a class="link" href="tiki-view_articles.php?type={$types[user].type|escape:url}">{tr}View articles with this type{/tr}</a>
+            <div class="table-responsive article-types">
+            <table class="table normal">
 				<tr>
 					<th>{tr}Articles{/tr}</th>
 					<th>{tr}Author rating{/tr}</th>
@@ -31,10 +19,11 @@
 					<th>{tr}Comments{/tr}</th>
 					<th>{tr}Comment can rate article{/tr}</th>
 					<th>{tr}Show image{/tr}</th>
-					<th>{tr}Show profile picture{/tr}</th>
+					<th>{tr}Show avatar{/tr}</th>
 					<th>{tr}Show author{/tr}</th>
 					<th>{tr}Show publish date{/tr}</th>
 				</tr>
+
 				<input type="hidden" name="type_array[{$types[user].type|escape}]">
 				<tr>
 					<td class="integer">{$types[user].article_cnt}</td>
@@ -78,7 +67,7 @@
 					<th>{tr}Show source{/tr}</th>
 					<th>{tr}Show image caption{/tr}</th>
 					<th>{tr}Creator can edit{/tr}</th>
-					<th colspan="2"></th>
+					<th colspan="2">{tr}Action{/tr}</th>
 				</tr>
 				<tr>
 					<td class="checkbox-cell">
@@ -106,43 +95,50 @@
 						<input type="checkbox" name="creator_edit[{$types[user].type|escape}]" {if $types[user].creator_edit eq 'y'}checked="checked"{/if}>
 					</td>
 					<td class="action" colspan="2">
-						{if $types[user].article_cnt eq 0}
-							<a class="tips" title=":{tr}Remove{/tr}" href="tiki-article_types.php?remove_type={$types[user].type|escape:url}">
-								{icon name='remove'}
-							</a>
-						{else}
-							&nbsp;
-						{/if}
+						<center>
+							{if $types[user].article_cnt eq 0}
+								<a class="link" href="tiki-article_types.php?remove_type={$types[user].type|escape:url}">{icon _id='cross' alt="{tr}Remove{/tr}"}</a>
+							{else}
+								&nbsp;
+							{/if}
+						</center>
 					</td>
+			</tr>
+		</table>
+        </div>
+		{if $prefs.article_custom_attributes eq 'y'}
+            <div class="table-responsive article-types">
+            <table class="table normal">
+				<tr>
+					<th>{tr}Custom attribute{/tr}</th>
+					<th>{tr}Action{/tr}</th>
+				</tr>
+
+				{foreach from=$types[user].attributes item=att key=attname}
+					<tr>
+						<td>{$attname|escape}</td>
+						<td class="action">
+							<a class="link" href="tiki-article_types.php?att_type={$types[user].type|escape:url}&att_remove={$att.relationId|escape:url}">
+								{icon _id='cross' alt="{tr}Remove{/tr}"}
+							</a>
+						</td>
+					</tr>
+				{/foreach}
+				<tr>
+					<td><input type="text" name="new_attribute[{$types[user].type|escape}]" value="" maxlength="56"></td>
+					<td>&nbsp;</td>
 				</tr>
 			</table>
-		</div>
-		{if $prefs.article_custom_attributes eq 'y'}
-			<div class="table-responsive article-types">
-				<table class="table normal table-striped table-hover">
-					<tr>
-						<th>{tr}Custom attribute{/tr}</th>
-						<th></th>
-					</tr>
-					{foreach from=$types[user].attributes item=att key=attname}
-						<tr>
-							<td>{$attname|escape}</td>
-							<td class="action">
-								<a class="tips" title=":{tr}Remove{/tr}" href="tiki-article_types.php?att_type={$types[user].type|escape:url}&att_remove={$att.relationId|escape:url}">
-									{icon name='remove' alt="{tr}Remove{/tr}"}
-								</a>
-							</td>
-						</tr>
-					{/foreach}
-					<tr>
-						<td><input type="text" name="new_attribute[{$types[user].type|escape}]" value="" maxlength="56"></td>
-						<td>&nbsp;</td>
-					</tr>
-				</table>
-			</div>
+            </div>
 		{/if}
-		<input type="submit" class="btn btn-primary btn-sm" name="update_type" value="{tr}Save{/tr}"><br>
+		<input type="submit" class="btn btn-default btn-sm" name="update_type" value="{tr}Save{/tr}"><br>
 		<hr>
 		<br>
-	{/section}
-</form>
+		{/section}
+	{/tab}
+	{tab name="{tr}Add Type{/tr}"}
+        <h2>{tr}Add article type{/tr}</h2>
+		<input type="text" name="new_type"><input type="submit" class="btn btn-default btn-sm" name="add_type" value="{tr}Add{/tr}">
+	{/tab}
+	</form>
+{/tabset}

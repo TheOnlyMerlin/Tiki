@@ -9,8 +9,8 @@
 	{assign var='title' value="{tr}Admin Tracker:{/tr} "|cat:$tracker_info.name|escape}
 	<div class="navbar">
 		<div class="btn-group">
-			<a href="{service controller=tracker action=add_field trackerId=$trackerId}" class="btn btn-default add-field">{icon name="create"} {tr}Add Field{/tr}</a>
-			<a href="{bootstrap_modal controller=tracker action=import_fields trackerId=$trackerId}" class="btn btn-default">{icon name="import"} {tr}Import Fields{/tr}</a>
+			<a href="{service controller=tracker action=add_field trackerId=$trackerId}" class="btn btn-default add-field">{glyph name="plus"} {tr}Add Field{/tr}</a>
+			<a href="{service controller=tracker action=import_fields trackerId=$trackerId modal=1}" class="btn btn-default" data-toggle="modal" data-target="#bootstrap-modal">{glyph name="import"} {tr}Import Fields{/tr}</a>
 		</div>
 		{include file="tracker_actions.tpl"}
 	</div>
@@ -51,7 +51,7 @@
 			</div>
 		</div>
 	</form>
-
+	
 	{jq}
 		var trackerId = {{$trackerId|escape}};
 		$('.save-fields').submit(function () {
@@ -67,14 +67,12 @@
 			}
 
 			if ($(form.action).val() === 'export_fields') {
-				var url = $.serviceUrl({ controller: 'tracker', action: 'export_fields' });
-				var target = $('.modal.fade:not(.in)').first();
-				$.post(url, $(form).serialize() + '&modal=1', function (data) {
-					$(".modal-content", target).html(data);
-					target.modal();
+				$.openModal({
+					remote: $.service('tracker', 'export_fields') + '?' + $(form).serialize() + '&modal=1',
+					open: function () {
+						$('textarea', this).select();
+					}
 				});
-				return false;
-
 			} else {
 				$.ajax($(form).attr('action'), {
 					type: 'POST',

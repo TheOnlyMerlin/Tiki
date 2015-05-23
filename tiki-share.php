@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -24,7 +24,8 @@ if (empty($_REQUEST['report'])) {
 }
 
 // email related:
-
+// include_once ('lib/registration/registrationlib.php'); // done in the email function
+//include_once ('lib/webmail/tikimaillib.php'); // done in the email function
 $smarty->assign('do_email', (isset($_REQUEST['do_email'])?$_REQUEST['do_email']:true));
 if (empty($_REQUEST['report']) || $_REQUEST['report'] != 'y') {
 	// twitter/facebook related

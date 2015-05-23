@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -7,12 +7,6 @@
 
 //this script may only be included - so its better to die if called directly.
 $access->check_script($_SERVER['SCRIPT_NAME'], basename(__FILE__));
-
-
-// need to rebuild because they were created in tiki-setup and just removed due to clear cache
-// we need to create upfront in case codemirror is used later on. 
-require_once("lib/codemirror_tiki/tiki_codemirror.php");
-createCodemirrorModes();
 
 // Javascript auto-detection
 //   (to be able to generate non-javascript code if there is no javascript, when noscript tag is not useful enough)
@@ -22,41 +16,26 @@ $js_cookie = getCookie('javascript_enabled');
 
 if ($prefs['disableJavascript'] == 'y' ) {
 	$prefs['javascript_enabled'] = 'n';
-} elseif (!empty($js_cookie)) {
+} elseif ($js_cookie) {
 	// Update the pref with the cookie value
-	$prefs['javascript_enabled'] = 'y';
-	setCookieSection('javascript_enabled_detect', '', '', time() - 3600);	// remove the test cookie
+	$prefs['javascript_enabled'] = $js_cookie;
 } else {
-	if (isset($_COOKIE['runs_before_js_detect'])) {	// pre-tiki 14 method detected, delete both tests and reload
-		setcookie('runs_before_js_detect', '', time() - 3600);
-		setcookie('javascript_enabled_detect', '', time() - 3600);
-		$access->redirect();
-	}
-	$prefs['javascript_enabled'] = '';
+	$prefs['javascript_enabled'] = 'y';
 }
 
-// the first and second time, we should not trust the absence of javascript_enabled cookie yet,
-// as it could be a redirection and the js will not get a chance to run yet, so we wait until the third run,
-// assuming that js is on before then
-$javascript_enabled_detect = getCookie('javascript_enabled_detect', '', '0');
+if ( $prefs['javascript_enabled'] != 'y' && $prefs['disableJavascript'] != 'y' ) {
+	// Set the cookie to 'y', through javascript (will override the above cookie set to 'n' and sent by PHP / HTTP headers) - duration: approx. 1 year
+	$headerlib->add_js("setCookie('javascript_enabled', 'y');", 0);
 
-if ( $prefs['javascript_enabled'] === '' && $prefs['disableJavascript'] != 'y' && $javascript_enabled_detect < 3) {
-	// Set the cookie to 'y', through javascript - expires: approx. 1 year
-	$prefs['javascript_enabled'] = 'y';											// temporarily enable to we output the test js
-	$plus_one_year = $tikilib->now + 365 * 24 * 3600;
-	$headerlib->add_js("setCookieBrowser('javascript_enabled', 'y', '', new Date({$plus_one_year}000));", 0);		// setCookieBrowser does not use the tiki_cookie_jar
-
-	if ( strpos($_SERVER['PHP_SELF'], 'tiki-download') === false &&
-			strpos($_SERVER['PHP_SELF'], 'tiki-ajax_services.php') === false &&
-			strpos($_SERVER['PHP_SELF'], 'tiki-jsmodule.php') === false &&
-			strpos($_SERVER['PHP_SELF'], 'tiki-jsplugin.php') === false &&
-			strpos($_SERVER['PHP_SELF'], 'tiki-install.php') === false) {
-
-		$javascript_enabled_detect++;
-		setCookieSection('javascript_enabled_detect', $javascript_enabled_detect, '', $plus_one_year);
+	// the first and second time, we should not trust the absence of javascript_enabled cookie yet, as it could be a redirection and the js will not get a chance to run yet, so we wait until the third run, assuming that js is on before then
+	$runs_before_js_detect = getCookie('runs_before_js_detect');
+	if ( $runs_before_js_detect === null ) {
+		$prefs['javascript_enabled'] = 'y';
+		setCookieSection('runs_before_js_detect', '1', null, $tikilib->now + 365 * 24 * 3600);
+	} elseif ( $runs_before_js_detect > 0 ) {
+		$prefs['javascript_enabled'] = 'y';
+		setCookieSection('runs_before_js_detect', $runs_before_js_detect - 1, null, $tikilib->now + 365 * 24 * 3600);
 	}
-} else if ($js_cookie !== 'y') {	// no js cookie detected
-	$prefs['javascript_enabled'] = 'n';
 }
 
 if ($prefs['javascript_enabled'] == 'n') {
@@ -77,35 +56,30 @@ if ($prefs['javascript_enabled'] == 'y') {	// we have JavaScript
 	if (file_exists('lang/' . $prefs['language'] . '/language.js')) {
 		// after the usual lib includes (up to 10) but before custom.js (50)
 		$headerlib
-			->add_jsfile('lang/' . $prefs['language'] . '/language.js')
+			->add_jsfile('lang/' . $prefs['language'] . '/language.js', 25)
 			->add_js("$.lang = '" . $prefs['language'] . "';");
 	}
 
-	
-	/** Use custom.js in lang dir if there **/
-	$language = $prefs['language'];
-	if (is_file("lang/$language/custom.js")) {
-		TikiLib::lib('header')->add_jsfile("lang/$language/custom.js");	// before styles custom.js
-	}
-	
-	if (!empty($tikidomain) && is_file("lang/$language/$tikidomain/custom.js")) {		// Note: lang tikidomain dirs not created automatically
-		TikiLib::lib('header')->add_jsfile("lang/$language/$tikidomain/custom.js");
-	}
-	
-	
-	/** Use custom.js in themes or options dir if there **/
-	$themelib = TikiLib::lib('theme');
-	$custom_js = $themelib->get_theme_path($prefs['theme'], $prefs['theme_option'], 'custom.js');
+	/** Use custom.js in styles or options dir if there **/
+	$custom_js = $tikilib->get_style_path($prefs['style'], $prefs['style_option'], 'custom.js');
 	if (!empty($custom_js)) {
-		$headerlib->add_jsfile($custom_js);
-	} else {															// there's no custom.js in the current theme or option
-		$custom_js = $themelib->get_theme_path('', '', 'custom.js');		// so use one in the root of /themes if there
+		$headerlib->add_jsfile($custom_js, 50);
+	} else {															// there's no custom.js in the current style or option
+		$custom_js = $tikilib->get_style_path('', '', 'custom.js');		// so use one in the root of /styles if there
 		if (!empty($custom_js)) {
-			$headerlib->add_jsfile($custom_js);
+			$headerlib->add_jsfile($custom_js, 50);
 		}
 	}
 
+	/** Use custom.js in lang dir if there **/
+	$language = $prefs['language'];
+	if (is_file("lang/$language/custom.js")) {
+		TikiLib::lib('header')->add_jsfile("lang/$language/custom.js", 40);	// before styles custom.js
+	}
 
+	if (!empty($tikidomain) && is_file("lang/$language/$tikidomain/custom.js")) {		// Note: lang tikidomain dirs not created automatically
+		TikiLib::lib('header')->add_jsfile("lang/$language/$tikidomain/custom.js", 40);
+	}
 
 	// setup timezone array
 	$tz = TikiDate::getTimezoneAbbreviations();
@@ -180,6 +154,8 @@ jqueryTiki.sefurl = '.($prefs['feature_sefurl'] == 'y' ? 'true' : 'false') . ';
 jqueryTiki.ajax = '.($prefs['feature_ajax'] == 'y' ? 'true' : 'false') . ';
 jqueryTiki.syntaxHighlighter = '.($prefs['feature_syntax_highlighter'] == 'y' ? 'true' : 'false') . ';
 jqueryTiki.chosen = '.($prefs['jquery_ui_chosen'] == 'y' ? 'true' : 'false') . ';
+jqueryTiki.selectmenu = '.($prefs['jquery_ui_selectmenu'] == 'y' ? 'true' : 'false') . ';
+jqueryTiki.selectmenuAll = '.($prefs['jquery_ui_selectmenu_all'] == 'y' ? 'true' : 'false') . ';
 jqueryTiki.mapTileSets = ' . json_encode($tikilib->get_preference('geo_tilesets', array('openstreetmap'), true)) . ';
 jqueryTiki.infoboxTypes = ' . json_encode(Services_Object_Controller::supported()) . ';
 jqueryTiki.googleStreetView = '.($prefs['geo_google_streetview'] == 'y' ? 'true' : 'false') . ';
@@ -196,8 +172,24 @@ jqueryTiki.useInlineComment = '.($prefs['feature_inline_comments'] === 'y' ? 'tr
 jqueryTiki.helpurl = "' . ($prefs['feature_help'] === 'y' ? $prefs['helpurl'] : '') . '";
 ';	// NB replace "normal" speeds with int to workaround issue with jQuery 1.4.2
 
+	if ($prefs['mobile_feature'] === 'y' && $prefs['mobile_mode'] === 'y') {
+		$js .= '
+// overrides for prefs for jq in mobile mode
+jqueryTiki.ui = false;
+jqueryTiki.ui_theme = "";
+jqueryTiki.tooltips = false;
+jqueryTiki.autocomplete = false;
+jqueryTiki.superfish = false;
+jqueryTiki.colorbox = false;
+jqueryTiki.tablesorter = false;
+';
+		if ($prefs['feature_ajax'] !== 'y') {
+			$headerlib->add_js_config('var mobile_ajaxEnabled = false;');
+		}
+	}
+
 	if ($prefs['feature_calendar'] === 'y') {
-		$calendarlib = TikiLib::lib('calendar');
+		global $calendarlib; include_once('lib/calendar/calendarlib.php');
 		$firstDayofWeek = $calendarlib->firstDayofWeek();
 		$js .= "jqueryTiki.firstDayofWeek = $firstDayofWeek;\n";
 	}
@@ -221,7 +213,7 @@ var syntaxHighlighter = {
 	}
 
 	$headerlib->add_js($js);
-	
+
 	if (isset($_SERVER['HTTP_USER_AGENT']) && strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE 6') !== false) {
 
 		$smarty->assign('ie6', true);
@@ -240,7 +232,7 @@ var syntaxHighlighter = {
 				$fixondom = "DD_belatedPNG.fixPng($fixondom); // list of HTMLDomElements to fix separated by commas (default is none)";
 			}
 			$scriptpath = 'lib/iepngfix/DD_belatedPNG-min.js';
-			$headerlib->add_jsfile($scriptpath, true);
+			$headerlib->add_jsfile($scriptpath, 200);
 			$headerlib->add_js(
 <<<JS
 DD_belatedPNG.fix('$fixoncss'); // list of CSS selectors to fix separated by commas (default is set to fix sitelogo)

@@ -1,5 +1,5 @@
 {title help='WebHelp' url='tiki-create_webhelp.php'}{tr}Create WebHelp{/tr}{/title}
-{if $generated eq 'y'}
+{if  $generated eq 'y'}
 	<div class="t_navbar">
 		<span class="button">
 			<a class="link" href="whelp/{$dir}/index.html">{tr}View generated WebHelp.{/tr}</a>
@@ -31,5 +31,5 @@
 			<td>&nbsp;</td>
 			<td><input type="submit" class="btn btn-default btn-sm" {if !$struct_info.pageName}disabled=disabled" {/if}name="create" value="{tr}Create{/tr}"></td>
 		</tr>
-	</table>
+	</table>  
 </form>

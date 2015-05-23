@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -35,10 +35,7 @@ function wikiplugin_registermemberpayment_info()
 
 function wikiplugin_registermemberpayment($data, $params, $offset)
 {
-	global $user, $tiki_p_payment_view;
-	$headerlib = TikiLib::lib('header');
-	$smarty = TikiLib::lib('smarty');
-
+	global $headerlib, $user, $smarty, $tiki_p_payment_view;
 	static $i;
 	$i++;
 

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -107,15 +107,6 @@ class Tracker_Field_Factory
 		if (isset($this->infoMap[$type])) {
 			return $this->infoMap[$type];
 		}
-	}
-	
-	/**
-	 * Get a list of field types by their letter type and the corresponding class name
-	 * @Example 'q' => 'Tracker_Field_AutoIncrement', ... 
-	 * @return array letterType => classname
-	 */
-	function getTypeMap() {
-		return $this->typeMap;
 	}
 
 	function getHandler($field_info, $itemData = array())

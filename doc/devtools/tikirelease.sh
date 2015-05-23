@@ -1,5 +1,5 @@
 #!/bin/sh -x
-# (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+# (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 #
 # All Rights Reserved. See copyright.txt for details and a complete list of authors.
 # Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -57,7 +57,7 @@ svn export $SVNROOT/$RELTAG $MODULE-$VER
 if [ -f $MODULE-$VER/composer.json ]; then
 	wget -N http://getcomposer.org/composer.phar
 	cd $MODULE-$VER
-	php ../composer.phar install --prefer-dist 2>&1 | sed '/Warning: Ambiguous class resolution/d'
+	php ../composer.phar install
 	cd ..
 fi
 

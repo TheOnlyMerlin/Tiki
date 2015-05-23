@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -54,16 +54,15 @@ function filter_languages_from_pivot($langInfo)
  */
 function module_translation($mod_reference, $module_params)
 {
-	global $pivotLanguage, $prefs, $page;
-	$smarty = TikiLib::lib('smarty');
-	$tikilib = TikiLib::lib('tiki');
+	global $pivotLanguage, $tikilib, $smarty, $prefs, $page, $_REQUEST;
 
-	//are we arriving from the edit page?
-	if (isset($module_params['from_edit_page']) && $module_params['from_edit_page'] == 'y') {
-		$smarty->assign('from_edit_page', 'y');
-	} else {
-		$smarty->assign('from_edit_page', 'n');
-	}
+
+//are we arriving from the edit page?
+		if (isset($module_params['from_edit_page']) && $module_params['from_edit_page'] == 'y') {
+			$smarty->assign('from_edit_page', 'y');
+		} else {
+			$smarty->assign('from_edit_page', 'n');
+		}
 
 	if ((!$page or $page == '') and isset($_REQUEST['page'])) {
 		$page = $_REQUEST['page'];

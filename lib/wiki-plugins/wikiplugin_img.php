@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -320,18 +320,6 @@ function wikiplugin_img_info()
 				'description' => tra('Alternate text that displays when image does not load. Set to "Image" by default.'),
 				'default' => 'Image',
 			),
-			'responsive' => array(
-				'required' => false,
-				'name' => tra('Responsive image'),
-				'filter' => 'text',
-				'description' => tra('Determines whether the image has the img-responsive class: y/n '),
-				'advanced' => false,
-				'default' => 'y',				
-				'options' => array(
-					array('text' => tra('Yes'), 'value' => 'y'),
-					array('text' => tra('No'), 'value' => 'n'),
-				),
-			),	
 			'default' => array(
 				'required' => false,
 				'name' => tra('Default config settings'),
@@ -412,7 +400,6 @@ function wikiplugin_img( $data, $params )
 	$imgdata['title'] = '';
 	$imgdata['metadata'] = '';
 	$imgdata['alt'] = '';
-	$imgdata['responsive'] = 'y';
 	$imgdata['default'] = '';
 	$imgdata['mandatory'] = '';
 	$imgdata['fromFieldId'] = 0;		// "private" params set by Tracker_Field_Files
@@ -761,7 +748,7 @@ function wikiplugin_img( $data, $params )
 					$imgalthumb == true;
 				}
 				$height = $imgdata['height'];
-				if (empty($imgdata['width']) && $fheight > 1) {
+				if (empty($imgdata['width']) && $fheight > 0) {
 					$width = floor($height * $fwidth / $fheight);
 				} else {
 					$width = $imgdata['width'];
@@ -775,7 +762,7 @@ function wikiplugin_img( $data, $params )
 					$imgalthumb == true;
 				}
 				$width =  $imgdata['width'];
-				if (empty($imgdata['height']) && $fwidth > 1) {
+				if (empty($imgdata['height']) && $fwidth > 0) {
 					$height = floor($width * $fheight / $fwidth);
 				} else {
 					$height = $imgdata['height'];
@@ -837,9 +824,8 @@ function wikiplugin_img( $data, $params )
 					$imgdata_dim .= ' height="' . $height . '"';
 				} elseif (!empty($height) && (empty($urly[0]) && empty($urlthumb) && empty($urlscale[0]))) {
 					$src .= '&y=' . $height;
+					$imgdata_dim = '';
 					$width = $fwidth;
-					$imgdata_dim .= ' width="' . $width . '"';
-					$imgdata_dim .= ' height="' . $height . '"';
 				}
 			} else {
 				$imgdata_dim = '';
@@ -859,7 +845,7 @@ function wikiplugin_img( $data, $params )
 			}
 			if (!empty($width)) {
 				$imgdata_dim .= ' width="' . $width . '"';
-			} elseif (empty($height)) {
+			} else {
 				$imgdata_dim = '';
 				$width = $fwidth;
 			}
@@ -884,11 +870,7 @@ function wikiplugin_img( $data, $params )
 	} else {
 		$tagName = 'img';
 		$replimg = '<img src="' . $src . '" ';
-		if ($imgdata['responsive'] == 'y') {
-			$imgdata['class'] .= ' regImage img-responsive pluginImg' . $imgdata['fileId'];
-		} else {
-			$imgdata['class'] .= ' regImage pluginImg' . $imgdata['fileId'];
-		}
+		$imgdata['class'] .= ' regImage pluginImg' . $imgdata['fileId'];
 		$imgdata['class'] = trim($imgdata['class']);
 	}
 
@@ -1038,17 +1020,7 @@ function wikiplugin_img( $data, $params )
 			if ($imgdata['thumb'] == 'mousesticky') {
 				$popup_params['sticky'] = true;
 			}
-			
-			if ($imgdata['thumb'] == 'mouseover') {
-				$popup_params['trigger'] = 'hover';
-			} 
-			// avoid big images will not be closeable on hover. Fallback to require a click to open and a second click somewhere to close.
-			if ($fwidth > 400 || $fheight > 400) {
-				$popup_params['trigger'] = 'focus';
-			}
-			
 			$smarty->loadPlugin('smarty_function_popup');
-			
 			$mouseover = ' ' . smarty_function_popup($popup_params, $smarty);
 		} else {
 			if (!empty($imgdata['fileId']) && $imgdata['thumb'] != 'download' && empty($urldisp)) {
@@ -1099,16 +1071,8 @@ function wikiplugin_img( $data, $params )
 
 		$link = filter_out_sefurl($link);
 
-		// For ImgPlugin alignment 
-		$position = "";
-		if($imgdata['imalign'] == "right"){
-			$style ='style="float: right;"';
-		}elseif($imgdata['imalign'] == "center"){
-			$position = "center";
-		}
-
 		//Final link string
-		$replimg = "\r\t" . '<a href="' . $link . '"' . $style . ' class="internal" position="' . $position . '"' . $linkrel . $imgtarget . $linktitle
+		$replimg = "\r\t" . '<a href="' . $link . '" class="internal"' . $linkrel . $imgtarget . $linktitle
 					. $mouseover . '>' ."\r\t\t" . $replimg . "\r\t" . '</a>';
 		if ($imgdata['thumb'] == 'mouseover') {
 			$mouseevent = "$('.internal').popover({ 
@@ -1281,15 +1245,11 @@ function wikiplugin_img( $data, $params )
 				} else {
 					$styleboxplus = $styleboxinit;
 				}
-			} elseif ($boxwidth === 2) {
-				$styleboxplus = $alignbox . ' width: auto;';
 			} else {
 				$styleboxplus = $alignbox . ' width:' . $boxwidth . 'px;';
 			}
 		} elseif (!empty($imgdata['button']) || !empty($imgdata['desc']) || !empty($imgdata['metadata'])) {
-			$styleboxplus = ' width:' . $boxwidth . 'px;';
-		} elseif ($boxwidth === 2) {
-			$styleboxplus = ' width: auto;';
+		$styleboxplus = ' width:' . $boxwidth . 'px;';
 		}
 	}
 	if ( !empty($styleboxplus)) {

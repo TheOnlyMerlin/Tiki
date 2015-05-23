@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -31,13 +31,26 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 
 function smarty_block_textarea($params, $content, $smarty, $repeat)
 {
-	global $prefs, $is_html, $tiki_p_admin;
-	$headerlib = TikiLib::lib('header');
+    static $included=false;
+	global $prefs, $headerlib, $smarty, $is_html, $tiki_p_admin;
 
 	if ( $repeat ) {
 		return;
 	}
-
+    if (!$included) {
+        $headerlib->add_js(
+            <<<JS
+                function GetCurrentEditorAreaId(ob){
+        var p;
+        p=ob.parentNode;
+        while(p.className != "edit-zone"){p=p.parentNode;}
+        areaid=p.id.substring(10);
+        //alert ("areaid="+areaid);
+        return areaid;
+    }
+JS
+        );
+    }
 	// some defaults
 	$params['_toolbars'] = isset($params['_toolbars']) ? $params['_toolbars'] : 'y';
 	if ( $prefs['javascript_enabled'] != 'y') {
@@ -88,7 +101,7 @@ function smarty_block_textarea($params, $content, $smarty, $repeat)
 		$params['section'] = $section ? $section: 'wiki page';
 	}
 	$html = '';
-    $html .= '<input type="hidden" name="mode_wysiwyg" value="" /><input type="hidden" name="mode_normal" value="" />';
+    if (!$included) $html .= '<input type="hidden" name="mode_wysiwyg" value="" /><input type="hidden" name="mode_normal" value="" />';
 
 	$auto_save_referrer = '';
 	$auto_save_warning = '';
@@ -101,9 +114,9 @@ function smarty_block_textarea($params, $content, $smarty, $repeat)
 		$remrepeat = false;
 		$html .= smarty_block_remarksbox(
 			array( 'type'=>'warning', 'title'=>tra('Warning')),
-			'<p>' . tra('This edit session will expire in') .
+			tra('This edit session will expire in') .
 			' <span id="edittimeout">' . (ini_get('session.gc_maxlifetime') / 60) .'</span> '. tra('minutes') . '. ' .
-			tra('<strong>Preview</strong> (if available) or <strong>Save</strong> your work to restart the edit session timer') . '</p>',
+			tra('<strong>Preview</strong> (if available) or <strong>Save</strong> your work to restart the edit session timer'),
 			$smarty,
 			$remrepeat
 		)."\n";
@@ -119,6 +132,7 @@ function smarty_block_textarea($params, $content, $smarty, $repeat)
 
 	if ($prefs['feature_ajax'] == 'y' && $prefs['ajax_autosave'] == 'y' && $params['_simple'] == 'n' && $params['autosave'] == 'y') {
 		// retrieve autosaved content
+		require_once("lib/ajax/autosave.php");
 		$smarty->loadPlugin('smarty_block_self_link');
 		$auto_save_referrer = TikiLib::lib('autosave')->ensureReferrer();
 		if (empty($_REQUEST['autosave'])) {
@@ -158,7 +172,9 @@ function smarty_block_textarea($params, $content, $smarty, $repeat)
 
             $ckoptions = $wysiwyglib->setUpEditor($params['_is_html'], $as_id, $params, $auto_save_referrer);
 
-			$html .= '<input type="hidden" name="wysiwyg" value="y" />';
+            if (!$included) {
+                $html .= '<input type="hidden" name="wysiwyg" value="y" />';
+            }
             $html .= '<textarea class="wikiedit" name="'.$params['name'].'" id="'.$as_id.'" style="visibility:hidden;';	// missing closing quotes, closed in condition
 
             if (empty($params['cols'])) {
@@ -291,7 +307,8 @@ JS
 		$smarty->assignByRef('textareadata', $content);
 		$html .= $smarty->fetch('wiki_edit.tpl');
 
-		$html .= "\n".'<input type="hidden" name="wysiwyg" value="n" />';
+        if (!$included)
+            $html .= "\n".'<input type="hidden" name="wysiwyg" value="n" />';
 
 	}	// wiki or wysiwyg
 
@@ -325,7 +342,7 @@ function editTimerTick() {
 			minutes = seconds / 60;
 			edittimeout.text( minutes );
 		} else if ( seconds <= 0 ) {
-			edittimeout.parents('.alert:first p').text('".addslashes(tra('Your edit session has expired'))."');
+			edittimeout.parents('.rbox-data:first').text('".addslashes(tra('Your edit session has expired'))."');
 		}
 	}
 
@@ -420,6 +437,7 @@ function admintoolbar() {
 		}
 		$headerlib->add_js($js_editconfirm);
 	}	// end if ($params['_simple'] == 'n')
+    $included=true;
 
 	return $auto_save_warning.$html;
 }

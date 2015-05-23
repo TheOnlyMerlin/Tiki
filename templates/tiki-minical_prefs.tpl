@@ -2,7 +2,7 @@
 
 {include file='tiki-mytiki_bar.tpl'}
 
-<div class="t_navbar margin-bottom-md">
+<div class="t_navbar form-group">
 	{button href="tiki-minical.php#add" class="btn btn-default" _text="{tr}Add{/tr} "}
 	{button href="tiki-minical_prefs.php" class="btn btn-default" _text="{tr}Prefs{/tr}"}
 	{button href="tiki-minical.php?view=daily" class="btn btn-default" _text="{tr}Daily{/tr}"}
@@ -67,12 +67,12 @@
 			<td>
 				<input type="submit" class="btn btn-primary btn-sm" name="save" value="{tr}Save{/tr}">
 			</td>
-		</tr>
+		</tr>	
 	</table>
 </form>
 <a name="import"></a>
 <h2>{tr}Import CSV file{/tr}</h2>
-<form enctype="multipart/form-data" action="tiki-minical_prefs.php" method="post">
+<form  enctype="multipart/form-data"  action="tiki-minical_prefs.php" method="post">
 	<table class="formcolor">
 		<tr>
 			<td>{tr}Upload file:{/tr}</td>
@@ -84,7 +84,7 @@
 </form>
 
 <h2>{tr}Admin Topics{/tr}</h2>
-<form enctype="multipart/form-data" action="tiki-minical_prefs.php" method="post">
+<form  enctype="multipart/form-data"  action="tiki-minical_prefs.php" method="post">
 	<table class="formcolor">
 		<tr>
 			<td>{tr}Name:{/tr}</td><td><input type="text" name="name"></td>
@@ -135,7 +135,6 @@
 						</tr>
 					{/if}
 				{/section}
-			</table>
-		</div>
-	</div>
+		</table>
+	</div></div>
 {/if}

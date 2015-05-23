@@ -4,16 +4,16 @@
 
 <form action="tiki-admin.php?page=copyright" method="post">
 	<input type="hidden" name="ticket" value="{$ticket|escape}">
-	<div class="row">
-		<div class="form-group col-lg-12 clearfix">
-			<div class="pull-right">
-				<input type="submit" class="btn btn-primary btn-sm" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}">
-			</div>
-		</div>
-	</div>
+    <div class="row">
+        <div class="form-group col-lg-12 clearfix">
+            <div class="pull-right">
+                <input type="submit" class="btn btn-primary btn-sm" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}">
+            </div>
+        </div>
+    </div>
 
-	<input type="hidden" name="setcopyright" />
-
+    <input type="hidden" name="setcopyright" />
+	
 	<fieldset class="table">
 		<legend>{tr}Activate the feature{/tr}</legend>
 		{preference name=feature_copyright visible="always"}
@@ -35,12 +35,12 @@
 		</div>
 	</fieldset>
 
-	<br>{* I cheated. *}
-	<div class="row">
-		<div class="form-group col-lg-12 clearfix">
-			<div class="text-center">
-				<input type="submit" class="btn btn-primary btn-sm" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}">
-			</div>
-		</div>
-	</div>
+    <br>{* I cheated. *}
+    <div class="row">
+        <div class="form-group col-lg-12 clearfix">
+            <div class="text-center">
+                <input type="submit" class="btn btn-primary btn-sm" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}">
+            </div>
+        </div>
+    </div>
 </form>

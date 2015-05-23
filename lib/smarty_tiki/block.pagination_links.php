@@ -1,5 +1,5 @@
  <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -206,7 +206,7 @@ function smarty_block_pagination_links($params, $url, $smarty, &$repeat)
 
 	if ( $params['cant'] > 0 ) {
 		$make_prevnext_link = function ($url, $content, $params, $class = 'prevnext', $linkoffset) {
-			$smarty = TikiLib::lib('smarty');
+			global $smarty;
 
 			$link = '<a class="'.$class.'" ';
 			$url = TikiLib::tikiUrlOpt($url);
@@ -238,7 +238,7 @@ function smarty_block_pagination_links($params, $url, $smarty, &$repeat)
 		if ( ($prefs['direct_pagination'] == 'y' || $prefs['nextprev_pagination'] === 'y') && $nb_pages > 1) {
 			$html .= '<ul class="pagination">';
 
-			if ( $prefs['nextprev_pagination'] != 'n' || $params['show_numbers'] !== 'y' ) {
+			if ( $prefs['nextprev_pagination'] != 'n' ) {
 				if ($params['offset'] == 0) {
 					$html .= '<li class="disabled"><span>&laquo;</span></li>';
 				} else {
@@ -273,14 +273,14 @@ function smarty_block_pagination_links($params, $url, $smarty, &$repeat)
 						$html .= '<li>' . $make_prevnext_link($url.$url_k, $k+1, $params, 'prevnext', $url_k_val) . '</li>';
 						$last_dots = false;
 					} elseif ( ! $last_dots ) {
-						$html .= '<li class="disabled"><span>&hellip;</span>';
+						$html .= '<li class="disabled">&hellip;</span>';
 						$last_dots = true;
 					}
 				}
 			}
 
-			if ( $prefs['nextprev_pagination'] != 'n' || $params['show_numbers'] !== 'y' ) {
-				if ($params['offset'] + $params['step'] >= $params['cant']) {
+			if ( $prefs['nextprev_pagination'] != 'n' ) {
+				if ($next_offset_val >= $params['cant'] - 1) {
 					$html .= '<li class="disabled"><span>&raquo;</span></li>';
 				} else {
 					$html .= '<li>' . $make_prevnext_link($url . $next_offset, '&raquo;', $params, 'prevnext next', $next_offset_val) . '</li>';

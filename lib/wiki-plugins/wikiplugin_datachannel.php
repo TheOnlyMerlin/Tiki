@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -14,7 +14,7 @@ function wikiplugin_datachannel_info()
 		'description' => tra('Display a form to access data channels.'),
 		'prefs' => array('wikiplugin_datachannel'),
 		'body' => tra('List of fields to display. One field per line. Comma delimited: fieldname,label') . '<br /><br />' .
-					tra('To use values from other forms on the same page as parameters for the data-channel use "fieldname, external=fieldid" or "fieldname, external=fieldid,text" can be used where a value is simply listed on the same page where each value has the fieldid as an html id tag.') . ' ' .
+					tra('To use values from other forms on the same page as parameters for the data-channel use "fieldname, external=fieldid".') . ' ' .
 					tra('Where "fieldid" is the id (important) of the external input to use, and "fieldname" is the name of the parameter in the data-channel') . ' . ' .
 					tra('To use fixed hidden preset values use "fieldname, hidden=value."'),
 		'extraparams' => true,
@@ -124,9 +124,7 @@ function wikiplugin_datachannel_info()
 function wikiplugin_datachannel( $data, $params )
 {
 	static $execution = 0;
-	global $prefs;
-	$smarty = TikiLib::lib('smarty');
-	$headerlib = TikiLib::lib('header');
+	global $prefs, $smarty, $headerlib;
 	$executionId = 'datachannel-exec-' . ++$execution;
 
 	if (isset($params['price']) && $params['price'] == 0) {
@@ -152,26 +150,14 @@ function wikiplugin_datachannel( $data, $params )
 				$moreparts = explode('=', $parts[1], 2);
 				$moreparts = array_map('trim', $moreparts);
 				if (count($moreparts) < 2) {
-					$moreparts[1] = $parts[0];	// no fieldid or modifier supplied so use same as fieldname
-				} else {  // look for a modifier eg 'text' after the fieldid
-					$extmodifier = '';
-					$yetmoreparts = explode(',', $moreparts[1], 2);
-					$yetmoreparts = array_map('trim', $yetmoreparts);
-					if (count($yetmoreparts) > 1) {
-						$extmodifier = $yetmoreparts[1];
-						$moreparts[1] = $yetmoreparts[0];
-					}
+					$moreparts[1] = $parts[0];	// no fieldname supplied so use same as fieldid
 				}
 				$fields[ $parts[0] ] = $moreparts[0];
 				if ($params['array_values'] === 'y' && preg_match('/[\[\]\.#\=]/', $moreparts[1])) {	// check for [ ] = or . which would be a jQuery selector
 					// might select multiple inputs
 					$js .= "\n".'$("input[name=\'' . $parts[0] . '\']").val( unescape($("' . $moreparts[1] . '").serialize()));';
-				} else {	// otherwise it's an id but could have a modifier eg 'text'
-					if ($extmodifier === 'text') {   // if modifier is text use text instead of val in the js
-						$js .= "\n".'$("input[name=\'' . $parts[0] . '\']").val( unescape($("#' . $moreparts[1] . '").text()));';
-					} else {
-						$js .= "\n".'$("input[name=\'' . $parts[0] . '\']").val( unescape($("#' . $moreparts[1] . '").val()));';
-					}
+				} else {	// otherwise it's an id
+					$js .= "\n".'$("input[name=\'' . $parts[0] . '\']").val( unescape($("#' . $moreparts[1] . '").val()));';
 				}
 				$inputfields[ $parts[0] ] = 'external';
 			} elseif (strpos($parts[1], 'hidden') === 0) {
@@ -255,7 +241,7 @@ function wikiplugin_datachannel( $data, $params )
 			}
 			
 			if (!empty($params['price'])) {
-				$paymentlib = TikiLib::lib('payment');
+				global $paymentlib; require_once 'lib/payment/paymentlib.php';
 				$desc = empty($params['paymentlabel'])? tr('Datachannel:', $prefs['site_language']) . ' ' . $params['channel'] : $params['paymentlabel'];
 				$posts = array();
 				foreach ($input as $key => $post) {
@@ -290,9 +276,6 @@ function wikiplugin_datachannel( $data, $params )
 				if (!empty($params['debug']) && $params['debug'] === 'y') {
 					$installer->setDebug();
 				}
-
-				$installer->disablePrefixDependencies();
-
 				$params['emptyCache'] = isset($params['emptyCache']) ? $params['emptyCache'] : 'all';
 				$success = $installer->install($profile, $params['emptyCache']) && $success;
 

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -8,10 +8,10 @@
 /**
  * Handler class for dropdown
  * 
- * Letter key: ~d~ ~D~ ~R~ ~M~
+ * Letter key: ~d~ ~D~
  *
  */
-class Tracker_Field_Dropdown extends Tracker_Field_Abstract implements Tracker_Field_Synchronizable, Search_FacetProvider_Interface, Tracker_Field_Exportable, Tracker_Field_Filterable
+class Tracker_Field_Dropdown extends Tracker_Field_Abstract implements Tracker_Field_Synchronizable, Search_FacetProvider_Interface
 {
 	public static function getTypes()
 	{
@@ -119,7 +119,7 @@ class Tracker_Field_Dropdown extends Tracker_Field_Abstract implements Tracker_F
 
 		return array(
 			'value' => $value,
-			'selected' => $value === '' ? array() : explode(',', $value),
+			'selected' => $value === '' ? [] : explode(',', $value),
 			'possibilities' => $this->getPossibilities(),
 		);
 	}
@@ -254,83 +254,6 @@ class Tracker_Field_Dropdown extends Tracker_Field_Abstract implements Tracker_F
 				->setLabel($this->getConfiguration('name'))
 				->setRenderMap($this->getPossibilities())
 		);
-	}
-
-	function getTabularSchema()
-	{
-		$schema = new Tracker\Tabular\Schema($this->getTrackerDefinition());
-
-		$permName = $this->getConfiguration('permName');
-		$name = $this->getConfiguration('name');
-
-		$possibilities = $this->getPossibilities();
-		$invert = array_flip($possibilities);
-
-		$schema->addNew($permName, 'code')
-			->setLabel($name)
-			->setRenderTransform(function ($value) {
-				return $value;
-			})
-			->setParseIntoTransform(function (& $info, $value) use ($permName) {
-				$info['fields'][$permName] = $value;
-			})
-			;
-
-		$schema->addNew($permName, 'text')
-			->setLabel($name)
-			->addIncompatibility($permName, 'code')
-			->addQuerySource('text', "tracker_field_{$permName}_text")
-			->setRenderTransform(function ($value, $extra) use ($possibilities) {
-				if (isset($possibilities[$value])) {
-					return $possibilities[$value];
-				}
-			})
-			->setParseIntoTransform(function (& $info, $value) use ($permName, $invert) {
-				if (isset($invert[$value])) {
-					$info['fields'][$permName] = $invert[$value];
-				}
-			})
-			;
-
-		return $schema;
-	}
-
-	function getFilterCollection()
-	{
-		$filters = new Tracker\Filter\Collection($this->getTrackerDefinition());
-		$permName = $this->getConfiguration('permName');
-		$name = $this->getConfiguration('name');
-		$baseKey = $this->getBaseKey();
-
-		$possibilities = $this->getPossibilities();
-
-		$filters->addNew($permName, 'dropdown')
-			->setLabel($name)
-			->setControl(new Tracker\Filter\Control\DropDown("tf_{$permName}_dd", $possibilities))
-			->setApplyCondition(function ($control, Search_Query $query) use ($baseKey) {
-				$value = $control->getValue();
-
-				if ($value) {
-					$query->filterIdentifier($value, $baseKey);
-				}
-			});
-
-		$filters->addNew($permName, 'multiselect')
-			->setLabel($name)
-			->setControl(new Tracker\Filter\Control\MultiSelect("tf_{$permName}_ms", $possibilities))
-			->setApplyCondition(function ($control, Search_Query $query) use ($permName, $baseKey) {
-				$values = $control->getValues();
-
-				if (! empty($values)) {
-					$sub = $query->getSubQuery("ms_$permName");
-
-					foreach ($values as $v) {
-						$sub->filterIdentifier((string) $v, $baseKey);
-					}
-				}
-			});
-
-		return $filters;
 	}
 }
 

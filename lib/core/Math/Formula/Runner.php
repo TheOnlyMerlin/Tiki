@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -142,18 +142,7 @@ class Math_Formula_Runner
 	{
 		return function ($functionName) use ($prefix) {
 			$filter = new Zend_Filter_Word_DashToCamelCase;
-
-			// Workaround Deprecated errors showing from Zend lib
-			if (error_reporting() & E_DEPRECATED) {
-				$old_error_reporting = error_reporting();
-				error_reporting($old_error_reporting - E_DEPRECATED);
-			}
-
 			$ucname = $filter->filter(ucfirst($functionName));
-
-			if (isset($old_error_reporting)) {
-				error_reporting($old_error_reporting);
-			}
 
 			$class = $prefix . $ucname;
 

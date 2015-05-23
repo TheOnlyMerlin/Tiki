@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -146,8 +146,8 @@ if (!empty($_REQUEST['action'])) {
  */
 function refreshWebmail($destDiv = 'mod-webmail_inbox', $inStart = 0, $inReload = false)
 {
-	global $user, $prefs, $module_params;
-	$smarty = TikiLib::lib('smarty');
+	global $user, $smarty, $prefs, $module_params;
+
 	if (isset($_SESSION['webmailinbox'][$destDiv]['module_params'])) {
 		$module_params = $_SESSION['webmailinbox'][$destDiv]['module_params'];
 	} else {

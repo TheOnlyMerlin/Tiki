@@ -1,19 +1,8 @@
 
-{* Use css menus as fallback for item dropdown action menu if javascript is not being used *}
-{if $prefs.javascript_enabled !== 'y'}
-	{$js = 'n'}
-	{$libeg = '<li>'}
-	{$liend = '</li>'}
-{else}
-	{$js = 'y'}
-	{$libeg = ''}
-	{$liend = ''}
-{/if}
-
 <div align="center">
 	{include file='find.tpl'}
-
-	<table class="table normal table-striped table-hover">
+	
+	<table class="table normal">
 		<tr>
 			<th>
 				<a href="{$url}?nlId={$nlId}&amp;{$cur}_offset={$offset}&amp;{$bak}_offset={$offset_bak}&amp;{$cur}_sort_mode={if $sort_mode eq 'name_desc'}name_asc{else}name_desc{/if}&amp;{$bak}_sort_mode={$sort_mode_bak}&amp;cookietab={$tab}">{tr}Newsletter{/tr}</a>
@@ -30,7 +19,7 @@
 				</th>
 			{/if}
 			<th>{tr}Errors{/tr}</th>
-			<th></th>
+			<th>{tr}Action{/tr}</th>
 		</tr>
 
 		{section name=user loop=$channels}
@@ -55,47 +44,22 @@
 					{/if}
 				</td>
 				<td class="action">
-					{capture name=sent_actions}
-						{strip}
-							{if $url == "tiki-newsletter_archives.php"}
-								{$libeg}<a href="{$url}?{if $nl_info}nlId={$channels[user].nlId}&amp;{/if}offset={$offset}&amp;sort_mode={$sort_mode}&amp;editionId={$channels[user].editionId}">
-									{icon name='view' _menu_text='y' _menu_icon='y' alt="{tr}View{/tr}"}
-								</a>{$liend}
-							{/if}
-							{if ($channels[user].tiki_p_send_newsletters eq 'y') or ($channels[user].tiki_p_admin_newsletters eq 'y')}
-								{if $view_editions eq 'y'}
-									{$libeg}<a href="tiki-send_newsletters.php?nlId={$channels[user].nlId}&amp;editionId={$channels[user].editionId}&amp;resend=1">
-										{icon name='redo' _menu_text='y' _menu_icon='y' alt="{tr}Resend newsletter{/tr}"}
-									</a>{$liend}
-								{else}
-									{$libeg}<a class="tips" title="{tr}Send Newsletter{/tr}" href="tiki-send_newsletters.php?nlId={$channels[user].nlId}&amp;editionId={$channels[user].editionId}">
-										{icon name='envelope' _menu_text='y' _menu_icon='y' alt="{tr}Send newsletter{/tr}"}
-									</a>{$liend}
-								{/if}
-							{else}
-								&nbsp;
-							{/if}
-							{if $channels[user].tiki_p_admin_newsletters eq 'y'}
-								{$libeg}<a class="link" href="{$url}?nlId={$channels[user].nlId}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$channels[user].editionId}" title="{tr}Remove{/tr}">
-									{icon name='remove' _menu_text='y' _menu_icon='y' alt="{tr}Remove{/tr}"}
-								</a>{$liend}
-							{else}
-								&nbsp;
-							{/if}
-						{/strip}
-					{/capture}
-					{if $js === 'n'}<ul class="cssmenu_horiz"><li>{/if}
-					<a
-						class="tips"
-						title="{tr}Actions{/tr}"
-						href="#"
-						{if $js === 'y'}{popup delay="0|2000" center=true text=$smarty.capture.sent_actions|escape:"javascript"|escape:"html"}{/if}
-						style="padding:0; margin:0; border:0"
-					>
-						{icon name='wrench'}
-					</a>
-					{if $js === 'n'}
-						<ul class="dropdown-menu" role="menu">{$smarty.capture.sent_actions}</ul></li></ul>
+					{if $url == "tiki-newsletter_archives.php"}
+						<a class="link" href="{$url}?{if $nl_info}nlId={$channels[user].nlId}&amp;{/if}offset={$offset}&amp;sort_mode={$sort_mode}&amp;editionId={$channels[user].editionId}">{icon _id='magnifier' alt="{tr}View{/tr}"}</a>
+					{/if}
+					{if ($channels[user].tiki_p_send_newsletters eq 'y') or ($channels[user].tiki_p_admin_newsletters eq 'y')}
+						{if $view_editions eq 'y'}
+							<a class="link" href="tiki-send_newsletters.php?nlId={$channels[user].nlId}&amp;editionId={$channels[user].editionId}&amp;resend=1">{icon _id='email_edit' alt="{tr}Resend Newsletter{/tr}"}</a>
+						{else}
+							<a class="link" href="tiki-send_newsletters.php?nlId={$channels[user].nlId}&amp;editionId={$channels[user].editionId}">{icon _id='email' alt="{tr}Send Newsletter{/tr}"}</a>
+						{/if}
+					{else}
+						&nbsp;
+					{/if}
+					{if $channels[user].tiki_p_admin_newsletters eq 'y'}
+						<a class="link" href="{$url}?nlId={$channels[user].nlId}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$channels[user].editionId}" title="{tr}Remove{/tr}">{icon _id='cross' alt="{tr}Remove{/tr}"}</a>
+					{else}
+						&nbsp;
 					{/if}
 				</td>
 			</tr>

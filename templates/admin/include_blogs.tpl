@@ -2,31 +2,31 @@
 
 <form action="tiki-admin.php?page=blogs" method="post">
 	<input type="hidden" name="ticket" value="{$ticket|escape}">
-	<div class="row">
-		<div class="form-group col-lg-12 clearfix">
+    <div class="row">
+        <div class="form-group col-lg-12 clearfix">
 			<a role="button" class="btn btn-default btn-sm" href="tiki-list_blogs.php" title="{tr}List{/tr}">
-				{icon name="list"} {tr}Blogs{/tr}
+				{glyph name="list"} {tr}Blogs{/tr}
 			</a>
-			<div class="pull-right">
-				<input type="submit" class="btn btn-primary btn-sm" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}">
-			</div>
-		</div>
-	</div>
+            <div class="pull-right">
+                <input type="submit" class="btn btn-primary btn-sm" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}">
+            </div>
+        </div>
+    </div>
 
 	{tabset name="admin_blogs"}
 		{tab name="{tr}General Settings{/tr}"}
-			<h2>{tr}General Settings{/tr}</h2>
-
+            <h2>{tr}General Settings{/tr}</h2>
+		
 			<fieldset class="table">
 				<legend>{tr}Activate the feature{/tr}</legend>
 				{preference name=feature_blogs visible="always"}
 			</fieldset>
-
+			
 			<fieldset class="table">
 				<legend>{tr}Plugins{/tr}</legend>
 				{preference name=wikiplugin_bloglist}
 			</fieldset>
-
+		
 			{preference name=home_blog}
 			<fieldset>
 				<legend>
@@ -42,7 +42,7 @@
 				{/if}
 
 				{preference name=geo_locate_blogpost}
-				{preference name=feature_sefurl_title_blog}
+				{preference name=feature_sefurl_title_blog}				
 			</fieldset>
 
 			<fieldset>
@@ -64,9 +64,9 @@
 			</fieldset>
 
 		{/tab}
-
+	
 		{tab name="{tr}Blogs Listings{/tr}"}
-			<h2>{tr}Blogs Listings{/tr}</h2>
+            <h2>{tr}Blogs Listings{/tr}</h2>
 			<input type="hidden" name="bloglistconf" />
 			{preference name=blog_list_order}
 
@@ -86,12 +86,11 @@
 			</fieldset>
 		{/tab}
 	{/tabset}
-
-	<div class="row">
-		<div class="form-group col-lg-12 clearfix">
-			<div class="text-center">
-				<input type="submit" class="btn btn-primary btn-sm" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}">
-			</div>
-		</div>
-	</div>
+    <div class="row">
+        <div class="form-group col-lg-12 clearfix">
+            <div class="text-center">
+                <input type="submit" class="btn btn-primary btn-sm" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}">
+            </div>
+        </div>
+    </div>
 </form>

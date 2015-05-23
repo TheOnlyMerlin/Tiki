@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,7 +11,7 @@
  * Letter key: ~f~
  *
  */
-class Tracker_Field_DateTime extends Tracker_Field_Abstract implements Tracker_Field_Synchronizable, Tracker_Field_Exportable, Tracker_Field_Filterable
+class Tracker_Field_DateTime extends Tracker_Field_Abstract implements Tracker_Field_Synchronizable
 {
 	public static function getTypes()
 	{
@@ -106,7 +106,7 @@ class Tracker_Field_DateTime extends Tracker_Field_Abstract implements Tracker_F
 			}
 
 			if ($context['list_mode'] == 'csv') {
-				return $tikilib->get_short_datetime($value);
+				return $tikilib->get_short_datetime($value, false);
 			}
 
 			$current = $tikilib->get_short_date($tikilib->now);
@@ -115,7 +115,7 @@ class Tracker_Field_DateTime extends Tracker_Field_Abstract implements Tracker_F
 			if ($date == $current && $prefs['tiki_same_day_time_only'] == 'y' ) {
 				return $tikilib->get_short_time($value);
 			} else {
-				return $tikilib->get_short_datetime($value);
+				return $tikilib->get_short_datetime($value, false);
 			}
 		}
 	}
@@ -154,43 +154,5 @@ class Tracker_Field_DateTime extends Tracker_Field_Abstract implements Tracker_F
 		);
 	}
 
-	function getTabularSchema()
-	{
-		$permName = $this->getConfiguration('permName');
-		$type = $this->getOption('datetime');
-
-		$schema = new Tracker\Tabular\Schema($this->getTrackerDefinition());
-
-		$label = $this->getConfiguration('name');
-		$helper = new Tracker\Tabular\Schema\DateHelper($label);
-		$helper->setupUnix($schema->addNew($permName, 'unix'));
-
-		if ($type == 'd') {
-			$helper->setupFormat('Y-m-d', $schema->addNew($permName, 'yyyy-mm-dd'));
-		} else {
-			$helper->setupFormat('Y-m-d H:i:s', $schema->addNew($permName, 'yyyy-mm-dd hh:mm:ss'));
-		}
-
-		return $schema;
-	}
-
-	function getFilterCollection()
-	{
-		$filters = new Tracker\Filter\Collection($this->getTrackerDefinition());
-		$permName = $this->getConfiguration('permName');
-		$name = $this->getConfiguration('name');
-		$baseKey = $this->getBaseKey();
-
-		$filters->addNew($permName, 'range')
-			->setLabel($name)
-			->setControl(new Tracker\Filter\Control\DateRange("tf_{$permName}_range"))
-			->setApplyCondition(function ($control, Search_Query $query) use ($baseKey) {
-				if ($control->hasValue()) {
-					$query->filterRange($control->getFrom(), $control->getTo(), $baseKey);
-				}
-			});
-
-		return $filters;
-	}
 }
 

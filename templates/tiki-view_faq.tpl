@@ -4,7 +4,7 @@
 <div class="t_navbar btn-group form-group">
 	{self_link print='y'}{icon _id='printer' align='right' hspace='1' alt="{tr}Print{/tr}"}{/self_link}
 	{button href="tiki-list_faqs.php" class="btn btn-default" _text="{tr}List FAQs{/tr}"}
-
+	
 	{if $tiki_p_admin_faqs eq 'y'}
 		{button href="tiki-list_faqs.php?faqId=$faqId" class="btn btn-default" _text="{tr}Edit this FAQ{/tr}"}
 	{/if}
@@ -59,11 +59,10 @@
 	{/if}
 
 	{if $prefs.feature_faq_comments == 'y'
-		&& (($tiki_p_read_comments == 'y'
-		&& $comments_cant != 0)
+			&& (($tiki_p_read_comments == 'y'
+			&& $comments_cant != 0)
 		|| $tiki_p_post_comments == 'y'
-		|| $tiki_p_edit_comments == 'y')
-	}
+		|| $tiki_p_edit_comments == 'y')}
 		{include file='comments_button.tpl'}
 	{/if}
 </div>
@@ -105,19 +104,19 @@
 		</form>
 		{if count($suggested) != 0}
 			<br>
-			<div class="table-responsive">
-				<table class="table normal">
-					<tr>
-						<th>{tr}Suggested questions{/tr}</th>
-					</tr>
+            <div class="table-responsive">
+			<table class="table normal">
+				<tr>
+					<th>{tr}Suggested questions{/tr}</th>
+				</tr>
 
-					{section name=ix loop=$suggested}
-						<tr>
-							<td class="text">{$suggested[ix].question}</td>
-						</tr>
-					{/section}
-				</table>
-			</div>
+				{section name=ix loop=$suggested}
+					<tr>
+						<td class="text">{$suggested[ix].question}</td>
+					</tr>
+				{/section}
+			</table>
+            </div>
 		{/if}
 	</div>
 {/if}
@@ -137,9 +136,9 @@
 && ($tiki_p_read_comments == 'y'
 || $tiki_p_post_comments == 'y'
 || $tiki_p_edit_comments == 'y')}
-	<div id="comment-container" data-target="{service controller=comment action=list type=faq objectId=$faqId}"></div>
-	{jq}
-		var id = '#comment-container';
-		$(id).comment_load($(id).data('target'));
-	{/jq}
+<div id="comment-container" data-target="{service controller=comment action=list type=faq objectId=$faqId}"></div>
+{jq}
+	var id = '#comment-container';
+	$(id).comment_load($(id).data('target'));
+{/jq}
 {/if}

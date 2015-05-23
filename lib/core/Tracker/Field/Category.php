@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,7 +11,7 @@
  * Letter key: ~e~
  *
  */
-class Tracker_Field_Category extends Tracker_Field_Abstract implements Tracker_Field_Synchronizable, Tracker_Field_Exportable, Tracker_Field_Filterable
+class Tracker_Field_Category extends Tracker_Field_Abstract implements Tracker_Field_Synchronizable
 {
 	public static function getTypes()
 	{
@@ -105,17 +105,13 @@ class Tracker_Field_Category extends Tracker_Field_Abstract implements Tracker_F
 		$key = 'ins_' . $this->getConfiguration('fieldId');
 		$parentId = $this->getOption('parentId');
 
-		if (isset($requestData[$key])) {
-			if (!is_array($requestData[$key])) {
-				$selected = array($requestData[$key]);
-			} else {
-				$selected = $requestData[$key];
-			}
+		if (isset($requestData[$key]) && is_array($requestData[$key])) {
+			$selected = $requestData[$key];
 		} else if (isset($requestData['cat_managed'])) {
 			$selected = array();
 		} elseif ($this->getItemId() && !isset($requestData[$key])) {
 			// only show existing category of not receiving request, otherwise might be uncategorization in progress
-			$selected = $this->getCategories($this->getItemId());
+			$selected = $this->getCategories();
 		} else {
 			$selected = TikiLib::lib('categ')->get_default_categories();
 
@@ -199,17 +195,6 @@ class Tracker_Field_Category extends Tracker_Field_Abstract implements Tracker_F
 
 	public function handleSave($value, $oldValue)
 	{
-		if (is_array($value) && isset($value['incremental'])) {
-			// List of updates coming from import (see addCheckboxColumn)
-			$list = $value['incremental'];
-			$value = $this->getCategories($this->getItemId());
-
-			$value = array_diff($value, $list['-']);
-			$value = array_merge($value, $list['+']);
-			$value = array_unique($value);
-			$value = implode(',', $value);
-		}
-
 		return array(
 			'value' => $value,
 		);
@@ -283,9 +268,9 @@ class Tracker_Field_Category extends Tracker_Field_Abstract implements Tracker_F
 		return $cache[$fieldId];
 	}
 
-	private function getCategories($itemId)
+	private function getCategories()
 	{
-		return TikiLib::lib('categ')->get_object_categories('trackeritem', $itemId);
+		return TikiLib::lib('categ')->get_object_categories('trackeritem', $this->getItemId());
 	}
 
 	public function importRemote($value)
@@ -332,262 +317,6 @@ class Tracker_Field_Category extends Tracker_Field_Abstract implements Tracker_F
 		}
 
 		return implode(',', $parts);
-	}
-
-	function getTabularSchema()
-	{
-		$schema = new Tracker\Tabular\Schema($this->getTrackerDefinition());
-
-		$permName = $this->getConfiguration('permName');
-		$name = $this->getConfiguration('name');
-		$type = $this->getOption('inputtype');
-
-		$sourceCategories = $this->getApplicableCategories();
-		$applicable = $this->getIds($sourceCategories);
-		$invert = array_flip(array_map(function ($item) {
-			return $item['name'];
-		}, $sourceCategories));
-
-		$matching = function ($extra) use ($applicable) {
-			static $lastId, $categories;
-
-			if ($lastId == $extra['itemId']) {
-				return $categories;
-			}
-
-			if (isset($extra['categories'])) {
-				// Directly from search results
-				$categories = array_intersect($extra['categories'], $applicable);
-			} elseif (isset($extra['itemId'])) {
-				// Not loaded, fetch list
-				$categories = $this->getCategories($extra['itemId']);
-				$categories = array_intersect($categories, $applicable);
-			} else {
-				$categories = [];
-			}
-
-			$lastId = $extra['itemId'];
-			return $categories;
-		};
-
-		if ($type == 'd' || $type == 'radio') {
-
-			// Works for single selection only
-			$schema->addNew($permName, 'id')
-				->setLabel($name)
-				->addQuerySource('itemId', 'object_id')
-				->addQuerySource('categories', 'categories')
-				->setRenderTransform(function ($value, $extra) use ($matching) {
-					$categories = $matching($extra);
-					if (count($categories) > 1) {
-						return '#invalid';
-					} else {
-						return reset($categories);
-					}
-				})
-				->setParseIntoTransform(function (& $info, $value) use ($permName) {
-					if ($value != '#invalid') {
-						$info['fields'][$permName] = $value;
-					}
-				})
-				;
-
-			$schema->addNew($permName, 'name')
-				->setLabel($name)
-				->addIncompatibility($permName, 'id')
-				->addQuerySource('itemId', 'object_id')
-				->addQuerySource('categories', 'categories')
-				->setRenderTransform(function ($value, $extra) use ($matching, $sourceCategories) {
-					$categories = $matching($extra);
-					if (count($categories) > 1) {
-						return '#invalid';
-					} else {
-						$first = reset($categories);
-						if (isset($sourceCategories[$first])) {
-							return $sourceCategories[$first]['name'];
-						}
-					}
-				})
-				->setParseIntoTransform(function (& $info, $value) use ($permName, $invert) {
-					if (isset($invert[$value])) {
-						$info['fields'][$permName] = $invert[$value];
-					}
-				})
-				;
-		} else {
-
-			// Handle multi-selection fields
-			$schema->addNew($permName, 'multi-id')
-				->setLabel($name)
-				->addQuerySource('itemId', 'object_id')
-				->addQuerySource('categories', 'categories')
-				->setRenderTransform(function ($value, $extra) use ($matching) {
-					$categories = $matching($extra);
-					return implode(';', $categories);
-				})
-				->setParseIntoTransform(function (& $info, $value) use ($permName) {
-					$values = explode(';', $value);
-					$values = array_map('trim', $values);
-					$info['fields'][$permName] = implode(',', array_filter($values));
-				})
-				;
-
-			$schema->addNew($permName, 'multi-name')
-				->setLabel($name)
-				->addIncompatibility($permName, 'multi-id')
-				->addQuerySource('itemId', 'object_id')
-				->addQuerySource('categories', 'categories')
-				->setRenderTransform(function ($value, $extra) use ($matching, $sourceCategories) {
-					$categories = $matching($extra);
-					$categories = array_map(function ($cat) use ($sourceCategories) {
-						if (isset($sourceCategories[$cat])) {
-							return $sourceCategories[$cat]['name'];
-						}
-					}, $categories);
-					
-					return implode('; ', array_filter($categories));
-				})
-				->setParseIntoTransform(function (& $info, $value) use ($permName, $invert) {
-					$values = explode(';', $value);
-					$values = array_map('trim', $values);
-					$values = array_map(function ($name) use ($invert) {
-						if (isset($invert[$name])) {
-							return $invert[$name];
-						}
-					}, $values);
-
-					$info['fields'][$permName] = implode(',', array_filter($values));
-				})
-				;
-		}
-
-		foreach ($sourceCategories as $cat) {
-			$this->addCheckboxColumn($schema, $matching, $permName, $cat['categId'], $cat['name']);
-		}
-
-		return $schema;
-	}
-
-	private function addCheckboxColumn($schema, $matching, $permName, $categId, $categName)
-	{
-		$smarty = TikiLib::lib('smarty');
-		$smarty->loadPlugin('smarty_function_icon');
-
-		$schema->addNew($permName, 'icon-' . $categId)
-			->setLabel($categName)
-			->addQuerySource('itemId', 'object_id')
-			->addQuerySource('categories', 'categories')
-			->setPlainReplacement('check-' . $categId)
-			->setRenderTransform(function ($value, $extra) use ($smarty, $matching, $categId) {
-				$categories = $matching($extra);
-
-				return in_array($categId, $categories) ? smarty_function_icon(['name' => 'success'], $smarty) : '';
-			})
-			;
-		$schema->addNew($permName, 'check-' . $categId)
-			->setLabel($categName)
-			->addIncompatibility($permName, 'id')
-			->addIncompatibility($permName, 'name')
-			->addIncompatibility($permName, 'multi-id')
-			->addIncompatibility($permName, 'multi-name')
-			->addQuerySource('itemId', 'object_id')
-			->addQuerySource('categories', 'categories')
-			->setRenderTransform(function ($value, $extra) use ($matching, $categId) {
-				$categories = $matching($extra);
-
-				return in_array($categId, $categories) ? 'X' : '';
-			})
-			->setParseIntoTransform(function (& $info, $value) use ($permName, $categId) {
-				if (isset($info['fields'][$permName]) && ! isset($info['fields'][$permName]['incremental'])) {
-					// Looks like an other field took this over
-					// Do nothing
-					return;
-				}
-
-				// Queue updates to be handled by handleSave as we do not know
-				// which item we are operating on at this stage
-				if (! isset($info['fields'][$permName])) {
-					$info['fields'][$permName]['incremental'] = [
-						'+' => [],
-						'-' => [],
-					];
-				}
-
-				$value = trim($value);
-				if ($value == 'X' || $value == 'x') {
-					$info['fields'][$permName]['incremental']['+'][] = $categId;
-				} else {
-					$info['fields'][$permName]['incremental']['-'][] = $categId;
-				}
-			});
-			;
-	}
-
-	function getFilterCollection()
-	{
-		$collection = new Tracker\Filter\Collection($this->getTrackerDefinition());
-		$permName = $this->getConfiguration('permName');
-		$name = $this->getConfiguration('name');
-		$baseKey = $this->getBaseKey();
-
-		$sourceCategories = $this->getApplicableCategories();
-		$options = array_map(function ($i) {
-			return $i['relativePathString'];
-		}, $sourceCategories);
-
-		$collection->addNew($permName, 'dropdown')
-			->setLabel($name)
-			->setControl(new Tracker\Filter\Control\DropDown("tf_{$permName}_dd", $options))
-			->setApplyCondition(function ($control, Search_Query $query) use ($baseKey) {
-				$value = $control->getValue();
-
-				if ($value) {
-					$query->filterCategory((string) $value);
-				}
-			})
-			;
-
-		$controls = [
-			'any-of' => new Tracker\Filter\Control\MultiSelect("tf_{$permName}_anyd", $options),
-			'any-of-checkboxes' => new Tracker\Filter\Control\InlineCheckboxes("tf_{$permName}_anyc", $options),
-		];
-		foreach ($controls as $key => $control) {
-			$collection->addNew($permName, $key)
-				->setLabel(tr('%0 (any of)', $name))
-				->setControl($control)
-				->setApplyCondition(function ($control, Search_Query $query) use ($baseKey) {
-					$values = $control->getValues();
-
-					if (! empty($values)) {
-						$query->filterCategory(implode(' OR ', $values));
-					}
-				})
-				;
-		}
-
-		$type = $this->getOption('inputtype');
-
-		if ($type == 'm' || $type == 'checkbox') {
-			$controls = [
-				'all-of' => new Tracker\Filter\Control\MultiSelect("tf_{$permName}_alld", $options),
-				'all-of-checkboxes' => new Tracker\Filter\Control\InlineCheckboxes("tf_{$permName}_allc", $options),
-			];
-			foreach ($controls as $key => $control) {
-				$collection->addNew($permName, $key)
-					->setLabel(tr('%0 (all of)', $name))
-					->setControl($control)
-					->setApplyCondition(function ($control, Search_Query $query) use ($baseKey) {
-						$values = $control->getValues();
-
-						if (! empty($values)) {
-							$query->filterCategory(implode(' AND ', $values));
-						}
-					})
-					;
-			}
-		}
-
-		return $collection;
 	}
 }
 

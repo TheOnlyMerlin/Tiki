@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -50,7 +50,7 @@ function smarty_block_accordion_group($params, $content, $smarty, $repeat)
 	$first = ($accordion_position == 1) ? 'in' : '';
 
 	return <<<CONTENT
-<div class="panel panel-default panel-accordian">
+<div class="panel panel-default">
 	<div class="panel-heading">
 		<h4 class="panel-title">
 			<a class="accordion-toggle" data-toggle="collapse" data-parent="#$accordion_current_group" href="#$id">

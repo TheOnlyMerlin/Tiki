@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -329,9 +329,7 @@ JQ
 
 	function createPastLinksInterface()
 	{
-		global $prefs, $user;
-		$headerlib = TikiLib::lib('header');
-		$tikilib = TikiLib::lib('tiki');
+		global $tikilib, $headerlib, $prefs, $user;
 
 		$answers = json_encode($this->metadata->raw->answers);
 
@@ -549,7 +547,7 @@ JQ
 
 	static function wikiView($args)
 	{
-		$headerlib = TikiLib::lib('header');
+		global $headerlib, $_REQUEST;
 
 		$page = $args['object'];
 		$version = $args['version'];

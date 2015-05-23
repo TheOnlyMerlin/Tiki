@@ -1,11 +1,9 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
-
-use Tiki\FileGallery;
 
 // Required path: /lib/core/Feed
 //
@@ -85,7 +83,7 @@ abstract class Feed_Abstract
 	private function open()
 	{
 		if ($this->isFileGal == true) {
-			$contents = FileGallery\File::filename($this->name)->data();
+			$contents = FileGallery_File::filename($this->name)->data();
 		} else {
 			$contents = TikiLib::lib("cache")->getCached($this->name, get_class($this));
 		}
@@ -103,7 +101,7 @@ abstract class Feed_Abstract
 
 		if ($this->isFileGal == true) {
             //TODO: abstract
-			FileGallery\File::filename($this->name)
+			FileGallery_File::filename($this->name)
 				->setParam('description', '')
 				->replace($contents);
 
@@ -135,7 +133,7 @@ abstract class Feed_Abstract
 		global $tikilib;
 
 		if ($this->isFileGal == true) {
-			FileGallery\File::filename($this->name)->delete();
+			FileGallery_File::filename($this->name)->delete();
 		} else {
 			TikiLib::lib("cache")->empty_type_cache(get_class($this));
 		}
@@ -189,7 +187,7 @@ abstract class Feed_Abstract
 		$archives = array();
 
 		if ($this->isFileGal == true) {
-			$file = FileGallery\File::filename($this->name);
+			$file = FileGallery_File::filename($this->name);
 			foreach ($file->listArchives() as $archive) {
 				$archive = $this->open();
 				$archives[$archive->feed->date] = $archive->feed->entry;

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -42,7 +42,7 @@ class Services_Comment_Controller
 			'cant' => $comments['cant'],
 			'offset' => $offset,
 			'per_page' => $per_page,
-			'allow_post' => $this->canPost($type, $objectId) && ! $input->hidepost->int(),
+			'allow_post' => $this->canPost($type, $objectId),
 			'allow_remove' => $this->canRemove($type, $objectId),
 			'allow_lock' => $this->canLock($type, $objectId),
 			'allow_unlock' => $this->canUnlock($type, $objectId),
@@ -58,7 +58,6 @@ class Services_Comment_Controller
 		$type = $input->type->text();
 		$objectId = $input->objectId->pagename();
 		$parentId = $input->parentId->int();
-		$return_url = $input->return_url->url();
 
 		// Check general permissions
 
@@ -177,12 +176,6 @@ class Services_Comment_Controller
 						sendCommentNotification('trackeritem', $objectId, $title, $data, $threadId);
 					}
 
-					$access = TikiLib::lib('access');
-					if ($return_url && ! $access->is_xml_http_request()) {
-						$access->redirect($return_url, tr('Your comment was posted.'));
-					}
-					
-
 					return array(
 						'threadId' => $threadId,
 						'parentId' => $parentId,
@@ -205,7 +198,6 @@ class Services_Comment_Controller
 			'anonymous_email' => $anonymous_email,
 			'anonymous_website' => $anonymous_website,
 			'errors' => $errors,
-			'return_url' => $return_url,
 		);
 	}
 
@@ -306,15 +298,7 @@ class Services_Comment_Controller
 			$status = 'DONE';
 		}
 
-		if ($mode === 'lock') {
-			$title = tr('Lock comments');
-		} 
-		else {
-			$title = tr('Unlock comments');
-		}
-		
 		return array(
-			'title' => $title,
 			'type' => $type,
 			'objectId' => $objectId,
 			'status' => $status,
@@ -412,71 +396,35 @@ class Services_Comment_Controller
 
 	private function canView($type, $objectId)
 	{
-		// Note: $perms provides a magic method __get as an accessor for attributes.
-		// I.e. $perms->wiki_view_comments or $perms->tracker_view_comments are returend by that accessor method
-		// and do not exist as a property.
-		// Wether they are true or false depends on the assigned permissions stored in $perms->resolver
-		// for the respective groups.
-		 
 		$perms = $this->getApplicablePermissions($type, $objectId);
 
+		if (! ($perms->read_comments || $perms->post_comments || $perms->edit_comments)) {
+			return false;
+		}
+
 		switch ($type) {
-			case 'wiki page':
-				return $perms->wiki_view_comments;
-				break;
-			
-			// canPost() requires also view access frontend/template wise. 
-			// So we return also true if post ($perms->comment_tracker_items) is enabled. 
-			case 'trackeritem':
-				return ($perms->tracker_view_comments || $perms->comment_tracker_items);
-				break;
-				
-			
-			// @TODO which $types do use / or should use these permissions?
-			// taken from the prevoius developer: seems that view should be automatically assigned if edit / post is granted.
-			default:
-				if (! ($perms->read_comments || $perms->post_comments || $perms->edit_comments)) {
-					return false;
-				}
-				break;
+		case 'wiki page':
+			return $perms->wiki_view_comments;
 		}
 
 		return true;
 	}
 
-	
 	public function canPost($type, $objectId)
 	{
 		global $prefs;
-		
-		// see comment about $perms in canView().
 
 		$perms = $this->getApplicablePermissions($type, $objectId);
+		if (! $perms->post_comments) {
+			return false;
+		}
 
 		if ($prefs['feature_comments_locking'] == 'y' &&  TikiLib::lib('comments')->is_object_locked("$type:$objectId")) {
 			return false;
 		}
-		
-		switch ($type) {
-					
-			// requires also view access from the front/template part
-			// so we add $perms->comment_tracker_items also to canView()
-			case 'trackeritem':
-				return $perms->comment_tracker_items;
-				break;
-		
-			// @TODO which $types do use / or should use these permissions?
-			default:
-				if (! ($perms->post_comments)) {
-					return false;
-				}
-				break;
-		}
-		
 
 		return true;
 	}
-	
 
 	public function isEnabled($type, $objectId)
 	{

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -30,11 +30,6 @@ class Search_Elastic_QueryBuilder
 	function build(Search_Expr_Interface $expr)
 	{
 		$query = $expr->traverse($this);
-
-		if (count($query) && isset($query['bool']) && empty($query['bool'])) {
-			return [];
-		}
-
 		$query = array("query" => $query);
 
 		return $query;
@@ -145,10 +140,10 @@ class Search_Elastic_QueryBuilder
 			$type = $node->getObjectType();
 			$object = $node->getObjectId();
 
-			$content = $node->getContent() ?: $this->getDocumentContent($type, $object);
+			$content = $this->getDocumentContent($type, $object);
 			return array(
 				'more_like_this' => array(
-					'fields' => array($node->getField() ?: 'contents'),
+					'fields' => array('contents'),
 					'like_text' => $content,
 					'boost' => $node->getWeight(),
 				),
@@ -160,12 +155,9 @@ class Search_Elastic_QueryBuilder
 
 	private function flatten($list, $type)
 	{
-		// Only merge when alone, should queries contain the 'minimum_number_should_match' attribute
-		$limit = ($type == 'should') ? 2 : 1;
-
 		$out = array();
 		foreach ($list as $entry) {
-			if (isset($entry['bool'][$type]) && count($entry['bool']) === $limit) {
+			if (isset($entry['bool'][$type])) {
 				$out = array_merge($out, $entry['bool'][$type]);
 			} else {
 				$out[] = $entry;

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -12,7 +12,6 @@ use Search_Expr_Not as NotX;
 use Search_Expr_Range as Range;
 use Search_Expr_Initial as Initial;
 use Search_Expr_MoreLikeThis as MoreLikeThis;
-use Search_Expr_ImplicitPhrase as ImplicitPhrase;
 
 class Search_MySql_QueryBuilder
 {
@@ -53,8 +52,6 @@ class Search_MySql_QueryBuilder
 
 		try {
 			if (! $node instanceof NotX && count($fields) == 1 && $this->isFullText($node)) {
-				// $query contains the token string to compare against $fields[0] in the unified search table
-				// $fields[0] can be i.e  'allowed_users', 'allowed_groups'
 				$query = $this->fieldBuilder->build($node, $this->factory);
 				$str = $this->db->qstr($query);
 				$this->requireIndex($fields[0], 'fulltext');

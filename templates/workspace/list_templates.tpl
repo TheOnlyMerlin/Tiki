@@ -6,11 +6,11 @@
 
 {block name="navigation"}
 	<div class="navbar">
-		<a class="btn btn-default" href="{bootstrap_modal controller=workspace action=add_template}">
-			{icon name="create"} {tr}Create Workspace Template{/tr}
+		<a class="btn btn-default" href="{service controller=workspace action=add_template modal=true}" data-toggle="modal" data-target="#bootstrap-modal">
+			{glyph name="plus"} {tr}Create Workspace Template{/tr}
 		</a>
-		<a class="btn btn-default" href="{bootstrap_modal controller=workspace action=create}">
-			{icon name="create"} {tr}Create Workspace{/tr}
+		<a class="btn btn-default" href="{service controller=workspace action=create modal=true}" data-toggle="modal" data-target="#bootstrap-modal">
+			{glyph name="plus"} {tr}Create Workspace{/tr}
 		</a>
 	</div>
 {/block}
@@ -33,7 +33,7 @@
 					</td>
 					<td>
 						{permission name=admin}
-							<a title="{tr}Edit{/tr}" class="btn btn-default btn-sm service-dialog reload" href="{service controller=workspace action=edit_template id=$template.templateId}">{icon name="edit"}</a>
+							<a title="{tr}Edit{/tr}" class="btn btn-default btn-sm service-dialog reload" href="{service controller=workspace action=edit_template id=$template.templateId}">{glyph name="edit"}</a>
 							<span class="btn btn-default btn-sm">
 								{permission_link mode=icon type=workspace id=$template.templateId title=$template.name}
 							</span>

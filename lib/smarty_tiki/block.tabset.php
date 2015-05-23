@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -33,8 +33,8 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 
 function smarty_block_tabset($params, $content, $smarty, &$repeat)
 {
-	global $prefs, $smarty_tabset_name, $smarty_tabset, $smarty_tabset_i_tab, $cookietab, $tabset_index;
-	$headerlib = TikiLib::lib('header');
+	global $prefs, $smarty_tabset_name, $smarty_tabset, $smarty_tabset_i_tab, $cookietab, $headerlib, $tabset_index;
+
 	if ($smarty->getTemplateVars('print_page') == 'y' || $prefs['layout_tabs_optional'] === 'n') {
 		$params['toggle'] = 'n';
 	}
@@ -44,15 +44,30 @@ function smarty_block_tabset($params, $content, $smarty, &$repeat)
 			$smarty_tabset = array();
 		}
 		$tabset_index = count($smarty_tabset) + 1;
-		$smarty_tabset_name = getTabsetName($params, $tabset_index);
+		if ( ! empty($params['name']) ) {
+			$smarty_tabset_name = $params['name'];	// names have to be unique
+		} else {
+			$short_name = str_replace(array('tiki-', '.php'), '', basename($_SERVER['SCRIPT_NAME']));
+			$smarty_tabset_name = '_' . $short_name . $tabset_index;
+		}
+		$smarty_tabset_name = TikiLib::remove_non_word_characters_and_accents($smarty_tabset_name);
 		$smarty_tabset[$tabset_index] = array( 'name' => $smarty_tabset_name, 'tabs' => array());
 		if (!isset($smarty_tabset_i_tab)) {
 			$smarty_tabset_i_tab = 1;
 		}
 
+		if (!isset($cookietab) || $tabset_index > 1) {
+			$cookietab = getCookie($smarty_tabset_name, 'tabs', 1);
+		}
+		if (!isset($_REQUEST['cookietab']) && $tabset_index > 1){
+			$cookietab="1";
+			setCookieSection($smarty_tabset_name, $cookietab, 'tabs');
+		}
+		
 		// work out cookie value if there
-		if ( isset($_REQUEST['cookietab']) && $tabset_index === 1) {	// overrides cookie if added to request as in tiki-admin.php?page=look&cookietab=6
+		if ( isset($_REQUEST['cookietab']) && $tabset_index) {	// overrides cookie if added to request as in tiki-admin.php?page=look&cookietab=6
 			$cookietab = empty($_REQUEST['cookietab']) ? 1 : $_REQUEST['cookietab'];
+			setCookieSection($smarty_tabset_name, $cookietab, 'tabs');	// too late to set it here as output has started
 		}
 
 		// If the tabset specifies the tab, override any kind of memory but only if not doing "no tabs" mode
@@ -62,7 +77,7 @@ function smarty_block_tabset($params, $content, $smarty, &$repeat)
 
 		$smarty_tabset_i_tab = 1;
 
-		return '';
+		return;
 	} else {
 		$content = trim($content);
 		if (empty($content)) {
@@ -100,47 +115,41 @@ function smarty_block_tabset($params, $content, $smarty, &$repeat)
 			return $ret.$notabs.$content;
 		}
 
-		$smarty_tabset_name = getTabsetName($params, $tabset_index);
 		$ret .= '<div class="clearfix tabs" data-name="' . $smarty_tabset_name . '">' . $notabs;
 
 		$count = 1;
+		if ($prefs['mobile_feature'] === 'y' && $prefs['mobile_mode'] === 'y') {
 
-		$ret .= '<ul class="nav nav-tabs">';
-		foreach ($smarty_tabset[$tabset_index]['tabs'] as $value) {
-			$ret .= '<li class="'. $value['active'] .'"><a href="#' . $value['id'] . '" data-toggle="tab">'.$value['label'].'</a></li>';
-			++$count;
-		}
-		$ret .= '</ul>';
-
-		$ret .= "</div>";
-
-		// has been changed by code but now too late to reset
-		if ($cookietab) {
-			$tab_value = '#' . $smarty_tabset[$tabset_index]['tabs'][$cookietab - 1]['id'];
-			if ($tabset_index === 1 && $tab_value != getCookie($smarty_tabset_name, 'tabs')) {
-				setCookieSection($smarty_tabset_name, $tab_value, 'tabs');
+			$ret .= '<div class="container' . $content_class . '" data-role="navbar"><ul>';
+			foreach ($smarty_tabset[$tabset_index]['tabs'] as $value) {
+				$ret .= '<li>'.
+					'<a href="#" class="tabmark tab'.$count.' '.($count == $cookietab ? 'ui-btn-active' : '').'"' .
+					' onclick="tikitabs('.$count.',this); return false;">'.$value.'</a></li>';
+				++$count;
 			}
-		}
+			$ret .= '</ul></div>';
 
+		} else {	// notmal non-mobile rendering
+
+			$ret .= '<ul class="nav nav-tabs">';
+			foreach ($smarty_tabset[$tabset_index]['tabs'] as $value) {
+				$ret .= '<li class="'. $value['active'] .'"><a href="#' . $value['id'] . '" data-toggle="tab">'.$value['label'].'</a></li>';
+				++$count;
+			}
+			$ret .= '</ul>';
+		}
+		$ret .= "</div>";
+		if ($tabset_index === 1) {
+            // override cookie with query cookietab
+            $headerlib->add_jq_onready(
+            'var ctab = location.search.match(/cookietab=(\d+)/);
+            if (ctab) {
+                setCookie("'.$smarty_tabset_name.'", ctab[1],"tabs");
+            }'
+            );
+		}
 		$tabset_index--;
 
 		return $ret . '<div class="tab-content">' . $content . '</div>';
 	}
-}
-
-/**
- * @param $params
- * @param $tabset_index
- * @return array
- */
-function getTabsetName($params, $tabset_index)
-{
-	if (!empty($params['name'])) {
-		$smarty_tabset_name = $params['name'];    // names have to be unique
-	} else {
-		$short_name = str_replace(array('tiki-', '.php'), '', basename($_SERVER['SCRIPT_NAME']));
-		$smarty_tabset_name = '_' . $short_name . $tabset_index;
-	}
-	$smarty_tabset_name = TikiLib::remove_non_word_characters_and_accents($smarty_tabset_name);
-	return $smarty_tabset_name;
 }

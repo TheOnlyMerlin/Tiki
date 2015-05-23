@@ -2,18 +2,17 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 require_once ('tiki-setup.php');
+include_once ('lib/mailin/mailinlib.php');
 //check if feature is on
 $access->check_feature('feature_mailin');
 $access->check_permission(array('tiki_p_admin_mailin'));
-
-$mailinlib = TikiLib::lib('mailin');
 
 // List
 $accounts = $mailinlib->list_mailin_accounts(0, -1, 'account_asc', '');

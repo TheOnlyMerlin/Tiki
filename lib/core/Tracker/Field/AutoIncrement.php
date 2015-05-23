@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,7 +11,7 @@
  * Letter key: ~q~
  *
  */
-class Tracker_Field_AutoIncrement extends Tracker_Field_Abstract implements Tracker_Field_Exportable, Tracker_Field_Filterable
+class Tracker_Field_AutoIncrement extends Tracker_Field_Abstract
 {
 	public static function getTypes()
 	{
@@ -64,17 +64,6 @@ class Tracker_Field_AutoIncrement extends Tracker_Field_Abstract implements Trac
 		$ins_id = $this->getInsertId();
 		$value = isset($requestData[$ins_id]) ? $requestData[$ins_id] : $this->getValue();
 
-		return array('value' => $value);
-	}
-	
-	function renderInput($context = array())
-	{
-		return $this->renderTemplate('trackerinput/autoincrement.tpl', $context);
-	}
-
-	protected function renderInnerOutput($context = array())
-	{
-		$value = $this->getValue();
 		$append = $this->getOption('prepend');
 		if (!empty($append)) {
 			$value = "<span class='formunit'>$append</span>" . $value;
@@ -84,8 +73,13 @@ class Tracker_Field_AutoIncrement extends Tracker_Field_Abstract implements Trac
 		if (!empty($prepend)) {
 			$value .= "<span class='formunit'>$prepend</span>";
 		}
-
-		return $value;
+			
+		return array('value' => $value);
+	}
+	
+	function renderInput($context = array())
+	{
+		return $this->renderTemplate('trackerinput/autoincrement.tpl', $context);
 	}
 
 	function handleSave($value, $oldValue)
@@ -105,54 +99,6 @@ class Tracker_Field_AutoIncrement extends Tracker_Field_Abstract implements Trac
 		return array(
 			'value' => $value,
 		);
-	}
-
-	function getTabularSchema()
-	{
-		$schema = new Tracker\Tabular\Schema($this->getTrackerDefinition());
-
-		$permName = $this->getConfiguration('permName');
-		$prepend = $this->getOption('prepend');
-		$append = $this->getOption('append');
-
-		$schema->addNew($permName, 'default')
-			->setLabel($this->getConfiguration('name'))
-			->setRenderTransform(function ($value) {
-				return $value;
-			})
-			;
-		$schema->addNew($permName, 'formatted')
-			->setLabel($this->getConfiguration('name'))
-			->addIncompatibility($permName, 'default')
-			->setRenderTransform(function ($value) use ($prepend, $append) {
-				return $prepend . $value . $append;
-			})
-			;
-
-		return $schema;
-	}
-
-	function getFilterCollection()
-	{
-		$filters = new Tracker\Filter\Collection($this->getTrackerDefinition());
-		$permName = $this->getConfiguration('permName');
-		$name = $this->getConfiguration('name');
-		$baseKey = $this->getBaseKey();
-
-
-		$filters->addNew($permName, 'lookup')
-			->setLabel($name)
-			->setControl(new Tracker\Filter\Control\TextField("tf_{$permName}_lookup"))
-			->setApplyCondition(function ($control, Search_Query $query) use ($baseKey) {
-				$value = $control->getValue();
-
-				if ($value) {
-					$query->filterIdentifier($value, $baseKey);
-				}
-			})
-			;
-
-		return $filters;
 	}
 }
 

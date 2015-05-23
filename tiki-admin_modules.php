@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -486,7 +486,7 @@ $headerlib->add_css(
 	' }'
 );
 
-$headerlib->add_cssfile('themes/base_files/feature_css/admin.css');
+$headerlib->add_cssfile('css/admin.css');
 $headerlib->add_jsfile('lib/modules/tiki-admin_modules.js');
 
 $sameurl_elements = array('offset', 'sort_mode', 'where', 'find');

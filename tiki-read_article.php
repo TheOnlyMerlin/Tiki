@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -67,6 +67,7 @@ if ($prefs['feature_freetags'] == 'y') {
 		$tags = array();
 	}
 	$smarty->assign('freetags', $tags);
+	$headerlib->add_cssfile('css/freetags.css');
 }
 $artlib->add_article_hit($_REQUEST["articleId"]);
 $smarty->assign('articleId', $_REQUEST["articleId"]);

@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -93,7 +93,7 @@ $smarty->assign('offset', $maxgal ? $offset - ($offset % $maxgal) : 0);
 //$smarty->assign_by_ref('theme',$gal_info["theme"]);
 //$smarty->assign('use_theme','y');
 if ($prefs['feature_gal_slideshow'] != 'n') {
-	$headerlib->add_jsfile('lib/imagegals/imagegallib.js');
+	$headerlib->add_jsfile('lib/imagegals/imagegallib.js', 50);
 	$listImgId = implode(',', $listImgId);
 	$smarty->assign('listImgId', $listImgId);
 }

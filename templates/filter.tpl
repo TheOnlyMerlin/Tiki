@@ -3,11 +3,11 @@
 	<div class="form-group">
 		<label class="col-sm-2 control-label">{tr}Content{/tr}</label>
 		<div class="col-sm-4">
-			<input type="search" name="filter~content" class="form-control" value="{$filter_content|escape}">
+		    <input type="search" name="filter~content" class="form-control" value="{$filter_content|escape}">
 		</div>
-	</div>
+    </div>
 	{if $prefs.search_show_sort_order eq 'y'}
-		<div class="form-group">
+        <div class="form-group">
 			<label class="col-sm-2 control-label">{tr}Sort By{/tr}</label>
 			<div class="col-sm-3">
 				<select name="sort_mode" class="sort_mode form-control">
@@ -18,11 +18,11 @@
 				</select>
 			</div>
 			{if preg_match('/desc$/',$sort_mode)}
-				{icon name='sort-down' class='icon sort_invert' title="{tr}Sort direction{/tr}" href='#'}
+				{icon _id='arrow_up' width='16' height='16' class='icon sort_invert' title="{tr}Sort direction{/tr}" href='#'}
 			{else}
-				{icon name='sort-up' class='icon sort_invert' title="{tr}Sort direction{/tr}" href='#'}
+				{icon _id='arrow_down' width='16' height='16' class='icon sort_invert' title="{tr}Sort direction{/tr}" href='#'}
 			{/if}
-		</div>
+        </div>
 	{else}
 		<input type="hidden" name="sort_mode" value="{$sort_mode}">
 		{/if}
@@ -78,14 +78,6 @@
 				</div>
 			</div>
 		{/if}
-		{if isset($filter.tracker_id)}
-			<div class="form-group">
-				<label class="col-sm-2 control-label" for="filter-tracker_id">{tr}Tracker{/tr}</label>
-				<div class="col-sm-4">
-					{object_selector type=tracker _simplevalue=$filter.tracker_id _simplename="filter~tracker_id" _simpleid="filter-tracker_id"}
-				</div>
-			</div>
-		{/if}
 		{if $prefs.feature_multilingual eq 'y'}
 			{if $prefs.search_default_interface_language neq 'y'}
 				<div class="form-group">
@@ -98,11 +90,9 @@
 							{/foreach}
 						</select>
 					</div>
-					<div class="col-sm-5">
-						<label for="filter-language-unspecified-checkbox" class="checkbox-inline">
-							<input type="checkbox" id="filter-language-unspecified-checkbox" name="filter~language_unspecified"{if $filter_language_unspecified} checked="checked"{/if}>
-							{tr}Include objects without a specified language{/tr}
-						</label>
+					<div class="col-sm-5 checkbox-inline">
+						<input type="checkbox" name="filter~language_unspecified"{if $filter_language_unspecified} checked="checked"{/if}>
+						{tr}Include objects without a specified language{/tr}
 					</div>
 				</div>
 			{else}
@@ -110,39 +100,9 @@
 				<input type="hidden" name="filter~language_unspecified" value="1">
 			{/if}
 		{/if}
-
+	
 	<div class="text-center">
 		<input type="submit" class="btn btn-primary" value="{tr}Search{/tr}">
-		{if $prefs.tracker_tabular_enabled eq 'y' && ! empty($smarty.get.tabularId)}
-			<input type="hidden" name="tabularId" value="{$smarty.get.tabularId|escape}">
-			<button class="tabular-export btn btn-default">
-				{icon name=export} {tr}Export{/tr}
-			</button>
-			{jq}
-				$(document).on('click', '.tabular-export', function (e) {
-					var href = $.service('tabular', 'export_search_csv', {
-						tabularId: "{{$smarty.get.tabularId}}"
-					});
-					e.preventDefault();
-					document.location.href = href + '&' + $(this).closest('form').serialize();
-				});
-			{/jq}
-		{elseif $prefs.tracker_tabular_enabled eq 'y' && ! empty($filter.tracker_id)}
-			<button class="tabular-export btn btn-default">
-				{icon name=export} {tr}Export{/tr}
-			</button>
-			{jq}
-				$(document).on('click', '.tabular-export', function (e) {
-					var href = $.service('tabular', 'export_search_csv', {
-						trackerId: "{{$filter.tracker_id}}"
-					});
-					e.preventDefault();
-					$.openModal({
-						remote: href + '&' + $(this).closest('form').serialize()
-					});
-				});
-			{/jq}
-		{/if}
 		{if $prefs.storedsearch_enabled eq 'y' and $user}
 			<input type="hidden" name="storeAs" value=""/>
 			<a href="{service controller=search_stored action=select modal=true}" id="store-query" class="btn btn-default">{tr}Save Search{/tr}</a>
@@ -159,7 +119,7 @@
 				});
 			{/jq}
 		{/if}
-		<a href="{bootstrap_modal controller=search action=help}">{tr}Search Help{/tr} {icon name='help'}</a>
+		<a href="{service controller=search action=help modal=1}" data-toggle="modal" data-target="#bootstrap-modal">{tr}Search Help{/tr} {icon _id=help}</a>
 	</div>
 </form>
 {jq}
@@ -250,51 +210,31 @@
 			tofind = tofind.replace(/(:?asc|desc)$/, "");
 			if (opts[o].value.search(tofind) === 0) {
 				opts[o].value = "{{$sort_mode}}";
-				$sort_mode.prop("selectedIndex", o).trigger("chosen:updated");
+				$sort_mode.prop("selectedIndex", o);
+				if (typeof $sort_mode.selectmenu == "function") {
+					$sort_mode.selectmenu();	// seems to need a prod
+				}
 				break;
 			}
 		}
 {{/if}}
 
-		var showDirection = function(down) {
-
-			var src = $invert.attr("src");
-			if (src) {
-				if (down) {
-					$invert.attr("src", src.replace("down", "up"));
-				} else {
-					$invert.attr("src", src.replace("up", "down"));
-				}
+		$sort_mode.change(function () {		// update direction arrow
+			if ($(this).val().search(/desc$/) > -1) {
+				$invert.attr("src", $invert.attr("src").replace("down", "up"));
 			} else {
-				var $icon = $("span", $invert);
-				if (down) {	// fonticon
-					$icon.removeClass("icon-sort-up").addClass("icon-sort-down");
-					if ($icon.hasClass("fa")) {
-						$icon.removeClass("fa-sort-asc").addClass("fa-sort-desc");
-					}	// handling for glyphicons too one day?
-				} else {		// must be up
-					$icon.removeClass("icon-sort-down").addClass("icon-sort-up");
-					if ($icon.hasClass("fa")) {
-						$icon.removeClass("fa-sort-desc").addClass("fa-sort-asc");
-					}
-				}
+				$invert.attr("src", $invert.attr("src").replace("up", "down"));
 			}
-		}
-
-		$sort_mode.change(function () {	// update direction arrow
-			showDirection($(this).val().search(/desc$/) > -1);
 		}).trigger("change");
-
 		$invert.parent().click(function () {	// change the value of the option to opposite direction
 			var v = $sort_mode.prop("options")[$sort_mode.prop("selectedIndex")].value;
 			if (v.search(/desc$/) > -1) {
 				$sort_mode.prop("options")[$sort_mode.prop("selectedIndex")].value = v.replace(/desc$/, "asc");
-				showDirection(false);
+				$invert.attr("src", $invert.attr("src").replace("up", "down"));
 			} else {
 				$sort_mode.prop("options")[$sort_mode.prop("selectedIndex")].value = v.replace(/asc$/, "desc");
-				showDirection(true);
+				$invert.attr("src", $invert.attr("src").replace("down", "up"));
 			}
-			$(this).parents("form").submit();
 			return false;
 		});
 {{/if}}

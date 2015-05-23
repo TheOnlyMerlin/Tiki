@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -42,7 +42,7 @@ class WizardLib extends TikiLib
 		$activeLoginWizard = $this->get_preference('wizard_admin_hide_on_login') !== 'y';
 		if ($force || ($isAdmin && $activeLoginWizard)) {
 
-			// User is an admin. Show Setup Wizards
+			// User is an admin. Show Admin Wizard
 			$this->startAdminWizard($homePageUrl,0);
 			
 		} else {
@@ -102,8 +102,8 @@ class WizardLib extends TikiLib
 	*/
 	public function showPages($pages, $adminWizard=false)
 	{
-		global $base_url;
-		$smarty = TikiLib::lib('smarty');
+		global	$smarty, $base_url;
+		
 		try {
 			if (!isset($_REQUEST['url'])) {
 				// User the base url as the return URL

@@ -1,6 +1,6 @@
 #!/usr/bin/php
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -41,15 +41,11 @@ if (false !== $site = $input->getParameterOption(array('--site'))) {
 
 $local_php = TikiInit::getCredentialsFile();
 
-if (! is_readable($local_php)) {
-	die("Credentials file local.php not found. See http://doc.tiki.org/Installation for more information.\n");
-}
-
 $console = new Tiki\Command\Application;
 
 $console->add(new Tiki\Command\ConfigureCommand);
 if (is_file($local_php) || TikiInit::getEnvironmentCredentials()) {
-	require_once 'db/tiki-db.php';
+	require 'db/tiki-db.php';
 	$console->add(new Tiki\Command\InstallCommand);
 	$console->add(new Tiki\Command\UpdateCommand);
 } else {
@@ -62,11 +58,7 @@ $isInstalled = $installer->isInstalled();
 
 if ($isInstalled) {
 	$bypass_siteclose_check = true;
-	try {
-		require_once 'tiki-setup.php';
-	} catch (Exception $e) {
-		$console->renderException($e, new \Symfony\Component\Console\Output\ConsoleOutput());
-	}
+	require_once 'tiki-setup.php';
 
 	if (! $asUser = $input->getParameterOption(array('--as-user'))) {
 		$asUser = 'admin';
@@ -79,23 +71,18 @@ if ($isInstalled) {
 
 if ($isInstalled) {
 	$console->add(new Tiki\Command\CacheClearCommand);
-	$console->add(new Tiki\Command\LessCompileCommand);
 	$console->add(new Tiki\Command\BackupDBCommand);
 	$console->add(new Tiki\Command\BackupFilesCommand);
 	$console->add(new Tiki\Command\ProfileBaselineCommand);
 } else {
 	$console->add(new Tiki\Command\UnavailableCommand('cache:clear'));
-	$console->add(new Tiki\Command\UnavailableCommand('less:compile'));
 	$console->add(new Tiki\Command\UnavailableCommand('database:backup'));
 	$console->add(new Tiki\Command\UnavailableCommand('backup:files'));
 	$console->add(new Tiki\Command\UnavailableCommand('profile:baseline'));
 }
 
 if ($isInstalled && ! $installer->requiresUpdate()) {
-	$console->add(new Tiki\Command\AddonInstallCommand);
-	$console->add(new Tiki\Command\AddonRemoveCommand);
-	$console->add(new Tiki\Command\AddonUpgradeCommand);
-	$console->add(new Tiki\Command\DailyReportSendCommand);
+    $console->add(new Tiki\Command\DailyReportSendCommand);
 	$console->add(new Tiki\Command\GoalCheckCommand);
 	$console->add(new Tiki\Command\IndexRebuildCommand);
 	$console->add(new Tiki\Command\IndexOptimizeCommand);
@@ -106,13 +93,9 @@ if ($isInstalled && ! $installer->requiresUpdate()) {
 	$console->add(new Tiki\Command\ProfileForgetCommand);
 	$console->add(new Tiki\Command\ProfileInstallCommand);
 	$console->add(new Tiki\Command\ProfileExport\Init);
-	$console->add(new Tiki\Command\RecommendationBatchCommand);
 	$console->add(new Tiki\Command\RefreshRssCommand);
 } else {
-	$console->add(new Tiki\Command\UnavailableCommand('addon:install'));
-	$console->add(new Tiki\Command\UnavailableCommand('addon:remove'));
-	$console->add(new Tiki\Command\UnavailableCommand('addon:upgrade'));
-	$console->add(new Tiki\Command\UnavailableCommand('daily-report:send'));
+    $console->add(new Tiki\Command\UnavailableCommand('daily-report:send'));
 	$console->add(new Tiki\Command\UnavailableCommand('goal:check'));
 	$console->add(new Tiki\Command\UnavailableCommand('index:rebuild'));
 	$console->add(new Tiki\Command\UnavailableCommand('index:optimize'));
@@ -123,7 +106,6 @@ if ($isInstalled && ! $installer->requiresUpdate()) {
 	$console->add(new Tiki\Command\UnavailableCommand('profile:forget'));
 	$console->add(new Tiki\Command\UnavailableCommand('profile:apply'));
 	$console->add(new Tiki\Command\UnavailableCommand('profile:export:init'));
-	$console->add(new Tiki\Command\UnavailableCommand('recommendation:batch'));
 	$console->add(new Tiki\Command\UnavailableCommand('rss:refresh'));
 }
 

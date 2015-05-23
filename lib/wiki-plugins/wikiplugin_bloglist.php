@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -17,8 +17,8 @@ function wikiplugin_bloglist_info()
 			'Id' => array(
 				'required' => true,
 				'name' => tra('Blog ID'),
-				'description' => tra('The ID number of the blog on the site you wish to list posts from. More than one blog can be provided, separated by colon. Example: 1:5. Limitation: if more than one blog is provided, the private posts (drafts) are not shown.'),
-				'filter' => 'striptags',
+				'description' => tra('The ID number of the blog on the site you wish to list posts from'),
+				'filter' => 'digits',
 				'default' => '',
 				'profile_reference' => 'blog',
 			),
@@ -146,8 +146,6 @@ function wikiplugin_bloglist($data, $params)
 		TikiLib::lib('errorreport')->report(tra('missing blog Id for BLOGLIST plugins'));
 		return '';
 	}
-	// Sanitize $params['Id'])
-	$params['Id'] = preg_filter('/[^0-9:]*/', '', $params['Id']);
 
 	if (!isset($params['Items'])) $params['Items'] = -1;
 	if (!isset($params['offset'])) $params['offset'] = 0;

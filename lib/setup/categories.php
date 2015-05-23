@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -30,8 +30,7 @@ if ($prefs['feature_categories'] == 'y' && $prefs['categories_used_in_tpl'] == '
 			$objectType = $here['objectType'];
 		}
 	}
-	$objectCategoryIds = array();
-	$objectCategoryIdsNoJail = array();
+		$objectCategoryIds = array();
 	if (!empty($objectType)) {
 		if (isset($here['itemkey']) && isset($_REQUEST[$here['itemkey']]) && isset($here['itemObjectType'])) {
 			$objectCategoryIds = $categlib->get_object_categories($objectType, $_REQUEST[$here['itemkey']]);

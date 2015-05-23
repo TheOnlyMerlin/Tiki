@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -8,7 +8,7 @@
 /**
  * set some default params (mainly utf8 as tiki is utf8) + use the mailCharset pref from a user
  */
-$access = TikiLib::lib('access');
+global $access;
 $access->check_script($_SERVER["SCRIPT_NAME"], basename(__FILE__));
 
 class TikiMail

@@ -4,59 +4,56 @@
 {tabset name="tabs_admtokens"}
 	{tab name="{tr}List tokens{/tr}"}
 		<h2>{tr}List tokens{/tr}</h2>
-		<div class="table-responsive">
-			<table class="table normal table-striped table-hover">
-				<tr>
-					<th>{tr}Id{/tr}</th>
-					<th>{tr}Entry{/tr}</th>
-					<th>{tr}Token{/tr}</th>
-					<th>{tr}Creation{/tr}</th>
-					<th>{tr}Timeout{/tr}</th>
-					<th>{tr}Hits{/tr}</th>
-					<th>{tr}Max hits{/tr}</th>
-					<th>{tr}Email{/tr}</th>
-					<th>{tr}Parameters{/tr}</th>
-					<th>{tr}Groups{/tr}</th>
-					<th></th>
-				</tr>
+        <div class="table-responsive">
+		<table class="table normal">
+			<tr>
+				<th>{tr}Id{/tr}</th>
+				<th>{tr}Entry{/tr}</th>
+				<th>{tr}Token{/tr}</th>
+				<th>{tr}Creation{/tr}</th>
+				<th>{tr}Timeout{/tr}</th>
+				<th>{tr}Hits{/tr}</th>
+				<th>{tr}Max hits{/tr}</th>
+				<th>{tr}Email{/tr}</th>
+				<th>{tr}Parameters{/tr}</th>
+				<th>{tr}Groups{/tr}</th>
+				<th>{tr}Actions{/tr}</th>
+			</tr>
+			
 
-				{foreach $tokens as $token}
-					<tr>
-						<td>{$token.tokenId}</td>
-						<td>{$token.entry}</td>
-						<td>{$token.token}</td>
-						<td>{$token.creation}</td>
-						<td>{$token.timeout}</td>
-						<td>{$token.hits}</td>
-						<td>{$token.maxhits}</td>
-						<td>{$token.email}</td>
-						<td>
-							{foreach $token.parameters as $key => $value}
-								{$key}={$value}<br>
-							{/foreach}
-						</td>
-						<td>{$token.groups}</td>
-						<td>
-							{self_link tokenId=$token.tokenId action='delete' _menu_text='y' _menu_icon='y' _icon_name='remove'}
-								{tr}Delete{/tr}
-							{/self_link}
-						</td>
-					</tr>
-				{foreachelse}
-					{norecords _colspan=10}
-				{/foreach}
-			</table>
-		</div>
+			{foreach $tokens as $token}
+				<tr>
+					<td>{$token.tokenId}</td>
+					<td>{$token.entry}</td>
+					<td>{$token.token}</td>
+					<td>{$token.creation}</td>
+					<td>{$token.timeout}</td>
+					<td>{$token.hits}</td>
+					<td>{$token.maxhits}</td>
+					<td>{$token.email}</td>
+					<td>
+						{foreach $token.parameters as $key => $value}
+							{$key}={$value}<br>
+						{/foreach}
+					</td>
+					<td>{$token.groups}</td>
+					<td>{self_link tokenId=$token.tokenId action='delete' _icon='cross'}{tr}Delete{/tr}{/self_link}</td>
+				</tr>
+			{foreachelse}
+				{norecords _colspan=10}
+			{/foreach}
+		</table>
+        </div>
 	{/tab}
 	{tab name="{tr}Add new token{/tr}"}
 		<h2>{tr}Add new token{/tr}</h2>
-
-		{if $tokenCreated}
+		
+		{if $tokenCreated} 
 			{remarksbox type="note" title="{tr}Note{/tr}"}
 				{tr}Token successfully created.{/tr}
 			{/remarksbox}
 		{/if}
-
+		
 		<form action="tiki-admin_tokens.php" method="post">
 			<input type="hidden" name="action" value="add">
 			<table class="formcolor">
@@ -67,7 +64,7 @@
 				<tr>
 					<td><label for='timeout'>{tr}Timeout in seconds (-1 for unlimited){/tr}</label></td>
 					<td><input type="text" id='timeout' name='timeout'></td>
-				</tr>
+				</tr>			
 				<tr>
 					<td><label for='maxhits'>{tr}Maximum number of hits (-1 for unlimited){/tr}</label></td>
 					<td><input type="text" id='maxhits' name='maxhits'></td>

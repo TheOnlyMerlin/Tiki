@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -26,15 +26,17 @@ function smarty_function_show_sort($params, $smarty)
 		$order = substr($p, strrpos($p, '_') + 1);
 
 		if ( strtolower($prop) == strtolower(trim($params['var'])) ) {
-			$smarty->loadPlugin('smarty_function_icon');
+			$smarty->loadPlugin('smarty_function_glyph');
 
 			switch( $order ) {
 				case 'asc':
 				case 'nasc':
-					return ' ' . smarty_function_icon(['name' => 'sort-up'], $smarty);
+					$icon_params['_id'] = 'resultset_up';
+					return ' ' . smarty_function_glyph(['name' => 'chevron-up'], $smarty);
 				case 'desc':
 				case 'ndesc':
-					return ' ' . smarty_function_icon(['name' => 'sort-down'], $smarty);
+					$icon_params['_id'] = 'resultset_down';
+					return ' ' . smarty_function_glyph(['name' => 'chevron-down'], $smarty);
 			}
 		}
 	}

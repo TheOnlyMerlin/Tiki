@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -20,7 +20,7 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
  *                       title, the name of the object
  *
  * Almost mandatory: mode, display style of the button
- *                      glyph: simple fa (Font Awesome)
+ *                      glyph: simple glyphicon
  *                      icon: classic tiki icon
  *                      link: plain text link (label)
  *                      text: glyph + label
@@ -31,7 +31,6 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
                group, parameter to objectpermissions
 			   textFilter, parameter to objectpermissions
 			   showDisabled, parameter to objectpermissions
-			   addclass: add classes separated by spaces
  */
 function smarty_function_permission_link( $params, $smarty )
 {
@@ -84,7 +83,6 @@ function smarty_function_permission_link( $params, $smarty )
 			'label' => $params->label->text() ?: tr('Permissions'),
 			'count' => $params->count->int(),
 			'type' => $type,
-			'addclass' => $params->addclass->text(),
 		],
 	]);
 }

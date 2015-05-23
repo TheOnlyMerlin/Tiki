@@ -6,7 +6,7 @@
 
 {block name="content"}
 {if $yaml}
-	<div class="t_navbar margin-bottom-md">
+	<div class="t_navbar form-group">
 		{include file="tracker_actions.tpl"}
 	</div>
 	{remarksbox type="note" title="{tr}YAML Export{/tr}"}
@@ -14,6 +14,6 @@
 	{/remarksbox}
 
 	{$yaml}
-
+	
 {/if}
 {/block}

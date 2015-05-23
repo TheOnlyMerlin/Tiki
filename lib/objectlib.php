@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -124,7 +124,7 @@ class ObjectLib extends TikiLib
 						break;
 
 					case 'poll':
-						$polllib = TikiLib::lib('poll');
+						global $polllib; require_once('lib/polls/polllib_shared.php');
 						$info = $polllib->get_poll($itemId);
 
 						$description = $info['title'];
@@ -206,27 +206,6 @@ class ObjectLib extends TikiLib
 			'trackeritem',
 			'wiki page',
 		);
-	}
-
-	function getSelectorType($type)
-	{
-		$supported = [
-			'category' => 'category',
-			'file_gallery' => 'file gallery',
-			'forum' => 'forum',
-			'group' => 'group',
-			'tracker' => 'tracker',
-			'tracker_field' => 'trackerfield',
-			'trackerfield' => 'trackerfield',
-			'wiki_page' => 'wiki page',
-			'wiki page' => 'wiki page',
-		];
-
-		if (isset($supported[$type])) {
-			return $supported[$type];
-		} else {
-			return false;
-		}
 	}
 
 	function insert_object($type, $itemId, $description = '', $name = '', $href = '')
@@ -448,10 +427,6 @@ class ObjectLib extends TikiLib
 				$info = TikiLib::lib('trk')->get_tracker($object);
 				return array('title' => $info['name']);
 
-			case 'trackerfield':
-				$info = TikiLib::lib('trk')->get_tracker_field($object);
-				return array('title' => $info['name']);
-
 			case 'goal':
 				return TikiLib::lib('goal')->fetchGoal($object);
 		}
@@ -476,12 +451,6 @@ class ObjectLib extends TikiLib
 		$this->query($query, array($itemId, $type));
 	}
 
-	function delete_object_via_objectid($objectId)
-	{
-		$query = 'delete from `tiki_objects` where `objectId`=?';
-		$this->query($query, array((int) $objectId));
-	}
-	
 	function get_object($type, $itemId)
 	{
 		$query = 'select * from `tiki_objects` where `itemId`=? and `type`=?';
@@ -515,11 +484,6 @@ class ObjectLib extends TikiLib
 				return $meta['name'];
 			case 'group':
 				return $id;
-			case 'user':
-				if (is_int($id)) {
-					$id = TikiLib::lib('tiki')->get_user_login($id);
-				}
-				return TikiLib::lib('user')->clean_user($id);
 		}
 
 		$title = $this->table('tiki_objects')->fetchOne(
@@ -615,23 +579,6 @@ class ObjectLib extends TikiLib
 		}
 
 		return $metadata;
-	}
-	
-	function get_typeItemsInfo($type) // Returns information on all items of an object type (eg: menu, article, etc) from tiki_objects table
-	{
-		//get objects
-		$queryObjectInfo = 'select * from `tiki_objects` where `type`=?';
-		$resultObjectInfo = $this->fetchAll($queryObjectInfo, array($type));
-		
-		//get object attributes
-		foreach ($resultObjectInfo as &$tempInfo){
-			$objectAttributes = TikiLib::lib('attribute')->get_attributes($tempInfo['type'], $tempInfo['objectId']);
-			$tempInfo = array_merge($tempInfo,$objectAttributes); 
-		}
-		unset($tempInfo);
-		
-		//return information
-		return $resultObjectInfo;
 	}
 }
 

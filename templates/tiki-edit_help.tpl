@@ -1,10 +1,10 @@
 {* $Id$ *}
-{* \brief Show wiki syntax help
+{* \brief Show wiki syntax help 
  * included by tiki-show_help.tpl via smarty_block_add_help()
  * TODO: Add links to add samples to edit form *}
 
 <h3>{tr}Wiki Syntax{/tr}</h3>
-{if $prefs.feature_help eq 'y'}
+{if $prefs.feature_help eq 'y'} 
 	{remarksbox type="info" title="{tr}More information{/tr}"}
 		<a href="{$prefs.helpurl}Wiki+Page+Editor" target="tikihelp" class="tikihelp alert-link" title="{tr}Wiki Page Editor:{/tr} {tr}More help on editing wiki pages{/tr}">
 			{tr}Wiki Page Editor{/tr}
@@ -22,7 +22,7 @@
 	{if (!isset($wysiwyg) or $wysiwyg ne 'y') or (isset($wysiwyg) and $wysiwyg eq 'y' and $prefs.wysiwyg_wiki_parsed eq 'y')}
 		<tr>
 			<td>
-				<img src='img/icons/text_bold.png' alt=''> <strong>{tr}Bold text{/tr}</strong> &nbsp;&nbsp;&nbsp; __{tr}text{/tr}__
+				<img src='img/icons/text_bold.png' alt=''> <strong>{tr}Bold text{/tr}</strong> &nbsp;&nbsp;&nbsp; __{tr}text{/tr}__ 
 			</td>
 		</tr>
 		<tr>
@@ -37,7 +37,7 @@
 		</tr>
 		<tr>
 			<td>
-				<img src='img/icons/palette.png' alt=''> <strong>{tr}Colored text{/tr}</strong> <br/> ~~#FFEE33:{tr}text{/tr}~~ {tr}or{/tr} ~~yellow:{tr}text{/tr}~~. {tr}Will display using the indicated HTML color or color name. Color name can contain two colors separated by a comma. In this case, the first color would be the foreground and the second one the background.{/tr}
+				<img src='img/icons/palette.png' alt=''> <strong>{tr}Colored text{/tr}</strong> <br/> ~~#FFEE33:{tr}text{/tr}~~ {tr}or{/tr}  ~~yellow:{tr}text{/tr}~~. {tr}Will display using the indicated HTML color or color name. Color name can contain two colors separated by a comma. In this case, the first color would be the foreground and the second one the background.{/tr}
 			</td>
 		</tr>
 		<tr>
@@ -57,7 +57,7 @@
 		</tr>
 		<tr>
 			<td>
-				<strong>{tr}Autonumbered Headings{/tr}</strong> <br/> !#, !!#, !+#, !-# ...
+				<strong>{tr}Autonumbered Headings{/tr}</strong> <br/> !#, !!#, !+#, !-# ... 
 			</td>
 		</tr>
 	{/if}{* wysiwyg *}
@@ -69,7 +69,7 @@
 	{if (!isset($wysiwyg) or $wysiwyg ne 'y') or (isset($wysiwyg) and $wysiwyg eq 'y' and $prefs.wysiwyg_wiki_parsed eq 'y')}
 		<tr>
 			<td>
-				<img src='img/icons/page.png' alt=''> <strong>{tr}Horizontal rule{/tr}</strong> &nbsp;&nbsp;&nbsp; -<em></em>-<em></em>-<em></em>-
+				<img src='img/icons/page.png' alt=''> <strong>{tr}Horizontal rule{/tr}</strong> &nbsp;&nbsp;&nbsp; -<em></em>-<em></em>-<em></em>- 
 			</td>
 		</tr>
 		<tr>
@@ -133,12 +133,12 @@
 		{/if}
 		<tr>
 			<td>
-				<img src='img/icons/text_padding_top.png' alt=''> <strong>{tr}Title bar{/tr}</strong> &nbsp;&nbsp;&nbsp; -={tr}Title{/tr}=-
+				<img src='img/icons/text_padding_top.png' alt=''> <strong>{tr}Title bar{/tr}</strong> &nbsp;&nbsp;&nbsp; -={tr}Title{/tr}=- 
 			</td>
 		</tr>
 		<tr>
 			<td>
-				<strong>{tr}Monospace font{/tr}</strong> &nbsp;&nbsp;&nbsp; -+{tr}Code sample{/tr}+-
+				<strong>{tr}Monospace font{/tr}</strong> &nbsp;&nbsp;&nbsp; -+{tr}Code sample{/tr}+- 
 			</td>
 		</tr>
 	{/if}{* wysiwyg *}
@@ -159,18 +159,18 @@
 	</tr>
 	<tr>
 		<td>
-			<strong>{tr}Preformated sections{/tr}</strong> <br/> {tr}~pp~ data ~/pp~ Displays preformated text/code; no Wiki processing is done inside these sections (as with np), and the spacing is fixed (no word wrapping is done). ~pre~ data ~/pre~ also displayes preformatted text with fixed spacing, but wiki processing still occurs on the text.{/tr}
+			<strong>{tr}Preformated sections{/tr}</strong> <br/> {tr}~pp~ data ~/pp~ Displays preformated text/code; no Wiki processing is done inside these sections (as with np), and the spacing is fixed (no word wrapping is done).  ~pre~ data ~/pre~ also displayes preformatted text with fixed spacing, but wiki processing still occurs on the text.{/tr}
 		</td>
 	</tr>
 	<tr>
 		<td>
-			<strong>{tr}Comments{/tr}</strong> <br/> {tr}~tc~ Tiki Comment ~/tc~ makes a Tiki comment. It will be completely removed from the display, but saved in the file for future reference. ~hc~ HTML Comment ~/hc~ makes an HTML comment. It will be inserted as a comment in the output HTML; these are not normally displayed in browsers, but can be seen using "View Source" or similar.{/tr}
+			<strong>{tr}Comments{/tr}</strong> <br/> {tr}~tc~ Tiki Comment ~/tc~ makes a Tiki comment.  It will be completely removed from the display, but saved in the file for future reference.  ~hc~ HTML Comment ~/hc~ makes an HTML comment.  It will be inserted as a comment in the output HTML; these are not normally displayed in browsers, but can be seen using "View Source" or similar.{/tr}
 		</td>
 	</tr>
 	{if $prefs.feature_wiki_monosp eq 'y'}
 		<tr>
 			<td>
-				<strong>{tr}Block Preformatting{/tr}</strong> <br/> {tr}Indent text with any number of spaces to turn it into a monospaced block that still follows other Wiki formatting instructions. It will be indended with the same number of spaces that you used. Note that this mode does not preserve exact spacing and line breaks; use ~pp~...~/pp~ for that.{/tr}
+				<strong>{tr}Block Preformatting{/tr}</strong> <br/> {tr}Indent text with any number of spaces to turn it into a monospaced block that still follows other Wiki formatting instructions. It will be indended with the same number of spaces that you used.  Note that this mode does not preserve exact spacing and line breaks; use ~pp~...~/pp~ for that.{/tr}
 			</td>
 		</tr>
 	{/if}

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -177,7 +177,7 @@ function wikiplugin_trackerfilter($data, $params)
 		$smarty->assign('msgTrackerFilter', $_REQUEST['msgTrackerFilter']);
 	}
 
-	$headerlib = TikiLib::lib('header');
+	global $headerlib; include_once 'lib/headerlib.php';
 	$headerlib->add_jq_onready(
 		'/* Maintain state of other trackerfilter plugin forms */
 					$(".trackerfilter form").submit( function () {
@@ -329,7 +329,7 @@ function wikiplugin_trackerfilter($data, $params)
 		if (!empty($_REQUEST['itemId']) && (empty($ignoreRequestItemId) || $ignoreRequestItemId != 'y') ) {
 			$smarty->assign('export_itemId', $_REQUEST['itemId']);
 		}
-
+		
 
 		if (empty($params['filters'])) {
 			if (!empty($filterfield)) { 	// convert param filters to export params
@@ -368,6 +368,7 @@ function wikiplugin_trackerfilter($data, $params)
 
 	if ( $first ) {
 		$first = false;
+		global $headerlib;
 		$headerlib->add_jq_onready(
 			'$("a.prevnext", "#trackerFilter' . $iTrackerFilter . ' + .trackerfilter-result").click( function( e ) {
 				e.preventDefault();
@@ -500,7 +501,7 @@ function wikiplugin_trackerFilter_split_filters($filters)
 	return $list;
 }
 
-function wikiplugin_trackerFilter_get_filters($trackerId=0, array $listfields=array(), &$formats, $status='opc')
+function wikiplugin_trackerFilter_get_filters($trackerId=0, $listfields='', &$formats, $status='opc')
 {
 	global $tiki_p_admin_trackers;
 	$trklib = TikiLib::lib('trk');

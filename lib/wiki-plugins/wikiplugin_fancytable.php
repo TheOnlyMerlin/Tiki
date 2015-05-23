@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -96,8 +96,7 @@ function wikiplugin_fancytable($data, $params)
 				isset($tsortcolumns) ? $tsortcolumns : null,
 				isset($tsfilters) ? $tsfilters : null,
 				isset($tsfilteroptions) ? $tsfilteroptions : null,
-				isset($tspaginate) ? $tspaginate : null,
-				isset($tscolselect) ? $tscolselect : null
+				isset($tspaginate) ? $tspaginate : null
 			);
 			if (is_array($ts->settings)) {
 				Table_Factory::build('plugin', $ts->settings);
@@ -125,7 +124,7 @@ function wikiplugin_fancytable($data, $params)
 
 	//Start the table
 	$style = $sort === true ? ' style="visibility:hidden"' : '';
-	$wret = '<div id="wpfancytable' . $iFancytable . '-div"' . $style . ' class="ts-wrapperdiv">' . "\r\t";
+	$wret = '<div id="wpfancytable' . $iFancytable . '-div"' . $style . '>' . "\r\t";
 	$wret .= '<table class="table table-striped table-hover normal" id="wpfancytable' . $iFancytable . '">' . "\r\t";
 
 	//Header

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -168,7 +168,7 @@ class SocialNetworksLib extends LogsLib
 			$url = preg_replace('/\?.*/', '', $url);
 		}
 		$url = urlencode($url.'?request_facebook');
-		$url = 'https://www.facebook.com/v2.0/dialog/oauth?client_id=' . $prefs['socialnetworks_facebook_application_id'] .
+		$url = 'https://graph.facebook.com/oauth/authorize?client_id=' . $prefs['socialnetworks_facebook_application_id'] .
 			'&scope=' . $scope . '&redirect_uri='.$url;
 		header("Location: $url");
 		die();
@@ -190,7 +190,7 @@ class SocialNetworksLib extends LogsLib
 			return false;
 		}
 
-		$url = '/v2.0/oauth/access_token?client_id=' . $prefs['socialnetworks_facebook_application_id'] .
+		$url = '/oauth/access_token?client_id=' . $prefs['socialnetworks_facebook_application_id'] .
 			'&redirect_uri=' . $this->getURL() .'&client_secret=' . $prefs['socialnetworks_facebook_application_secr']; // code is already in the url
 
 
@@ -247,7 +247,7 @@ class SocialNetworksLib extends LogsLib
 						$this->set_user_preference($user, 'socialnetworks_user_firstlogin', 'y');
 					}
 				} else {
-					$smarty = TikiLib::lib('smarty');
+					global $smarty;
 					$smarty->assign('errortype', 'login');
 					$smarty->assign('msg', tra('You need to link your local account to Facebook before you can login using it'));
 					$smarty->display('error.tpl');
@@ -403,7 +403,7 @@ class SocialNetworksLib extends LogsLib
 			$action .= "?$data";
 		}
 
-		$request = "$method /v2.0/$action HTTP/1.1\r\n".
+		$request = "$method /$action HTTP/1.1\r\n".
 			"Host: graph.facebook.com\r\n".
 			"Accept: */*\r\n".
 			"Expect: 100-continue\r\n".
@@ -573,11 +573,10 @@ class SocialNetworksLib extends LogsLib
 	/**
 	 * Get Timeline off Twitter
 	 * @param  string	$user		Tiki username to get timeline for
-	 * @param  string	$timelineType	Timeline to get: public/friends/search - Default: public
-	 * @param  string	$search		Search string
+	 * @param  string	$timelineType	Timeline to get: public/friends - Default: public
 	 * @return string|int			-1 if the user did not authorize the site with twitter, a negative number corresponding to the HTTP response codes from twitter (https://dev.twitter.com/docs/streaming-api/response-codes) or the requested timeline (json encoded object)
 	 */
-	function getTwitterTimeline($user, $timelineType = 'public', $search = 'tikiwiki' )
+	function getTwitterTimeline($user, $timelineType = 'public' )
 	{
 		global $prefs;
 		$token=$this->get_user_preference($user, 'twitter_token', '');
@@ -600,8 +599,6 @@ class SocialNetworksLib extends LogsLib
 
 		if ($timelineType=='friends') {
 			$response = $twitter->statusesHomeTimeline();
-		} elseif ($timelineType == 'search') {
-			$response = $twitter->search->tweets($search, array('include_entities' => true));
 		} else {
 			$response = $twitter->statusesUserTimeline();
 		}
@@ -644,7 +641,7 @@ class SocialNetworksLib extends LogsLib
 
 		}
 
-			$request="GET /v2.0/me/feed".$getdata." HTTP/1.1\r\n".
+			$request="GET /me/feed".$getdata." HTTP/1.1\r\n".
 			 "Host: graph.facebook.com\r\n".
 			 "Accept:*/*\r\n".
 			 "Accept-Charset:ISO-8859-1,utf-8;q=0.7,*;q=0.3\r\n".

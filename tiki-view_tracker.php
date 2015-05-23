@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -49,7 +49,6 @@ if (! $trackerDefinition) {
 }
 
 $tracker_info = $trackerDefinition->getInformation();
-$fields['data'] = array();
 
 $tikilib->get_perm_object($_REQUEST['trackerId'], 'tracker', $tracker_info);
 if (!empty($_REQUEST['show']) && $_REQUEST['show'] == 'view') {
@@ -517,7 +516,7 @@ if ($tiki_p_export_tracker == 'y') {
 	$smarty->assign_by_ref('trackers', $trackers['data']);
 	include_once ('lib/wiki-plugins/wikiplugin_trackerfilter.php');
 	$formats = '';
-	$filters = wikiplugin_trackerFilter_get_filters($_REQUEST['trackerId'], array(), $formats);
+	$filters = wikiplugin_trackerFilter_get_filters($_REQUEST['trackerId'], '', $formats);
 	$smarty->assign_by_ref('filters', $filters);
 	if (!empty($_REQUEST['displayedFields'])) {
 		if (is_string($_REQUEST['displayedFields'])) {

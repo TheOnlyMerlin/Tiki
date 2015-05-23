@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -15,7 +15,7 @@ class Services_Object_Controller
 			$supported[] = 'trackeritem';
 		}
 
-		if ($prefs['activity_basic_events'] == 'y' || $prefs['activity_custom_events'] == 'y' || $prefs['monitor_enabled']) {
+		if ($prefs['activity_basic_events'] == 'y' || $prefs['activity_custom_events'] == 'y') {
 			$supported[] = 'activity';
 		}
 

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -25,20 +25,17 @@
  * params still relevant:
  *
  *     text        Required: the text/html to display in the popup window
- *     trigger     'onClick' and native bootstrap params: 'click', 'hover', 'focus', 'manual' ('hover' default)
- *     sticky      false/true - this is currently an alias for trigger['click'] which is wrong. 
- *     							Sticky should define whether the popup should stay until clicked, not how it is triggered.
+ *     trigger     'onMouseOver' or 'onClick' (onMouseOver default)
+ *     sticky      false/true
  *     width       in pixels?
  *     fullhtml
- *     delay       number of miliseconds to delay showing or hiding of popover. If just one number, then it will apply to both
- *                 show and hide, or use "500|1000" to have a 500 ms show delay and a 1000 ms hide delay
  */
 function smarty_function_popup($params, $smarty)
 {
 	$options = array(
 		'data-toggle' => 'popover',
 		'data-container' => 'body',
-		'data-trigger' => 'hover focus',
+		'data-trigger' => 'hover',
 		'data-content' => '',
 	);
 
@@ -49,19 +46,9 @@ function smarty_function_popup($params, $smarty)
 				break;
 			case 'trigger':
 				switch ($value) {
-					// is this legacy? should not be used anywhere
 					case 'onclick':
 					case 'onClick':
 						$options['data-trigger'] = 'click';
-						break;
-					// support native bootstrap params - could be moved to default but not sure whether it breaks something
-					case 'hover focus':
-					case 'focus hover':
-					case 'click':
-					case 'hover':
-					case 'focus':
-					case 'manual':
-						$options['data-trigger'] = $value;
 						break;
 					default:
 						break;
@@ -75,7 +62,7 @@ function smarty_function_popup($params, $smarty)
 				$options[$key] = $value;
 				break;
 			case 'sticky':
-				$options['data-trigger'] = 'click';
+				//$options['data-trigger'] = 'focus'; // doesn't seem to work
 				break;
 			case 'fullhtml':
 				$options['data-html'] = true;
@@ -99,7 +86,6 @@ function smarty_function_popup($params, $smarty)
         return false;
 	}
 
-
 	$options['data-content'] = preg_replace(array('/\\\\r\n/','/\\\\n/','/\\\\r/', '/\\t/'), '', $options['data-content']);
 	$options['data-content'] = str_replace('\&#039;', '&#039;', $options['data-content']);	// unescape previous js escapes
 	$options['data-content'] = str_replace('\&quot;', '&quot;', $options['data-content']);
@@ -108,18 +94,7 @@ function smarty_function_popup($params, $smarty)
 	$retval = '';
 
 	foreach ($options as $k => $v) {
-		$retval .= $k . '=' . json_encode($v, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ' ';
-	}
-
-	//handle delay param here since slashes added by the above break the code
-	if (!empty($params['delay'])) {
-		$explode = explode('|', $params['delay']);
-		if (count($explode) == 1) {
-			$delay = (int) $explode[0];
-		} else {
-			$delay = '{"show":"'. (int) $explode[0] . '", "hide":"' . (int) $explode[1] . '"}';
-		}
-		$retval .= ' data-delay=\'' . $delay . '\'';
+		$retval .= $k . '=' . json_encode($v, JSON_UNESCAPED_SLASHES) . ' ';
 	}
 
 	return $retval;

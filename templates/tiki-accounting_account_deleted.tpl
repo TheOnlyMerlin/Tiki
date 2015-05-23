@@ -4,7 +4,7 @@
 {/title}
 {if !empty($errors)}
 	<div class="alert alert-warning">
-		{icon name='error' alt="{tr}Error{/tr}" style="vertical-align:middle" align="left"}
+		{icon _id=exclamation alt="{tr}Error{/tr}" style="vertical-align:middle" align="left"}
 		{foreach from=$errors item=m name=errors}
 			{$m}
 			{if !$smarty.foreach.errors.last}<br>{/if}

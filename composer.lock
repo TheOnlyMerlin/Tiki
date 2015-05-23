@@ -1,22 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
-        "This file is @generated automatically"
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "08da97572c88504465da694169f86573",
+    "hash": "ff8e51f121b080519fc5a386820a039d",
     "packages": [
-        {
-            "name": "Sam152/Javascript-Equal-Height-Responsive-Rows",
-            "version": "1.0.0",
-            "dist": {
-                "type": "zip",
-                "url": "https://composer.tiki.org/dist/sam152-javascript-equal-height-responsive-rows-1.0.0.zip",
-                "reference": "1.0.0",
-                "shasum": "fd52c7dafa7ef233d005dceff8212add2d4a7136"
-            },
-            "type": "library"
-        },
         {
             "name": "adodb/adodb",
             "version": "5.18",
@@ -74,36 +62,21 @@
             "type": "component"
         },
         {
-            "name": "alxlit/bootstrap-chosen",
-            "version": "1.0.1",
-            "dist": {
-                "type": "zip",
-                "url": "https://composer.tiki.org/dist/alxlit-bootstrap-chosen-1.0.1.zip",
-                "reference": "1.0.1",
-                "shasum": "4210e2ecf5ccc36c2fafcae8befe1d0de3bedc06"
-            },
-            "type": "library"
-        },
-        {
             "name": "bombayworks/zendframework1",
-            "version": "v1.12.11",
+            "version": "v1.12.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bombayworks/zendframework1.git",
-                "reference": "64447e39d4c7a08ba17d2087a89caab713804d27"
+                "reference": "v1.12.3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://composer.tiki.org/dist/bombayworks-zendframework1-64447e39d4c7a08ba17d2087a89caab713804d27-zip-9bb8b8.zip",
-                "reference": "v1.12.11",
-                "shasum": "a1be51bd5f69d4f7571570206368b65aea775318"
+                "url": "https://composer.tiki.org/dist/bombayworks-zendframework1-v1.12.3-v1.12.3-2cceec.zip",
+                "reference": "v1.12.3",
+                "shasum": "ae2001e5c24db10ee1aed63f224b07720327df92"
             },
             "require": {
                 "php": ">=5.2.11"
-            },
-            "require-dev": {
-                "phpunit/dbunit": "1.3.*",
-                "phpunit/phpunit": "3.7.*"
             },
             "bin": [
                 "bin/zf.sh",
@@ -112,17 +85,27 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.12.x-dev"
+                    "dev-trunk": "1.12.x-dev",
+                    "dev-release-1.0": "1.0.x-dev",
+                    "dev-release-1.5": "1.5.x-dev",
+                    "dev-release-1.6": "1.6.x-dev",
+                    "dev-release-1.7": "1.7.x-dev",
+                    "dev-release-1.8": "1.8.x-dev",
+                    "dev-release-1.9": "1.9.x-dev",
+                    "dev-release-1.10": "1.10.x-dev",
+                    "dev-release-1.11": "1.11.x-dev"
                 }
             },
             "autoload": {
                 "psr-0": {
-                    "Zend_": "library/"
+                    "Zend_": "library/",
+                    "ZendX_": "extras/library/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
             "include-path": [
-                "library/"
+                "library/",
+                "extras/library/"
             ],
             "license": [
                 "BSD-3-Clause"
@@ -133,21 +116,21 @@
                 "ZF1",
                 "framework"
             ],
-            "time": "2015-02-11 16:00:41"
+            "time": "2013-03-13 17:09:28"
         },
         {
             "name": "ckeditor/ckeditor",
-            "version": "4.4.7",
+            "version": "4.3.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ckeditor/ckeditor-releases.git",
-                "reference": "cc324415302784eb1abe33a3762fbdd3b48c558b"
+                "reference": "b39eebd5f865fe33e34e33db9a33512655e6e656"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://composer.tiki.org/dist/ckeditor-ckeditor-cc324415302784eb1abe33a3762fbdd3b48c558b-zip-f54d37.zip",
-                "reference": "4.4.7",
-                "shasum": "35b28edbbd269291743bb9affa5e355e7cc26d1b"
+                "url": "https://composer.tiki.org/dist/ckeditor-ckeditor-b39eebd5f865fe33e34e33db9a33512655e6e656-zip-9e41c9.zip",
+                "reference": "4.3.4",
+                "shasum": "813b8283177f450010613288d9a40571e3921318"
             },
             "type": "library",
             "notification-url": "https://packagist.org/downloads/",
@@ -158,7 +141,7 @@
             ],
             "authors": [
                 {
-                    "name": "CKSource",
+                    "name": "CKSource - Frederico Knabben",
                     "homepage": "http://cksource.com"
                 }
             ],
@@ -174,198 +157,40 @@
                 "text",
                 "wysiwyg"
             ],
-            "time": "2015-01-27 15:13:53"
+            "time": "2014-03-25 14:33:54"
         },
         {
             "name": "ckeditor/ckeditor/plugins/divarea",
-            "version": "4.4.7",
+            "version": "4.3.4",
             "dist": {
                 "type": "zip",
-                "url": "https://composer.tiki.org/dist/ckeditor-ckeditor-plugins-divarea-4.4.7.zip",
-                "reference": "4.4.7",
-                "shasum": "ac19c1d99e3a645b3ee83c857b4f6ae6ee4f9893"
+                "url": "https://composer.tiki.org/dist/ckeditor-ckeditor-plugins-divarea-4.3.4.zip",
+                "reference": "4.3.4",
+                "shasum": "ac1a869b2903ff1f5e43b4e44c912b218d2b975e"
             },
             "type": "library"
         },
         {
             "name": "ckeditor/ckeditor/skins/kama",
-            "version": "4.4.7",
+            "version": "4.3.4",
             "dist": {
                 "type": "zip",
-                "url": "https://composer.tiki.org/dist/ckeditor-ckeditor-skins-kama-4.4.7.zip",
-                "reference": "4.4.7",
-                "shasum": "f03858b1d65157bcab7ff8382f35330e030a2522"
+                "url": "https://composer.tiki.org/dist/ckeditor-ckeditor-skins-kama-4.3.4.zip",
+                "reference": "4.3.4",
+                "shasum": "5b92ea821d1e48c50d4a891873a34c30fea0f5cd"
             },
             "type": "library"
         },
         {
             "name": "codemirror/codemirror",
-            "version": "4.12.0",
+            "version": "3.24.0",
             "dist": {
                 "type": "zip",
-                "url": "https://composer.tiki.org/dist/codemirror-codemirror-4.12.0.zip",
-                "reference": "4.12.0",
-                "shasum": "4e06c7627cff29f84fc24422f44158308a6bd5fe"
+                "url": "https://composer.tiki.org/dist/codemirror-codemirror-3.24.0.zip",
+                "reference": "3.24.0",
+                "shasum": "f69131fd232f661b23656922ebeccc10b0e93bad"
             },
             "type": "library"
-        },
-        {
-            "name": "components/bootstrap",
-            "version": "3.3.4",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/components/bootstrap.git",
-                "reference": "699ecb616573d899e4c26f8735b0df7245719f87"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/components/bootstrap/zipball/699ecb616573d899e4c26f8735b0df7245719f87",
-                "reference": "699ecb616573d899e4c26f8735b0df7245719f87",
-                "shasum": ""
-            },
-            "require": {
-                "components/jquery": ">=1.9.1 <3.0"
-            },
-            "suggest": {
-                "components/bootstrap-default": "Provide a theme for Bootstrap as components/bootstrap only provides the CSS as file assets"
-            },
-            "type": "component",
-            "extra": {
-                "component": {
-                    "scripts": [
-                        "js/bootstrap.js"
-                    ],
-                    "files": [
-                        "js/*.js",
-                        "css/*.css",
-                        "css/*.map",
-                        "fonts/*",
-                        "less/mixins/*.less",
-                        "less/*.less"
-                    ],
-                    "shim": {
-                        "deps": [
-                            "jquery"
-                        ]
-                    }
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Jacob Thornton",
-                    "email": "jacobthornton@gmail.com"
-                },
-                {
-                    "name": "Mark Otto",
-                    "email": "markdotto@gmail.com"
-                }
-            ],
-            "description": "The most popular front-end framework for developing responsive, mobile first projects on the web.",
-            "homepage": "http://getbootstrap.com",
-            "keywords": [
-                "css",
-                "framework",
-                "front-end",
-                "less",
-                "mobile-first",
-                "responsive",
-                "web"
-            ],
-            "time": "2015-03-17 07:36:54"
-        },
-        {
-            "name": "components/jquery",
-            "version": "2.1.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/components/jquery.git",
-                "reference": "f8edb647d1833fd5d57410ab70860f03534cb2e8"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/components/jquery/zipball/f8edb647d1833fd5d57410ab70860f03534cb2e8",
-                "reference": "f8edb647d1833fd5d57410ab70860f03534cb2e8",
-                "shasum": ""
-            },
-            "type": "component",
-            "extra": {
-                "component": {
-                    "scripts": [
-                        "jquery.js"
-                    ],
-                    "files": [
-                        "jquery.min.js",
-                        "jquery.min.map",
-                        "jquery-migrate.js",
-                        "jquery-migrate.min.js"
-                    ]
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "John Resig",
-                    "email": "jeresig@gmail.com"
-                }
-            ],
-            "description": "jQuery JavaScript Library",
-            "homepage": "http://jquery.com",
-            "time": "2014-12-23 06:48:45"
-        },
-        {
-            "name": "cwspear/bootstrap-hover-dropdown",
-            "version": "2.1.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/CWSpear/bootstrap-hover-dropdown.git",
-                "reference": "e8bc99836b5ab50816786bbaba2dd2c4d6a0d094"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://composer.tiki.org/dist/cwspear-bootstrap-hover-dropdown-e8bc99836b5ab50816786bbaba2dd2c4d6a0d094-zip-868000.zip",
-                "reference": "2.1.3",
-                "shasum": "be9af015d16fd8edad110cff37c480e14187cd76"
-            },
-            "require": {
-                "components/bootstrap": "~3.0",
-                "components/jquery": ">=1.9"
-            },
-            "type": "component",
-            "extra": {
-                "component": {
-                    "name": "bootstrap-hover-dropdown",
-                    "files": [
-                        "bootstrap-hover-dropdown.js"
-                    ]
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Cameron Spear",
-                    "email": "cam@cameronspear.com",
-                    "homepage": "http://cameronspear.com",
-                    "role": "Developer"
-                }
-            ],
-            "description": "An unofficial Bootstrap plugin to enable Bootstrap dropdowns to activate on hover and provide a nice user experience.",
-            "keywords": [
-                "bootstrap",
-                "dropdowns",
-                "hover",
-                "twitter"
-            ],
-            "time": "2015-02-08 02:43:16"
         },
         {
             "name": "dompdf/dompdf",
@@ -559,93 +384,47 @@
             "time": "2014-06-24 17:15:33"
         },
         {
-            "name": "fortawesome/font-awesome",
-            "version": "v4.3.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/FortAwesome/Font-Awesome.git",
-                "reference": "41b9ed01103e6820c3cb043ba7ddab30ecd3f4c0"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/FortAwesome/Font-Awesome/zipball/41b9ed01103e6820c3cb043ba7ddab30ecd3f4c0",
-                "reference": "41b9ed01103e6820c3cb043ba7ddab30ecd3f4c0",
-                "shasum": ""
-            },
-            "require-dev": {
-                "jekyll": "1.0.2",
-                "lessc": "1.4.2"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "4.0.x-dev"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "OFL-1.1",
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Dave Gandy",
-                    "email": "dave@fontawesome.io",
-                    "homepage": "http://twitter.com/davegandy",
-                    "role": "Developer"
-                }
-            ],
-            "description": "The iconic font and CSS framework",
-            "homepage": "http://fontawesome.io/",
-            "keywords": [
-                "FontAwesome",
-                "awesome",
-                "bootstrap",
-                "font",
-                "icon"
-            ],
-            "time": "2015-01-22 18:09:42"
-        },
-        {
             "name": "gabordemooij/redbean",
-            "version": "v4.2.0",
+            "version": "v3.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/gabordemooij/redbean.git",
-                "reference": "840a2e0d856042e75a701453f37896c597c6fbc2"
+                "reference": "41bb293e2bc744c150e4ae30e30fb5083e047f53"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/gabordemooij/redbean/zipball/840a2e0d856042e75a701453f37896c597c6fbc2",
-                "reference": "840a2e0d856042e75a701453f37896c597c6fbc2",
+                "url": "https://api.github.com/repos/gabordemooij/redbean/zipball/41bb293e2bc744c150e4ae30e30fb5083e047f53",
+                "reference": "41bb293e2bc744c150e4ae30e30fb5083e047f53",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.4"
+                "php": ">=5.2.0"
             },
             "type": "library",
             "autoload": {
-                "psr-4": {
-                    "RedBeanPHP\\": "RedBeanPHP"
+                "psr-0": {
+                    "RedBean_": ""
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "New BSD and GPLv2"
+                "BSD"
             ],
             "authors": [
                 {
                     "name": "Gabor de Mooij",
-                    "email": "gabor@redbeanphp.com",
-                    "homepage": "http://redbeanphp.com"
+                    "email": "gabordemooij@gmail.com",
+                    "homepage": "http://www.redbeanphp.com",
+                    "role": "Developer"
                 }
             ],
-            "description": "RedBeanPHP ORM",
-            "homepage": "http://redbeanphp.com/",
+            "description": "Easy ORM for PHP",
+            "homepage": "http://github.com/gabordemooij/redbean",
             "keywords": [
+                "Object Relational Mapping",
                 "orm"
             ],
-            "time": "2015-04-01 19:03:42"
+            "time": "2013-10-30 22:13:02"
         },
         {
             "name": "jcapture-applet/jcapture-applet",
@@ -702,23 +481,34 @@
         },
         {
             "name": "jquery/jquery",
-            "version": "1.11.2",
+            "version": "1.11.0",
             "dist": {
                 "type": "zip",
-                "url": "https://composer.tiki.org/dist/jquery-jquery-1.11.2.zip",
-                "reference": "1.11.2",
-                "shasum": "8200fc1f8537a6983371b59210188fc5e1f0cc96"
+                "url": "https://composer.tiki.org/dist/jquery-jquery-1.11.0.zip",
+                "reference": "1.11.0",
+                "shasum": "32ecccc68855e17da715ae66129f620b9d218fb6"
             },
             "type": "library"
         },
         {
             "name": "jquery/jquery-min",
-            "version": "1.11.2",
+            "version": "1.11.0",
             "dist": {
                 "type": "zip",
-                "url": "https://composer.tiki.org/dist/jquery-jquery-min-1.11.2.zip",
-                "reference": "1.11.2",
-                "shasum": "009d924477cd1c5740fdedb59dea95b7e0236d30"
+                "url": "https://composer.tiki.org/dist/jquery-jquery-min-1.11.0.zip",
+                "reference": "1.11.0",
+                "shasum": "5aec82e9482beb426bc5ac0273ae29d87f59c34e"
+            },
+            "type": "library"
+        },
+        {
+            "name": "jquery/jquery-mobile",
+            "version": "1.3.2",
+            "dist": {
+                "type": "zip",
+                "url": "https://composer.tiki.org/dist/jquery-jquery-mobile-1.3.2.zip",
+                "reference": "1.3.2",
+                "shasum": "40397672e06756864eb8a7aeedc7a1be2ed410ae"
             },
             "type": "library"
         },
@@ -746,34 +536,45 @@
         },
         {
             "name": "jquery/jquery-timepicker-addon",
-            "version": "1.5.0",
+            "version": "1.4.4",
             "dist": {
                 "type": "zip",
-                "url": "https://composer.tiki.org/dist/jquery-jquery-timepicker-addon-1.5.0.zip",
-                "reference": "1.5.0",
-                "shasum": "d39e2076c00d42552e0ec67ec744883c4780ced5"
+                "url": "https://composer.tiki.org/dist/jquery-jquery-timepicker-addon-1.4.4.zip",
+                "reference": "1.4.4",
+                "shasum": "5d13f97c5d1184c6a62265c87f6e9444683270f0"
             },
             "type": "library"
         },
         {
             "name": "jquery/jquery-ui",
-            "version": "1.11.3",
+            "version": "1.10.4",
             "dist": {
                 "type": "zip",
-                "url": "https://composer.tiki.org/dist/jquery-jquery-ui-1.11.3.zip",
-                "reference": "1.11.3",
-                "shasum": "0b492d038d0384a18558a6bd146c7a0b0004edeb"
+                "url": "https://composer.tiki.org/dist/jquery-jquery-ui-1.10.4.zip",
+                "reference": "1.10.4",
+                "shasum": "5d6d8ffe7592657356f206f3f56a53ff32964230"
+            },
+            "type": "library"
+        },
+        {
+            "name": "jquery/jquery-ui-selectmenu",
+            "version": "1.3.999",
+            "dist": {
+                "type": "zip",
+                "url": "https://composer.tiki.org/dist/jquery-jquery-ui-selectmenu-1.3.999.zip",
+                "reference": "1.3.999",
+                "shasum": "b4f24effc891eaabbfc90e5824913640b22a29c4"
             },
             "type": "library"
         },
         {
             "name": "jquery/jquery-ui-themes",
-            "version": "1.11.3",
+            "version": "1.10.4",
             "dist": {
                 "type": "zip",
-                "url": "https://composer.tiki.org/dist/jquery-jquery-ui-themes-1.11.3.zip",
-                "reference": "1.11.3",
-                "shasum": "fbf541452e570b68dbf2b1b851e11982c54e6168"
+                "url": "https://composer.tiki.org/dist/jquery-jquery-ui-themes-1.10.4.zip",
+                "reference": "1.10.4",
+                "shasum": "47b818d17a4cb527a3a3f83a9ce59a027bcbea60"
             },
             "type": "library"
         },
@@ -823,12 +624,12 @@
         },
         {
             "name": "jquery/plugins/anythingslider",
-            "version": "1.9.4",
+            "version": "1.9.2",
             "dist": {
                 "type": "zip",
-                "url": "https://composer.tiki.org/dist/jquery-plugins-anythingslider-1.9.4.zip",
-                "reference": "1.9.4",
-                "shasum": "3e3af8c1fb79a8835cecb2f7d9bf6637f2850210"
+                "url": "https://composer.tiki.org/dist/jquery-plugins-anythingslider-1.9.2.zip",
+                "reference": "1.9.2",
+                "shasum": "32843785ddb162ff8c8d2e3efec35c4ac939bfe7"
             },
             "type": "library"
         },
@@ -856,23 +657,23 @@
         },
         {
             "name": "jquery/plugins/chosen",
-            "version": "1.3.0",
+            "version": "1.0.0",
             "dist": {
                 "type": "zip",
-                "url": "https://composer.tiki.org/dist/jquery-plugins-chosen-1.3.0.zip",
-                "reference": "1.3.0",
-                "shasum": "1a2cedf095ccbc6b739b2e19c4325d289fe070f1"
+                "url": "https://composer.tiki.org/dist/jquery-plugins-chosen-1.0.0.zip",
+                "reference": "1.0.0",
+                "shasum": "564d786aa1f9225124e37f4dbf0810c55554df87"
             },
             "type": "library"
         },
         {
             "name": "jquery/plugins/colorbox",
-            "version": "1.5.14",
+            "version": "1.5.8",
             "dist": {
                 "type": "zip",
-                "url": "https://composer.tiki.org/dist/jquery-plugins-colorbox-1.5.14.zip",
-                "reference": "1.5.14",
-                "shasum": "48b990dbca120985488d1c0e27d0f3d9caae9af8"
+                "url": "https://composer.tiki.org/dist/jquery-plugins-colorbox-1.5.8.zip",
+                "reference": "1.5.8",
+                "shasum": "a11d483b0da2612869df3d7de8a0a73ca8d0f655"
             },
             "type": "library"
         },
@@ -889,12 +690,12 @@
         },
         {
             "name": "jquery/plugins/form",
-            "version": "3.51",
+            "version": "3.25.0",
             "dist": {
                 "type": "zip",
-                "url": "https://composer.tiki.org/dist/jquery-plugins-form-3.51.zip",
-                "reference": "3.51",
-                "shasum": "fc723f50d519d0f97a4f09d5f97bd1dbfecaf374"
+                "url": "https://composer.tiki.org/dist/jquery-plugins-form-3.25.0.zip",
+                "reference": "3.25.0",
+                "shasum": "8b21b31d293d48c66bd49b97a9f3f9baa5dcd02c"
             },
             "type": "library"
         },
@@ -922,23 +723,23 @@
         },
         {
             "name": "jquery/plugins/jquery-json",
-            "version": "2.5.1",
+            "version": "2.4",
             "dist": {
                 "type": "zip",
-                "url": "https://composer.tiki.org/dist/jquery-plugins-jquery-json-2.5.1.zip",
-                "reference": "2.5.1",
-                "shasum": "09320a9b9d9c0527630449d3d4e0236aad39497c"
+                "url": "https://composer.tiki.org/dist/jquery-plugins-jquery-json-2.4.zip",
+                "reference": "2.4",
+                "shasum": "0862952c0d2b7b073db97913160709b5542e752e"
             },
             "type": "library"
         },
         {
             "name": "jquery/plugins/jquery-validation",
-            "version": "1.13.1",
+            "version": "1.11.1",
             "dist": {
                 "type": "zip",
-                "url": "https://composer.tiki.org/dist/jquery-plugins-jquery-validation-1.13.1.zip",
-                "reference": "1.13.1",
-                "shasum": "af63e16cfa83a07ce7a5f02b5711bdfe7b2f65cc"
+                "url": "https://composer.tiki.org/dist/jquery-plugins-jquery-validation-1.11.1.zip",
+                "reference": "1.11.1",
+                "shasum": "d213520877538e49c35bf862b24358bf417e495e"
             },
             "type": "library"
         },
@@ -1010,23 +811,23 @@
         },
         {
             "name": "jquery/plugins/superfish",
-            "version": "1.7.5",
+            "version": "1.7.4",
             "dist": {
                 "type": "zip",
-                "url": "https://composer.tiki.org/dist/jquery-plugins-superfish-1.7.5.zip",
-                "reference": "1.7.5",
-                "shasum": "e1d8a2d97e183593d4f014ff1094df67ad319cd5"
+                "url": "https://composer.tiki.org/dist/jquery-plugins-superfish-1.7.4.zip",
+                "reference": "1.7.4",
+                "shasum": "b27e1fb4f51d10830c610d83f1e1392ef308007c"
             },
             "type": "library"
         },
         {
             "name": "jquery/plugins/tablesorter",
-            "version": "2.21.2",
+            "version": "2.17.2",
             "dist": {
                 "type": "zip",
-                "url": "https://composer.tiki.org/dist/jquery-plugins-tablesorter-2.21.2.zip",
-                "reference": "2.21.2",
-                "shasum": "015451ce2f71f00ae798e0b5ddeaf3b6d8c8ae7c"
+                "url": "https://composer.tiki.org/dist/jquery-plugins-tablesorter-2.17.2.zip",
+                "reference": "2.17.2",
+                "shasum": "ce879e329393e8238a031f46382e9772d1d3b46c"
             },
             "type": "library"
         },
@@ -1054,16 +855,16 @@
         },
         {
             "name": "kriswallsmith/assetic",
-            "version": "v1.2.1",
+            "version": "v1.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/kriswallsmith/assetic.git",
-                "reference": "b20efe38845d20458702f97f3ff625d80805897b"
+                "reference": "735cffd3982c6e8cdebe292d5db39d077f65890f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kriswallsmith/assetic/zipball/b20efe38845d20458702f97f3ff625d80805897b",
-                "reference": "b20efe38845d20458702f97f3ff625d80805897b",
+                "url": "https://api.github.com/repos/kriswallsmith/assetic/zipball/735cffd3982c6e8cdebe292d5db39d077f65890f",
+                "reference": "735cffd3982c6e8cdebe292d5db39d077f65890f",
                 "shasum": ""
             },
             "require": {
@@ -1078,9 +879,7 @@
                 "leafo/scssphp": "*",
                 "leafo/scssphp-compass": "*",
                 "mrclay/minify": "*",
-                "patchwork/jsqueeze": "~1.0",
-                "phpunit/phpunit": "~4",
-                "psr/log": "~1.0",
+                "phpunit/phpunit": "~3.7",
                 "ptachoire/cssembed": "*",
                 "twig/twig": "~1.6"
             },
@@ -1088,14 +887,13 @@
                 "leafo/lessphp": "Assetic provides the integration with the lessphp LESS compiler",
                 "leafo/scssphp": "Assetic provides the integration with the scssphp SCSS compiler",
                 "leafo/scssphp-compass": "Assetic provides the integration with the SCSS compass plugin",
-                "patchwork/jsqueeze": "Assetic provides the integration with the JSqueeze JavaScript compressor",
                 "ptachoire/cssembed": "Assetic provides the integration with phpcssembed to embed data uris",
                 "twig/twig": "Assetic provides the integration with the Twig templating engine"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.2-dev"
+                    "dev-master": "1.1-dev"
                 }
             },
             "autoload": {
@@ -1124,7 +922,7 @@
                 "compression",
                 "minification"
             ],
-            "time": "2014-12-12 05:04:05"
+            "time": "2013-07-19 00:03:27"
         },
         {
             "name": "md5/md5",
@@ -1143,12 +941,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jakiestfu/Medium.js.git",
-                "reference": "ac7207bfd22a6af8c5aa7fce50331ffb01a92e4a"
+                "reference": "b8c31490f361636d8e64dc0939f0f9e6c10e99a1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jakiestfu/Medium.js/zipball/ac7207bfd22a6af8c5aa7fce50331ffb01a92e4a",
-                "reference": "ac7207bfd22a6af8c5aa7fce50331ffb01a92e4a",
+                "url": "https://api.github.com/repos/jakiestfu/Medium.js/zipball/b8c31490f361636d8e64dc0939f0f9e6c10e99a1",
+                "reference": "b8c31490f361636d8e64dc0939f0f9e6c10e99a1",
                 "shasum": ""
             },
             "require": {
@@ -1174,19 +972,7 @@
                     "role": "Lead Developer"
                 }
             ],
-            "description": "A tiny JavaScript library for making contenteditable beautiful (Like Medium's editor).",
-            "time": "2015-02-26 13:51:46"
-        },
-        {
-            "name": "morteza/bootstrap-rtl",
-            "version": "3.3.2",
-            "dist": {
-                "type": "zip",
-                "url": "https://composer.tiki.org/dist/morteza-bootstrap-rtl-3.3.2.zip",
-                "reference": "3.3.2",
-                "shasum": "36bb6a0ce365d171516c17f9cca6268d0c9b5ee7"
-            },
-            "type": "library"
+            "time": "2014-09-11 16:16:03"
         },
         {
             "name": "phenx/php-font-lib",
@@ -1224,12 +1010,12 @@
         },
         {
             "name": "phpcas/phpcas",
-            "version": "1.3.3",
+            "version": "1.3.2",
             "dist": {
                 "type": "zip",
-                "url": "https://composer.tiki.org/dist/phpcas-phpcas-1.3.3.zip",
-                "reference": "1.3.3",
-                "shasum": "4b7448986dc8f41e1ce9085f81ec3209de6c8e94"
+                "url": "https://composer.tiki.org/dist/phpcas-phpcas-1.3.2.zip",
+                "reference": "1.3.2",
+                "shasum": "577d74b5a193fc011d99898f037b1198c93073f3"
             },
             "type": "library"
         },
@@ -1418,32 +1204,27 @@
         },
         {
             "name": "smarty/smarty",
-            "version": "v3.1.21",
+            "version": "v3.1.18",
             "source": {
-                "type": "git",
-                "url": "https://github.com/smarty-php/smarty.git",
-                "reference": "1f878e6d746ecc8ec8d00d9c75044cf7d23ad94a"
+                "type": "svn",
+                "url": "http://smarty-php.googlecode.com/svn",
+                "reference": "/tags/v3.1.18/@4839"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://composer.tiki.org/dist/smarty-smarty-1f878e6d746ecc8ec8d00d9c75044cf7d23ad94a-zip-13a9f0.zip",
-                "reference": "v3.1.21",
-                "shasum": "832bf33d8819dc9d89dc3373f8cae6f730febf0b"
+                "url": "https://composer.tiki.org/dist/smarty-smarty-v3.1.18-17a6e2.zip",
+                "reference": "v3.1.18",
+                "shasum": "ae2d06617491f5adf39f14559feb29aa4c2e960d"
             },
             "require": {
                 "php": ">=5.2"
             },
             "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "3.1.x-dev"
-                }
-            },
             "autoload": {
                 "classmap": [
-                    "libs/Smarty.class.php",
-                    "libs/SmartyBC.class.php",
-                    "libs/sysplugins/smarty_security.php"
+                    "distribution/libs/Smarty.class.php",
+                    "distribution/libs/SmartyBC.class.php",
+                    "distribution/libs/sysplugins/smarty_security.php"
                 ]
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -1469,7 +1250,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2014-10-31 04:22:20"
+            "time": "2014-05-08 18:38:30"
         },
         {
             "name": "svg-edit/svg-edit",
@@ -1484,18 +1265,18 @@
         },
         {
             "name": "symfony/config",
-            "version": "v2.6.4",
+            "version": "v2.4.3",
             "target-dir": "Symfony/Component/Config",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Config.git",
-                "reference": "a9f781ba1221067d1f07c8cec0bc50f81b8d7408"
+                "reference": "e98693981385224bd31667e56204f311d9e0f98e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://composer.tiki.org/dist/symfony-config-a9f781ba1221067d1f07c8cec0bc50f81b8d7408-zip-a2a4ca.zip",
-                "reference": "v2.6.4",
-                "shasum": "e49b66d9f219f8f06b6f708f978946092aad2794"
+                "url": "https://composer.tiki.org/dist/symfony-config-e98693981385224bd31667e56204f311d9e0f98e-zip-ea9d67.zip",
+                "reference": "v2.4.3",
+                "shasum": "d5127b7dd29dbd6124ebc56e4dcab6f54e0faf6c"
             },
             "require": {
                 "php": ">=5.3.3",
@@ -1504,7 +1285,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.6-dev"
+                    "dev-master": "2.4-dev"
                 }
             },
             "autoload": {
@@ -1518,50 +1299,48 @@
             ],
             "authors": [
                 {
-                    "name": "Symfony Community",
-                    "homepage": "http://symfony.com/contributors"
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com",
+                    "homepage": "http://fabien.potencier.org",
+                    "role": "Lead Developer"
                 },
                 {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
+                    "name": "Symfony Community",
+                    "homepage": "http://symfony.com/contributors"
                 }
             ],
             "description": "Symfony Config Component",
             "homepage": "http://symfony.com",
-            "time": "2015-01-21 20:57:55"
+            "time": "2014-03-26 11:35:33"
         },
         {
             "name": "symfony/console",
-            "version": "v2.6.4",
+            "version": "v2.4.4",
             "target-dir": "Symfony/Component/Console",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Console.git",
-                "reference": "e44154bfe3e41e8267d7a3794cd9da9a51cfac34"
+                "reference": "2e452005b1e1d003d23702d227e23614679eb5ca"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://composer.tiki.org/dist/symfony-console-e44154bfe3e41e8267d7a3794cd9da9a51cfac34-zip-78677b.zip",
-                "reference": "v2.6.4",
-                "shasum": "254b3c836fed67f33340de48ce454ed0663fa242"
+                "url": "https://composer.tiki.org/dist/symfony-console-2e452005b1e1d003d23702d227e23614679eb5ca-zip-5f12ae.zip",
+                "reference": "v2.4.4",
+                "shasum": "602d7bcebe40fcda6763c73dedef6d7ecf8381f0"
             },
             "require": {
                 "php": ">=5.3.3"
             },
             "require-dev": {
-                "psr/log": "~1.0",
-                "symfony/event-dispatcher": "~2.1",
-                "symfony/process": "~2.1"
+                "symfony/event-dispatcher": "~2.1"
             },
             "suggest": {
-                "psr/log": "For using the console logger",
-                "symfony/event-dispatcher": "",
-                "symfony/process": ""
+                "symfony/event-dispatcher": ""
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.6-dev"
+                    "dev-master": "2.4-dev"
                 }
             },
             "autoload": {
@@ -1575,43 +1354,42 @@
             ],
             "authors": [
                 {
-                    "name": "Symfony Community",
-                    "homepage": "http://symfony.com/contributors"
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com",
+                    "homepage": "http://fabien.potencier.org",
+                    "role": "Lead Developer"
                 },
                 {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
+                    "name": "Symfony Community",
+                    "homepage": "http://symfony.com/contributors"
                 }
             ],
             "description": "Symfony Console Component",
             "homepage": "http://symfony.com",
-            "time": "2015-01-25 04:39:26"
+            "time": "2014-04-27 13:34:57"
         },
         {
             "name": "symfony/dependency-injection",
-            "version": "v2.6.4",
+            "version": "v2.4.3",
             "target-dir": "Symfony/Component/DependencyInjection",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/DependencyInjection.git",
-                "reference": "42bbb43fab66292a1865dc9616c299904c3d4d14"
+                "reference": "5f17442aaa47610fcff7daeb635c834be71df204"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://composer.tiki.org/dist/symfony-dependency-injection-42bbb43fab66292a1865dc9616c299904c3d4d14-zip-e260de.zip",
-                "reference": "v2.6.4",
-                "shasum": "de6e63e09106fb257cc2304a07366f31150e815b"
+                "url": "https://composer.tiki.org/dist/symfony-dependency-injection-5f17442aaa47610fcff7daeb635c834be71df204-zip-27a0bb.zip",
+                "reference": "v2.4.3",
+                "shasum": "b5a33769c37c222f5af49fc11ce0e4038dbafbf0"
             },
             "require": {
                 "php": ">=5.3.3"
             },
-            "conflict": {
-                "symfony/expression-language": "<2.6"
-            },
             "require-dev": {
                 "symfony/config": "~2.2",
-                "symfony/expression-language": "~2.6",
-                "symfony/yaml": "~2.1"
+                "symfony/expression-language": "~2.4",
+                "symfony/yaml": "~2.0"
             },
             "suggest": {
                 "symfony/config": "",
@@ -1621,7 +1399,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.6-dev"
+                    "dev-master": "2.4-dev"
                 }
             },
             "autoload": {
@@ -1635,43 +1413,42 @@
             ],
             "authors": [
                 {
-                    "name": "Symfony Community",
-                    "homepage": "http://symfony.com/contributors"
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com",
+                    "homepage": "http://fabien.potencier.org",
+                    "role": "Lead Developer"
                 },
                 {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
+                    "name": "Symfony Community",
+                    "homepage": "http://symfony.com/contributors"
                 }
             ],
             "description": "Symfony DependencyInjection Component",
             "homepage": "http://symfony.com",
-            "time": "2015-01-25 04:39:26"
+            "time": "2014-03-27 14:53:17"
         },
         {
             "name": "symfony/filesystem",
-            "version": "v2.6.6",
+            "version": "v2.5.4",
             "target-dir": "Symfony/Component/Filesystem",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Filesystem.git",
-                "reference": "4983964b3693e4f13449cb3800c64a9112c301b4"
+                "reference": "a765efd199e02ff4001c115c318e219030be9364"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Filesystem/zipball/4983964b3693e4f13449cb3800c64a9112c301b4",
-                "reference": "4983964b3693e4f13449cb3800c64a9112c301b4",
+                "url": "https://api.github.com/repos/symfony/Filesystem/zipball/a765efd199e02ff4001c115c318e219030be9364",
+                "reference": "a765efd199e02ff4001c115c318e219030be9364",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3"
             },
-            "require-dev": {
-                "symfony/phpunit-bridge": "~2.7"
-            },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.6-dev"
+                    "dev-master": "2.5-dev"
                 }
             },
             "autoload": {
@@ -1695,33 +1472,30 @@
             ],
             "description": "Symfony Filesystem Component",
             "homepage": "http://symfony.com",
-            "time": "2015-03-22 16:55:57"
+            "time": "2014-09-03 09:00:14"
         },
         {
             "name": "symfony/process",
-            "version": "v2.6.6",
+            "version": "v2.5.4",
             "target-dir": "Symfony/Component/Process",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Process.git",
-                "reference": "a8bebaec1a9dc6cde53e0250e32917579b0be552"
+                "reference": "136cf0bdaacea81f779583376d47dd8aef4fc6ba"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Process/zipball/a8bebaec1a9dc6cde53e0250e32917579b0be552",
-                "reference": "a8bebaec1a9dc6cde53e0250e32917579b0be552",
+                "url": "https://api.github.com/repos/symfony/Process/zipball/136cf0bdaacea81f779583376d47dd8aef4fc6ba",
+                "reference": "136cf0bdaacea81f779583376d47dd8aef4fc6ba",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.3"
             },
-            "require-dev": {
-                "symfony/phpunit-bridge": "~2.7"
-            },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.6-dev"
+                    "dev-master": "2.5-dev"
                 }
             },
             "autoload": {
@@ -1745,7 +1519,7 @@
             ],
             "description": "Symfony Process Component",
             "homepage": "http://symfony.com",
-            "time": "2015-03-30 15:54:10"
+            "time": "2014-08-31 03:22:04"
         },
         {
             "name": "tijsverkoyen/css-to-inline-styles",
@@ -1788,25 +1562,22 @@
         },
         {
             "name": "twitter/bootstrap",
-            "version": "v3.3.4",
+            "version": "v3.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twbs/bootstrap.git",
-                "reference": "a10eb60bc0b07b747fa0c4ebd8821eb7307bd07f"
+                "reference": "a365d8689c3f3cee7f1acf86b61270ecca8e106d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twbs/bootstrap/zipball/a10eb60bc0b07b747fa0c4ebd8821eb7307bd07f",
-                "reference": "a10eb60bc0b07b747fa0c4ebd8821eb7307bd07f",
+                "url": "https://api.github.com/repos/twbs/bootstrap/zipball/a365d8689c3f3cee7f1acf86b61270ecca8e106d",
+                "reference": "a365d8689c3f3cee7f1acf86b61270ecca8e106d",
                 "shasum": ""
-            },
-            "replace": {
-                "twitter/bootstrap": "self.version"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.3.x-dev"
+                    "dev-master": "3.0.x-dev"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -1823,19 +1594,13 @@
                     "email": "markdotto@gmail.com"
                 }
             ],
-            "description": "The most popular front-end framework for developing responsive, mobile first projects on the web.",
+            "description": "Sleek, intuitive, and powerful mobile first front-end framework for faster and easier web development.",
             "homepage": "http://getbootstrap.com",
             "keywords": [
-                "JS",
-                "css",
-                "framework",
-                "front-end",
-                "less",
-                "mobile-first",
-                "responsive",
-                "web"
+                "bootstrap",
+                "css"
             ],
-            "time": "2015-03-16 15:44:41"
+            "time": "2014-02-13 17:24:59"
         },
         {
             "name": "undojs/undojs",
@@ -1854,12 +1619,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/wikiLingo/CodeMirror.git",
-                "reference": "673b79717b2cfacdebf86edc3d940c6e6adb4568"
+                "reference": "1772a120a31c757bbac9878e6003ee0a2631d214"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wikiLingo/CodeMirror/zipball/673b79717b2cfacdebf86edc3d940c6e6adb4568",
-                "reference": "673b79717b2cfacdebf86edc3d940c6e6adb4568",
+                "url": "https://api.github.com/repos/wikiLingo/CodeMirror/zipball/1772a120a31c757bbac9878e6003ee0a2631d214",
+                "reference": "1772a120a31c757bbac9878e6003ee0a2631d214",
                 "shasum": ""
             },
             "require": {
@@ -1868,7 +1633,7 @@
             "type": "library",
             "notification-url": "https://packagist.org/downloads/",
             "description": "Syntax highlighter for wikiLingo",
-            "time": "2015-04-18 00:49:03"
+            "time": "2014-06-03 15:55:55"
         },
         {
             "name": "wikilingo/wikilingo",
@@ -1876,12 +1641,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/wikiLingo/wikiLingo.git",
-                "reference": "73e70cf22cd51a92773cdcfd8794be2df63dda89"
+                "reference": "87eee6b7462210ccfa634f849e054558eda3fa93"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wikiLingo/wikiLingo/zipball/73e70cf22cd51a92773cdcfd8794be2df63dda89",
-                "reference": "73e70cf22cd51a92773cdcfd8794be2df63dda89",
+                "url": "https://api.github.com/repos/wikiLingo/wikiLingo/zipball/87eee6b7462210ccfa634f849e054558eda3fa93",
+                "reference": "87eee6b7462210ccfa634f849e054558eda3fa93",
                 "shasum": ""
             },
             "require": {
@@ -1920,7 +1685,7 @@
                     "role": "Lead Developer"
                 }
             ],
-            "time": "2015-04-08 16:58:04"
+            "time": "2014-09-05 23:25:24"
         },
         {
             "name": "zetacomponents/base",
@@ -2111,16 +1876,16 @@
         },
         {
             "name": "oyejorge/less.php",
-            "version": "v1.7.0.2",
+            "version": "v1.7.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/oyejorge/less.php.git",
-                "reference": "82372b389386ae1edab55495eae4b400cca3c86c"
+                "reference": "958476be9e47a13db0579397f0164af1776bdbee"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/oyejorge/less.php/zipball/82372b389386ae1edab55495eae4b400cca3c86c",
-                "reference": "82372b389386ae1edab55495eae4b400cca3c86c",
+                "url": "https://api.github.com/repos/oyejorge/less.php/zipball/958476be9e47a13db0579397f0164af1776bdbee",
+                "reference": "958476be9e47a13db0579397f0164af1776bdbee",
                 "shasum": ""
             },
             "require": {
@@ -2166,10 +1931,12 @@
                 "php",
                 "stylesheet"
             ],
-            "time": "2014-06-05 16:09:50"
+            "time": "2014-03-17 04:51:51"
         }
     ],
-    "aliases": [],
+    "aliases": [
+
+    ],
     "minimum-stability": "stable",
     "stability-flags": {
         "jcapture-applet/jcapture-applet": 20,
@@ -2180,8 +1947,10 @@
         "wikilingo/codemirror": 20,
         "bafs/testify": 20
     },
-    "prefer-stable": false,
-    "prefer-lowest": false,
-    "platform": [],
-    "platform-dev": []
+    "platform": [
+
+    ],
+    "platform-dev": [
+
+    ]
 }

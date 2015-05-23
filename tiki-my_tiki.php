@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -12,7 +12,7 @@ $section = 'mytiki';
 require_once ('tiki-setup.php');
 $wikilib = TikiLib::lib('wiki');
 include_once ('lib/tasks/tasklib.php');
-//get_strings tra('My Account Home');
+//get_strings tra('MyTiki Home');
 $access->check_user($user);
 $userwatch = $user;
 if (isset($_REQUEST["view_user"])) {

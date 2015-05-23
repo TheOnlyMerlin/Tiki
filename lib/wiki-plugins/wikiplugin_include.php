@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -169,7 +169,7 @@ function wikiplugin_include($dataIn, $params)
 	// append an edit button if page_edit_icon does not equal 'n'
 	if ($page_edit_icon != 'n') {
 	if (isset($perms) && $perms['tiki_p_edit'] === 'y' && strpos($_SERVER['PHP_SELF'], 'tiki-send_newsletters.php') === false) {
-		$smarty = TikiLib::lib('smarty');
+		global $smarty;
 		$smarty->loadPlugin('smarty_block_ajax_href');
 		$smarty->loadPlugin('smarty_function_icon');
 		$tip = tra('Include Plugin'). ' | ' . tra('Edit the included page:').' &quot;' . $page . '&quot;';

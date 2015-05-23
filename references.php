@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -57,7 +57,6 @@ if (isset($_REQUEST['addreference']) && $action='a_ref') {
 		exit;
 	}
 
-
 	$errors = array();
 
 	if (intval($page_id)) {
@@ -74,7 +73,7 @@ if (isset($_REQUEST['addreference']) && $action='a_ref') {
 				echo json_encode(array('result'=>tra('failure'), 'id'=>-1));
 			} else {
 				$is_library = $referenceslib->check_lib_existence($ref_biblio_code);
-				$id = $referenceslib->add_reference(
+				$id = $referenceslib->add_reference_ajax(
 					$page_id,
 					$ref_biblio_code,
 					$ref_author,
@@ -135,7 +134,7 @@ if (isset($_REQUEST['addlibreference']) && $action = 'a_lib') {
 				)
 			);
 		} else {
-			$id = $referenceslib->add_reference(
+			$id = $referenceslib->add_lib_reference_ajax(
 				$ref_biblio_code,
 				$ref_author,
 				$ref_title,
@@ -176,7 +175,6 @@ if (isset($_REQUEST['editreference'])) {
 		);
 		exit;
 	}
-
 
 	$errors = array();
 
@@ -287,7 +285,7 @@ if (isset($_REQUEST['action']) && isset($ref_id)) {
 		);
 		exit;
 	}
-
+	
 	if ($_REQUEST['action'] == 'e_del') {
 		$referenceslib->remove_reference($ref_id);
 		echo tra('success');

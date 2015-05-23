@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -60,10 +60,8 @@ if ($prefs['connect_server_mode'] === 'y') {
 		}
 	}
 	$smarty->assign('cserver_search_text', $search_str);
-	$receivedDataStats = $connectlib->getReceivedDataStats();
-	$smarty->assignByRef('connect_stats', $receivedDataStats);
-	$matchingConnections = $connectlib->getMatchingConnections(empty($search_str) ? '*' : $search_str);
-	$smarty->assignByRef('connect_recent', $matchingConnections);
+	$smarty->assignByRef('connect_stats', $connectlib->getReceivedDataStats());
+	$smarty->assignByRef('connect_recent', $connectlib->getMatchingConnections(empty($search_str) ? '*' : $search_str));
 } else {
 	$smarty->assign('connect_stats', null);
 	$smarty->assign('connect_recent', null);

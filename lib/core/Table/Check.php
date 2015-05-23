@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -29,9 +29,9 @@ class Table_Check
 	static public function isEnabled($ajax = false)
 	{
 		global $prefs;
-		if ($prefs['javascript_enabled'] === 'y' && $prefs['feature_jquery_tablesorter'] === 'y') {
+		if ($prefs['disableJavascript'] == 'n' && $prefs['feature_jquery_tablesorter'] == 'y') {
 			if ($ajax === true) {
-				if ($prefs['feature_ajax'] === 'y') {
+				if ($prefs['feature_ajax'] == 'y') {
 					return true;
 				} else {
 					return false;
@@ -45,12 +45,12 @@ class Table_Check
 	}
 
 	/**
-	 * Checks to see whether the file has been accessed through a tablesorter ajax call
+	 * Checks to see whether the file has been accessed through a tablesorter access call
 	 * @return bool
 	 */
 	static public function isAjaxCall()
 	{
-		if (isset($_GET['tsAjax']) && $_GET['tsAjax'] === 'y') {
+		if (isset($_GET['tsAjax']) && $_GET['tsAjax'] === 'y' && self::isEnabled(true)) {
 			return true;
 		} else {
 			return false;

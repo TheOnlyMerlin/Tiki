@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -129,12 +129,10 @@ function wikiplugin_colorbox_info()
 }
 function wikiplugin_colorbox($data, $params)
 {
-	global $user, $prefs;
+	global $tikilib, $smarty, $user, $prefs;
 	static $iColorbox = 0;
 	$default = array('showfilename' => 'n', 'showtitle'=>'n', 'thumb'=>'y', 'showallthumbs'=>'n', 'parsedescriptions'=>'n');
 	$params = array_merge($default, $params);
-	$smarty = TikiLib::lib('smarty');
-	$tikilib = TikiLib::lib('tiki');
 
 	if (!empty($params['fgalId'])) {
 		if ($prefs['feature_file_galleries'] != 'y') {

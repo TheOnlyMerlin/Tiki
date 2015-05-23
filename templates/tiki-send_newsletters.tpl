@@ -9,7 +9,7 @@
 {title help="Newsletters" url=$titleurl}{tr}Send Newsletters{/tr}{/title}
 
 {if $tiki_p_admin_newsletters eq "y"}
-	<div class="t_navbar margin-bottom-md">
+	<div class="t_navbar form-group">
 		{button href="tiki-newsletters.php" class="btn btn-default" _text="{tr}List Newsletters{/tr}"}
 		{if $nlId}
 			{button href="tiki-admin_newsletters.php?nlId=$nlId" class="btn btn-default" _text="{tr}Admin Newsletters{/tr}"}
@@ -36,24 +36,24 @@
 	{remarksbox type="note" title="{tr}Notice{/tr}" icon="lock"}
 		{tr}The newsletter was sent to {$sent} email addresses{/tr}
 	{/remarksbox}
-
+	
 	{if $errors}
 		{remarksbox type='warning' title="{tr}Errors{/tr}" icon='error'}
-			<table class="formcolor">
-				<tr>
-					<th>{tr}User{/tr}</th>
-					<th>{tr}Email{/tr}</th>
-					<th>{tr}Message{/tr}</th>
-				</tr>
+		<table class="formcolor">
+			<tr>
+				<th>{tr}User{/tr}</th>
+				<th>{tr}Email{/tr}</th>
+				<th>{tr}Message{/tr}</th>
+			</tr>
 
-				{section loop=$errors name=ix}
-					<tr>
-						<td>{$errors[ix].user|escape}</td>
-						<td>{$errors[ix].email|escape}</td>
-						<td>{$errors[ix].msg|escape}</td>
-					</tr>
-				{/section}
-			</table>
+			{section loop=$errors name=ix}
+				<tr>
+					<td>{$errors[ix].user|escape}</td>
+					<td>{$errors[ix].email|escape}</td>
+					<td>{$errors[ix].msg|escape}</td>
+				</tr>
+			{/section}
+		</table>
 		{/remarksbox}
 	{/if}
 {/if}
@@ -104,7 +104,7 @@
 				{/foreach}
 			</table>
 		</div>
-	{/if}
+	{/if}	
 	<h2>{tr}Preview{/tr}</h2>
 	<h3>{tr}Subject{/tr}</h3>
 	<div class="cbox wikitext">{$subject|escape}</div>
@@ -117,7 +117,7 @@
 		{if $info.datatxt}<div class="cbox wikitext" >{$info.datatxt|escape|nl2br}</div>{/if}
 		{if $txt}<div class="cbox wikitext">{$txt|escape|nl2br}</div>{/if}
 	{/if}
-
+	
 	<h3>{tr}Files{/tr}</h3>
 	<div class="cbox wikitext">
 		{if $info.files|@count gt 0}
@@ -134,7 +134,7 @@
 	</div>
 
 
-
+	
 	</div>
 
 	<div id="sendingArea" style="display:none">
@@ -180,193 +180,193 @@
 		</ul>
 	{/if}
 
-	{tabset name='tabs_send_newsletters'}
+{tabset name='tabs_send_newsletters'}
 
-		{tab name="{tr}Edit{/tr}"}
-		{* --- tab with editor --- *}
-			<h2>{tr}Prepare a newsletter to be sent{/tr}</h2>
-			<form class="form-horizontal" action="tiki-send_newsletters.php" method="post" id='editpageform' enctype='multipart/form-data'>
-				<input type="hidden" name="editionId" value="{$info.editionId}">
-				<div class="form-group">
-					<div class="col-sm-12">
-						<table class="formcolor" id="newstable">
-							<tr>
-								<td><label for="subject">{tr}Subject:{/tr}</label></td>
-								<td>
-									<input type="text" maxlength="250" id="subject" name="subject" value="{$info.subject|escape}">
-								</td>
-							</tr>
-							<tr>
-								<td><label for="nlId">{tr}Newsletter:{/tr}</label></td>
-								<td>
-									<select name="nlId" id="nlId" onchange="checkNewsletterTxtArea(this.selectedIndex);">
-										{section loop=$newsletters name=ix}
-											<option value="{$newsletters[ix].nlId|escape}" {if $newsletters[ix].nlId eq $nlId}selected="selected"{/if}>
-												{$newsletters[ix].name|escape}
-											</option>
-										{/section}
-									</select>
-								</td>
-							</tr>
+	{tab name="{tr}Edit{/tr}"}
+	{* --- tab with editor --- *}
+		<h2>{tr}Prepare a newsletter to be sent{/tr}</h2>
+		<form class="form-horizontal" action="tiki-send_newsletters.php" method="post" id='editpageform' enctype='multipart/form-data'>
+			<input type="hidden" name="editionId" value="{$info.editionId}">
+            <div class="form-group">
+            <div class="col-sm-12">            
+			<table class="formcolor" id="newstable">
+				<tr>
+					<td><label for="subject">{tr}Subject:{/tr}</label></td>
+					<td>
+						<input type="text" maxlength="250" id="subject" name="subject" value="{$info.subject|escape}">
+					</td>
+				</tr>
+				<tr>
+					<td><label for="nlId">{tr}Newsletter:{/tr}</label></td>
+					<td>
+						<select name="nlId" id="nlId" onchange="checkNewsletterTxtArea(this.selectedIndex);">
+							{section loop=$newsletters name=ix}
+								<option value="{$newsletters[ix].nlId|escape}" {if $newsletters[ix].nlId eq $nlId}selected="selected"{/if}>
+									{$newsletters[ix].name|escape}
+								</option>
+							{/section}
+						</select>
+					</td>
+				</tr>
 
-							{if $tiki_p_use_content_templates eq 'y'}
-								<tr>
-									<td>{tr}Apply content template{/tr}</td>
-									<td>
-										<input type="hidden" name="previousTemplateId" value="{$templateId}">
-										<select name="templateId" onchange="javascript:document.getElementById('editpageform').submit();">
-											<option value="0">{tr}none{/tr}</option>
-											{section name=ix loop=$templates}
-												<option value="{$templates[ix].templateId|escape}" {if $templateId eq $templates[ix].templateId}selected="selected"{/if}>
-													{$templates[ix].name|escape}
-												</option>
-											{/section}
-										</select>
-										{button _text='{tr}Admin templates{/tr}' href='tiki-admin_content_templates.php' _target='blank'}
-									</td>
-								</tr>
-							{/if}
+				{if $tiki_p_use_content_templates eq 'y'}
+					<tr>
+						<td>{tr}Apply content template{/tr}</td>
+						<td>
+							<input type="hidden" name="previousTemplateId" value="{$templateId}">
+							<select name="templateId" onchange="javascript:document.getElementById('editpageform').submit();">
+								<option value="0">{tr}none{/tr}</option>
+								{section name=ix loop=$templates}
+									<option value="{$templates[ix].templateId|escape}" {if $templateId eq $templates[ix].templateId}selected="selected"{/if}>
+										{$templates[ix].name|escape}
+									</option>
+								{/section}
+							</select>
+							{button _text='{tr}Admin templates{/tr}' href='tiki-admin_content_templates.php' _target='blank'}
+						</td>
+					</tr>
+				{/if}
+			
+				{if $tpls}
+					<tr>
+						<td><label for="usedTpl">{tr}Apply template{/tr}</label></td>
+						<td>
+							<select id="usedTpl"name="usedTpl">
+								<option value="">{tr}none{/tr}</option>
+								{section name=ix loop=$tpls}
+									<option value="{$tpls[ix]|escape}" {if $usedTpl eq $tpls[ix]}selected="selected"{/if}>{$tpls[ix]}</option>
+								{/section}
+							</select>
+						</td>
+					</tr>
+				{/if}
 
-							{if $tpls}
-								<tr>
-									<td><label for="usedTpl">{tr}Apply template{/tr}</label></td>
-									<td>
-										<select id="usedTpl"name="usedTpl">
-											<option value="">{tr}none{/tr}</option>
-											{section name=ix loop=$tpls}
-												<option value="{$tpls[ix]|escape}" {if $usedTpl eq $tpls[ix]}selected="selected"{/if}>{$tpls[ix]}</option>
-											{/section}
-										</select>
-									</td>
-								</tr>
-							{/if}
+				<tr>
+					<td colspan="2">
+						<label for="editwiki">{tr}Data HTML:{/tr}</label>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						{textarea name='data' id='editwiki'}{$info.data}{/textarea}
+						<label>{tr}Must be wiki parsed:{/tr} <input type="checkbox" name="wikiparse" {if empty($info.wikiparse) or $info.wikiparse eq 'y'} checked="checked"{/if}></label>
+						<label>{tr}Is HTML.{/tr} <input type="checkbox" name="is_html" {if $info.is_html} checked="checked"{/if}></label>
+					</td>
+				</tr>
 
-							<tr>
-								<td colspan="2">
-									<label for="editwiki">{tr}Data HTML:{/tr}</label>
-								</td>
-							</tr>
-							<tr>
-								<td colspan="2">
-									{textarea name='data' id='editwiki'}{$info.data}{/textarea}
-									<label>{tr}Must be wiki parsed:{/tr} <input type="checkbox" name="wikiparse" {if empty($info.wikiparse) or $info.wikiparse eq 'y'} checked="checked"{/if}></label>
-									<label>{tr}Is HTML.{/tr} <input type="checkbox" name="is_html" {if $info.is_html} checked="checked"{/if}></label>
-								</td>
-							</tr>
+				<tr>
+					<td id="txtcol1">
+						<label for="editwikitxt">{tr}Data Txt:{/tr}</label>
+					</td>
+					<td id="txtcol2" >
+						<textarea id='editwikitxt' name="datatxt" rows="20" cols="80">{$info.datatxt|escape}</textarea>
+					</td>
+				</tr>
 
-							<tr>
-								<td id="txtcol1">
-									<label for="editwikitxt">{tr}Data Txt:{/tr}</label>
-								</td>
-								<td id="txtcol2" >
-									<textarea id='editwikitxt' name="datatxt" rows="20" cols="80">{$info.datatxt|escape}</textarea>
-								</td>
-							</tr>
+				<tr>
+					<td id="clipcol1">
+						{tr}Article Clip (read only):{/tr}
+						<input type="submit" name="clipArticles" value="{tr}Clip Now{/tr}" class="wikiaction tips btn btn-default" title="{tr}Clip Articles{/tr}" onclick="needToConfirm=false">
+					</td>
+					<td id="clipcol2" >
+						{tr}To include the article clipping into your newsletter, cut and paste it into the contents.{/tr}
+						<br>{tr}If autoclipping is enabled, you can also enter "~~~articleclip~~~" which will be replaced with the latest	clip when sending.{/tr}
+						{if !empty($articleClip)}
+						{remarksbox type="warning" title="{tr}Notice{/tr}"}
+							{tr}Be careful not to paste articles that must not be seen by the recipients{/tr} 
+						{/remarksbox}
+						{/if}
+						<textarea id='articlecliptxt' name="articleClip" rows="20" cols="80" readonly="readonly">{$articleClip}</textarea>
+					</td>
+				</tr>				
+				
+				<tr>
+					<td>
+						{tr}Attached Files{/tr} :
+					</td>
+					<td>
+						<div style='display: none' id='newsletterfileshack'></div>
+						<div id='newsletterfiles'>
+							{foreach from=$info.files item=newsletterfile key=fileid}
+								<div id='newsletterfileid_{$fileid}'>
+									<a href="javascript:remove_newsletter_file('{$fileid}');">[{tr}remove{/tr}]</a>
+									{$newsletterfile.name|escape} ({$newsletterfile.type|escape}, {$newsletterfile.size|escape} {tr}octets{/tr})
+									<input type='hidden' name='newsletterfile[{$fileid}]' value='{$newsletterfile.id}'>
+								</div>
+							{/foreach}
+						</div>
+						<p><a href="javascript:add_newsletter_file();">{tr}To add a file, click here{/tr}</a></p>
+					</td>
+				</tr>
 
-							<tr>
-								<td id="clipcol1">
-									{tr}Article Clip (read only):{/tr}
-									<input type="submit" name="clipArticles" value="{tr}Clip Now{/tr}" class="wikiaction tips btn btn-default" title="{tr}Clip Articles{/tr}" onclick="needToConfirm=false">
-								</td>
-								<td id="clipcol2" >
-									{tr}To include the article clipping into your newsletter, cut and paste it into the contents.{/tr}
-									<br>{tr}If autoclipping is enabled, you can also enter "~~~articleclip~~~" which will be replaced with the latest	clip when sending.{/tr}
-									{if !empty($articleClip)}
-									{remarksbox type="warning" title="{tr}Notice{/tr}"}
-										{tr}Be careful not to paste articles that must not be seen by the recipients{/tr}
-									{/remarksbox}
-									{/if}
-									<textarea id='articlecliptxt' name="articleClip" rows="20" cols="80" readonly="readonly">{$articleClip}</textarea>
-								</td>
-							</tr>
+				<tr>
+					<td><label for="replyto">{tr}Reply To Email{/tr}</label></td>
+					<td><input type="text" name="replyto" id="replyto" value="{$replyto|escape}"> {tr}if not:{/tr} {$prefs.sender_email|escape|default:"<em>{tr}Sender email not set{/tr}</em>"}</td>
+				</tr>
 
-							<tr>
-								<td>
-									{tr}Attached Files{/tr} :
-								</td>
-								<td>
-									<div style='display: none' id='newsletterfileshack'></div>
-									<div id='newsletterfiles'>
-										{foreach from=$info.files item=newsletterfile key=fileid}
-											<div id='newsletterfileid_{$fileid}'>
-												<a href="javascript:remove_newsletter_file('{$fileid}');">[{tr}remove{/tr}]</a>
-												{$newsletterfile.name|escape} ({$newsletterfile.type|escape}, {$newsletterfile.size|escape} {tr}octets{/tr})
-												<input type='hidden' name='newsletterfile[{$fileid}]' value='{$newsletterfile.id}'>
-											</div>
-										{/foreach}
-									</div>
-									<p><a href="javascript:add_newsletter_file();">{tr}To add a file, click here{/tr}</a></p>
-								</td>
-							</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td>
+						<input type="submit" name="preview" value="{tr}Preview{/tr}" class="wikiaction tips btn btn-default" title="{tr}Send Newsletters{/tr}|{tr}Preview your changes.{/tr}" onclick="needToConfirm=false">
+						&nbsp;
+						<input type="submit" name="save_only" value="{tr}Save as Draft{/tr}" class="wikiaction tips btn btn-default" title="{tr}Send Newsletters{/tr}|{tr}Save your changes.{/tr}" onclick="needToConfirm=false">
+					</td>
+				</tr>
 
-							<tr>
-								<td><label for="replyto">{tr}Reply To Email{/tr}</label></td>
-								<td><input type="text" name="replyto" id="replyto" value="{$replyto|escape}"> {tr}if not:{/tr} {$prefs.sender_email|escape|default:"<em>{tr}Sender email not set{/tr}</em>"}</td>
-							</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td>&nbsp;<input type="submit" name="save" value="{tr}Send Newsletter{/tr}" class="wikiaction tips btn btn-primary" title="{tr}Send Newsletters{/tr}|{tr}Save any changes and send to all subscribers.{/tr}" onclick="needToConfirm=false"></td>
+				</tr>
+			</table>
+            </div>
+            </div>
+		</form>
+	{/tab}
+	
+	{assign var=name value="{tr _0=$cant_drafts}Drafts (%0){/tr}"}
+	{tab name=$name}
+	{* --- tab with drafts --- *}
+		{assign var=channels value=$drafts}
+		{assign var=view_editions value='n'}
+		{assign var=offset value=$dr_offset}
+		{assign var=next_offset value=$dr_next_offset}
+		{assign var=prev_offset value=$dr_prev_offset}
+		{assign var=actual_page value=$dr_actual_page}
+		{assign var=cant_pages value=$dr_cant_pages}
+		{assign var=cur value='dr'}
+		{assign var=bak value='ed'}
+		{assign var=sort_mode value=$dr_sort_mode}
+		{assign var=sort_mode_bak value=$ed_sort_mode}
+		{assign var=offset value=$dr_offset}
+		{assign var=offset_bak value=$ed_offset}
+		{assign var=find value=$dr_find}
+		{assign var=find_bak value=$ed_find}
+		{assign var=tab value=2}
+		<h2>{$name}</h2>
+		{include file='sent_newsletters.tpl'}
+	{/tab}
 
-							<tr>
-								<td>&nbsp;</td>
-								<td>
-									<input type="submit" name="preview" value="{tr}Preview{/tr}" class="wikiaction tips btn btn-default" title="{tr}Send Newsletters{/tr}|{tr}Preview your changes.{/tr}" onclick="needToConfirm=false">
-									&nbsp;
-									<input type="submit" name="save_only" value="{tr}Save as Draft{/tr}" class="wikiaction tips btn btn-default" title="{tr}Send Newsletters{/tr}|{tr}Save your changes.{/tr}" onclick="needToConfirm=false">
-								</td>
-							</tr>
-
-							<tr>
-								<td>&nbsp;</td>
-								<td>&nbsp;<input type="submit" name="save" value="{tr}Send Newsletter{/tr}" class="wikiaction tips btn btn-primary" title="{tr}Send Newsletters{/tr}|{tr}Save any changes and send to all subscribers.{/tr}" onclick="needToConfirm=false"></td>
-							</tr>
-						</table>
-					</div>
-				</div>
-			</form>
-		{/tab}
-
-		{assign var=name value="{tr _0=$cant_drafts}Drafts (%0){/tr}"}
-		{tab name=$name}
-		{* --- tab with drafts --- *}
-			{assign var=channels value=$drafts}
-			{assign var=view_editions value='n'}
-			{assign var=offset value=$dr_offset}
-			{assign var=next_offset value=$dr_next_offset}
-			{assign var=prev_offset value=$dr_prev_offset}
-			{assign var=actual_page value=$dr_actual_page}
-			{assign var=cant_pages value=$dr_cant_pages}
-			{assign var=cur value='dr'}
-			{assign var=bak value='ed'}
-			{assign var=sort_mode value=$dr_sort_mode}
-			{assign var=sort_mode_bak value=$ed_sort_mode}
-			{assign var=offset value=$dr_offset}
-			{assign var=offset_bak value=$ed_offset}
-			{assign var=find value=$dr_find}
-			{assign var=find_bak value=$ed_find}
-			{assign var=tab value=2}
-			<h2>{$name}</h2>
-			{include file='sent_newsletters.tpl'}
-		{/tab}
-
-		{assign var=name value="{tr _0=$cant_editions}Sent Editions (%0){/tr}"}
-		{tab name=$name}
-		{* --- tab with editions --- *}
-			{assign var=channels value=$editions}
-			{assign var=view_editions value='y'}
-			{assign var=offset value=$ed_offset}
-			{assign var=next_offset value=$ed_next_offset}
-			{assign var=prev_offset value=$ed_prev_offset}
-			{assign var=actual_page value=$ed_actual_page}
-			{assign var=cant_pages value=$ed_cant_pages}
-			{assign var=cur value='ed'}
-			{assign var=bak value='dr'}
-			{assign var=sort_mode value=$ed_sort_mode}
-			{assign var=sort_mode_bak value=$dr_sort_mode}
-			{assign var=offset value=$ed_offset}
-			{assign var=offset_bak value=$dr_offset}
-			{assign var=find value=$ed_find}
-			{assign var=find_bak value=$dr_find}
-			{assign var=tab value=3}
-			<h2>{$name}</h2>
-			{include file='sent_newsletters.tpl'}
+	{assign var=name value="{tr _0=$cant_editions}Sent Editions (%0){/tr}"}
+	{tab name=$name}
+	{* --- tab with editions --- *}
+		{assign var=channels value=$editions}
+		{assign var=view_editions value='y'}
+		{assign var=offset value=$ed_offset}
+		{assign var=next_offset value=$ed_next_offset}
+		{assign var=prev_offset value=$ed_prev_offset}
+		{assign var=actual_page value=$ed_actual_page}
+		{assign var=cant_pages value=$ed_cant_pages}
+		{assign var=cur value='ed'}
+		{assign var=bak value='dr'}
+		{assign var=sort_mode value=$ed_sort_mode}
+		{assign var=sort_mode_bak value=$dr_sort_mode}
+		{assign var=offset value=$ed_offset}
+		{assign var=offset_bak value=$dr_offset}
+		{assign var=find value=$ed_find}
+		{assign var=find_bak value=$dr_find}
+		{assign var=tab value=3}
+		<h2>{$name}</h2>
+		{include file='sent_newsletters.tpl'}
 		{/tab}
 	{/tabset}
 {/if}

@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -30,7 +30,7 @@ $access->check_feature('feature_file_galleries');
 
 $filegallib = TikiLib::lib('filegal');
 if ($prefs['feature_groupalert'] == 'y') {
-	$groupalertlib = TikiLib::lib('groupalert');
+	include_once ('lib/groupalert/groupalertlib.php');
 }
 @ini_set('max_execution_time', 0); //will not work in safe_mode is on
 $auto_query_args = array('galleryId', 'fileId', 'filegals_manager', 'view', 'simpleMode', 'insertion_syntax');
@@ -195,6 +195,14 @@ if ( empty( $fileId ) ) {
 	$smarty->assign_by_ref('galleries', $galleries["data"]);
 	$smarty->assign('treeRootId', $galleries['parentId']);
 
+	if ( $prefs['fgal_upload_progressbar'] == 'ajax_flash' ) {
+		$headerlib->add_jsfile('lib/swfupload/src/swfupload.js');
+		$headerlib->add_jsfile('lib/swfupload/js/swfupload.swfobject.js');
+		$headerlib->add_jsfile('lib/swfupload/js/swfupload.queue.js');
+		$headerlib->add_jsfile('lib/swfupload/js/fileprogress.js');
+		$headerlib->add_jsfile('lib/swfupload/js/handlers.js');
+		$smarty->assign('PHPSESSID', session_id());
+	}
 }
 
 if ( $prefs['fgal_limit_hits_per_file'] == 'y' ) {
@@ -231,4 +239,3 @@ if ( $prefs['javascript_enabled'] != 'y' or ! $isUpload ) {
 		$smarty->display("tiki.tpl");
 	}
 }
-

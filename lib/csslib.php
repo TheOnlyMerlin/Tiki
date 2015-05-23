@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -21,15 +21,7 @@ class cssLib extends TikiLib
 				$available_layouts[$layoutName] = ucfirst($layoutName);
 			}   
 		}   
-		foreach (TikiAddons::getPaths() as $path) {
-			if (file_exists($path . '/templates/layouts/')) {
-				foreach (scandir($path . '/templates/layouts/') as $layoutName) {
-					if ($layoutName[0] != '.' && $layoutName != 'index.php') {
-						 $available_layouts[$layoutName] = ucfirst($layoutName);
-					}
-				}
-			}
-                }
+
 		return $available_layouts;
 	}
 
@@ -93,6 +85,19 @@ class cssLib extends TikiLib
 		closedir($handle);
 		sort($back);
 		return $back;
+	}
+
+	/* nickname = fivealive or Bidi/Bidi */
+	/* write = in multidomain we always write in subdir domain but we read domain/file if exists or file */
+	function get_nickname_path($nickname, $styledir, $write=false)
+	{
+		global $tikidomain;
+		if (!strstr($nickname, '\/') && !empty($tikidomain) && (is_file("$styledir/$tikidomain/$nickname.css") || $write)) {
+			$style = "$styledir/$tikidomain/$nickname.css";
+		} else {
+			$style = "$styledir/$nickname.css";
+		}
+		return $style;
 	}
 
 	function browse_css($path)

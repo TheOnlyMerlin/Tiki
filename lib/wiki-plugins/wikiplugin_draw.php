@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -63,13 +63,8 @@ function wikiplugin_draw_info()
 
 function wikiplugin_draw($data, $params)
 {
-	global $tiki_p_edit, $tiki_p_admin, $tiki_p_upload_files, $prefs, $user, $page;
-	$headerlib = TikiLib::lib('header');
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
+	global $dbTiki, $tiki_p_edit, $tiki_p_admin,$tiki_p_upload_files, $prefs, $user, $page, $tikilib, $smarty, $headerlib, $globalperms;
 	$filegallib = TikiLib::lib('filegal');
-	$globalperms = Perms::get();
-
 	extract(array_merge($params, array()), EXTR_SKIP);
 
 	static $drawIndex = 0;

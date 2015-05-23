@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -13,11 +13,11 @@ require_once ('tiki-setup.php');
 
 $access->check_feature('feature_calendar');
 
-$calendarlib = TikiLib::lib('calendar');
+include_once ('lib/calendar/calendarlib.php');
 include_once ('lib/newsletters/nllib.php');
 include_once ('lib/calendar/calrecurrence.php');
 if ($prefs['feature_groupalert'] == 'y') {
-	$groupalertlib = TikiLib::lib('groupalert');
+	include_once ('lib/groupalert/groupalertlib.php');
 }
 $auto_query_args = array('calitemId', 'viewcalitemId');
 
@@ -542,7 +542,7 @@ if ($prefs['feature_theme_control'] == 'y') {
   include('tiki-tc.php');
 }
 
-$headerlib->add_cssfile('themes/base_files/feature_css/calendar.css', 20);
+$headerlib->add_cssfile('css/calendar.css', 20);
 
 $smarty->assign('referer', empty($_SERVER['HTTP_REFERER']) || strpos($_SERVER['HTTP_REFERER'], 'tiki-calendar_edit_item.php') !== false ? 'tiki-calendar.php' : $_SERVER['HTTP_REFERER']);
 $smarty->assign('myurl', 'tiki-calendar_edit_item.php');

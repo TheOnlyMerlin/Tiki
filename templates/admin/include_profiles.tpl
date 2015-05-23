@@ -9,7 +9,7 @@
 
 			if( status.src == pending )
 				return;
-
+			
 			status.src = pending;
 
 			var req = getHttpRequest( 'POST', baseURI + '&refresh=' + escape(entry), true );
@@ -27,7 +27,7 @@
 		} // }}}
 
 		function showDetails( id, domain, profile ) { // {{{
-
+			
 			var nid = id + "-sub";
 			var infoId = id + "-info";
 			var prev = document.getElementById( id );
@@ -49,10 +49,10 @@
 				prev.getElementsByTagName("td")[0].appendChild( infoOb );
 			}
 			infoOb.innerHTML = " {/literal}{tr}Loading profile{/tr}{literal}...";
-
+			
 			var req = getHttpRequest( 'POST', baseURI + '&getinfo&pd=' + escape(domain) + '&pp=' + escape(profile), true );
 			req.onreadystatechange = function (aEvt) {
-
+				
 				if (infoOb) {
 					infoOb.innerHTML = " ";
 
@@ -68,9 +68,9 @@
 
 						row.appendChild( cell );
 						cell.colSpan = 3;
-
+						
 						if( data.installable || data.already ) {
-
+						
 							var pStep = document.createElement('p');
 							pStep.style.fontWeight = 'bold';
 							if( data.installable ) {
@@ -78,9 +78,9 @@
 							} else if ( data.already ) {
 								pStep.innerHTML = "A version of this profile is already applied.";
 							}
-
+							
 							var form = document.createElement( 'form' );
-							var p = document.createElement('p');
+							var p = document.createElement('p');				
 							var submit = document.createElement('input');
 							var pd = document.createElement('input');
 							var pp = document.createElement('input');
@@ -124,8 +124,8 @@
 								submit.name = 'forget';
 								submit.value = 'Forget and Re-apply';
 								form.setAttribute ( "onsubmit", 'return confirm(\"{/literal}{tr}Are you sure you want to re-apply the profile{/tr}{literal} ' + profile + '?\");' );
-							}
-
+							}					
+							
 							p.appendChild(submit);
 							pd.type = 'hidden';
 							pd.name = 'pd';
@@ -194,8 +194,8 @@
 						}
 
 					}
-				} else { // readyState not 4 (complete)
-
+				} else {		// readyState not 4 (complete)
+					
 					switch (req.readyState) {
 						case 1: {
 							infoOb.innerHTML = " {/literal}{tr}Loading profile{/tr}{literal}...";
@@ -210,7 +210,7 @@
 							break;
 						}
 					}
-
+					
 				}
 			}
 			req.send('');
@@ -235,9 +235,7 @@
 		</ul>
 	{/remarksbox}
 {/if}
-
 {tabset name='tabs_admin-profiles'}
-
 	{tab name="{tr}Apply{/tr}"}
 		{if $prefs.javascript_enabled eq 'y'}
 			{if $openSources == 'some'}
@@ -245,7 +243,7 @@
 					{tr}Some of your Profiles Repositories are not connecting. This may prevent you from applying certain profiles{/tr}
 				{/remarksbox}
 			{/if}
-			<form method="get" action="tiki-admin.php">
+			<form method="get" action="tiki-admin.php">	
 				<input type="hidden" name="ticket" value="{$ticket|escape}">
 				<h4>{tr}Find Profiles{/tr} <small>{tr}Search by name, types and repository{/tr}</small></h4>
 				<div class="table-responsive">
@@ -255,7 +253,7 @@
 								<div class="form-group">
 									<label class="control-label" for="profile">{tr}Profile name{/tr} </label>
 									<input type="text" class="form-control" name="profile" placeholder="{tr}Find{/tr}..." id="profile" value="{if isset($profile)}{$profile|escape}{/if}" /></div>
-								</div>
+								</div>	
 								{if isset($category_list) and count($category_list) gt 0}
 									<div class="form-group">
 										<label class="control-label" for="categories">{tr}Profile Types{/tr}</label>
@@ -277,19 +275,19 @@
 								</div>
 								<input type="hidden" name="page" value="profiles"/>
 									{jq}
-										if ($("#profile-0").length > 0) {
-											$(".quickmode_notes").hide();
-											$(window).scrollTop($("a[name=step2]").offset().top);
-										} else {
-											$(".quickmode_notes").show();
-										}
-										$("#repository, #categories").change(function(){
-											if ($(this).val()) {
-												$(".quickmode_notes").hide(400);
-											} else {
-												$(".quickmode_notes").show(400);
-											}
-										});
+if ($("#profile-0").length > 0) {
+	$(".quickmode_notes").hide();
+	$(window).scrollTop($("a[name=step2]").offset().top);
+} else {
+	$(".quickmode_notes").show();
+}
+$("#repository, #categories").change(function(){
+	if ($(this).val()) {
+		$(".quickmode_notes").hide(400);
+	} else {
+		$(".quickmode_notes").show(400);
+	}
+});
 									{/jq}
 								</div>
 							<div class="form-group text-center">
@@ -301,25 +299,25 @@
 								{assign var=profilesFilterUrlStart value='tiki-admin.php?profile=&categories%5B%5D='}
 								{assign var=profilesFilterUrlMid value='.x&categories%5B%5D='}
 								{assign var=profilesFilterUrlEnd value='&repository=http%3a%2f%2fprofiles.tiki.org%2fprofiles&page=profiles&preloadlist=y&list=List#step2'}
-
+								
 								<p>
 									{assign var=profilesFilterUrlFeaturedProfiles value='Featured+profiles'}
 									<a href="{$profilesFilterUrlStart}{$tikiMajorVersion}{$profilesFilterUrlMid}{$profilesFilterUrlFeaturedProfiles}{$profilesFilterUrlEnd}" class="alert-link">{tr}Featured Site Profiles{/tr}</a>
 									<br>{tr}Featured Site Profiles is a list of applications that are maintained by the Tiki community and are a great way to get started.{/tr}
 								</p>
-
+								
 								<p>
 									{assign var=profilesFilterUrlFullProfiles value='Full+profile+(out+of+the+box+%26+ready+to+go)'}
 									<a href="{$profilesFilterUrlStart}{$tikiMajorVersion}{$profilesFilterUrlMid}{$profilesFilterUrlFullProfiles}{$profilesFilterUrlEnd}" class="alert-link">{tr}Full Profiles{/tr}</a>
-									<br>{tr}Full Profiles are full featured out of the box solutions.{/tr}
+									<br>{tr}Full Profiles are full featured out of the box solutions.{/tr} 
 								</p>
-
+	
 								<p>
 									{assign var=profilesFilterUrlMiniProfiles value='Mini-profile+(can+be+included+in+other)'}
 									<a href="{$profilesFilterUrlStart}{$tikiMajorVersion}{$profilesFilterUrlMid}{$profilesFilterUrlMiniProfiles}{$profilesFilterUrlEnd}" class="alert-link">{tr}Mini Profiles{/tr}</a>
-									<br>{tr}Mini Profiles will configure specific features and are a great way to add more functionality to an existing configuration.{/tr}
+									<br>{tr}Mini Profiles will configure specific features and are a great way to add more functionality to an existing configuration.{/tr} 
 								</p>
-
+	
 								<p>
 									{assign var=profilesFilterUrlLearningProfiles value='Learning+profile+(just+to+show+off+feature)'}
 									<a href="{$profilesFilterUrlStart}{$tikiMajorVersion}{$profilesFilterUrlMid}{$profilesFilterUrlLearningProfiles}{$profilesFilterUrlEnd}" class="alert-link">{tr}Learning Profiles{/tr}</a>
@@ -335,34 +333,34 @@
 			{if isset($result) && $result|@count != '0'}
 				<h4>{tr}Select and apply profile <small>Click on a Configuration Profile Name below to review it and apply it on your site</small>{/tr}</h4>
 				<div class="table-responsive">
-					<table class="table normal">
-						<tr>
-							<th>{tr}Profile Name{/tr}</th>
-							<th>{tr}Repository{/tr}</th>
-							<th>{tr}Profile type{/tr}</th>
-						</tr>
-						{foreach key=k item=profile from=$result}
-							<tr id="profile-{$k}">
-								{if $profile.name == $show_details_for}
-									{assign var="show_details_for_profile_num" value="$k"}
-									{assign var="show_details_for_fullname" value=$profile.name|escape}
-									{assign var="show_details_for_domain" value=$profile.domain|escape}
-									<td>{$profile.name|escape}: {tr}See profile info below (may take a few seconds to load){/tr}.</td>
-								{else}
-									<td><a href="javascript:showDetails( 'profile-{$k}', '{$profile.domain|escape}', '{$profile.name|escape}' )">{$profile.name|escape}</a>{if $profile.installed} <em>{tr}applied{/tr}</em>{/if}</td>
-								{/if}
+				<table class="table normal">
+					<tr>
+						<th>{tr}Profile Name{/tr}</th>
+						<th>{tr}Repository{/tr}</th>
+						<th>{tr}Profile type{/tr}</th>
+					</tr>
+					{foreach key=k item=profile from=$result}
+						<tr id="profile-{$k}">
+							{if $profile.name == $show_details_for}
+								{assign var="show_details_for_profile_num" value="$k"}
+								{assign var="show_details_for_fullname" value=$profile.name|escape}
+								{assign var="show_details_for_domain" value=$profile.domain|escape}
+								<td>{$profile.name|escape}: {tr}See profile info below (may take a few seconds to load){/tr}.</td>
+							{else}
+								<td><a href="javascript:showDetails( 'profile-{$k}', '{$profile.domain|escape}', '{$profile.name|escape}' )">{$profile.name|escape}</a>{if $profile.installed} <em>{tr}applied{/tr}</em>{/if}</td>
+							{/if}
 
-								<td>{$profile.domain}</td>
-								<td>{$profile.categoriesString}</td>
-							</tr>
-						{/foreach}
-						{if $result|@count eq '0'}
-							<tr><td colspan="3" class="odd">{tr}None{/tr}</td></tr>
-						{/if}
-					</table>
-					{if $show_details_for_profile_num != ""}
-						{jq}showDetails('profile-{{$show_details_for_profile_num}}', '{{$show_details_for_domain}}', '{{$show_details_for_fullname}}');{/jq}
+							<td>{$profile.domain}</td>
+							<td>{$profile.categoriesString}</td>
+						</tr>
+					{/foreach}
+					{if $result|@count eq '0'}
+					<tr><td colspan="3" class="odd">{tr}None{/tr}</td></tr>
 					{/if}
+				</table>
+				{if $show_details_for_profile_num != ""}
+					{jq}showDetails('profile-{{$show_details_for_profile_num}}', '{{$show_details_for_domain}}', '{{$show_details_for_fullname}}');{/jq}
+				{/if}
 				</div>
 			{/if}
 		{else}
@@ -371,7 +369,6 @@
 			{/remarksbox}
 		{/if}
 	{/tab}
-
 	{tab name="{tr}Export{/tr}"}
 		<h2>{tr}Export{/tr}</h2>
 		<form action="tiki-admin.php?page=profiles" method="post" role="form">
@@ -399,11 +396,12 @@
 						<label for="select_all_prefs_to_export">{tr}Toggle Visible{/tr}</label>
 						<input type="checkbox" id="select_all_prefs_to_export" />
 						<label for="export_show_added">{tr}Show added preferences{/tr}</label>
-						<input type="checkbox" name="export_show_added" id="export_show_added" {if !empty($smarty.request.export_show_added)} checked="checked"{/if} >
+						<input type="checkbox" name="export_show_added" id="export_show_added"
+								{if !empty($smarty.request.export_show_added)} checked="checked"{/if} />
 					</div>
 					<ul id="prefs_to_export_list" class="profile_export_list"{if $export_type neq "prefs"} style=display:none;"{/if}>
 
-						{foreach from=$modified_list key="name" item="data"}
+						{foreach from=$modified_list  key="name" item="data"}
 							<li>
 								{if is_array($data.current.expanded)}
 									{assign var=current value=$data.current.expanded|implode:", "}
@@ -412,8 +410,7 @@
 									{assign var=current value=$data.current.expanded}
 								{/if}
 								<input type="checkbox" name="prefs_to_export[{$name}]" value="{$current|escape}"
-									id="checkbox_{$name}"{if isset($prefs_to_export[$name])} checked="checked"{/if}
-								>
+										 id="checkbox_{$name}"{if isset($prefs_to_export[$name])} checked="checked"{/if} />
 								<label for="checkbox_{$name}">
 									{$name} = '<strong>{$current|truncate:40:"...":true|escape}</strong>'{* FIXME: This one line per preference display format is ugly and doesn't work for multiline values *}
 									<em>
@@ -435,10 +432,10 @@
 					</ul>
 					<ul id="modules_to_export_list" class="profile_export_list"{if $export_type neq "modules"} style=display:none;"{/if}>
 
-						{foreach from=$modules_for_export key="name" item="data"}
+						{foreach from=$modules_for_export  key="name" item="data"}
 							<li>
 								<input type="checkbox" name="modules_to_export[{$name}]" value="{$data.name|escape}"
-									id="modcheckbox_{$name}"{if isset($modules_to_export[$name])} checked="checked"{/if} />
+									   id="modcheckbox_{$name}"{if isset($modules_to_export[$name])} checked="checked"{/if} />
 								<label for="modcheckbox_{$name}">
 									{$data.data.name|escape} :
 									<em>
@@ -469,7 +466,6 @@
 			</fieldset>
 		</form>
 	{/tab}
-
 	{tab name="{tr}Advanced{/tr}"}
 		<h2>{tr}Advanced{/tr}</h2>
 		<fieldset>
@@ -484,7 +480,7 @@
 					<tr>
 						<td>{$entry.short}</td>
 						<td><img id="profile-status-{$k}" alt="{tr}Status{/tr}" src="img/icons/status_{$entry.status}.gif"></td>
-						<td><span id="profile-date-{$k}">{$entry.formatted}</span> <a href="javascript:refreshCache({$k})" title="{tr}Refresh{/tr}">{icon name="refresh"}</a></td>
+						<td><span id="profile-date-{$k}">{$entry.formatted}</span> <a href="javascript:refreshCache({$k})" class="icon"><img src="img/icons/arrow_refresh.png" class="icon" alt="{tr}Refresh{/tr}"></a></td>
 					</tr>
 				{/foreach}
 			</table>
@@ -504,30 +500,29 @@
 				{remarksbox type="warning" title="{tr}Warning{/tr}"}
 					{tr}Paste or type wiki markup and YAML (with or without the {literal}{CODE}{/literal} tags) into the text area below{/tr}<br>
 					<em><strong>{tr}This will run the profile and make potentially unrecoverable changes in your database!{/tr}</strong></em>
+					<div class="adminoptionbox">
+						<div class="adminoptionlabel">
+							<label for="profile_tester_name">{tr}Test Profile Name:{/tr} </label>
+							<input type="text" name="profile_tester_name" id="profile_tester_name" value="{if isset($profile_tester_name)}{$profile_tester_name}{else}Test{/if}" />
+							<select name="empty_cache">
+								<option value=""{if isset($empty_cache) and $empty_cache eq ''} checked="checked"{/if}>{tr}None{/tr}</option>
+								<option value="all"{if isset($empty_cache) and $empty_cache eq 'all'} checked="checked"{/if}>{tr}All{/tr}</option>
+								<option value="templates_c"{if isset($empty_cache) and $empty_cache eq 'templates_c'} checked="checked"{/if}>templates_c</option>
+								<option value="temp_cache"{if isset($empty_cache) and $empty_cache eq 'temp_cache'} checked="checked"{/if}>temp_cache</option>
+								<option value="temp_public"{if isset($empty_cache) and $empty_cache eq 'temp_public'} checked="checked"{/if}>temp_public</option>
+								<option value="modules_cache"{if isset($empty_cache) and $empty_cache eq 'modules_cache'} checked="checked"{/if}>modules_cache</option>
+								<option value="prefs"{if isset($empty_cache) and $empty_cache eq 'prefs'} checked="checked"{/if}>prefs</option>
+							</select>{$empty_cache}
+						</div>
+						<div>
+							<textarea data-codemirror="true" data-syntax="yaml" id="profile_tester" name="profile_tester" rows="5" cols="40" style="width:95%;">{if isset($test_source)}{$test_source}{/if}</textarea>
+						</div>
+					</div>
+					<div align="center" style="padding:1em;"><input type="submit" class="btn btn-default" name="test" value="{tr}Test{/tr}" /></div>
 				{/remarksbox}
-				<div class="adminoptionbox">
-					<div class="adminoptionlabel">
-						<label for="profile_tester_name">{tr}Test Profile Name:{/tr} </label>
-						<input type="text" name="profile_tester_name" id="profile_tester_name" value="{if isset($profile_tester_name)}{$profile_tester_name}{else}Test{/if}" />
-						<select name="empty_cache">
-							<option value=""{if isset($empty_cache) and $empty_cache eq ''} checked="checked"{/if}>{tr}None{/tr}</option>
-							<option value="all"{if isset($empty_cache) and $empty_cache eq 'all'} checked="checked"{/if}>{tr}All{/tr}</option>
-							<option value="templates_c"{if isset($empty_cache) and $empty_cache eq 'templates_c'} checked="checked"{/if}>templates_c</option>
-							<option value="temp_cache"{if isset($empty_cache) and $empty_cache eq 'temp_cache'} checked="checked"{/if}>temp_cache</option>
-							<option value="temp_public"{if isset($empty_cache) and $empty_cache eq 'temp_public'} checked="checked"{/if}>temp_public</option>
-							<option value="modules_cache"{if isset($empty_cache) and $empty_cache eq 'modules_cache'} checked="checked"{/if}>modules_cache</option>
-							<option value="prefs"{if isset($empty_cache) and $empty_cache eq 'prefs'} checked="checked"{/if}>prefs</option>
-						</select>{$empty_cache}
-					</div>
-					<div>
-						<textarea data-codemirror="true" data-syntax="yaml" id="profile_tester" name="profile_tester" rows="5" cols="40" style="width:95%;">{if isset($test_source)}{$test_source}{/if}</textarea>
-					</div>
-				</div>
-				<div align="center" style="padding:1em;"><input type="submit" class="btn btn-default" name="test" value="{tr}Test{/tr}" /></div>
 			</form>
 		</fieldset>
 	{/tab}
-
 {/tabset}
 
 {jq}

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -9,7 +9,7 @@ function prefs_users_list()
 {	
 	return array(
 		'users_serve_avatar_static' => array(
-			'name' => tra('Serve profile pictures statically'),
+			'name' => tra('Serve avatar images statically'),
 			'description' => tra('When enabled, feature checks and permission checks will be skipped.'),
 			'type' => 'flag',
 			'perspective' => false,

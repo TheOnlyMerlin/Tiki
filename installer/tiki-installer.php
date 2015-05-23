@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -191,7 +191,6 @@ function write_local_php($dbb_tiki, $host_tiki, $user_tiki, $pass_tiki, $dbs_tik
 		if ( ! empty( $client_charset ) ) {
 			$filetowrite .= "\$client_charset='$client_charset';\n";
 		}
-		$filetowrite .= "// \$dbfail_url = '';\n";
 		$filetowrite .= "// If you experience text encoding issues after updating (e.g. apostrophes etc showing up as strange characters) \n";
 		$filetowrite .= "// \$client_charset='latin1';\n";
 		$filetowrite .= "// \$client_charset='utf8';\n";
@@ -224,6 +223,7 @@ function create_dirs($domain='')
 		'temp/cache',
 		'templates_c',
 		'templates',
+		'styles',
 		'whelp');
 
 	$ret = "";
@@ -685,7 +685,6 @@ $_SESSION["install-logged-$multi"] = 'y';
 
 // Init smarty
 global $tikidomain;
-$smarty = TikiLib::lib('smarty');
 $smarty->assign('mid', 'tiki-install.tpl');
 $smarty->assign('virt', isset($virt) ? $virt : null);
 $smarty->assign('multi', isset($multi) ? $multi : null);
@@ -994,11 +993,7 @@ if ($install_step == '8') {
 	} else {
 		$u = '';
 	}
-	if (empty($_REQUEST['multi'])) {
-		$userlib->user_logout($user, false, $u);	// logs out then redirects to home page or $u
-	} else {
-		$access->redirect('http://' . $_REQUEST['multi'] . $tikiroot . $u);		// send to the selected multitiki
-	}
+	$userlib->user_logout($user, false, $u);	// logs out then redirects to home page or $u
 	exit;
 }
 
@@ -1148,10 +1143,9 @@ if ( isset($_POST['general_settings']) && $_POST['general_settings'] == 'y' ) {
 }
 
 
-$headerlib = TikiLib::lib('header');
+include_once "lib/headerlib.php";
 $headerlib->add_js("var tiki_cookie_jar=new Array();");
 $headerlib->add_cssfile('vendor/twitter/bootstrap/dist/css/bootstrap.css');
-$headerlib->add_cssfile('vendor/fortawesome/font-awesome/css/font-awesome.min.css');
 $headerlib->add_jsfile('lib/tiki-js.js');
 $headerlib->add_jsfile_dependancy("vendor/jquery/jquery-min/jquery-$headerlib->jquery_version.min.js");
 $headerlib->add_jsfile('lib/jquery_tiki/tiki-jquery.js');
@@ -1178,7 +1172,6 @@ jqueryTiki.effect_tabs_speed = 400;
 ';
 $headerlib->add_js($js, 100);
 
-$iconset = TikiLib::lib('iconset')->getIconsetForTheme('default', '');
 
 $smarty->assignByRef('headerlib', $headerlib);
 

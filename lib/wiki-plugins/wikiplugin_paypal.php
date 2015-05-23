@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -255,7 +255,7 @@ function wikiplugin_paypal($data, $params)
 
 	// check required params
 	if (empty($params['business'])) {
-		$access = TikiLib::lib('access');
+		global $access;
 		$access->check_feature('payment_paypal_business');
 	}
 

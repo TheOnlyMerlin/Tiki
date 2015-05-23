@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -24,8 +24,6 @@ if ( !isset($_REQUEST['page']) ) {
 }
 
 $pages = array();
-
-$_REQUEST['page'] = $wikilib->get_page_by_slug($_REQUEST['page']);
 
 $requested = $tikilib->get_page_info($_REQUEST['page']);
 $page_id = $requested['page_id'];
@@ -96,7 +94,7 @@ foreach ( array_reverse($pages) as $id => $info ) {
 	if ( $tiki_p_view == 'y' ) {
 		$renderer->runSetups();
 
-		$contents[] = $smarty->fetch('extends:layouts/internal/layout_view.tpl|tiki-show_page.tpl');
+		$contents[] = $smarty->fetch('tiki-show_content.tpl');
 
 		if ( $id === count($pages) - 1 )
 			$renderer->restoreAll();

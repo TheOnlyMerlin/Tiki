@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -65,17 +65,6 @@ class ActivityLib
 				'ruleId' => $id,
 			)
 		);
-	}
-
-	function deleteActivity($id)
-	{
-		$info = $this->streamTable()->delete(
-			array(
-				'activityId' => $id,
-			)
-		);
-		require_once 'lib/search/refresh-functions.php';
-		refresh_index('activity', $id);
 	}
 
 	function preserveRules(array $ids)
@@ -168,8 +157,6 @@ class ActivityLib
 						return new Tiki_Event_Function_EventTrigger($manager);
 					case 'event-record':
 						return new Tiki_Event_Function_EventRecord($self);
-					case 'event-notify':
-						return new Tiki_Event_Function_EventNotify($self);
 					case 'event-sample':
 						return new Tiki_Event_Function_EventSample($self);
 					}

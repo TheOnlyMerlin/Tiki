@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -32,20 +32,8 @@ class Table_Code_WidgetOptions extends Table_Code_Manager
 		if (parent::$sorts) {
 			//row grouping
 			if (parent::$group) {
-				$gc = ['$(table).find(\'.group-header\').addClass(\'info\');'];
-				$wo[] = $this->iterate(
-					$gc,
-					$this->nt3 . 'group_callback : function($cell, $rows, column, table){',
-					$this->nt3 . '}',
-					$this->nt4,
-					''
-				);
 				$wo[] = 'group_collapsible : true';
-				if (parent::$ajax) {
-					$wo[] = 'group_count : false';
-				} else {
-					$wo[] = 'group_count : \' ({num})\'';
-				}
+				$wo[] = 'group_count : \' ({num})\'';
 			}
 			//saveSort
 			if (isset(parent::$s['sorts']['type']) && strpos(parent::$s['sorts']['type'], 'save') !== false) {
@@ -53,7 +41,7 @@ class Table_Code_WidgetOptions extends Table_Code_Manager
 			}
 		}
 
-		//now incorporate options which are handled in child classes
+		//now incorporate options which are handled child classes
 		$classes = ['Filter', 'Pager'];
 		foreach ($classes as $option) {
 			$optarray = Table_Factory::build('WidgetOptions' . $option, parent::$s, 'code')->getOptionArray();

@@ -27,26 +27,26 @@
 <form action="tiki-admin.php?page=fgal" method="post">
 	<input type="hidden" name="ticket" value="{$ticket|escape}">
 
-	<div class="row">
-		<div class="form-group col-lg-12 clearfix">
+    <div class="row">
+        <div class="form-group col-lg-12 clearfix">
 			<a role="button" class="btn btn-default btn-sm" href="tiki-list_file_gallery.php" title="{tr}List{/tr}">
-				{icon name="list"} {tr}Files{/tr}
+				{glyph name="list"} {tr}Files{/tr}
 			</a>
-			<div class="pull-right">
-				<input type="submit" class="btn btn-primary btn-sm" name="filegalhandlers" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}">
-			</div>
-		</div>
-	</div>
+            <div class="pull-right">
+                <input type="submit" class="btn btn-primary btn-sm" name="filegalhandlers" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}">
+            </div>
+        </div>
+    </div>
 	{tabset name="fgal_admin"}
-
+	
 		{tab name="{tr}General Settings{/tr}"}
-			<h2>{tr}General Settings{/tr}</h2>
+            <h2>{tr}General Settings{/tr}</h2>
 
 			<fieldset class="table">
 				<legend>{tr}Activate the feature{/tr}</legend>
 				{preference name=feature_file_galleries visible="always"}
 			</fieldset>
-
+			
 			{preference name=home_file_gallery}
 			{preference name='fgal_use_db'}
 			<div class="adminoptionboxchild fgal_use_db_childcontainer n">
@@ -75,7 +75,7 @@
 				{preference name='feature_file_galleries_batch'}
 				<div class="adminoptionboxchild" id="feature_file_galleries_batch_childcontainer">
 					{remarksbox title="Note"}
-						{tr}You are highly recommended to use a file directory as the File Gallery storage, when using this feature{/tr}
+					{tr}You are highly recommended to use a file directory as the File Gallery storage, when using this feature{/tr}
 					{/remarksbox}
 					<br/>
 					{preference name='fgal_batch_dir'}
@@ -93,12 +93,13 @@
 				{preference name='feature_use_fgal_for_user_files'}
 				{preference name='feature_use_fgal_for_wiki_attachments'}
 				{preference name='feature_file_galleries_save_draft'}
-				{preference name='feature_file_galleries_templates'}
+				{preference name='feature_file_galleries_templates'}				
+				{preference name='fgal_upload_progressbar'}
 				{preference name='fgal_tracker_existing_search'}
 
 				{preference name='fgal_fix_mime_type'}
 				<div class="adminoptionboxchild" id="fgal_fix_mime_type_childcontainer">
-					<input type="submit" class="btn btn-default btn-sm" name="updateMime" id="updateMime" value="{tr}Update mime of all non archived octet-stream files{/tr}" />
+				<input type="submit" class="btn btn-default btn-sm" name="updateMime" id="updateMime" value="{tr}Update mime of all non archived octet-stream files{/tr}" />
 				</div>
 
 				{preference name='fgal_upload_from_source'}
@@ -132,7 +133,7 @@
 		{/tab}
 
 		{tab name="{tr}Plugins{/tr}"}
-			<h2>{tr}Plugins{/tr}</h2>
+            <h2>{tr}Plugins{/tr}</h2>
 			<fieldset class="table">
 				<legend>{tr}Plugins{/tr}</legend>
 				{preference name=wikiplugin_files}
@@ -148,31 +149,30 @@
 		{/tab}
 
 		{tab name="{tr}Listings{/tr}"}
-			<h2>{tr}Listings{/tr}</h2>
-			<span class="help-block">{tr}Configuration for gallery listings{/tr}</span>
+            <h2>{tr}Listings{/tr}</h2>
 			{remarksbox title="Note"}
 				{tr}Changing these settings will <em>not</em> affect existing file galleries. These changes will apply <em>only</em> to new file galleries{/tr}.
 			{/remarksbox}
 
 			<input type="hidden" name="filegallistprefs" />
-			<div class="adminoptionbox clearfix">
-				<label for="fgal_sortorder" class="col-sm-4 control-label">{tr}Default sort order{/tr}:</label>
-				<div class="col-sm-8">
-					<select name="fgal_sortorder" id="fgal_sortorder" class="form-control">
+			<div class="adminoptionbox">
+				<div class="adminoptionlabel">
+					<label for="fgal_sortorder">{tr}Default sort order:{/tr}</label>
+					<select name="fgal_sortorder" id="fgal_sortorder">
 						{foreach from=$options_sortorder key=key item=item}
 							<option value="{$item|escape}" {if $fgal_sortorder == $item} selected="selected"{/if}>{$key}</option>
 						{/foreach}
 					</select>
-					<span class="help-block">
-						<label class="radio-inline" for="fgal_sortdirection1">
+					<div class="adminoptionboxchild">
+						<div class="adminoptionlabel">
 							<input type="radio" id="fgal_sortdirection1" name="fgal_sortdirection" value="desc" {if $fgal_sortdirection == 'desc'}checked="checked"{/if} />
-							{tr}Descending{/tr}
-						</label>
-						<label class="radio-inline" for="fgal_sortdirection2">
+							<label for="fgal_sortdirection1">{tr}Descending{/tr}</label>
+						</div>
+						<div class="adminoptionlabel">
 							<input type="radio" id="fgal_sortdirection2" name="fgal_sortdirection" value="asc" {if $fgal_sortdirection == 'asc'}checked="checked"{/if} />
-							{tr}Ascending{/tr}
-						</label>
-					</span>
+							<label for="fgal_sortdirection2">{tr}Ascending{/tr}</label>
+						</div>
+					</div>	
 				</div>
 			</div>
 			{preference name='fgal_quota_show'}
@@ -187,17 +187,23 @@
 			{preference name='fgal_display_properties'}
 			{preference name='fgal_display_replace'}
 			{preference name='fgal_checked'}
+
 			<fieldset>
-				{include file='fgal_listing_conf.tpl'}
+				<legend>{tr}Select which items to display when listing galleries: {/tr}</legend>
+				<table class="table">
+					{include file='fgal_listing_conf.tpl'}
+				</table>
 			</fieldset>
 		{/tab}
 
 		{if $section eq 'admin'}
 			{tab name="{tr}Admin Listings{/tr}"}
-				<h2>{tr}Admin Listings{/tr}</h2>
-				<span class="help-block">{tr}Configuration for gallery administration listings{/tr}</span>
+                <h2>{tr}Admin Listings{/tr}</h2>
 				<fieldset>
-					{include file='fgal_listing_conf.tpl' fgal_options='' fgal_listing_conf=$fgal_listing_conf_admin}
+					<legend>{tr}Select which items to display when admin galleries: {/tr}</legend>
+					<table class="table">
+						{include file='fgal_listing_conf.tpl' fgal_options='' fgal_listing_conf=$fgal_listing_conf_admin}
+					</table>
 				</fieldset>
 			{/tab}
 		{/if}
@@ -231,16 +237,6 @@
 								<br>
 							{/foreach}
 						{/remarksbox}
-						{if $vnd_ms_files_exist}
-							<div class="adminoptionbox">
-								{remarksbox type=info title="{tr}Mime Types{/tr}"}
-									<p>
-										{tr}Previous versions of Tiki may have assigned alternative mime-types to Microsoft Office files, such as "application/vnd.ms-word" and these need to be changed to be "application/msword" for the default file indexing to function properly.{/tr}
-									</p>
-									<input type="submit" class="btn btn-default btn-sm" name="filegalfixvndmsfiles" value="{tr}Fix vnd.ms-* mime type files{/tr}"/>
-								{/remarksbox}
-							</div>
-						{/if}
 					{/if}
 
 					<div class="adminoptionbox">
@@ -281,9 +277,8 @@
 				</div>
 			</div>
 		{/tab}
-
 		{tab name="{tr}Enhancements{/tr}"}
-			<h2>{tr}Enhancements{/tr}</h2>
+            <h2>{tr}Enhancements{/tr}</h2>
 
 			<fieldset>
 				<legend>{tr}Access{/tr}</legend>
@@ -336,12 +331,12 @@
 		{/tab}
 	{/tabset}
 
-	<br>{* I cheated. *}
-	 <div class="row">
-		<div class="form-group col-lg-12 clearfix">
-			<div class="text-center">
-				<input type="submit" class="btn btn-primary btn-sm" name="filegalhandlers" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}">
-			</div>
-		</div>
-	</div>
+    <br>{* I cheated. *}
+     <div class="row">
+        <div class="form-group col-lg-12 clearfix">
+            <div class="text-center">
+                <input type="submit" class="btn btn-primary btn-sm" name="filegalhandlers" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}">
+            </div>
+        </div>
+    </div>
 </form>

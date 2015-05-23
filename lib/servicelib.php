@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -8,38 +8,24 @@
 class ServiceLib
 {
 	private $broker;
-	private $addonbrokers = array();
 
-	function getBroker($addonpackage = '')
+	function getBroker()
 	{
-		if ($addonpackage) {
-			$utilities = new TikiAddons_Utilities;
-			if (!$utilities->isInstalled(str_replace('.', '/', $addonpackage))) {
-				$addonpackage = '';
-			}
-		}
-
-		if ($addonpackage && !isset($this->addonbrokers[$addonpackage])) {
-			$this->addonbrokers[$addonpackage] = new Services_Broker(TikiInit::getContainer(), $addonpackage);
-		} else if (! $this->broker) {
+		if (! $this->broker) {
 			$this->broker = new Services_Broker(TikiInit::getContainer());
 		}
 
-		if ($addonpackage) {
-			return $this->addonbrokers[$addonpackage];
-		} else {
-			return $this->broker;
-		}
+		return $this->broker;
 	}
 
-	function internal($controller, $action, $request = array(), $addonpackage = '')
+	function internal($controller, $action, $request = array())
 	{
-		return $this->getBroker($addonpackage)->internal($controller, $action, $request);
+		return $this->getBroker()->internal($controller, $action, $request);
 	}
 
-	function render($controller, $action, $request = array(), $addonpackage = '')
+	function render($controller, $action, $request = array())
 	{
-		return $this->getBroker($addonpackage)->internalRender($controller, $action, $request);
+		return $this->getBroker()->internalRender($controller, $action, $request);
 	}
 
 	function getUrl($params)

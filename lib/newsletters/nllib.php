@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -1255,9 +1255,8 @@ class NlLib extends TikiLib
 
 			if (stristr($html, '<base') === false) {
 				if (stristr($html, '<head') === false) {
-					$themelib = TikiLib::lib('theme');
-					$news_cssfile = $themelib->get_theme_path($prefs['theme'], '', 'newsletter.css');
-					$news_cssfile_option = $themelib->get_theme_path($prefs['theme'], $prefs['theme_option'], 'newsletter.css');
+					$news_cssfile = $tikilib->get_style_path($prefs['style'], '', 'newsletter.css');
+					$news_cssfile_option = $tikilib->get_style_path($prefs['style'], $prefs['style_option'], 'newsletter.css');
 					$news_css = '';
 					if (!empty($news_cssfile)) {
 						$news_css .= $headerlib->minify_css($news_cssfile);
@@ -1328,11 +1327,11 @@ class NlLib extends TikiLib
 	// browser: true if on the browser
 	public function send($nl_info, $info, $browser=true, &$sent, &$errors, &$logFileName)
 	{
-		global $prefs, $section;
+		global $prefs, $smarty, $section;
 		$headerlib = TikiLib::lib('header');
 		$tikilib = TikiLib::lib('tiki');
 		$userlib = TikiLib::lib('user');
-		$smarty = TikiLib::lib('smarty');
+
 		$users = $this->get_all_subscribers($nl_info['nlId'], $nl_info['unsubMsg'] == 'y');
 
 		if (empty($info['editionId'])) {

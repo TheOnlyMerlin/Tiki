@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -7,18 +7,7 @@
 
 class Tracker_Item
 {
-	/**
-	 * includes itemId, trackerId and fields using the fieldId as key
-	 * @var array - plain from database. 
-	 */
 	private $info;
-	
-
-	/**
-	 * object with tracker definition. includes itemId, items (nr of items for that tracker).
-	 * other important attributes: trackerInfo array, factory null, fields array,  perms Perms_Accessor
-	 * @var object Tracker_Definition - 
-	 */
 	private $definition;
 
 	private $owner;
@@ -129,20 +118,6 @@ class Tracker_Item
 		} else {
 			return $this->perms->remove_tracker_items;
 		}
-	}
-	public function getSpecialPermissionUsers($itemId, $operation)
-	{
-		$users = array();
-
-		if ($this->definition->getConfiguration('writerCan' . $operation, 'n') == 'y') {
-			$users[] = $this->owner;
-		}
-
-		if ($this->definition->getConfiguration('writerGroupCan' . $operation, 'n') == 'y' && $this->ownerGroup && in_array($this->ownerGroup, $this->perms->getGroups())) {
-			$users = array_unique(array_merge($users, TikiLib::lib('user')->get_group_users($this->ownerGroup)));
-		}
-
-		return $users;
 	}
 
 	private function canFromSpecialPermissions($operation)
@@ -337,22 +312,11 @@ class Tracker_Item
 		return count($commonGroups) != 0;
 	}
 
-	
-	/**
-	 * Return raw value of a field. Raw means, value as saved in database. 
-	 * @param integer $fieldId
-	 * @return string - note: all values are saved as a string.
-	 */
 	private function getValue($fieldId)
 	{
 		if (isset($this->info[$fieldId])) {
 			return $this->info[$fieldId];
 		}
-	}
-
-	public function getId()
-	{
-		return $this->info['itemId'];
 	}
 
 	private function isNew()
@@ -407,7 +371,7 @@ class Tracker_Item
 
 			$factory = $this->definition->getFieldFactory();
 			$handler = $factory->getHandler($field, $this->info);
-			return array_merge($field, $handler->getFieldData(array()));
+			return array_merge($field, $handler->getFieldData([]));
 		}
 	}
 
@@ -491,8 +455,6 @@ class Tracker_Item
 		return array(
 			'itemId' => $this->isNew() ? null : $this->info['itemId'],
 			'status' => $this->isNew() ? 'o' : $this->info['status'],
-			'creation_date' => $this->info['created'],
-			'trackerId' => $this->isNew() ? null : $this->info['trackerId'],
 			'fields' => $out,
 		);
 	}

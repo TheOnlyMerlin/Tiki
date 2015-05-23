@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -30,9 +30,8 @@ function module_freetag_info()
  */
 function module_freetag($mod_reference, $module_params)
 {
-	global $sections, $section;
-	$smarty = TikiLib::lib('smarty');
-	$modlib = TikiLib::lib('mod');
+	global $sections, $section, $modlib;
+	global $smarty;
 	
 	$globalperms = Perms::get();
 	if ($globalperms->view_freetags && isset($sections[$section])) {

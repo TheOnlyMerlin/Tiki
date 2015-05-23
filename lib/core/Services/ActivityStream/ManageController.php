@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -46,22 +46,6 @@ class Services_ActivityStream_ManageController
 		);
 	}
 
-	function action_deleteactivity(JitRequest $request)
-	{
-		$id = $request->activityId->int();
-
-		$removed = false;
-		if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-			$this->lib->deleteActivity($id);
-			$removed = true;
-		}
-
-		return array(
-			'removed' => $removed,
-			'activityId' => $id,
-		);
-	} 
-
 	function action_sample(JitFilter $request)
 	{
 		$id = $request->ruleId->int();
@@ -91,20 +75,12 @@ class Services_ActivityStream_ManageController
 	function action_record(JitFilter $request)
 	{
 		$id = $request->ruleId->int();
-		$priority = $request['priority'];
-		$user = $request['user'];
-
-		if ($request['is_notification'] != "on"){
-			$rule = '(event-record event args)';
-		}else{
-			$rule = "(event-notify event args (str $priority) (str $user))";
-		}
 
 		if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			$id = $this->replaceRule(
 				$id,
 				array(
-					'rule' => $rule,
+					'rule' => '(event-record event args)',
 					'ruleType' => 'record',
 					'notes' => $request->notes->text(),
 					'eventType' => $request->event->attribute_type(),

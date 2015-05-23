@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -163,7 +163,7 @@ function wikiplugin_split($data, $params, $pos)
 		$percent = true;	
 	}
 	if (!isset($edit)) $edit = 'n';
-	$result = "<div class='table-responsive'><div><table class='table".($percent ? " normalnoborder" : "").( !empty($customclass) ? " $customclass" : "")."'>";
+	$result = "<div class='table-responsive'><table border='0' cellpadding='0' cellspacing='0' class='wikiplugin-split".($percent ? " normalnoborder" : "").( !empty($customclass) ? " $customclass" : "")."'>";
 
 	// Attention: Dont forget to remove leading empty line in section ...
 	//            it should remain from previous '---' line...
@@ -241,7 +241,7 @@ function wikiplugin_split($data, $params, $pos)
 		$result .= '</tr>';
 	}
 	// Close HTML table (no \n at end!)
-	$result .= "</table></div></div>";
+	$result .= "</table></div>";
 
 	return wikiplugin_split_rollback($result, $hashes);
 }

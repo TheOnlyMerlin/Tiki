@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -92,7 +92,7 @@ function translationsToThisPageAreInProgress($page_id)
 
 function execute_module_translation()
 {
-	$smarty = TikiLib::lib('smarty');
+	global $smarty;
 // will show the language of the available translations. Chnage to 'n' to show the page name
 	$params['show_language'] = 'y';
 // flag to indicate that the module is appearing within the notification area of the edit page
@@ -277,13 +277,13 @@ if (isset($_REQUEST['cancel_edit'])) {
 	$tikilib->semaphore_unset($page, $_SESSION[$editLockPageId]);
 	if (!empty($_REQUEST['returnto'])) {
 		if (isURL($_REQUEST['returnto'])) {
-			$url = $_REQUEST['returnto'];
+			$url = "location:".$_REQUEST['returnto'];
 		} else {
 			// came from wikiplugin_include.php edit button
-			$url = $wikilib->sefurl($_REQUEST['returnto']);
+			$url = "location:".$wikilib->sefurl($_REQUEST['returnto']);
 		}
 	} else {
-		$url = $wikilib->sefurl($page);
+		$url = "location:".$wikilib->sefurl($page);
 		if (!empty($_REQUEST['page_ref_id'])) {
 			$url .= (strpos($url, '?') === false ? '?' : '&') . 'page_ref_id='.$_REQUEST['page_ref_id'];
 		}
@@ -294,7 +294,8 @@ if (isset($_REQUEST['cancel_edit'])) {
 	}
 
 	if ($dieInsteadOfForwardingWithHeader) die ("-- tiki-editpage: Dying before first call to header(), so we can see traces. Forwarding to: \$url='$url'");
-	$access->redirect($url);
+	header($url);
+	die;
 }
 if (isset($_REQUEST['minor'])) {
 	$_REQUEST['isminor'] = 'on';
@@ -531,7 +532,8 @@ if (isset($_FILES['userfile1']) && is_uploaded_file($_FILES['userfile1']['tmp_na
 			}
 		}
 		if ($dieInsteadOfForwardingWithHeader) die ("-- tiki-editpage: Dying before second call to header(), so we can see traces. Forwarding to: '$url'");
-		$access->redirect($url);
+		header("location: $url");
+		die;
 	}
 }
 
@@ -746,15 +748,16 @@ if (isset($prefs['feature_references']) && $prefs['feature_references'] === 'y')
 
 			$references = $referenceslib->list_references($page_id);
 			$lib_references = $referenceslib->list_lib_references();
-			$perms = Perms::get(array('wiki page', $page));
 
-			if ($perms->use_references) {
+			$tiki_p_use_references = $referenceslib->get_permission('tiki_p_use_references');
+			$tiki_p_edit_references = $referenceslib->get_permission('tiki_p_edit_references');
+			if (isset($tiki_p_use_references) && $tiki_p_use_references=='y') {
 				$use_references = 1;
 			} else {
 				$use_references = 0;
 			}
 
-			if ($perms->edit_references) {
+			if (isset($tiki_p_edit_references) && $tiki_p_edit_references=='y') {
 				$edit_references = 1;
 			} else {
 				$edit_references = 0;
@@ -1365,7 +1368,8 @@ if (
 	}
 
 	if ($dieInsteadOfForwardingWithHeader) die ("-- tiki-editpage: Dying before third call to header(), so we can see traces. Forwarding to: '$url'");
-	$access->redirect($url);
+	header("location: $url");
+	die;
 } //save
 $smarty->assign('pageAlias', $pageAlias);
 if ($prefs['feature_wiki_templates'] === 'y' && $tiki_p_use_content_templates === 'y') {

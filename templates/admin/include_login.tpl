@@ -1,5 +1,5 @@
 {* $Id$ *}
-{jq}
+{jq}		
 	$("#genPass span").click(function () {
 		var passcodeId = $("input[name=registerPasscode]").attr('id');
 		genPass(passcodeId);
@@ -21,26 +21,25 @@
 <form action="tiki-admin.php?page=login" class="admin" method="post" name="LogForm">
 	<input type="hidden" name="ticket" value="{$ticket|escape}">
 	<input type="hidden" name="loginprefs" />
-	<div class="row">
-			<div class="form-group col-lg-12 clearfix">
-					<div class="pull-right">
-					<input type="submit" class="btn btn-primary btn-sm" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}" />
-				</div>
-			</div>
-	</div>
+    <div class="row">
+        <div class="form-group col-lg-12 clearfix">
+            <div class="pull-right">
+		        <input type="submit" class="btn btn-primary btn-sm" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}" />
+	        </div>
+        </div>
+    </div>
 
 	{tabset name="admin_login"}
-
 		{tab name="{tr}General Preferences{/tr}"}
-			<h2>{tr}General Preferences{/tr}</h2>
+            <h2>{tr}General Preferences{/tr}</h2>
 			{preference name=auth_method}
 			{preference name=feature_intertiki}
-
+			
 			<fieldset>
 				<legend>{tr}Registration{/tr} &amp; {tr}Log in{/tr}</legend>
 				{preference name=allowRegister}
-				{preference name=validateUsers}
 				<div class="adminoptionboxchild" id="allowRegister_childcontainer">
+					{preference name=validateUsers}
 					{preference name=validateEmail}
 					{preference name=validateRegistration}
 					<div class="adminoptionboxchild" id="validateRegistration_childcontainer">
@@ -85,26 +84,26 @@
 				</div>
 				{preference name=userTracker}
 				<div class="adminoptionboxchild" id="userTracker_childcontainer">
-					{preference name=feature_userWizardDifferentUsersFieldIds}
+				{preference name=feature_userWizardDifferentUsersFieldIds}
 					<div class="adminoptionboxchild" id="feature_userWizardDifferentUsersFieldIds_childcontainer">
 							{preference name=feature_userWizardUsersFieldIds}
-					</div>
-					{preference name=user_register_prettytracker}
+					</div>				
+				{preference name=user_register_prettytracker}
 					<div class="adminoptionboxchild" id="user_register_prettytracker_childcontainer">
-						{preference name=user_register_prettytracker_tpl}
+					{preference name=user_register_prettytracker_tpl}
 					</div>
-					{preference name=user_register_prettytracker_output}
+				{preference name=user_register_prettytracker_output}
 					<div class="adminoptionboxchild" id="user_register_prettytracker_output_childcontainer">
-						{preference name=user_register_prettytracker_outputwiki}
-						{preference name=user_register_prettytracker_outputtowiki}
+					{preference name=user_register_prettytracker_outputwiki}
+					{preference name=user_register_prettytracker_outputtowiki}
 					</div>
-					{preference name=user_trackersync_trackers}
-					{preference name=user_trackersync_realname}
-					{preference name=user_trackersync_geo}
-					{preference name=user_trackersync_groups}
-					{preference name=user_trackersync_parentgroup}
-					{preference name=user_trackersync_lang}
-					{preference name=user_tracker_auto_assign_item_field}
+				{preference name=user_trackersync_trackers}
+				{preference name=user_trackersync_realname}
+				{preference name=user_trackersync_geo}
+				{preference name=user_trackersync_groups}
+				{preference name=user_trackersync_parentgroup}
+				{preference name=user_trackersync_lang}
+				{preference name=user_tracker_auto_assign_item_field}
 				</div>
 				{preference name=groupTracker}
 				{preference name=email_due}
@@ -131,7 +130,7 @@
 				<div class="adminoptionboxchild rememberme_childcontainer all always">
 					{preference name=remembertime}
 				</div>
-
+	
 				<fieldset>
 					<legend>{tr}Cookies{/tr}</legend>
 					{preference name=cookie_name}
@@ -153,7 +152,7 @@
 				</fieldset>
 				{preference name=feature_banning}
 			</fieldset>
-
+	
 			<fieldset>
 				<legend>{tr}Username{/tr}</legend>
 				{preference name=login_is_email mode=invert}
@@ -165,16 +164,16 @@
 				</div>
 				{preference name=username_pattern}
 			</fieldset>
-
+	
 			<fieldset>
 				<legend>{tr}Password{/tr}</legend>
 				{if $prefs.feature_clear_passwords eq 'y'} {* deprecated *}
 					{preference name='feature_clear_passwords'}
 					<div class="adminoptionboxchild" id='feature_clear_passwords_childcontainer'>
-						{remarksbox type='warning' title="{tr}Security risk{/tr}"}{tr}Store passwords in plain text is activated. You should never set this unless you know what you are doing.{/tr}{/remarksbox}
+						{remarksbox type='warning' title='Security risk'}{tr}Store passwords in plain text is activated. You should never set this unless you know what you are doing.{/tr}{/remarksbox}
 					</div>
 				{/if}
-
+	
 				{preference name=forgotPass}
 				{preference name=feature_crypt_passwords}
 				{preference name=change_password}
@@ -189,23 +188,8 @@
 			{button href="?page=login&amp;refresh_email_group=y" _text="{tr}Assign users to group function of email pattern{/tr}"}
 		{/tab}
 
-    {tab name="{tr}Remote Tiki Autologin{/tr}"}
-      <h2>{tr}Remote Tiki Autologin{/tr}</h2>
-        <fieldset>
-          {preference name=login_autologin}
-          {preference name=login_autologin_user}
-          {preference name=login_autologin_group}
-          {preference name=login_autologin_createnew}
-          {preference name=login_autologin_allowedgroups}
-          {preference name=login_autologin_syncgroups}
-          {preference name=login_autologin_logoutremote}
-          {preference name=login_autologin_redirectlogin}
-          {preference name=login_autologin_redirectlogin_url}
-        </fieldset>
-    {/tab}
-
 		{tab name="{tr}LDAP{/tr}"}
-			<h2>{tr}LDAP{/tr}</h2>
+            <h2>{tr}LDAP{/tr}</h2>
 			<input type="hidden" name="auth_ldap" />
 			<fieldset>
 				<legend>LDAP {help url="Login+Authentication+Methods"}</legend>
@@ -214,7 +198,7 @@
 						<div>{icon _id=information} {tr}You must change the Authentication Method to LDAP for these changes to take effect{/tr}.</div>
 					</div>
 				{/if}
-
+					
 				{preference name=ldap_create_user_tiki}
 				{preference name=ldap_create_user_ldap}
 				{preference name=ldap_skip_admin}
@@ -252,7 +236,7 @@
 		{/tab}
 
 		{tab name="{tr}LDAP external groups{/tr}"}
-			<h2>{tr}LDAP external groups{/tr}</h2>
+            <h2>{tr}LDAP external groups{/tr}</h2>
 			<fieldset>
 				<legend>{tr}LDAP external groups{/tr}</legend>
 
@@ -310,11 +294,11 @@
 		{/tab}
 
 		{tab name="{tr}PAM{/tr}"}
-			<h2>{tr}PAM{/tr}</h2>
+            <h2>{tr}PAM{/tr}</h2>
 			<input type="hidden" name="auth_pam" />
 			<fieldset>
 				<legend>{tr}PAM{/tr} {help url="AuthPAM" desc="{tr}PAM{/tr}"}</legend>
-
+	
 				{if $prefs.auth_method ne 'pam'}
 					<div class="alert alert-warning">
 						<div>
@@ -322,7 +306,7 @@
 						</div>
 					</div>
 				{/if}
-
+					
 				{preference name=pam_create_user_tiki}
 				{preference name=pam_skip_admin}
 				{preference name=pam_service}
@@ -330,7 +314,7 @@
 		{/tab}
 
 		{tab name="{tr}Shibboleth{/tr}"}
-			<h2>{tr}Shibboleth{/tr}</h2>
+            <h2>{tr}Shibboleth{/tr}</h2>
 			<fieldset>
 				<legend>{tr}Shibboleth{/tr}{help url="AuthShib" desc="{tr}Shibboleth Authentication {/tr}"}</legend>
 				<input type="hidden" name="auth_shib" />
@@ -352,7 +336,7 @@
 		{/tab}
 
 		{tab name="{tr}CAS{/tr}"}
-			<h2>{tr}CAS{/tr}</h2>
+            <h2>{tr}CAS{/tr}</h2>
 			<input type="hidden" name="auth_cas" />
 			<fieldset>
 				<legend>{tr}CAS (Central Authentication Service){/tr}{help url="CAS+Authentication"}</legend>
@@ -381,9 +365,8 @@
 				</fieldset>
 			</fieldset>
 		{/tab}
-
 		{tab name="{tr}phpBB{/tr}"}
-			<h2>{tr}phpBB{/tr}</h2>
+            <h2>{tr}phpBB{/tr}</h2>
 			<fieldset>
 				<legend>{tr}phpBB{/tr}{help url="phpBB+Authentication" desc="{tr}phpBB User Database Authentication {/tr}"}</legend>
 				<input type="hidden" name="auth_phpbb" />
@@ -427,14 +410,12 @@
 				{preference name='auth_ws_create_tiki'}
 			</fieldset>
 		{/tab}
-
 	{/tabset}<br>{* I cheated. *}
-
-	<div class="row">
-		<div class="form-group col-lg-12 clearfix">
-			<div class="text-center">
-				<input type="submit" class="btn btn-primary btn-sm" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}" />
-			</div>
-		</div>
-	</div>
+    <div class="row">
+        <div class="form-group col-lg-12 clearfix">
+            <div class="text-center">
+		        <input type="submit" class="btn btn-primary btn-sm" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}" />
+	        </div>
+        </div>
+    </div>
 </form>

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -24,11 +24,11 @@ class TWVersion
 		//   stable   : Represents stable releases.
 		//   unstable : Represents candidate and test/development releases.
 		//   trunk     : Represents next generation development version.
-		$this->branch 	= 'trunk';
+		$this->branch 	= 'stable';
 
 		// Set everything else, including defaults.
-		$this->version 	= '15.0svn';	// needs to have no spaces for releases
-		$this->star	= '?';
+		$this->version 	= '13.2';	// needs to have no spaces for releases
+		$this->star	= 'Fomalhaut';
 		$this->releases	= array();
 
 		// Check for Subversion or not
@@ -74,8 +74,7 @@ class TWVersion
 				21=>'Sun',			// 10.x
 				22=>'Vega',			// 11.x
 				23=>'Altair',		// 12.x
-				24=>'Fomalhaut',	// 13.x
-				25=>'Peony',		// 14.x
+				24=>'Fomalhaut'		// 13.x
 		);
 	}
 
@@ -192,6 +191,7 @@ class TWVersion
 				'9.6',
 				'9.7',
 				'9.8',
+				'9.9',
 				'10.0alpha',
 				'10.0beta',
 				'10.0',
@@ -203,7 +203,6 @@ class TWVersion
 				'11.0beta',
 				'11.0',
 				'11.1',
-				'11.2',
 				'12.0alpha',
 				'12.0beta',
 				'12.0',
@@ -215,8 +214,7 @@ class TWVersion
 				'13.0beta',
 				'13.0',
 				'13.1',
-				'14.0beta',
-				'14.0',
+				'13.2',
 			);
 	}
 

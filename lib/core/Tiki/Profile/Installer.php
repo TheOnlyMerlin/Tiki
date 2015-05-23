@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -134,7 +134,6 @@ class Tiki_Profile_Installer
 		'calendar' => 'Tiki_Profile_InstallHandler_Calendar',
 		'extwiki' => 'Tiki_Profile_InstallHandler_ExtWiki',
 		'webmail_account' => 'Tiki_Profile_InstallHandler_WebmailAccount',
-		'webmail' => 'Tiki_Profile_InstallHandler_Webmail',
 		'sheet' => 'Tiki_Profile_InstallHandler_Sheet',
 		'rating_config' => 'Tiki_Profile_InstallHandler_RatingConfig',
 		'rating_config_set' => 'Tiki_Profile_InstallHandler_RatingConfigSet',
@@ -162,8 +161,7 @@ class Tiki_Profile_Installer
 
 	private $userData = false;
 	private $debug = false;
-	private $prefixDependencies = true;
-
+	
 	private $feedback = array();	// Let users know what's happened
 
 	private $allowedGlobalPreferences = false;
@@ -255,16 +253,6 @@ class Tiki_Profile_Installer
 		$this->debug = true;
 	} // }}}
 
-	function disablePrefixDependencies( ) // {{{
-	{
-		$this->prefixDependencies = false;
-	} // }}}
-
-	function enablePrefixDependencies( ) // {{{
-	{
-		$this->prefixDependencies = true;
-	} // }}}
-
 	function getInstallOrder( Tiki_Profile $profile ) // {{{
 	{
 		if ($profile == null) {
@@ -282,21 +270,17 @@ class Tiki_Profile_Installer
 
 		// Build the list of dependencies for each profile
 		$short = array();
-		foreach ( $dependencies as $key => $prf ) {
-			if ( empty( $prf ) ) {
-				throw new Exception("Unknown objects are referenced: " . $key);
-			}
-
+		foreach ( $dependencies as $key => $profile ) {
 			$short[$key] = array();
-			foreach ( $prf->getRequiredProfiles() as $k => $p )
+			foreach ( $profile->getRequiredProfiles() as $k => $p )
 				$short[$key][] = $k;
 
-			foreach ( $prf->getNamedObjects() as $o )
+			foreach ( $profile->getNamedObjects() as $o )
 				$knownObjects[] = Tiki_Profile_Object::serializeNamedObject($o);
-			foreach ( $prf->getReferences() as $o )
+			foreach ( $profile->getReferences() as $o )
 				$referenced[] = Tiki_Profile_Object::serializeNamedObject($o);
 
-			if ( ! $this->isInstallable($prf) )
+			if ( ! $this->isInstallable($profile) )
 				return false;
 		}
 
@@ -307,8 +291,8 @@ class Tiki_Profile_Installer
 
 		// Build the list of packages that need to be installed
 		$toSequence = array();
-		foreach ( $dependencies as $key => $prf )
-			if ( ! $this->isInstalled($prf, $key == $profile->getProfileKey() || $this->prefixDependencies) )
+		foreach ( $dependencies as $key => $profile )
+			if ( ! $this->isInstalled($profile) )
 				$toSequence[] = $key;
 
 		// Order the packages to make sure all dependencies are met
@@ -377,9 +361,9 @@ class Tiki_Profile_Installer
 
 	} // }}}
 
-	function isInstalled( Tiki_Profile $profile, $prefix = true ) // {{{
+	function isInstalled( Tiki_Profile $profile ) // {{{
 	{
-		return array_key_exists($profile->getProfileKey($prefix), $this->installed);
+		return array_key_exists($profile->getProfileKey(), $this->installed);
 	} // }}}
 
 	function isKeyInstalled( $domain, $profile ) // {{{
@@ -447,8 +431,7 @@ class Tiki_Profile_Installer
 
 	private function applyPreferences($profile, $preferences, $leaveUnknown = false)
 	{
-		global $prefs;
-		$tikilib = TikiLib::lib('tiki');
+		global $tikilib, $prefs;
 
 		$profile->replaceReferences($preferences, $this->userData, $leaveUnknown);
 		$leftovers = array();
@@ -460,7 +443,7 @@ class Tiki_Profile_Installer
 			}
 
 			if ($this->allowedGlobalPreferences === false || in_array($pref, $this->allowedGlobalPreferences)) {
-				$prefslib = TikiLib::lib('prefs');
+				global $prefslib; include_once('lib/prefslib.php');
 				$pinfo = $prefslib->getPreference($pref);
 				if (!empty($pinfo['separator']) && !is_array($value)) {
 					$value = explode($pinfo['separator'], $value);

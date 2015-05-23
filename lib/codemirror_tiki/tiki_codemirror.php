@@ -1,15 +1,11 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-
-/**
- * Create codemirror modes in temp - put wiki language upfront.
- */
-function createCodemirrorModes()
+function codemirrorModes($minify = true)
 {
 	global $prefs, $tikidomainslash;
 	$js = '';
@@ -51,13 +47,9 @@ test = { mode: function () {}, indentation: function() {} }
 
 		file_put_contents($cssModes, $css);
 		chmod($cssModes, 0644);
-		
 	}
 
-	// creation upfront is ok, but only include them if the feature is enabled. Otherwise we would get js errors bc codemirror itself would be missing
-	if (isset($prefs['feature_syntax_highlighter']) && $prefs['feature_syntax_highlighter'] == 'y') {
-		TikiLib::lib("header")
-			->add_jsfile($jsModes)
-			->add_cssfile($cssModes);
-	}
+	TikiLib::lib("header")
+		->add_jsfile($jsModes)
+		->add_cssfile($cssModes);
 }

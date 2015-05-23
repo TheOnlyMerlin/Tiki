@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -111,11 +111,10 @@ class Tiki_PageCache
 
 				if ( $cachedOutput && $cachedOutput['output'] ) {
 					$headerlib = TikiLib::lib('header');
-					if (is_array($cachedOutput['jsfiles'])) {
-						foreach ($cachedOutput['jsfiles'] as $rank => $files) {
+					if (is_array($cachedOutput['jsiles'])) {
+						foreach ($cachedOutput['jsiles'] as $rank => $files) {
 							foreach ($files as $file) {
-								$skip_minify = isset($cachedOutput['skip_minify']) ? true : false;
-								$headerlib->add_jsfile_by_rank($file, $rank, $skip_minify);
+								$headerlib->add_jsfile($file, $rank);
 							}
 						}
 					}
@@ -175,8 +174,7 @@ class Tiki_PageCache
 
 			if ($this->headerLibCopy) {
 				$headerlib = TikiLib::lib('header');
-				$cachedOutput['jsfiles']    = array_diff($headerlib->jsfiles, $this->headerLibCopy->jsfiles);
-				$cachedOutput['skip_minify']= array_diff($headerlib->skip_minify, $this->headerLibCopy->skip_minify);
+				$cachedOutput['jsiles']     = array_diff($headerlib->jsfiles, $this->headerLibCopy->jsfiles);
 				$cachedOutput['jq_onready'] = array_diff($headerlib->jq_onready, $this->headerLibCopy->jq_onready);
 				$cachedOutput['js']         = array_diff($headerlib->js, $this->headerLibCopy->js);
 				$cachedOutput['css']        = array_diff($headerlib->css, $this->headerLibCopy->css);

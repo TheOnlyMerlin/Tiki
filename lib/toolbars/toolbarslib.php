@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -406,14 +406,14 @@ abstract class Toolbar
 
 	function getIconHtml() // {{{
 	{
-		$headerlib = TikiLib::lib('header');
+		global $headerlib;
 		return '<img src="' . htmlentities($headerlib->convert_cdn($this->icon), ENT_QUOTES, 'UTF-8') . '" alt="' . htmlentities($this->getLabel(), ENT_QUOTES, 'UTF-8') . '" title="' . htmlentities($this->getLabel(), ENT_QUOTES, 'UTF-8') . '" class="icon"/>';
 	} // }}}
 
 	function getSelfLink( $click, $title, $class )
 	{ // {{{
-		global $prefs;
-		$smarty = TikiLib::lib('smarty');
+		global $smarty, $prefs;
+
 		$params = array();
 		$params['_onclick'] = $click . (substr($click, strlen($click)-1) != ';' ? ';' : '') . 'return false;';
 		$params['_class'] = 'toolbar btn btn-xs btn-link' . (!empty($class) ? ' '.$class : '');
@@ -425,7 +425,11 @@ abstract class Toolbar
 			$params['_menu_text'] = 'y';
 			$params['_menu_icon'] = 'y';
 		}
-		return smarty_block_self_link($params, $content, $smarty);
+		if ($prefs['mobile_mode'] !== 'y') {
+			return smarty_block_self_link($params, $content, $smarty);
+		} else {
+			return str_replace('<a ', '<a data-role="button" ', smarty_block_self_link($params, $content, $smarty));
+		}
 	} // }}}
 
 	protected function setupCKEditorTool($js, $name, $label = '', $icon = '')
@@ -443,6 +447,7 @@ if (typeof window.CKEDITOR !== "undefined" && !window.CKEDITOR.plugins.get("{$na
 			var command = editor.addCommand( '{$name}', new window.CKEDITOR.command( editor , {
 				modes: { wysiwyg:1 },
 				exec: function (elem, editor, data) {
+				    CurrentEditorName=editor.name;
 					{$js}
 				},
 				canUndo: false
@@ -589,8 +594,7 @@ class ToolbarCkOnly extends Toolbar
 
 	function getWysiwygToken($areaId) {
 		if ($this->wysiwyg === 'Image') {	// cke's own image tool
-			global $prefs;
-			$headerlib = TikiLib::lib('header');
+			global $headerlib,  $smarty, $prefs;
 			// can't do upload the cke way yet
 			$url = 'tiki-list_file_gallery.php?galleryId='.$prefs['home_file_gallery'].'&filegals_manager=fgal_picker';
 			$headerlib->add_js('if (typeof window.CKEDITOR !== "undefined") {window.CKEDITOR.config.filebrowserBrowseUrl = "'.$url.'"}', 5);
@@ -627,8 +631,7 @@ class ToolbarCkOnly extends Toolbar
 
 	function getIconHtml() // {{{ for admin page
 	{
-		global $prefs;
-		$headerlib = TikiLib::lib('header');
+		global $headerlib, $prefs;
 
 		if ((!empty($this->icon) && $this->icon !== 'img/icons/shading.png') || in_array($this->label, array('Autosave'))) {
 			return parent::getIconHtml();
@@ -921,13 +924,16 @@ class ToolbarPicker extends Toolbar
 
 	public static function fromName( $tagName ) // {{{
 	{
-		global $section, $prefs;
-		$headerlib = TikiLib::lib('header');
+		global $headerlib, $section, $prefs;
 
         $isWikiLingo = false;
         if ($prefs['feature_wikilingo'] === 'y') {
             $isWikiLingo = true;
         }
+
+		if ($prefs['mobile_mode'] === 'y') {
+			return '';
+		}
 
 		$tool_prefs = array();
 		$styleType = '';
@@ -953,6 +959,7 @@ class ToolbarPicker extends Toolbar
             $tool_prefs[] = 'feature_smileys';
 
             $list = array();
+            global $headerlib;
             foreach ( $rawList as $smiley ) {
                 $tra = htmlentities(tra($smiley), ENT_QUOTES, 'UTF-8');
                 $list["(:$smiley:)"] = '<img src="' . $headerlib->convert_cdn('img/smiles/icon_' .$smiley . '.gif') . '" alt="' . $tra . '" title="' . $tra . '" width="15" height="15" />';
@@ -1100,8 +1107,7 @@ class ToolbarPicker extends Toolbar
 
 	function getWikiHtml( $areaId ) // {{{
 	{
-		global $prefs;
-		$headerlib = TikiLib::lib('header');
+		global $headerlib, $prefs;
 		$headerlib->add_js("if (! window.pickerData) { window.pickerData = {}; } window.pickerData['$this->name'] = " . str_replace('\/', '/', json_encode($this->list)) . ";");
 
 		return $this->getSelfLink(
@@ -1128,6 +1134,10 @@ class ToolbarDialog extends Toolbar
 	public static function fromName( $tagName ) // {{{
 	{
 		global $prefs;
+
+		if ($prefs['mobile_mode'] === 'y') {
+			return '';
+		}
 
 		$tool_prefs = array();
 
@@ -1297,7 +1307,7 @@ class ToolbarDialog extends Toolbar
 
 	function getWikiHtml( $areaId ) // {{{
 	{
-		$headerlib = TikiLib::lib('header');
+		global $headerlib;
 		$headerlib->add_js("if (! window.dialogData) { window.dialogData = {}; } window.dialogData[$this->index] = " . json_encode($this->list) . ";", 1 + $this->index);
 
 		return $this->getSelfLink(
@@ -1393,7 +1403,7 @@ class ToolbarHelptool extends Toolbar
 		$params['plugins'] = 1;
 		$params['areaId'] = $areaId;
 
-		if ($GLOBALS['section'] == 'sheet') {
+		if ($section == 'sheet') {
 			$params['sheet'] = 1;
 		}
 
@@ -1413,18 +1423,16 @@ class ToolbarHelptool extends Toolbar
 		$params = ['controller' => 'edit', 'action' => 'help', 'modal' => 1];
 		$params['wysiwyg'] = 1;
 		$params['plugins'] = 1;
+		$params['areaId'] = $areaId;
 
 		if ($section == 'sheet') {
 			$params['sheet'] = 1;
 		}
 
-		// multiple ckeditors share the same toolbar commands, so area_id (editor.name) must be added when clicked
-		$params['areaId'] = '';	// this must be last param
-
 		$this->setLabel(tra('Wysiwyg Help'));
 		$name = 'tikihelp';
 
-		$js = '$("#bootstrap-modal").modal({show: true, remote: "' . $servicelib->getUrl($params) . '" + editor.name});';
+		$js = '$("#bootstrap-modal").modal({show: true, remote: "' . $servicelib->getUrl($params) . '"});';
 
 		$this->setupCKEditorTool($js, $name, $this->label, $this->icon);
 
@@ -1480,12 +1488,7 @@ class ToolbarFileGallery extends Toolbar
 					getFileCallback: function(file,elfinder) {
 							window.handleFinderInsertAt(file,elfinder,\''.$areaId.'\');
 						},
-					eventOrigin:this,
-					uploadCallback: function (data) {
-							if (data.data.added.length === 1 && confirm(tr(\'Do you want to use this file in your page?\'))) {
-								window.handleFinderInsertAt(data.data.added[0],window.elFinder,\''.$areaId.'\');
-							}
-						}
+					eventOrigin:this
 				}
 			);';
 		}
@@ -1532,7 +1535,7 @@ class ToolbarFileGalleryFile extends ToolbarFileGallery
 
 	function getSyntax( $areaId )
 	{
-		$smarty = TikiLib::lib('smarty');
+		global $smarty;
 		$smarty->loadPlugin('smarty_function_filegal_manager_url');
 		return 'openFgalsWindow(\''.htmlentities(smarty_function_filegal_manager_url(array('area_id'=>$areaId), $smarty)).'&insertion_syntax=file\', true);';
 	}
@@ -2044,16 +2047,16 @@ class ToolbarsList
 			foreach ( $line as $bit ) {
 				foreach ( $bit as $group) {
 					$group_count = 0;
-					foreach ($group as $tag) {
-						if ($isHtml) {
-							if ($token = $tag->getWysiwygToken($areaId)) {
-								$lineOut[] = $token;
-								$group_count++;
-							}
-						} else {
-							if ($token = $tag->getWysiwygWikiToken($areaId)) {
-								$lineOut[] = $token;
-								$group_count++;
+                    if ($isHtml) {
+					        foreach ( $group as $tag ) {
+								if ( $token = $tag->getWysiwygToken($areaId) ) {
+								    $lineOut[] = $token; $group_count++;
+							    }
+                            }
+					} else {
+                        foreach ( $group as $tag ) {
+							if ( $token = $tag->getWysiwygWikiToken($areaId) ) {
+								$lineOut[] = $token; $group_count++;
 							}
 						}
 					}
@@ -2074,9 +2077,7 @@ class ToolbarsList
 
 	function getWikiHtml( $areaId, $comments='' ) // {{{
 	{
-		global $tiki_p_admin, $tiki_p_admin_toolbars, $section, $prefs;
-		$headerlib = TikiLib::lib('header');
-		$smarty = TikiLib::lib('smarty');
+		global $tiki_p_admin, $tiki_p_admin_toolbars, $smarty, $section, $prefs, $headerlib;
 		$html = '';
 
 		$c = 0;
@@ -2109,7 +2110,11 @@ class ToolbarsList
 
 					if ( !empty($groupHtml) ) {
 						$param = empty($lineBit) ? '' : ' class="toolbar-list"';
-						$lineBit .= "<span$param>$groupHtml</span>";
+						if ($prefs['mobile_mode'] !== 'y') {
+							$lineBit .= "<span$param>$groupHtml</span>";
+						} else {
+							$lineBit .= "<span$param data-role='controlgroup' data-type='horizontal'>$groupHtml</span>";
+						}
 					}
 					if ($bitx == 1) {
 						if (!empty($right)) {

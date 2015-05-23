@@ -4,14 +4,10 @@
 	<h3>{tr}Comments{/tr}
 		<span class="lock">
 			{if ! $parentId && $allow_lock}
-				<a href="{bootstrap_modal controller=comment action=lock type=$type objectId=$objectId}" class="btn btn-link btn-sm tips" title="{tr}Comments unlocked{/tr}:{tr}Lock comments{/tr}">
-					{icon name="unlock"}
-				</a>
+				{self_link controller=comment action=lock modal=true type=$type objectId=$objectId _icon=lock _class="confirm-prompt btn btn-default btn-sm" _bootstrap="y" _confirm="{tr}Do you really want to lock comments?{/tr}"}{tr}Lock{/tr}{/self_link}
 			{/if}
 			{if ! $parentId && $allow_unlock}
-				<a href="{bootstrap_modal controller=comment action=unlock type=$type objectId=$objectId}" class="btn btn-link btn-sm tips" title="{tr}Comments locked{/tr}:{tr}Unlock comments{/tr}">
-					{icon name="lock"}
-				</a>
+				{self_link controller=comment action=unlock type=$type objectId=$objectId _icon=lock_break _class="confirm-prompt btn btn-default btn-sm" _confirm="{tr}Do you really want to unlock comments?{/tr}"}{tr}Unlock{/tr}{/self_link}
 			{/if}
 		</span>
 	</h3>
@@ -30,10 +26,11 @@
 		<div class="submit">
 			<h3>
 				<div class="button buttons comment-form {if $prefs.wiki_comments_form_displayed_default eq 'y'}autoshow{/if}">
-					<a class="btn btn-primary custom-handling" href="{service controller=comment action=post type=$type objectId=$objectId}" data-target="#add-comment-zone-{$objectId|replace:' ':''|replace:',':''}">{tr}Post new comment{/tr}</a>
+					<a class="btn btn-primary custom-handling" href="{service controller=comment action=post type=$type objectId=$objectId}" data-target="#add-comment-zone-{$objectId|replace:' ':''}">{tr}Post new comment{/tr}</a>
 				</div>
 		</div>
-		<div id="add-comment-zone-{$objectId|replace:' ':''|replace:',':''}" class="comment-form"></div>
+		<div id="add-comment-zone-{$objectId|replace:' ':''}">
+		</div>
 	{/if}
 
 	{if $prefs.feature_inline_comments eq 'y'}

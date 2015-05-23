@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -59,8 +59,7 @@ function wikiplugin_annotation_info()
 function wikiplugin_annotation($data, $params)
 {
 	static $first = true;
-	global $page, $tiki_p_edit;
-	$headerlib = TikiLib::lib('header');
+	global $page, $tiki_p_edit, $headerlib;
 
 	$params = array_merge(array( 'align' => 'left' ), $params);
 
@@ -430,7 +429,7 @@ FORM;
 } );
 JS;
 	
-	$headerlib = TikiLib::lib('header');
+	global $headerlib;
 	$headerlib->add_js($js);
 
 	return <<<ANNOTATION

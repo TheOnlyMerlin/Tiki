@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -444,6 +444,7 @@ class RegistrationLib extends TikiLib
 	{
 		global $prefs;
 
+		include_once('XML/RPC.php');
 		$remote = $prefs['interlist'][$prefs['feature_intertiki_mymaster']];
 		$client = new XML_RPC_Client($remote['path'], $remote['host'], $remote['port']);
 		$client->setDebug(0);
@@ -483,8 +484,7 @@ class RegistrationLib extends TikiLib
 	 */
 	public function register_new_user($registration, $from_intertiki=false)
 	{
-		global $prefs;
-		$tikilib = TikiLib::lib('tiki');
+		global $prefs, $tikilib;
 
 		if ($prefs['login_is_email'] == 'y' && isset($registration['name'])) {
 			$registration['email'] = $registration['name'];
@@ -677,6 +677,7 @@ class RegistrationLib extends TikiLib
 			}
 
 			if ($prefs['feature_intertiki'] == 'y' && !empty($prefs['feature_intertiki_mymaster'])) {
+				include_once('XML/RPC.php');
 				$remote = $prefs['interlist'][$prefs['feature_intertiki_mymaster']];
 				$client = new XML_RPC_Client($remote['path'], $remote['host'], $remote['port']);
 				$client->setDebug(0);
@@ -766,3 +767,5 @@ class RegistrationError
 		$this->msg = $msg;
 	}
 }
+global $registrationlib;
+$registrationlib = new RegistrationLib();

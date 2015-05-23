@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -41,7 +41,7 @@ function module_trackerhelp_info()
  */
 function module_trackerhelp($mod_reference, &$module_params)
 {
-	$smarty = TikiLib::lib('smarty');
+	global $smarty;
 	$default = array('height' => 4, 'cols' => 23);
 	$module_params = array_merge($default, $module_params);
 	if (!empty($_REQUEST['trackerhelp'])) {

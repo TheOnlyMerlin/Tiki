@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -34,12 +34,13 @@ abstract class Table_Settings_Abstract
 		'sorts' => array(
 			'type' => 'reset',				//choices: boolean true, boolean false, save, reset, savereset.
 			'group' => true,				//overall switch to allow or disallow group headings
-//			'multisort' => false,			//multisort on by default - set to false to disable
+//			'multisort' => false,				//multisort on by default - set to false to disable
 		),
 		//overall filter settings for the table or external filters - individual column settings are under columns below
 		'filters' => array(
 			'type' => 'reset',						//choices: boolean true, boolean false, reset
-/*			'external' => false,
+			'external' => false,
+/*
 			'hide' => false,					//to hide filters. choices: true, false (default)
 			//for filters external to the table
 			'external' => array(
@@ -62,9 +63,11 @@ abstract class Table_Settings_Abstract
 			'max' => 25,
 			'expand' => array(50, 100, 250, 500),
 		),
+*/
 		//set whether filtering and sorting will be done server-side or client side
 		'ajax' => array(
 			'type' => false,
+/*
 			'url' => 'tiki-adminusers.php?{sort:sort}&{filter:filter}',
 			'offset' => 'offset'
 			//url sort and filter params manipulated on the server side if set to false
@@ -77,20 +80,12 @@ abstract class Table_Settings_Abstract
 			'serveroffset' => array(
 				'id' => $ts_offsetid,
 			),
-		),
-		//determine whether the code uses columns selectors (e.g., th id) or indexes. With selectors the logic
-		//for which columns are shown doesn't need to be recreated for tables with smarty templates where some
-		//columns aren't shown based on logic. For plugins, indexes will generally need to be used since users set
-		// the columns
 */
-		'usecolselector' => false,
-		'colselect' => array(
-			'type' => false,
 		),
 /*
 		//Set individual sort and filter settings for each column
 		//No need to set if overall sorts and filters settings for the table are set to false above
-		'columns' => array(				//zero-based column index or th selector, used only if column-specific settings
+		'columns' => array(				//zero-based column index, used only if column-specific settings
 			0 => array(
 				//sort settings for the 1st column
 				'sort' => array(
@@ -233,24 +228,8 @@ abstract class Table_Settings_Abstract
 				'id' => '-offset',
 			),
 		),
-		'colselect' => array(
-			'button' => array(
-				'id' => '-colselectbtn',
-				//tra('Show/hide columns')
-				'text' => 'Show/hide columns',
-			),
-			'div' => array(
-				'id' => '-colselectdiv',
-			)
-		),
 	);
 
-	/**
-	 * Used by a second level of abstract classes extending this class to set different
-	 * defaults for plugins vs standard tables
-	 * @var null
-	 */
-	protected $default2 = null;
 	/**
 	 * Used by table classes extending this class for table-specific default settings
 	 * @var null
@@ -282,11 +261,11 @@ abstract class Table_Settings_Abstract
 		//override any table settings with user settings
 		$this->ts = $this->overrideSettings($this->ts, $this->us);
 
-		//override second level of default settings
-		$this->ts = $this->overrideSettings($this->default2, $this->ts);
-
 		//get table-specific settings
 		$ts = $this->getTableSettings();
+		if (isset($ts['columns'])) {
+			$ts['columns'] = array_values($ts['columns']);
+		}
 
 		//override generic defaults with any table-specific defaults
 		$this->s = $this->overrideSettings($this->default, $ts);
@@ -359,7 +338,7 @@ abstract class Table_Settings_Abstract
 	 * @param $default
 	 * @param $settings
 	 */
-	protected function overrideSettings($default, $settings)
+	private function overrideSettings($default, $settings)
 	{
 		if (is_array($default) && is_array($settings)) {
 			$ret = array_replace_recursive($default, $settings);
@@ -454,20 +433,20 @@ abstract class Table_Settings_Abstract
 	{
 		if (!empty($this->s['ajax'])) {
 			//sort and filter url parameters
+			//TODO try array_column
 			if (isset($this->s['columns']) && is_array($this->s['columns'])) {
 				foreach ($this->s['columns'] as $col => $colinfo) {
-					$colpointer =  $this->s['usecolselector'] ? substr($col,1)  : $col;
 					if (isset($colinfo['sort']['ajax'])) {
 						//tablesorter url param pattern is sort[0]=0 for ascending sort of first column
-						$this->s['ajax']['sort']['sort-' . $colpointer] = $colinfo['sort']['ajax'];
+						$this->s['ajax']['sort']['sort[' . $col . ']'] = $colinfo['sort']['ajax'];
 					}
 					if (isset($colinfo['filter']['ajax'])) {
 						//tablesorter url param pattern is filter[0]=text for filter on first column
-						$this->s['ajax']['colfilters']['filter-' . $colpointer] = $colinfo['filter']['ajax'];
+						$this->s['ajax']['colfilters']['filter[' . $col . ']'] = $colinfo['filter']['ajax'];
 					}  elseif (isset($colinfo['filter']['options'])) {
 						foreach ($colinfo['filter']['options'] as $label => $value) {
 							$label = rawurlencode($label);
-							$this->s['ajax']['colfilters']['filter-' . $colpointer][$label] = $value;
+							$this->s['ajax']['colfilters']['filter[' . $col . ']'][$label] = $value;
 						}
 					}
 				}
@@ -475,7 +454,7 @@ abstract class Table_Settings_Abstract
 			//external filter params
 			if (is_array($this->s['filters']['external'])) {
 				foreach($this->s['filters']['external'] as $key => $info) {
-					if (isset($info['options']) && is_array($info['options'])) {
+					if (is_array($info['options'])) {
 						foreach($info['options'] as $opt => $value) {
 							$this->s['ajax']['extfilters'][] = rawurlencode($value);
 						}

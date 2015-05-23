@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -51,10 +51,6 @@ class Search_ContentSource_ActivityStreamSource implements Search_ContentSource_
 			if ($type) {
 				$document[$key] = $typeFactory->$type($value);
 			}
-		}
-
-		if (! isset($document['stream'])) {
-			$document['stream'] = $typeFactory->multivalue(['custom']);
 		}
 
 		if ($this->source && isset($document['type'], $document['object'])) {

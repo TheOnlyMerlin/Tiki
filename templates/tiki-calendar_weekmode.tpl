@@ -30,8 +30,8 @@
 						{/if}
 						{* add additional check to NOT show add event icon if no calendar displayed *}
 						{if $tiki_p_add_events eq 'y' and count($listcals) > 0 and $displayedcals|@count > 0}
-							<a class="tips" title=":{tr}Add Event{/tr}" href="tiki-calendar_edit_item.php?todate={$viewWeekDays[dn]}{if $displayedcals|@count eq 1}&amp;calendarId={$displayedcals[0]}{/if}">
-								{icon name='add'}
+							<a href="tiki-calendar_edit_item.php?todate={$viewWeekDays[dn]}{if $displayedcals|@count eq 1}&amp;calendarId={$displayedcals[0]}{/if}">
+								{icon _id='calendar_add' alt="{tr}Add Event{/tr}"}
 							</a>
 						{/if}
 					</td>
@@ -46,7 +46,7 @@
 				{section name=weekday loop=$weekdays}
 					{if isset($smarty.section.weekday.index) and in_array($smarty.section.weekday.index,$viewdays)}
 						<td id="row_{$h[0]}_{$smarty.section.weekday.index}" class="calWeek">&nbsp;
-
+							
 						</td>
 					{/if}
 				{/section}
@@ -70,7 +70,7 @@
 									{popup vauto=true hauto=true sticky=false fullhtml="1" text=$over}
 								{/if}>
 								<span style="padding-top:4px;float:right">
-									<a style="padding:0 3px;"
+									<a {if $prefs.mobile_mode eq "y"}data-role="button" data-inline="true" data-mini="true" {/if}style="padding:0 3px;"
 										{if $event.modifiable eq "y" || $event.visible eq 'y'}
 											{if $prefs.calendar_sticky_popup eq "y"}
 												href="#"
@@ -78,7 +78,8 @@
 												href="tiki-calendar_edit_item.php?viewcalitemId={$event.calitemId}"
 											{/if}
 										{/if}
-									   title='{tr}Details{/tr}'>{icon name='info'}
+									>
+										<img src="img/icons/more_info.gif" alt="{tr}Details{/tr}">
 									</a>
 								</span>
 								<abbr class="dtstart" title="{if $event.result.allday eq '1'}{tr}All day{/tr}{else}{$event.startTimeStamp|isodate}{/if}" style="{if $event.status eq '2'}text-decoration:line-through;{/if}{if isset($infocals.$cellcalendarId.customfgcolor)}color:#{$infocals.$cellcalendarId.customfgcolor};{/if}">

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -44,11 +44,9 @@ class TikiLib extends TikiDb_Bridge
 
 	protected static $isExternalContext = false;
 
-	/** Gets a library reference
-	 *
+	/**
 	 * @param $name
-	 * @return \ActivityLib|\AreasLib|array|\AutoSaveLib|\BannerLib|\BigBlueButtonLib|\CalendarLib|\Captcha|\CartLib|\CreditsLib|\CryptLib|\DCSLib|\EditLib|\ErrorReportLib|\FaqLib|\GeoLib|\GoalEventLib|\GoalLib|\GoalRewardLib|\groupAlertLib|\HeaderLib|\IconsetLib|\KalturaLib|\LoginLib|\MailinLib|\MimeLib|mixed|\ModLib|\MonitorLib|\MonitorMailLib|\OAuthLib|object|\PageContentLib|\ParserLib|\PaymentLib|\PerspectiveLib|\PollLib|\PollLibShared|\PreferencesLib|\QueueLib|\QuizLib|\RatingConfigLib|\ReferencesLib|\RegistrationLib|\RSSLib|\ScormLib|\SearchStatsLib|\SheetLib|\Smarty_Tiki|\SocialLib|\StatsLib|\StoredSearchLib|\ThemeControlLib|\ThemeGenLib|\ThemeLib|\Tiki_Connect_Client|\Tiki_Connect_Server|\TikiAccessLib|\TikiLib|\Tracker\Tabular\Manager|\TrackerLib|\UnifiedSearchLib|\UserMailinLib|\UserModulesLib|\Validators|\VimeoLib|\WikiLingoTikiEvents|\WizardLib|\WYSIWYGLib|\ZoteroLib
-	 * @throws Exception
+	 * @return \ActivityLib|\AreasLib|array|\AutoSaveLib|\BannerLib|\BigBlueButtonLib|\CalendarLib|\Captcha|\CartLib|\CreditsLib|\CryptLib|\DCSLib|\EditLib|\ErrorReportLib|\FaqLib|\GeoLib|\GoalEventLib|\GoalLib|\GoalRewardLib|\groupAlertLib|\HeaderLib|\KalturaLib|\LoginLib|\MailinLib|\MimeLib|mixed|\ModLib|\MonitorLib|\MonitorMailLib|\OAuthLib|object|\PageContentLib|\ParserLib|\PaymentLib|\PerspectiveLib|\PollLib|\PollLibShared|\PreferencesLib|\QueueLib|\QuizLib|\RatingConfigLib|\ReferencesLib|\RegistrationLib|\RSSLib|\ScormLib|\SearchStatsLib|\SheetLib|\Smarty_Tiki|\SocialLib|\StatsLib|\StoredSearchLib|\ThemeControlLib|\Tiki_Connect_Client|\Tiki_Connect_Server|\TikiAccessLib|\TikiLib|\UnifiedSearchLib|\UserMailinLib|\UserModulesLib|\Validators|\VimeoLib|\WikiLingoTikiEvents|\WizardLib|\WYSIWYGLib|\ZoteroLib
 	 */
 	public static function lib($name)
 	{
@@ -67,6 +65,188 @@ class TikiLib extends TikiDb_Bridge
 			case 'tiki':
 				global $tikilib;
 				return self::$libraries[$name] = $tikilib;
+			case 'smarty':
+				global $smarty;
+				return self::$libraries[$name] = $smarty;
+			case 'header':
+				global $headerlib; require_once 'lib/headerlib.php';
+				return self::$libraries[$name] = $headerlib;
+			case 'ratingconfig':
+				global $ratingconfiglib; require_once 'lib/rating/configlib.php';
+				return self::$libraries[$name] = $ratingconfiglib;
+			case 'sheet':
+				global $sheetlib; require_once ('lib/sheet/sheetlib.php');
+				return self::$libraries[$name] = $sheetlib;
+			case 'zotero':
+				require_once 'lib/zoterolib.php';
+				return self::$libraries[$name] = new ZoteroLib;
+			case 'oauth':
+				require_once 'lib/oauthlib.php';
+				return self::$libraries[$name] = new OAuthLib;
+			case 'geo':
+				global $geolib; require_once 'lib/geo/geolib.php';
+				return self::$libraries[$name] = $geolib;
+			case 'poll':
+				global $polllib; require_once 'lib/polls/polllib.php';
+				return self::$libraries[$name] = $polllib;
+			case 'queue':
+				require_once 'lib/queuelib.php';
+				return self::$libraries[$name] = new QueueLib;
+			case 'captcha':
+				global $captchalib; require_once 'lib/captcha/captchalib.php';
+				return self::$libraries[$name] = $captchalib;
+			case 'groupalert':
+				global $groupalertlib; require_once ('lib/groupalert/groupalertlib.php');
+				return self::$libraries[$name] = $groupalertlib;
+			case 'validators':
+				global $validatorslib; include_once('lib/validatorslib.php');
+				return self::$libraries[$name] = $validatorslib;
+			case 'rss':
+				global $rsslib; include_once('lib/rss/rsslib.php');
+				return self::$libraries[$name] = $rsslib;
+			case 'pagecontent':
+				global $rsslib; include_once('lib/rss/pagecontentlib.php');
+				return self::$libraries[$name] = new PageContentLib;
+			case 'unifiedsearch':
+				global $unifiedsearchlib; include_once('lib/search/searchlib-unified.php');
+				return self::$libraries[$name] = $unifiedsearchlib;
+			case 'storedsearch':
+				include_once('lib/search/storedsearchlib.php');
+				return self::$libraries[$name] = new StoredSearchLib;
+			case 'searchstats':
+				global $searchstatslib; include_once('lib/search/searchstatslib.php');
+				return self::$libraries[$name] = $searchstatslib;
+			case 'errorreport':
+				require_once 'lib/errorreportlib.php';
+				return self::$libraries[$name] = new ErrorReportLib;
+			case 'prefs':
+				global $prefslib; include_once('lib/prefslib.php');
+				return self::$libraries[$name] = $prefslib;
+			case 'stats':
+				global $statslib; require_once('lib/stats/statslib.php');
+				return self::$libraries[$name] = $statslib;
+			case 'access':
+				global $access; require_once 'lib/tikiaccesslib.php';
+				return self::$libraries[$name] = $access;
+			case 'perspective':
+				global $perspectivelib; require_once('lib/perspectivelib.php');
+				return self::$libraries[$name] = $perspectivelib;
+			case 'calendar':
+				global $calendarlib; require_once('lib/calendar/calendarlib.php');
+				return self::$libraries[$name] = $calendarlib;
+			case 'parser':
+				require_once('lib/parser/parserlib.php');
+				return self::$libraries[$name] = new ParserLib;
+			case 'connect':
+				return self::$libraries[$name] = new Tiki_Connect_Client();
+			case 'connect_server':
+				return self::$libraries[$name] = new Tiki_Connect_Server();
+			case 'bigbluebutton':
+				global $bigbluebuttonlib; require_once 'lib/bigbluebuttonlib.php';
+				return self::$libraries[$name] = $bigbluebuttonlib;
+			case 'edit':
+				global $editlib; require_once 'lib/wiki/editlib.php';
+				return self::$libraries[$name] = $editlib;
+			case 'scorm':
+				require_once 'lib/filegals/scormlib.php';
+				return self::$libraries[$name] = new ScormLib;
+			case 'mod':
+				global $modlib; require_once 'lib/modules/modlib.php';
+				return self::$libraries[$name] = $modlib;
+			case 'usermodules':
+				global $usermoduleslib; require_once 'lib/usermodules/usermoduleslib.php';
+				return self::$libraries[$name] = $usermoduleslib;
+			case 'faq':
+				global $faqlib; require_once 'lib/faqs/faqlib.php';
+				return self::$libraries[$name] = $faqlib;
+			case 'quiz':
+				global $quizlib; require_once 'lib/quizzes/quizlib.php';
+				return self::$libraries[$name] = $quizlib;
+			case 'areas':
+				global $areaslib; require_once 'lib/perspective/binderlib.php';
+				return self::$libraries[$name] = $areaslib;
+			case 'mime':
+				require_once 'lib/mime/mimelib.php';
+				$mimelib = new MimeLib;
+				return self::$libraries[$name] = $mimelib;
+			case 'references':
+				global $referenceslib; require_once 'lib/references/referenceslib.php';
+				return self::$libraries[$name] = $referenceslib;
+			case 'tcontrol':
+				global $tcontrollib; require_once 'lib/themecontrol/tcontrol.php';
+				return self::$libraries[$name] = $tcontrollib;
+			case 'dcs':
+				global $dcslib; require_once 'lib/dcs/dcslib.php';
+				return self::$libraries[$name] = $dcslib;
+			case 'banner':
+				global $bannerlib; require_once 'lib/banners/bannerlib.php';
+				return self::$libraries[$name] = $bannerlib;
+			case 'kalturauser':
+				require_once 'lib/videogals/kalturalib.php';
+				return self::$libraries[$name] = new KalturaLib(KalturaLib::SESSION_USER);
+			case 'kalturaadmin':
+				require_once 'lib/videogals/kalturalib.php';
+				return self::$libraries[$name] = new KalturaLib(KalturaLib::SESSION_ADMIN);
+			case 'registration':
+				global $registrationlib; require_once 'lib/registration/registrationlib.php';
+				return self::$libraries[$name] = $registrationlib;
+			case 'login':
+				require_once 'lib/loginlib.php';
+				return self::$libraries[$name] = new LoginLib;
+			case 'activity':
+				require_once 'lib/activity/activitylib.php';
+				return self::$libraries[$name] = new ActivityLib;
+			case 'vimeo':
+				require_once 'lib/filegals/vimeolib.php';
+				return self::$libraries[$name] = new VimeoLib;
+			case 'social':
+				require_once 'lib/user/sociallib.php';
+				return self::$libraries[$name] = new SocialLib;
+			case 'autosave':
+				require_once 'lib/ajax/autosave.php';
+				return self::$libraries[$name] = new AutoSaveLib();
+			case 'wysiwyg':
+				require_once 'lib/ckeditor_tiki/wysiwyglib.php';
+				return self::$libraries[$name] = new WYSIWYGLib();
+			case 'wizard':
+				require_once 'lib/wizard/wizardlib.php';
+				return self::$libraries[$name] = new WizardLib();
+            case 'wlte':
+                require_once 'lib/wikiLingo_tiki/WikiLingoTikiEvents.php';
+                return self::$libraries[$name] = new WikiLingoTikiEvents();
+			case 'monitor':
+				require_once 'lib/user/monitorlib.php';
+				return self::$libraries[$name] = new MonitorLib();
+			case 'monitormail':
+				require_once 'lib/user/monitormaillib.php';
+				return self::$libraries[$name] = new MonitorMailLib();
+			case 'crypt':
+				global $cryptlib; require_once 'lib/crypt/cryptlib.php';
+				return self::$libraries[$name] = new CryptLib();
+			case 'payment':
+				global $paymentlib; require_once 'lib/payment/paymentlib.php';
+				return self::$libraries[$name] = $paymentlib;
+			case 'cart':
+				require_once 'lib/payment/cartlib.php';
+				return self::$libraries[$name] = new CartLib();
+			case 'goal':
+				require_once 'lib/goal/goallib.php';
+				return self::$libraries[$name] = new GoalLib();
+			case 'goalevent':
+				require_once 'lib/goal/eventlib.php';
+				return self::$libraries[$name] = new GoalEventLib();
+			case 'goalreward':
+				require_once 'lib/goal/rewardlib.php';
+				return self::$libraries[$name] = new GoalRewardLib();
+			case 'credits':
+				global $creditslib; require_once 'lib/credits/creditslib.php';
+				return self::$libraries[$name] = $creditslib;
+			case 'mailin':
+				global $mailinlib; require_once 'lib/mailin/mailinlib.php';
+				return self::$libraries[$name] = $mailinlib;
+			case 'usermailin':
+				global $usermailinlib; require_once 'lib/mailin/usermailinlib.php';
+				return self::$libraries[$name] = $usermailinlib;
 		}
 
 		unlink('temp/cache/container.php'); // Remove the container cache to help transition
@@ -74,19 +254,31 @@ class TikiLib extends TikiDb_Bridge
 	}
 
 	/**
-	 * @return Tiki_Event_Manager
+	 * @return Event_Manager
 	 */
 	public static function events()
 	{
-		return self::lib('events');
+		static $eventManager = null;
+
+		if (! $eventManager) {
+			$eventManager = new Tiki_Event_Manager;
+		}
+
+		return $eventManager;
 	}
 
 	/**
-	 * @return Tiki_Profile_SymbolLoader
+	 * @return Event_Manager
 	 */
 	public static function symbols()
 	{
-		return self::lib('symbols');
+		static $symbols = null;
+
+		if (! $symbols) {
+			$symbols = new Tiki_Profile_SymbolLoader();
+		}
+
+		return $symbols;
 	}
 
 	/**
@@ -3569,8 +3761,6 @@ class TikiLib extends TikiDb_Bridge
 					$gal_info = TikiLib::lib('filegal')->get_file_gallery_info($info['galleryId']);
 					if ($gal_info['user'] === $user) {
 						$info['type'] = 'user';			// show my files as mine
-					} else {
-						$info['type'] = '';
 					}
 				}
 				if ($prefs['feature_use_fgal_for_user_files'] === 'y' &&
@@ -3929,14 +4119,18 @@ class TikiLib extends TikiDb_Bridge
 
 			if ($my_user == $user ) {
 				$prefs[$name] = $value;
-				if ( $name == 'theme' && $prefs['change_theme'] == 'y' ) {
-					$prefs['users_prefs_theme'] = $value;
+				if ( $name == 'theme' && $prefs['change_theme'] == 'y' ) { 				// FIXME: Remove this exception
+					$prefs['style'] = $value;
 					if ( $value == '' ) {
+						$prefs['style'] = $prefs['site_style'];
 						$userPreferences->delete(array('user' => $my_user, 'prefName' => $name));
 					}
-				} elseif ( $name == 'theme_option' && $prefs['change_theme'] == 'y' ) {
-					$prefs['users_prefs_theme-option'] = $value;
+				} elseif ( $name == 'theme-option' && $prefs['change_theme'] == 'y' ) { // FIXME: Remove this exception as well?
+					$prefs['style_option'] = $value;
 					if ( $value == '' ) {
+						$prefs['style_option'] = $prefs['site_style_option'];
+					} else if ( $value == 'None' ) {
+						$prefs['style_option'] = '';
 						$userPreferences->delete(array('user' => $my_user, 'prefName' => $name));
 					}
 				} elseif ( $value == '' ) {
@@ -3948,16 +4142,22 @@ class TikiLib extends TikiDb_Bridge
 			}
 
 		} else { // If $my_user is empty, we must be Anonymous updating one of our own preferences
-			if ( $name == 'theme' && $prefs['change_theme'] == 'y' ) {
-				$prefs['theme'] = $value;
-				$_SESSION['preferences']['theme'] = $value;
+			if ( $name == 'theme' && $prefs['change_theme'] == 'y' ) { 				// FIXME: Remove this exception
+				$prefs['style'] = $value;
+				$_SESSION['preferences']['style'] = $value;
 				if ( $value == '' ) {
-					unset($_SESSION['preferences']['theme']);
-					unset($_SESSION['preferences']['theme_option']);
+					$prefs['style'] = $prefs['site_style'];
+					unset($_SESSION['preferences']['style']);
 				}
-			} elseif ( $name == 'theme_option' && $prefs['change_theme'] == 'y' && !empty($_SESSION['preferences']['theme']) ) {
-				$prefs['theme_option'] = $value;
-				$_SESSION['preferences']['theme_option'] = $value;
+			} elseif ( $name == 'theme-option' && $prefs['change_theme'] == 'y' ) { // FIXME: Remove this exception as well?
+				$prefs['style_option'] = $value;
+				$_SESSION['preferences']['style_option'] = $value;
+				if ( $value == '' ) {
+					$prefs['style_option'] = $prefs['site_style_option'];
+				} else if ( $value == 'None' ) {
+					$prefs['style_option'] = '';
+					unset($_SESSION['preferences']['style_option']);
+				}
 			} elseif ( $value == '' ) {
 				if ( in_array($name, $user_overrider_prefs) ) {
 					$prefs[$name] = $prefs['site_'.$name];
@@ -4111,7 +4311,6 @@ class TikiLib extends TikiDb_Bridge
 
 		$insertData = array(
 			'pageName' => $name,
-			'pageSlug' => TikiLib::lib('slugmanager')->generate($prefs['wiki_url_scheme'] ?: 'urlencode', $name),
 			'hits' => (int) $hits,
 			'data' => $data,
 			'description' => $description,
@@ -4206,7 +4405,6 @@ class TikiLib extends TikiDb_Bridge
 			array(
 				'type' => 'wiki page',
 				'object' => $name,
-				'namespace' => $wikilib->get_namespace($name),
 				'user' => $GLOBALS['user'],
 				'page_id' => $page_id,
 				'version' => 1,
@@ -4714,7 +4912,6 @@ class TikiLib extends TikiDb_Bridge
 			array(
 				'type' => 'wiki page',
 				'object' => $pageName,
-				'namespace' => $wikilib->get_namespace($pageName), 
 				'reply_action' => 'comment',
 				'user' => $GLOBALS['user'],
 				'page_id' => $info['page_id'],
@@ -4827,11 +5024,11 @@ class TikiLib extends TikiDb_Bridge
 	private function plugin_pending_notification($plugin_name, $body, $arguments, $context)
 	{
 		require_once('lib/webmail/tikimaillib.php');
-		global $prefs, $base_url;
+		global $prefs, $base_url, $smarty;
+
 		$mail = new TikiMail(null, $prefs['sender_email']);
 		$mail->setSubject(tr("Plugin %0 pending approval", $plugin_name));
 
-		$smarty = TikiLib::lib('smarty');
 		$smarty->assign('plugin_name', $plugin_name);
 		$smarty->assign('type', $context['type']);
 		$smarty->assign('objectId', $context['object']);
@@ -5467,11 +5664,9 @@ class TikiLib extends TikiDb_Bridge
 
 
 	/**
-	 * Get URL Scheme (http / https)
-	 * Considers the use of a reverse proxy / ssl offloader. I.e If request is https -> ssl offloader -> http tiki, then it will correctly return https 
-	 * @return string http | https
+	 * @return string
 	 */
-	static function httpScheme()
+	function httpScheme()
 	{
 		global $url_scheme;
 		return $url_scheme;
@@ -5865,15 +6060,6 @@ class TikiLib extends TikiDb_Bridge
 	}
 
 
-	/**
-	 * @param {string} $data
-	 * @return string
-	 */
-	function strip_tags($data) {
-		$result = preg_replace('/[<]style[^>]*?[>](.|\n|\r)*?[<][\/]style[>]/', '', $data);
-		$result = strip_tags($result);
-		return $result;
-	}
 	/**
 	 * @param $data
 	 * @param string $outputType
@@ -6668,9 +6854,9 @@ JS;
 	}
 
 	function check_alias($edit, $page) {
-		$smarty = TikiLib::lib('smarty');
+		global $smarty;
 		foreach ($this->get_pages($edit, true) as $pointedPage => $types) {
-			if (isset($types[0]) && $types[0] == 'alias') {
+			if (isset($types[0]) && $types[0] == 'alias') {	
 				$alias = $this->table('tiki_object_relations')->fetchColumn('source_itemId', array('target_itemId' => $pointedPage));
 				if(($key = array_search($page, $alias)) !== false) { unset($alias[$key]); }
 				if(isset($alias) && count($alias) > 0) {

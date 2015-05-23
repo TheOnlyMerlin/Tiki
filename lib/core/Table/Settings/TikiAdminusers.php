@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -18,12 +18,19 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
  *
  * @package Tiki
  * @subpackage Table
- * @uses Table_Settings_Standard
+ * @uses Table_Settings_Abstract
  */
-class Table_Settings_TikiAdminusers extends Table_Settings_Standard
+class Table_Settings_TikiAdminusers extends Table_Settings_Abstract
 {
 	protected $ts = array(
+		'id' => 'adminusers',
+		'selflinks' => true,
+		'sorts' => array(
+			'type' => 'reset',
+			'group' => true,
+		),
 		'filters' => array(
+			'type' => 'reset',
 			'external' => array(
 				0 => array(
 					'type' => 'dropdown',
@@ -35,13 +42,16 @@ class Table_Settings_TikiAdminusers extends Table_Settings_Standard
 				),
 			),
 		),
+		'pager' => array(
+			'type' => true,
+		),
 		'ajax' => array(
-			'url' => array(
-				'file' => 'tiki-adminusers.php',
-			),
+			'type' => true,
+			'url' => 'tiki-adminusers.php?{sort:sort}&{filter:filter}',
+			'offset' => 'offset'
 		),
 		'columns' => array(
-			'#checkbox' => array(
+			0 => array(					//checkbox
 				'sort' => array(
 					'type' => false,
 					'group' => 'checkbox',
@@ -50,9 +60,8 @@ class Table_Settings_TikiAdminusers extends Table_Settings_Standard
 					'type' => false,
 				),
 				'resizable' => false,
-				'priority' => 'critical',
 			),
-			'#user' => array(
+			1 => array(					//user
 				'sort' => array(
 					'type' => true,
 					'dir' => 'asc',
@@ -63,9 +72,8 @@ class Table_Settings_TikiAdminusers extends Table_Settings_Standard
 					'type' => 'text',
 					'ajax' => 'find',
 				),
-				'priority' => 'critical',
 			),
-			'#email' => array(					//only if $prefs.login_is_email != 'y'
+			2 => array(					//email - only if $prefs.login_is_email != 'y'
 				'sort' => array(
 					'type' => true,
 					'ajax' =>'email',
@@ -76,9 +84,8 @@ class Table_Settings_TikiAdminusers extends Table_Settings_Standard
 					'placeholder' => 'Enter valid email...',
 					'ajax' => 'filterEmail',
 				),
-				'priority' => 1,
 			),
-			'#openid' => array(					//only if $prefs.auth_method == 'openid'
+			3 => array(					//openid - only if $prefs.auth_method == 'openid'
 				'sort' => array(
 					'type' => true,
 					'ajax' => 'openid_url',
@@ -87,9 +94,8 @@ class Table_Settings_TikiAdminusers extends Table_Settings_Standard
 				'filter' => array(
 					'type' => false,	//no filter since $userlib->get_users doesn't have it
 				),
-				'priority' => 6,
 			),
-			'#lastlogin' => array(
+			4 => array(					//last login
 				'sort' => array(
 					'type' => 'text',
 					'ajax' => 'currentLogin',
@@ -98,9 +104,8 @@ class Table_Settings_TikiAdminusers extends Table_Settings_Standard
 				'filter' => array(
 					'type' => false,
 				),
-				'priority' => 4,
 			),
-			'#registered' => array(
+			5 => array(					//registered
 				'sort' => array(
 					'type' => 'isoDate',
 					'ajax' => 'registrationDate',
@@ -109,9 +114,8 @@ class Table_Settings_TikiAdminusers extends Table_Settings_Standard
 				'filter' => array(
 					'type' => false,	//no filter since $userlib->get_users doesn't have it
 				),
-				'priority' => 5,
 			),
-			'#groups' => array(
+			6 => array(					//group
 				'sort' => array(
 					'type' => false,
 				),
@@ -120,18 +124,38 @@ class Table_Settings_TikiAdminusers extends Table_Settings_Standard
 					'type' => 'dropdown',
 					'ajax' => 'filterGroup',
 				),
-				'priority' => 3,
 			),
-			'#actions' => array(
+			7 => array(					//actions
 				'sort' => array(
 					'type' => false,
 				),
 				'filter' => array(
 					'type' => false,
 				),
-				'priority' => 1,
 			),
 		),
 	);
+
+	/**
+	 * Manipulate table-specific settings as needed.
+	 *
+	 * @return array|null
+	 */
+	protected function getTableSettings()
+	{
+		//change columns based on prefs to be consistent with tiki-adminusers.tpl
+		global $prefs;
+		if ($prefs['login_is_email'] == 'y') {
+			unset($this->ts['columns'][2]);
+		}
+		if ($prefs['auth_method'] != 'openid') {
+			unset($this->ts['columns'][3]);
+		}
+
+		$this->ts['columns'] = array_values($this->ts['columns']);
+
+		return $this->ts;
+	}
+
 }
 

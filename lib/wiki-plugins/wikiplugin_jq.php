@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -38,8 +38,7 @@ function wikiplugin_jq_info()
 	
 function wikiplugin_jq($data, $params)
 {
-	global $prefs;
-	$headerlib = TikiLib::lib('header');
+	global $headerlib, $prefs;
 	extract($params, EXTR_SKIP);
 	
 	$nojquery = isset($nojquery) ? $nojquery : tr('<!-- jq plugin inactive: JavaScript off -->');

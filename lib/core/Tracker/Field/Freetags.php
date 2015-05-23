@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -17,7 +17,7 @@ class Tracker_Field_Freetags extends Tracker_Field_Abstract implements Tracker_F
 	{
 		return array(
 			'F' => array(
-				'name' => tr('Tags'),
+				'name' => tr('Freetags'),
 				'description' => tr('Allows tags to be shown or added for tracker items.'),
 				'prefs' => array('trackerfield_freetags', 'feature_freetags'),
 				'tags' => array('advanced'),

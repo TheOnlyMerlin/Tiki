@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -38,9 +38,7 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 
 function smarty_function_listfilter($params, $smarty)
 {
-	global $prefs, $listfilter_id;
-	$headerlib = TikiLib::lib('header');
-
+	global $headerlib, $prefs, $listfilter_id;
 	if ($prefs['feature_jquery'] != 'y' || $prefs['javascript_enabled'] != 'y') {
 		return '';
 	} else {

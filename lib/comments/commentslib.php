@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -117,11 +117,11 @@ class Comments extends TikiLib
 	/* Add an attachment to a post in a forum */
 	function add_thread_attachment($forum_info, $threadId, &$errors, $name, $type, $size, $inbound_mail = 0, $qId=0, $fp = '', $data = '')
 	{
-		global $tiki_p_admin_forum, $tiki_p_forum_attach;
+		global $smarty, $tiki_p_admin_forum, $tiki_p_forum_attach, $smarty;
+
 		if (!($forum_info['att'] == 'att_all'
 				|| ($forum_info['att'] == 'att_admin' && $tiki_p_admin_forum == 'y')
 				|| ($forum_info['att'] == 'att_perm' && $tiki_p_forum_attach == 'y'))) {
-			$smarty = TikiLib::lib('smarty');
 			$smarty->assign('errortype', 401);
 			$smarty->assign('msg', tra('Permission denied'));
 			$smarty->display("error.tpl");
@@ -1063,12 +1063,6 @@ class Comments extends TikiLib
 			$forumLanguage = ''
 	)
 	{
-		global $prefs;
-
-		if (!$forumId && empty($att_store_dir)) {
-			// Set new default location for forum attachments (only affect new forums for backward compatibility))
-			$att_store_dir = 'files/forums/';
-		}
 
 		$data = array(
 			'name' => $name,
@@ -1076,7 +1070,6 @@ class Comments extends TikiLib
 			'controlFlood' => $controlFlood,
 			'floodInterval' => (int) $floodInterval,
 			'moderator' => $moderator,
-			'hits' => 0,
 			'mail' => $mail,
 			'useMail' => $useMail,
 			'section' => $section,
@@ -1133,27 +1126,10 @@ class Comments extends TikiLib
 		$forums = $this->table('tiki_forums');
 
 		if ($forumId) {
-			$oldData = $forums->fetchRow(array(), array('forumId' => (int) $forumId));
 			$forums->update($data, array('forumId' => (int) $forumId));
-			$event = 'tiki.forum.update';
 		} else {
 			$data['created'] = $this->now;
 			$forumId = $forums->insert($data);
-			$event = 'tiki.forum.create';
-		}
-
-		TikiLib::events()->trigger($event, [
-			'type' => 'forum',
-			'object' => $forumId,
-			'user' => $GLOBALS['user'],
-			'title' => $name,
-			'description' => $description,
-			'forum_section' => $section,
-		]);
-
-		//if the section changes, re-index forum posts to change section there as well
-		if ($prefs['feature_forum_post_index'] == 'y' && $oldData && $oldData['section'] != $section){
-			$this->index_posts_by_forum($forumId);
 		}
 
 		return $forumId;
@@ -1179,21 +1155,9 @@ class Comments extends TikiLib
      */
     function remove_forum($forumId)
 	{
-		$forum = $this->get_forum($forumId);
-
 		$this->table('tiki_forums')->delete(array('forumId' => $forumId));
 		$this->remove_object("forum", $forumId);
 		$this->table('tiki_forum_attachments')->delete(array('forumId' => $forumId));
-
-		TikiLib::events()->trigger('tiki.forum.delete', [
-			'type' => 'forum',
-			'object' => $forumId,
-			'user' => $GLOBALS['user'],
-			'title' => $forum['name'],
-			'description' => $forum['description'],
-			'forum_section' => $forum['section'],
-		]);
-
 		return true;
 	}
 
@@ -1226,14 +1190,7 @@ class Comments extends TikiLib
 			$mid = "";
 		}
 
-		if (in_array($sort_mode, ['age_asc', 'age_desc', 'users_asc', 'users_desc', 'posts_per_day_asc',
-			'posts_per_day_desc']))
-		{
-			$query_sort_mode = 'name_asc';
-		} else {
-			$query_sort_mode = $sort_mode;
-		}
-		$query = "select * from `tiki_forums` $join WHERE 1=1 $where $mid order by `section` asc,".$this->convertSortMode('`tiki_forums`.' . $query_sort_mode);
+		$query = "select * from `tiki_forums` $join WHERE 1=1 $where $mid order by `section` asc,".$this->convertSortMode('`tiki_forums`.' . $sort_mode);
 		$result = $this->fetchAll($query, $bindvars);
 		$result = Perms::filter(array('type' => 'forum'), 'object', $result, array('object' => 'forumId'), 'forum_read');
 		$count = 0;
@@ -1244,16 +1201,18 @@ class Comments extends TikiLib
 		foreach ($result as &$res) {
 			$cant++; // Count the whole number of forums the user has access to
 
+			if (($maxRecords > -1 && $count >= $maxRecords) || $off++ < $offset) continue;
+
 			$forum_age = ceil(($this->now - $res["created"]) / (24 * 3600));
 
 			// Get number of topics on this forum
-			$res['threads'] = (int) $this->count_comments_threads('forum:' . $res['forumId']);
+			$res['threads'] = $this->count_comments_threads('forum:' . $res['forumId']);
 
 			// Get number of posts on this forum
-			$res['comments'] = (int) $this->count_comments('forum:' . $res['forumId']);
+			$res['comments'] = $this->count_comments('forum:' . $res['forumId']);
 
 			// Get number of users that posted at least one comment on this forum
-			$res['users'] = (int) $comments->fetchOne(
+			$res['users'] = $comments->fetchOne(
 				$comments->expr('count(distinct `userName`)'),
 				array('object' => $res['forumId'], 'objectType' => 'forum')
 			);
@@ -1274,9 +1233,9 @@ class Comments extends TikiLib
 
 			// Generate stats based on this forum's age
 			if ($forum_age > 0) {
-				$res['age'] = (int) $forum_age;
-				$res['posts_per_day'] = (int) $res['comments'] / $forum_age;
-				$res['users_per_day'] = (int) $res['users'] / $forum_age;
+				$res['age'] = $forum_age;
+				$res['posts_per_day'] = $res['comments'] / $forum_age;
+				$res['users_per_day'] = $res['users'] / $forum_age;
 			} else {
 				$res['age'] = 0;
 				$res['posts_per_day'] = 0;
@@ -1284,35 +1243,6 @@ class Comments extends TikiLib
 			}
 
 			++$count;
-		}
-		//handle sorts for displayed columns not in the database
-		if (substr($sort_mode, -4) === '_asc') {
-			$sortdir = 'asc';
-			$sortcol = substr($sort_mode, 0, strlen($sort_mode) - 4);
-		} else {
-			$sortdir = 'desc';
-			$sortcol = substr($sort_mode, 0, strlen($sort_mode) - 5);
-		}
-		if (in_array($sortcol, ['threads', 'comments', 'age', 'posts_per_day', 'users'])) {
-			$sortarray = array_column($result, $sortcol);
-			if ($sortdir === 'asc') {
-				asort($sortarray, SORT_NUMERIC);
-			} else {
-				arsort($sortarray, SORT_NUMERIC);
-			}
-			//need to sort within sections if sections are used (also works if sections aren't used)
-			$sections = array_unique(array_column($result, 'section'));
-			foreach($sections as $section) {
-				foreach($sortarray as $key => $data) {
-					if ($result[$key]['section'] === $section) {
-						$sorted[] = $result[$key];
-					}
-				}
-			}
-			$result = $sorted;
-		}
-		if ($maxRecords > -1) {
-			$result = array_slice($result, $offset, $maxRecords);
 		}
 
 		$retval = array();
@@ -1348,22 +1278,22 @@ class Comments extends TikiLib
 		foreach ($ret as &$res) {
 			$forum_age = ceil(($this->now - $res["created"]) / (24 * 3600));
 
-			$res["age"] = (int) $forum_age;
+			$res["age"] = $forum_age;
 
 			if ($forum_age) {
-				$res["posts_per_day"] = (int) $res["comments"] / $forum_age;
+				$res["posts_per_day"] = $res["comments"] / $forum_age;
 			} else {
 				$res["posts_per_day"] = 0;
 			}
 
 			// Now select users
-			$res['users'] = (int) $comments->fetchOne(
+			$res['users'] = $comments->fetchOne(
 				$comments->expr('count(distinct `userName`)'),
 				array('object' => $res['forumId'], 'objectType' => 'forum')
 			);
 
 			if ($forum_age) {
-				$res["users_per_day"] = (int) $res["users"] / $forum_age;
+				$res["users_per_day"] = $res["users"] / $forum_age;
 			} else {
 				$res["users_per_day"] = 0;
 			}
@@ -2965,8 +2895,6 @@ class Comments extends TikiLib
 				$parent_title = '';
 			}
 
-			$forum_info = $this->get_forum($object[1]);
-
 			TikiLib::events()->trigger(
 				$finalEvent,
 				array(
@@ -2974,7 +2902,6 @@ class Comments extends TikiLib
 					'object' => $threadId,
 					'parent_id' => $parentId,
 					'forum_id' => $object[1],
-					'forum_section' => $forum_info['section'],
 					'user' => $GLOBALS['user'],
 					'title' => $title,
 					'parent_title' => $parent_title,
@@ -3391,11 +3318,8 @@ class Comments extends TikiLib
      */
     function post_in_forum($forum_info, &$params, &$feedbacks, &$errors)
 	{
-		global $tiki_p_admin_forum, $tiki_p_forum_post_topic;
-		global $tiki_p_forum_post, $prefs, $user, $tiki_p_forum_autoapp;
-		$captchalib = TikiLib::lib('captcha');
-		$smarty = TikiLib::lib('smarty');
-		$tikilib = TikiLib::lib('tiki');
+		global $smarty, $tiki_p_admin_forum, $tiki_p_forum_post_topic, $tikilib;
+		global  $tiki_p_forum_post, $prefs, $user, $tiki_p_forum_autoapp, $captchalib;
 
 		if (!empty($params['comments_grandParentId'])) {
 			$parent_id = $params['comments_grandParentId'];
@@ -3435,18 +3359,8 @@ class Comments extends TikiLib
 		if ($prefs['feature_contribution'] == 'y' && $prefs['feature_contribution_mandatory_forum'] == 'y' && empty($params['contributions'])) {
 			$errors[] = tra('A contribution is mandatory');
 		}
-		//if original post, comment title is necessary. Message is also necessary unless, pref says message is not.
-		if (empty($params['comments_reply_threadId'])){
-			if(empty($params['comments_title']) || (empty($params['comments_data']) && $prefs['feature_forums_allow_thread_titles'] != 'y')){
-				$errors[] = tra('Please enter a Title and Message for your new forum topic.');
-			}
-		}else{
-			//if comments require title and no title is given, or if message is empty
-			if ($prefs['comments_notitle'] != 'y' && (empty($params['comments_title']) || empty($params['comments_data']))){
-				$errors[] = tra('Please enter a Title and Message for your forum reply.');
-			}elseif (empty($params['comments_data'])){ //if comments do not require title but message is empty
-				$errors[] = tra('Please enter a Message for your forum reply.');
-			}
+		if (($prefs['comments_notitle'] != 'y' && empty($params['comments_title'])) || (empty($params['comments_data']) && $prefs['feature_forums_allow_thread_titles'] != 'y')) {
+			$errors[] = tra('You have to enter a title and text');
 		}
 		if (!empty($params['anonymous_email']) && !validate_email($params['anonymous_email'], $prefs['validateEmail'])) {
 			$errors[] = tra('Invalid Email');
@@ -3785,28 +3699,11 @@ class Comments extends TikiLib
 		}
 	}
 
-	/**
-	 * Re-indexes the forum posts within a specified forum
-	 * @param $forumId
-	 */
-	private function index_posts_by_forum($forumId)
-	{
-		$topics = $this->get_forum_topics($forumId);
-
-		foreach($topics as $topic) {
-			if ($element === end($array)){ //if element is the last in the array, then run the process.
-				refresh_index('forum post', $topic['threadId'], true);
-			}else{
-				refresh_index('forum post', $topic['threadId'], false); //don't run the process right away (re: false), wait until last element
-			}
-		}
-	}
-
     /**
      * @param $threadId
      * @return mixed
      */
-    function find_root($threadId)
+    private function find_root($threadId)
 	{
 		$parent = $this->table('tiki_comments')->fetchOne('parentId', array('threadId' => $threadId));
 

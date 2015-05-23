@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -22,9 +22,13 @@ class BrowseTreeMaker extends TreeMaker
 	/// Generate HTML code for tree. Need to redefine to add javascript cookies block
 	function make_tree($rootid, $ar)
 	{
-		$headerlib = TikiLib::lib('header');
+		global $headerlib, $prefs;
 
-		$r = '<ul class="tree root">'."\n";
+		if ($prefs['mobile_feature'] === 'y' && $prefs['mobile_mode'] === 'y') {
+			$r = '<ul class="tree root" data-role="listview" data-inset="true">'."\n";
+		} else {
+			$r = '<ul class="tree root">'."\n";
+		}
 
 		$r .= $this->make_tree_r($rootid, $ar) . "</ul>\n";
 

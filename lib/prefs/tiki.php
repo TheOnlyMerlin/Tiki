@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -144,14 +144,6 @@ function prefs_tiki_list()
 			'warning' => tra('Note, all permissions are granted to the Admins group including this one, so if you enable this you may expose your site to XSS (Cross Site Scripting) attacks for admin users.'),
 			'type' => 'flag',
 			'default' => 'n',
-		),
-		'tiki_object_selector_threshold' => array(
-			'name' => tr('Object selector threshold'),
-			'description' => tr('Amount of records after which the object selectors will request searching instead of selecting from a list.'),
-			'type' => 'text',
-			'size' => 6,
-			'default' => 250,
-			'filter' => 'int',
 		),
 	);
 }

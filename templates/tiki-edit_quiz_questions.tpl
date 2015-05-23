@@ -6,7 +6,7 @@
 
 {title help="Quiz" url="tiki-edit_quiz_questions.php?quizId=$quizId"}{tr}Edit quiz questions{/tr}{/title}
 
-<div class="t_navbar margin-bottom-md">
+<div class="t_navbar form-group">
 	{button href="tiki-list_quizzes.php" class="btn btn-default" _text="{tr}List Quizzes{/tr}"}
 	{button href="tiki-quiz_stats.php" class="btn btn-default" _text="{tr}Quiz Stats{/tr}"}
 	{button href="tiki-quiz_stats_quiz.php?quizId=$quizId" class="btn btn-default" _text="{tr}This Quiz Stats{/tr}"}
@@ -60,7 +60,7 @@
 	<table class="formcolor">
 		<tr>
 			<td colspan="2">
-				{tr}Instructions: Type, or paste, your multiple choice questions below. One line for the question, then start answer choices on subsequent lines. Separate additional questions with a blank line. Indicate correct answers by starting them with a "*" (without the quotes) character.{/tr}
+				{tr}Instructions: Type, or paste, your multiple choice questions below.  One line for the question, then start answer choices on subsequent lines.  Separate additional questions with a blank line.  Indicate correct answers by starting them with a "*" (without the quotes) character.{/tr}
 			</td>
 		</tr>
 		<tr>
@@ -82,57 +82,40 @@
 {include file='find.tpl'}
 
 <div class="table-responsive">
-	<table class="table normal table-striped table-hover">
+<table class="table normal">
+	<tr>
+		<th>
+			<a href="tiki-edit_quiz_questions.php?quizId={$quizId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'questionId_desc'}questionId_asc{else}questionId_desc{/if}">{tr}ID{/tr}</a>
+		</th>
+		<th>
+			<a href="tiki-edit_quiz_questions.php?quizId={$quizId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'position_desc'}position_asc{else}position_desc{/if}">{tr}Position{/tr}</a>
+		</th>
+		<th>
+			<a href="tiki-edit_quiz_questions.php?quizId={$quizId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'question_desc'}question_asc{else}question_desc{/if}">{tr}Question{/tr}</a>
+		</th>
+
+		<th>{tr}Options{/tr}</th>
+		<th>{tr}maxScore{/tr}</th>
+		<th>{tr}Action{/tr}</th>
+	</tr>
+
+	{section name=user loop=$channels}
 		<tr>
-			<th>
-				<a href="tiki-edit_quiz_questions.php?quizId={$quizId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'questionId_desc'}questionId_asc{else}questionId_desc{/if}">{tr}ID{/tr}</a>
-			</th>
-			<th>
-				<a href="tiki-edit_quiz_questions.php?quizId={$quizId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'position_desc'}position_asc{else}position_desc{/if}">{tr}Position{/tr}</a>
-			</th>
-			<th>
-				<a href="tiki-edit_quiz_questions.php?quizId={$quizId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'question_desc'}question_asc{else}question_desc{/if}">{tr}Question{/tr}</a>
-			</th>
-
-			<th>{tr}Options{/tr}</th>
-			<th>{tr}maxScore{/tr}</th>
-			<th></th>
+			<td class="id">{$channels[user].questionId}</td>
+			<td class="id">{$channels[user].position}</td>
+			<td class="text">{$channels[user].question|escape}</td>
+			<td class="integer">{$channels[user].options}</td>
+			<td class="integer">{$channels[user].maxPoints}</td>
+			<td class="action">
+				<a class="link" href="tiki-edit_quiz_questions.php?quizId={$quizId}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;questionId={$channels[user].questionId}">{icon _id='page_edit' alt="{tr}Edit{/tr}"}</a>
+				<a class="link" href="tiki-edit_question_options.php?quizId={$quizId}&amp;questionId={$channels[user].questionId}">{icon _id='bricks' alt="{tr}Options{/tr}"}</a>
+				<a class="link" href="tiki-edit_quiz_questions.php?quizId={$quizId}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$channels[user].questionId}">{icon _id='cross' alt="{tr}Remove{/tr}"}</a>
+			</td>
 		</tr>
-
-		{section name=user loop=$channels}
-			<tr>
-				<td class="id">{$channels[user].questionId}</td>
-				<td class="id">{$channels[user].position}</td>
-				<td class="text">{$channels[user].question|escape}</td>
-				<td class="integer">{$channels[user].options}</td>
-				<td class="integer">{$channels[user].maxPoints}</td>
-				<td class="action">
-					{capture name=edit_questions_actions}
-						{strip}
-							<a href="tiki-edit_question_options.php?quizId={$quizId}&amp;questionId={$channels[user].questionId}">
-								{icon name='list' _menu_text='y' _menu_icon='y' alt="{tr}Options{/tr}"}
-							</a>
-							<a href="tiki-edit_quiz_questions.php?quizId={$quizId}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;questionId={$channels[user].questionId}">
-								{icon name='edit' _menu_text='y' _menu_icon='y' alt="{tr}Edit{/tr}"}
-							</a>
-							<a href="tiki-edit_quiz_questions.php?quizId={$quizId}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$channels[user].questionId}">
-								{icon name='remove' _menu_text='y' _menu_icon='y' alt="{tr}Remove{/tr}"}
-							</a>
-						{/strip}
-					{/capture}
-					<a class="tips"
-					   title="{tr}Actions{/tr}"
-					   href="#" {popup delay="0|2000" fullhtml="1" center=true text=$smarty.capture.edit_questions_actions|escape:"javascript"|escape:"html"}
-					   style="padding:0; margin:0; border:0"
-							>
-						{icon name='wrench'}
-					</a>
-				</td>
-			</tr>
-		{sectionelse}
-			{norecords _colspan=6}
-		{/section}
-	</table>
+	{sectionelse}
+		{norecords _colspan=6}
+	{/section}
+</table>
 </div>
 
 {pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}

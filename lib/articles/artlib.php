@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -166,7 +166,9 @@ class ArtLib extends TikiLib
 				$smarty->assign('mail_title', 'articleId=' . $articleId);
 				$smarty->assign('mail_postid', $articleId);
 				$smarty->assign('mail_user', $user);
-				$smarty->assign('mail_current_data', $article_data['heading'] . "\n----------------------\n" . $article_data['body']);
+				$smarty->assign('mail_data', $article_data['heading'] . "\n----------------------\n" . $article_data['body']);
+				$smarty->assign('mail_heading', $heading);
+				$smarty->assign('mail_body', $body);
 
 				// the strings below are used to localize messages in the template file
 				//get_strings tr('New article post:') tr('Edited article post:') tr('Deleted article post:')
@@ -497,6 +499,8 @@ class ArtLib extends TikiLib
 			$smarty->assign('mail_current_publish_date', $publishDate);
 			$smarty->assign('mail_current_expiration_date', $expireDate);
 			$smarty->assign('mail_current_data', $heading."\n----------------------\n" . $body);
+			$smarty->assign('mail_heading', $heading);
+			$smarty->assign('mail_body', $body);
 			sendEmailNotification($nots, 'watch', 'user_watch_article_post_subject.tpl', $_SERVER['SERVER_NAME'], 'user_watch_article_post.tpl');
 			if (is_array($emails) && !empty($from) && $from != $prefs['sender_email']) {
 				$nots = array();

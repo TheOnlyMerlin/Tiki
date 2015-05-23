@@ -6,7 +6,7 @@
 </div>
 
 <form action="tiki-rename_page.php" method="post" class="form-horizontal" role="form">
-	<input type="hidden" name="page" value="{$page|escape}">
+   <input type="hidden"  name="page" value="{$page|escape}">
 	{if isset($page_badchars_display)}
 		{if $prefs.wiki_badchar_prevent eq 'y'}
 			{remarksbox type=errors title="{tr}Error{/tr}"}
@@ -19,12 +19,12 @@
 			<input type="hidden" name="badname" value="{$newname|escape}">
 			<input type="submit" class="btn btn-default btn-sm" name="confirm" value="{tr}Use this name anyway{/tr}">
 		{/if}
-	{elseif isset($msg)}
+	{elseif isset($msg)}		
 		{remarksbox type=errors}
 			{$msg}
-		{/remarksbox}
+		{/remarksbox}		
 	{/if}
-	<div class="form-group">
+    <div class="form-group">
 		<div class="col-sm-10">
 			<label for="newpage" class="col-sm-2 control-label">{tr}New name{/tr}</label>
 			<div class="col-sm-10">

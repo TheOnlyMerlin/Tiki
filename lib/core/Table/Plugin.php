@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -111,8 +111,7 @@ class Table_Plugin
 					. '<br> <b>Text - </b>type:text;placeholder:xxxx<br>' .
 					tra('(For PluginTrackerlist this will be an exact search, for other plugins partial values will work.)') . '<br>
 					<b>Dropdown - </b>type:dropdown;placeholder:****;option:****;option:****;option:**** <br>' .
-					tra('Options generated automatically if not set and the server parameter is not \'y\'.') . '<br>' .
-					tra('Use \'value=Display label\' to have the option value be different than the displayed label in the dropdown.') . '<br>
+					tra('(options generated automatically if not set and the server parameter is not \'y\')') . '<br>
 					<b>' . tra('Date range - ') . '</b>type:date;format:yy-mm-dd;from:2013-06-30;to:2020-12-31<br>' .
 					tra('(from and to values set defaults for these fields when user clicks on the input field)') . '<br>
 					<b>' . tra('Numeric range - ') . '</b>type:range;from:0;to:50<br>
@@ -150,19 +149,6 @@ class Table_Plugin
 				'filter' => 'striptags',
 				'advanced' => true,
 			),
-			'tscolselect' => array(
-				'required' => false,
-				'name' => tra('Column Select'),
-				'description' => tr(
-					'Add a button for hiding and re-showing columns. Also sets priority for dropping columns when
-				 	browser is too narrow. Set each column to a number between 1 and 6 (1 is highest priority and last
-				 	to be dropped) or to %0critical%1 to never hide or drop. An example with 4 columns:',
-						'<b>', '</b>') .
-					'tscolselect="critical|4|5|6"',
-				'default' => '',
-				'filter' => 'striptags',
-				'advanced' => true,
-			),
 		);
 	}
 
@@ -181,8 +167,7 @@ class Table_Plugin
 	 * @param null   $totalrows			//only needed if ajax will be used to pull partial record sets
 	 */
 	public function setSettings ($id = null, $server = 'n', $sortable = 'n', $sortList = null, $tsortcolumns = null,
-		$tsfilters = null, $tsfilteroptions = null, $tspaginate = null, $tscolselect = null, $ajaxurl = null,
-		$totalrows = null)
+		$tsfilters = null, $tsfilteroptions = null, $tspaginate = null, $ajaxurl = null, $totalrows = null)
 	{
 		$s = array();
 
@@ -275,12 +260,6 @@ class Table_Plugin
 					$tsf = $this->parseParam($tsfilters);
 					if (is_array($tsf)) {
 						foreach ($tsf as $col => $filterinfo) {
-							if (isset($filterinfo) && $filterinfo['type'] === 'dropdown'
-								&& !empty($filterinfo['options'])) {
-								foreach ($filterinfo['options'] as $key => $value) {
-									$filterinfo['options'][$key] = str_replace('=', '|', $value);
-								}
-							}
 							if (isset($s['columns'][$col]['filter'])) {
 								$s['columns'][$col]['filter'] = $s['columns'][$col]['filter'] + $filterinfo;
 							} else {
@@ -311,7 +290,7 @@ class Table_Plugin
 			if (is_array($tsp[0]) || $tsp[0] !== 'n' || ($tsp[0] === 'n' && $server === 'y')) {
 				if (is_array($tsp[0])) {
 					$s['pager'] = $tsp[0];
-					if (isset($s['pager']['expand']) && is_array($s['pager']['expand'])) {
+					if (is_array($s['pager']['expand'])) {
 						if (isset($s['pager']['max']) && $s['pager']['max'] > 0) {
 							$s['pager']['expand'] = array_merge(array($s['pager']['max']), $s['pager']['expand']);
 						} else {
@@ -327,22 +306,9 @@ class Table_Plugin
 			}
 		}
 
-		//tscolselect
-		if (!empty($tscolselect)) {
-			$tscs = $this->parseParam($tscolselect);
-			if (is_array($tscs)) {
-				$s['colselect']['type'] = true;
-				foreach ($tscs as $col => $priority) {
-					$s['columns'][$col]['priority'] = $priority;
-				}
-			}
-		}
-
 		//ajaxurl
 		if (!empty($ajaxurl) && $server === 'y') {
-			$url = $this->getAjaxurl($ajaxurl);
-			$s['ajax']['url']['file'] = $url['path'];
-			$s['ajax']['url']['query'] = $url['query'];
+			$s['ajax']['url'] = $this->getAjaxurl($ajaxurl);
 			$s['ajax']['type'] = true;
 		} else {
 			$s['ajax']['type'] = false;
@@ -415,11 +381,11 @@ class Table_Plugin
 		$str = '{sort:sort}&{filter:filter}';
 		$url = parse_url($ajaxurl);
 		if (isset($url['query'])) {
-			$url['query'] = '?' .  $url['query'] . '&' . $str;
+			$query = $url['query'] . '&' . $str;
 		} else {
-			$url['query'] = '?' . $str;
+			$query = $str;
 		}
-		return $url;
+		return $url['path'] . '?' . $query;
 	}
 
 }

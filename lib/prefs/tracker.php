@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -87,14 +87,5 @@ function prefs_tracker_list()
  			'default' => '',
  			'profile_reference' => 'tracker',
  		),
-		'tracker_tabular_enabled' => array(
-			'name' => tr('Tracker Tabular'),
-			'description' => tr('Allows to manage import/export tracker profiles and manage custom list formats.'),
-			'type' => 'flag',
-			'default' => 'n',
-			'dependencies' => ['feature_trackers'],
-			'tags' => ['advanced', 'experimental'],
-            'help' => 'Tracker+Tabular',
-		),
 	);
 }

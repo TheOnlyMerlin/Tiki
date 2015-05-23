@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -272,7 +272,7 @@ function wikiplugin_trackertimeline( $data, $params )
 
 	} else {	// SIMILE Timeline Widget setup
 
-		$headerlib = TikiLib::lib('header');
+		global $headerlib;
 
 		// static js moved to lib
 		$headerlib->add_jsfile('lib/simile_tiki/tiki-timeline.js');

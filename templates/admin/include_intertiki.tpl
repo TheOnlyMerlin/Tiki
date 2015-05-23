@@ -1,14 +1,10 @@
 {* $Id$ *}
 {tabset name="admin_interwiki"}
 	{tab name="{tr}Intertiki client{/tr}"}
-		<h2>{tr}Intertiki client{/tr}</h2>
+        <h2>{tr}Intertiki client{/tr}</h2>
 		<form action="tiki-admin.php?page=intertiki" method="post" name="intertiki">
 			<input type="hidden" name="ticket" value="{$ticket|escape}">
 			<table class="formcolor">
-				<tr>
-					<td>{tr}Feature{/tr}</td>
-					<td>{preference name=feature_intertiki}</td>
-				</tr>
 				<tr>
 					<td>{tr}Tiki Unique key{/tr}</td>
 					<td><input type="text" name="tiki_key" value="{$prefs.tiki_key}" size="32" /></td>
@@ -30,7 +26,7 @@
 									document.getElementById('admin-server-options').style.display = 'none';
 									document.getElementById('admin-slavemode-options').style.display = 'block';
 								}
-							}
+							}	
 							{/literal}
 						{/jq}
 
@@ -43,7 +39,7 @@
 						<div id="admin-slavemode-options" style="display: {if $prefs.feature_intertiki_mymaster eq ''}none{else}block{/if}">
 							<input type="checkbox" name="feature_intertiki_import_preferences" {if $prefs.feature_intertiki_import_preferences eq 'y'}checked="checked"{/if}/>
 							{tr}Import user preferences{/tr}<br>
-
+	
 							<input type="checkbox" name="feature_intertiki_import_groups" {if $prefs.feature_intertiki_import_groups eq 'y'}checked="checked"{/if}/>
 							{tr}Import user groups{/tr}
 							<br>
@@ -125,7 +121,7 @@
 
 	{if $prefs.feature_intertiki_mymaster eq ''}
 		{tab name="{tr}Intertiki server{/tr}"}
-			<h2>{tr}Intertiki server{/tr}</h2>
+            <h2>{tr}Intertiki server{/tr}</h2>
 			<form action="tiki-admin.php?page=intertiki" method="post" name="intertiki">
 				<input type="hidden" name="ticket" value="{$ticket|escape}">
 				<table class="table">

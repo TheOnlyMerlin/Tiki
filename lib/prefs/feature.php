@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -193,9 +193,9 @@ function prefs_feature_list($partial = false)
 			'type' => 'flag',
 			'default' => 'n',
 			'tags' => array('basic'),
-			'admin' => 'tiki-admin_polls.php',
-			'module' => '',
-			'view' => '',
+			'admin' => 'polls',
+			'module' => 'poll',
+			'view' => 'tiki-admin_polls',
 			'permission' => array(
 				'textFilter' => 'poll',
 			),
@@ -287,7 +287,7 @@ function prefs_feature_list($partial = false)
 			),
 		),
 		'feature_freetags' => array(
-			'name' => tra('Tags'),
+			'name' => tra('Freetags'),
 			'description' => tra('Allows tags on pages and various objects to be set within the website and generate tag cloud navigation patterns.'),
 			'help' => 'Tags',
 			'type' => 'flag',
@@ -592,9 +592,8 @@ function prefs_feature_list($partial = false)
 		),
 		'feature_ajax' => array(
 			'name' => tra('Ajax'),
-			'description' => tra('Allows for efficient retrieval and display of information from the server, thus improving the user experience. This feature is required for the interface for many features to work.'),
+			'description' => tra('Ajax'),
 			'help' => 'Ajax',
-			'warning' => tra('This feature is required for the interface for many features to work properly.'),
 			'type' => 'flag',
 			'default' => 'y',
 		),
@@ -777,10 +776,19 @@ function prefs_feature_list($partial = false)
 			'type' => 'flag',
 			'default' => 'n',
 		),
+		'feature_custom_home' => array(
+			'name' => tra('Custom Home'),
+			'description' => tra('Custom Home'),
+			'help' => 'Custom+Home',
+			'type' => 'flag',
+			'default' => 'n',
+			'view' => 'tiki-custom_home.php',
+			'tags' => array('advanced'),
+		),
 		'feature_mytiki' => array(
-			'name' => tra("Display 'My Account' in the application menu"),
-			'description' => tra("Display 'My Account' in the application menu"),
-			'help' => 'My Account',
+			'name' => tra("Display 'MyTiki' in the application menu"),
+			'description' => tra("Display 'MyTiki' in the application menu"),
+			'help' => 'MyTiki',
 			'type' => 'flag',
 			'default' => 'n',
 		),
@@ -1043,6 +1051,21 @@ function prefs_feature_list($partial = false)
 			'default' => 'n',
 			'tags' => array('basic'),
 		),
+		'feature_babelfish' => array(
+			'name' => tra('Yahoo! Babel Fish Translation URLs'),
+			'description' => tra('Show clickable URLs to translate the page to another language using Babel Fish website.'),
+			'type' => 'flag',
+			'hint' => tra('You need to assign somewhere on the page via a module'),
+			'default' => 'n',
+			'tags' => array('experimental'),
+		),
+		'feature_babelfish_logo' => array(
+			'name' => tra('Yahoo! Babel Fish Translation icons'),
+			'description' => tra('Show clickable icons to translate the page to another language using Babel Fish website.'),
+			'hint' => tra('You need to assign somewhere on the page via a module'),
+			'type' => 'flag',
+			'default' => 'n',
+		),
 		'feature_smileys' => array(
 			'name' => tra('Smileys'),
 			'description' => tra('Also known as emoticons'),
@@ -1128,7 +1151,7 @@ function prefs_feature_list($partial = false)
 		'feature_wiki_ext_icon' => array(
 			'name' => tra('External link icon'),
 			'type' => 'flag',
-			'description' => tra('External links will be identified with an icon. To customize the icon change the "link-external" icon in the icon set.'),
+			'description' => tra('External links will be identifed with an icon. Use the ../img/icons/external_link.gif image to customize the icon.'),
 			'default' => 'y',
 			'tags' => array('basic'),
 		),
@@ -1679,12 +1702,6 @@ function prefs_feature_list($partial = false)
 				'feature_search_fulltext',
 			),
 		),
-		'feature_forum_post_index' => array(
-			'name' => tra('Index posts on forum section change.'),
-			'description' => tra('Re-indexes forum posts to match the parent section when the section is changed'),
-			'type' => 'flag',
-			'default' => 'y',
-		),
 		'feature_clear_passwords' => array(
 			'name' => tra('Store password as plain text'),
             'description' => tra(''),
@@ -1707,7 +1724,7 @@ function prefs_feature_list($partial = false)
 		),
 		'feature_editcss' => array(
 			'name' => tra('Edit CSS'),
-			'description' => tra('Edit css files directly from the browser.'),
+            'description' => tra(''),
 			'type' => 'flag',
 			'help' => 'Edit+CSS',
 			'perspective' => false,
@@ -1860,7 +1877,7 @@ function prefs_feature_list($partial = false)
 			'default' => 'n',
 		),
 		'feature_site_report_email' => array(
-			'name' => tra('Webmaster email'),
+			'name' => tra('Webmaster Email'),
             'description' => tra(''),
 			'hint' => tra('Leave blank to use the default sender email'),
 			'type' => 'text',
@@ -1925,8 +1942,8 @@ function prefs_feature_list($partial = false)
 			'default' => 'y',				// include UI lib for more effects
 		),
 		'feature_jquery_ui_theme' => array(
-			'name' => tra('jQuery UI theme'),
-            'description' => tra('jQuery UI theme. Used in spreadsheet, for example.'),
+			'name' => tra('jQuery UI Theme'),
+            'description' => tra('jQuery UI Theme. Used in spreadsheet, for example.'),
 			'help' => 'JQuery#UI',
 			'type' => 'list',
 			'options' => array(
@@ -1974,7 +1991,7 @@ function prefs_feature_list($partial = false)
 		),
 		'feature_jquery_tablesorter' => array(
 			'name' => tra('jQuery Sortable Tables'),
-			'description' => tra('Provides an interactive way to sort and filter data in tables produced with Plugin FancyTable and Plugin TrackerList, as well as other administrative tables used in Tiki.'),
+            'description' => tra('Provides an interactive way to sort and filter data in tables produced through Plugin FancyTable as well as through Plugin TrackerList'),
 			'type' => 'flag',
 			'help' => 'JQuery#TableSorter',
 			'warning' => tra('This feature can cause problems with JS minify on some systems.'),
@@ -2208,9 +2225,6 @@ function prefs_feature_list($partial = false)
 			'help' => 'Structure',
 			'keywords' => 'wiki ajax structure',
 			'default' => 'n',
-			'dependencies' => array(
-				'feature_cssmenus'
-			),
 		),
 		'feature_wiki_open_as_structure' => array(
 			'name' => tra('Open page as structure'),
@@ -2620,6 +2634,13 @@ function prefs_feature_list($partial = false)
 				'permType' => 'transition',
 			),
 		),
+		'feature_watershed' => array(
+			'name' => tra('Ustream Watershed live video streaming'),
+			'description' => tra('Integration to Ustream Watershed live video streaming.'),
+			'type' => 'flag',
+			'help' => 'Ustream+Watershed',
+			'default' => 'n',
+		),
 		'feature_credits' => array(
 			'name' => tra('Tiki User Credits'),
 			'description' => tra('Tiki User Credits'),
@@ -2808,6 +2829,16 @@ function prefs_feature_list($partial = false)
 			'help' => 'User+Preferences',
 			'default' => 'n',
 		),
+		'feature_community_Strings_to_ignore' => array(
+			'name' => tra('Strings to ignore to get group basename'),
+			'type' => 'text',
+			'default' => '',
+		),
+		'feature_community_String_to_append' => array(
+			'name' => tra('String to append to the group name to get Group Leaders group'),
+			'type' => 'text',
+			'default' => '',
+		),
 		'feature_inline_comments' => array(
 			'name' => tra('Inline Comments'),
 			'description' => tra('Enable/disable inline comments.'),
@@ -2823,14 +2854,6 @@ function prefs_feature_list($partial = false)
 			'description' => tra('This is useful to share a URL to exact location on the page.'),
 			'type' => 'flag',
 			'default' => 'y',
-			'tags' => array('advanced'),
-		),
-		'feature_equal_height_rows_js' => array(
-			'name' => tra('Enable Equal Height Rows JS Pugin'),
-			'description' => tra('This allows responsive rows to be set so that each contained element has the same height '),
-			'type' => 'flag',
-			'default' => 'n',
-			'help' => "https://github.com/Sam152/Javascript-Equal-Height-Responsive-Rows",
 			'tags' => array('advanced'),
 		),
 		'feature_theme_control_savesession' => array(

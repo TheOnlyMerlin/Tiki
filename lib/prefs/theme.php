@@ -1,56 +1,36 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function prefs_theme_list($partial = false)
+function prefs_theme_list()
 {
-	global $prefs;
-	$themelib = TikiLib::lib('theme');
-	
-	//get list of themes and make the first character of array values uppercase
-	$themes = array_map('ucfirst', $themelib->list_themes());
-	//get list of theme options
-	$theme_options = [
-		'' => tr('None'),
+	$themes = [
+		'default' => tr('Bootstrap default'),
+		'legacy' => tr('Bootstrap themes in the "styles" directory'),
+		'custom' => tr('Custom bootstrap theme by specifying URL'),
 	];
-	if (! $partial) {
-		$theme_options = $theme_options + $themelib->get_options();
-	}
-	
-	//admin themes -> add empty option which means that site theme should be used. Also remove Custom URL.
-	$admin_themes = [
-		'' => tr('Site theme'),
-	];
-	$admin_themes = $admin_themes + $themes;
-	unset($admin_themes['custom_url']); //remove custom URL from the list
 
-	//get list of icon sets shipped by Tiki
-	$iconsets = $themelib->list_base_iconsets();
-	$iconsets['theme_specific_iconset'] = tr('Icons of the displayed theme'); //add a specific option to allow theme specific icon set to be used
-	
+	foreach (glob("themes/*/css/tiki.css") as $css) {
+		$css = dirname(dirname($css));
+		$theme = basename($css);
+		$themes[$theme] = tr($theme);
+	}
+
+	// TODO : Include pre-defined themes
 	return array(
-		'theme' => array(
-			'name' => tr('Site theme'),
-			'description' => tr('The default theme for the site. Most themes are bootstrap.css variants including updated legacy Tiki themes as well as themes from Bootswatch.com. For more information about Bootstrap, see getbootstrap.com.'),
+		'theme_active' => array(
+			'name' => tr('Theme selection'),
+			'description' => tr('For more information about Bootstrap, see getbootstrap.com. Themes in the styles directory are bootstrap.css variants including updated legacy Tiki themes as well as themes from Bootswatch.com (for example, select <em>Theme: <b>bootswatch_themes</b>, Theme option: <code>Amelia-bootstrap.min.</code></em>'),
 			'type' => 'list',
 			'default' => 'default',
 			'options' => $themes,
-			'help' => 'Themes',
+            'help' => 'Tiki13#Themes',
 			'tags' => array('basic'),
 		),
-		'theme_option' => array(
-			'name' => tra('Site theme option'),
-			'type' => 'list',
-			'help' => 'Themes',
-			'description' => tra('Options for the selected theme'),
-			'options' => $theme_options,
-			'default' => '',
-			'tags' => array('basic'),
-		),		
-		'theme_custom_url' => array(
+		'theme_custom' => array(
 			'name' => tr('Custom theme URL'),
 			'description' => tr('Local or external URL of the custom Bootstrap-compatible CSS file to use.'),
 			'type' => 'text',
@@ -58,32 +38,6 @@ function prefs_theme_list($partial = false)
 			'default' => '',
 			'tags' => array('basic'),
 		),
-		'theme_admin' => array(
-			'name' => tra('Admin theme'),
-			'type' => 'list',
-			'help' => 'Themes',
-			'description' => tra('Theme for the settings panels.'),
-			'options' => $admin_themes,
-			'default' => '',
-			'tags' => array('basic'),
-		),
-		'theme_option_admin' => array(
-			'name' => tra('Admin theme option'),
-			'type' => 'list',
-			'help' => 'Themes',
-			'description' => tra('Options for the selected theme'),
-			'options' => $theme_options,
-			'default' => '',
-			'tags' => array('basic'),
-		),
-		'theme_iconset' => array(
-			'name' => tr('Icons'),
-			'description' => tr('Icon set used by the site.'),
-			'type' => 'list',
-			'options' => $iconsets,
-			'default' => 'default',
-			'help' => 'Icons',
-			'tags' => array('basic'),
-		),
 	);
 }
+

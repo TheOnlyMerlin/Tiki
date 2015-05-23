@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -343,8 +343,7 @@ function wikiplugin_slider_info()
 
 function wikiplugin_slider($data, $params)
 {
-	$tikilib = TikiLib::lib('tiki');
-	$headerlib = TikiLib::lib('header');
+	global $tikilib, $headerlib;
 	extract($params, EXTR_SKIP);
 
 	$headerlib->add_jsfile('vendor/jquery/plugins/anythingslider/js/swfobject.js');

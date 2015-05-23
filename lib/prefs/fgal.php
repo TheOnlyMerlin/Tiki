@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -60,6 +60,17 @@ function prefs_fgal_list()
 			'name' => tra('Display zip option in gallery'),
             'description' => tra('Display in the gallery the zip option (in upload and gallery file)'),
 			'type' => 'flag',
+			'help' => 'File+Gallery+config',
+			'default' => 'n',
+		),
+		'fgal_upload_progressbar' => array(
+			'name' => tra('Upload progressbar'),
+            'description' => tra(''),
+			'type' => 'list',
+			'options'=> array(
+				'n'	=>	tra('None'),
+				'ajax_flash' => tra('Ajax / Flash (Browser-based)'),
+			),
 			'help' => 'File+Gallery+config',
 			'default' => 'n',
 		),

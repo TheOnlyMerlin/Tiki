@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -28,18 +28,6 @@ function smarty_function_favorite($params, $smarty)
 	$url = smarty_modifier_escape($url);
 	$e_user = smarty_modifier_escape($user);
 
-	if (isset($params['label'])){
-		$label = $params['label'];
-	}else{
-		$label = tr('Favorite');
-	}
-
-	if (isset($params['button_classes'])){
-		$button_classes= $params['button_classes'];
-	}else{
-		$button_classes = "btn btn-default";
-	}
-
-	return '<a class="'. $button_classes .' favorite-toggle" href="' . $url . '" data-key="favorite_' . $e_user . '"> ' . $label . '</a>';
+	return '<a class="btn btn-default favorite-toggle" href="' . $url . '" data-key="favorite_' . $e_user . '">' . tr('Favorite') . '</a>';
 }
 

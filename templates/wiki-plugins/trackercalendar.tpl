@@ -1,4 +1,4 @@
-<div id="{$trackercalendar.id|escape}"></div>
+<div id="{$trackercalendar.id|escape}" class="table-responsive"></div>
 {jq}
 	var data = {{$trackercalendar|json_encode}};
 	$('#' + data.id).each(function () {
@@ -60,11 +60,12 @@
 			},
 			allDayText: "{tr}all-day{/tr}",
 			firstDay: data.firstDayofWeek,
-			weekends: data.weekends,
 			slotMinutes: {{$prefs.calendar_timespan}},
 			defaultView: data.dView,
 			eventAfterRender : function( event, element, view ) {
-				element.popover({trigger: 'hover focus', title: event.title, content: event.description, html: true, container: 'body'});
+				element.attr('title',event.title);
+				element.data('content', event.description);
+				element.popover({ trigger: 'hover', html: true,'container': 'body' });
 			},
 			eventClick: function(event) {
 				if (data.url) {

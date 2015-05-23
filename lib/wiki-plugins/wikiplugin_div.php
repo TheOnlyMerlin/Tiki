@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -126,16 +126,8 @@ function wikiplugin_div_info()
 				'safe' => true,
 				'default' => '',
 			),
- 			'onclick' => array(
-                                'required' => false,
-                                'name' => tra('onClick attribute'),
-                                'description' => tra('Enter on onclick event'),
-                                'filter' => 'text',
-				'advanced' => true,
-				'default' => '',
-			),
 			'style' => array(
-				// Note that this is ignored unless preference wiki_plugindiv_approvable is set in Configuration → Configuration Panels → Editing and Plugins → Miscellaneous
+				// Note that this is ignored unless preference wiki_plugindiv_approvable is set in Admin → Admin home → Editing and Plugins → Miscellaneous
 				'required' => false,
 				'name' => tra('Style attribute'),
 				'description' => tra('Enter CSS styling tags for the div type used.'),
@@ -162,15 +154,14 @@ function wikiplugin_div($data, $params)
 	global $prefs;
 
 	extract($params, EXTR_SKIP);
-	if ($prefs['wiki_plugindiv_approvable'] != 'y' || !isset($style)) {
+	if ($prefs['wiki_plugindiv_approvable'] != 'y') {
 		// If any other unsafe parameters are created, unset them here
 		$style = '';
 	}
 	$possibletypes = array('div','span','pre','b','i','tt','p','blockquote');
 	$t    = (isset($type) and in_array($type, $possibletypes)) ? "$type"  : "div";
 	$c    = (isset($class)) ? " class='$class'"  : "";
-	$id   = (isset($id)) ? " id='$id'"  : "";
-	$oc   = (isset($onclick)) ? " onclick='$onclick'"  : "";
+	$id    = (isset($id)) ? " id='$id'"  : "";
 	$w    = (isset($width)) ? " width: $width;"  : "";
 	$bg   = (isset($bg))    ? " background-color: $bg;" : "";
 	$al   = (isset($align) && ($align == 'right' || $align == "center" || $align == "justify" || $align == 'left')) ? " text-align: $align;" : '';
@@ -187,7 +178,7 @@ function wikiplugin_div($data, $params)
 	if (!empty($format)) {
 		$begin .= " style=\"$format\"";
 	}
-	$begin .= " $c $id $oc>";
+	$begin .= " $c $id>";
 	$end = "</$t>";
 	return $begin . $data . $end;
 }

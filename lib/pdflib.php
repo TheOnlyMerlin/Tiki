@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -51,7 +51,7 @@ class PdfGenerator
 			$tokenlib = AuthTokens::build($prefs);
 			$params['TOKEN'] = $tokenlib->createToken(
 				$tikiroot . $file, $params, $perms->getGroups(),
-				array('timeout' => 120)
+				array('timeout' => 60,)
 			);
 		}
 
@@ -93,10 +93,7 @@ class PdfGenerator
 
 		// Run shell_exec command to generate out file
 		// NOTE: this requires write permissions
-		$quotedFilename = '"'.$filename.'"';
-		$quotedCommand = '"'.$this->location.'"';
-		
-		`$quotedCommand -q $arg $quotedFilename`;
+		`{$this->location} $arg $filename`;
 
 		// Read the out file
 		$pdf = file_get_contents($filename);

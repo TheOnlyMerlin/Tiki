@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -249,10 +249,6 @@ if (!empty($_SESSION['perms_clipboard'])) {
 
 }
 
-// Prepare display
-// Get the individual object permissions if any
-$displayedPermissions = get_displayed_permissions();
-
 //Quickperms apply {{{
 //Test to map permissions of ile galleries into read write admin admin levels.
 if ( $prefs['feature_quick_object_perms'] == 'y' ) {
@@ -264,17 +260,6 @@ if ( $prefs['feature_quick_object_perms'] == 'y' ) {
 		$quickperms->configure($type, $data['data']);
 	}
 
-	$groupNames = array();
-	foreach ($groups['data'] as $key=>$group) {
-		$groupNames[] = $group['groupName'];
-	}
-
-	$map = $quickperms->getAppliedPermissions($displayedPermissions, $groupNames);
-
-	foreach ($groups['data'] as $key=>$group) {
-		$groups['data'][$key]['groupSumm'] = $map[ $group['groupName'] ];
-	}
-
 	if (isset($_REQUEST['assign']) && isset($_REQUEST['quick_perms'])) {
 		check_ticket('object-perms');
 
@@ -282,10 +267,9 @@ if ( $prefs['feature_quick_object_perms'] == 'y' ) {
 
 		$userInput = array();
 		foreach ($groups['data'] as $group) {
-			$groupNameEncoded = rawurlencode($group['groupName']);
-			if (isset($_REQUEST['perm_' . $groupNameEncoded])) {
+			if (isset($_REQUEST['perm_' . $group['groupName']])) {
 				$group = $group['groupName'];
-				$permission = $_REQUEST['perm_' . $groupNameEncoded];
+				$permission = $_REQUEST['perm_' . $group];
 
 				$userInput[$group] = $permission;
 			}
@@ -293,13 +277,15 @@ if ( $prefs['feature_quick_object_perms'] == 'y' ) {
 
 		$current = $currentObject->getDirectPermissions();
 		$newPermissions = $quickperms->getPermissions($current, $userInput);
-		if (! $newPermissions->has('Admins', 'tiki_p_admin')) {
-			$newPermissions->add('Admins', 'tiki_p_admin');
-		}
 		$permissionApplier->apply($newPermissions);
-		$access->redirect($_SERVER['REQUEST_URI']);
 	}
 }
+// }}}
+
+// Prepare display
+// Get the individual object permissions if any
+
+$displayedPermissions = get_displayed_permissions();
 
 if (isset($_REQUEST['used_groups'])) {
 	$group_filter = array();
@@ -317,6 +303,31 @@ if (isset($_REQUEST['used_groups'])) {
 	$cookietab = 1;
 }
 
+// Quick perms load {{{
+//Quickperm groups stuff
+if ( $prefs['feature_quick_object_perms'] == 'y' ) {
+	$groupNames = array();
+	foreach ($groups['data'] as $key=>$group) {
+		$groupNames[] = $group['groupName'];
+	}
+
+	$qperms = quickperms_get_data();
+	$smarty->assign('quickperms', $qperms);
+	$quickperms = new Perms_Reflection_Quick;
+
+	foreach ( $qperms as $type => $data ) {
+		$quickperms->configure($type, $data['data']);
+	}
+
+	$displayedPermissions = get_displayed_permissions();
+	$map = $quickperms->getAppliedPermissions($displayedPermissions, $groupNames);
+
+	foreach ($groups['data'] as $key=>$group) {
+		$groups['data'][$key]['groupSumm'] = $map[ $group['groupName'] ];
+	}
+}
+
+//Quickperm END }}}
 
 // get groupNames etc - TODO: jb will tidy...
 //$checkboxInfo = array();
@@ -661,7 +672,7 @@ function quickperms_get_generic()
 	if (!isset($quickperms_['editors']))
 		$quickperms_['editors'] = array();
 	if (!isset($quickperms_['admin']))
-		$quickperms_['admin'] = array();
+	$quickperms_['admin'] = array();
 
 	$perms = array();
 	$perms['basic']['name'] = 'basic';
@@ -723,8 +734,7 @@ function perms_get_restrictions()
  */
 function get_displayed_permissions()
 {
-	global $objectFactory;
-	$smarty = TikiLib::lib('smarty');
+	global $objectFactory, $smarty;
 
 	$currentObject = $objectFactory->get($_REQUEST['objectType'], $_REQUEST['objectId']);
 	$displayedPermissions = $currentObject->getDirectPermissions();

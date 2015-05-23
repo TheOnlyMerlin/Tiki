@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -48,9 +48,7 @@ function module_domain_password_info()
  */
 function module_domain_password($mod_reference, $module_params)
 {
-	global $prefs, $user;
-	$smarty = TikiLib::lib('smarty');
-	$tikilib = TikiLib::lib('tiki');
+	global $prefs, $tikilib, $smarty, $user;
 
 	// Allow for multiple modules on one page
 	$moduleNr = $mod_reference['moduleId'];

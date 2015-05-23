@@ -16,8 +16,8 @@
 				<strong>{tr}Name{/tr}</strong>
 			</td>
 			<td>
-				<input type="hidden" name="topicid" value="{$topic_info.topicId}">
-				<input type="text" class="form-control" name="name" value="{$topic_info.name|escape}">
+			  <input type="hidden" name="topicid" value="{$topic_info.topicId}">
+			  <input type="text" class="form-control" name="name" value="{$topic_info.name|escape}">
 			</td>
 		</tr>
 		<tr>
@@ -25,13 +25,13 @@
 				<strong>{tr}Image{/tr}</strong>
 			</td>
 			<td>
-				<input type="hidden" name="MAX_FILE_SIZE" value="1000000">
-				<input name="userfile1" class="form-control" type="file">
+			  <input type="hidden" name="MAX_FILE_SIZE" value="1000000">
+			  <input name="userfile1" class="form-control" type="file">
 			</td>
 		</tr>
 		<tr>
 			<td>
-				<strong>{tr}Notification Email{/tr}&nbsp;<a href="tiki-admin_notifications.php" title="{tr}Admin notifications{/tr}"></strong>{icon name='wrench' alt="{tr}Admin notifications{/tr}"}</a>
+				<strong>{tr}Notification Email{/tr}&nbsp;<a href="tiki-admin_notifications.php" title="{tr}Admin notifications{/tr}"></strong>{icon _id='wrench' alt="{tr}Admin notifications{/tr}"}</a>
 			</td>
 			<td>
 				<input type="text" name="email" class="form-control" value="{$email|escape}" placeholder="{tr}Enter email addresses {/tr}">

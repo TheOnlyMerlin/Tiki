@@ -9,7 +9,7 @@ use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
  *
  * @package TikiWiki
  * @subpackage lib\init
- * @copyright (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project. All Rights Reserved. See copyright.txt for details and a complete list of authors.
+ * @copyright (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project. All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * @licence Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
  */
 // $Id$
@@ -23,7 +23,7 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 if (! file_exists(__DIR__ . '/../../vendor/autoload.php')) {
 	echo "Your Tiki is not completely installed because Composer has not been run to fetch package dependencies.\n";
 	echo "You need to run 'sh setup.sh' from the command line.\n";
-	echo "See https://dev.tiki.org/Composer for details.\n";
+	echo "See http://dev.tiki.org/Composer for details.\n";
 	exit;
 }
 
@@ -54,21 +54,12 @@ class TikiInit
 		if (is_readable($cache)) {
 			require_once $cache;
 			$container = new TikiCachedContainer;
-
-			if (TikiDb::get()) {
-				$container->set('tiki.lib.db', TikiDb::get());
-			}
-
 			return $container;
 		}
 
 		$path = TIKI_PATH . '/db/config';
 		$container = new ContainerBuilder;
 		$container->addCompilerPass(new \Tiki\MailIn\Provider\CompilerPass);
-		$container->addCompilerPass(new \Tiki\Recommendation\Engine\CompilerPass);
-		$container->addCompilerPass(new \Tiki\Wiki\SlugManager\CompilerPass);
-		$container->addCompilerPass(new \Search\Federated\CompilerPass);
-		$container->addCompilerPass(new \Tracker\CompilerPass);
 
 		$container->setParameter('kernel.root_dir', TIKI_PATH);
 		$loader = new XmlFileLoader($container, new FileLocator($path));
@@ -81,18 +72,6 @@ class TikiInit
 			$loader->load('custom.xml');
 		} catch (InvalidArgumentException $e) {
 			// Do nothing, absence of custom.xml file is expected
-		}
-
-		foreach ( glob( TIKI_PATH . '/addons/*/lib/libs.xml' ) as $file ) {
-			try {
-				$loader->load($file);
-			} catch (InvalidArgumentException $e) {
-				// Do nothing, absence of libs.xml file is expected
-			}
-		}
-
-		if (TikiDb::get()) {
-			$container->set('tiki.lib.db', TikiDb::get());
 		}
 
 		$container->compile();
@@ -294,7 +273,7 @@ class TikiInit
 
 	static function getCredentialsFile()
 	{
-		global $default_api_tiki, $api_tiki, $db_tiki, $dbversion_tiki, $host_tiki, $user_tiki, $pass_tiki, $dbs_tiki, $tikidomain, $tikidomainslash, $dbfail_url;
+		global $default_api_tiki, $api_tiki, $db_tiki, $dbversion_tiki, $host_tiki, $user_tiki, $pass_tiki, $dbs_tiki, $tikidomain, $tikidomainslash;
 		// Please use the local.php file instead containing these variables
 		// If you set sessions to store in the database, you will need a local.php file
 		// Otherwise you will be ok.
@@ -308,7 +287,6 @@ class TikiInit
 		$pass_tiki		= '';
 		$dbs_tiki			= 'tiki';
 		$tikidomain		= '';
-		$dbfail_url		= '';
 
 		/*
 		SVN Developers: Do not change any of the above.

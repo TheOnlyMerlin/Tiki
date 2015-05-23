@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,7 +11,7 @@ function wikiplugin_invite_info()
 		'name' => tra('Invite'),
 		'documentation' => 'PluginInvite',
 		'description' => tra('Invite a user to join your groups'),
-		'prefs' => array( 'wikiplugin_invite', 'feature_invite' ),
+		'prefs' => array( 'wikiplugin_invite' ),
 		'body' => tra('Confirmation message after posting form'),
 		'icon' => 'img/icons/group.png',
 		'params' => array(
@@ -117,7 +117,7 @@ function wikiplugin_invite( $data, $params)
 	}
 	if (!empty($params['itemId'])) {
 		$item = Tracker_Item::fromId($params['itemId']);
-		$params['defaultgroup'] = $item->getOwnerGroup();
+		$params['defaultgroup'] = $item->getItemGroupOwner();
 	}
 	$smarty->assign_by_ref('params', $params);
 	$smarty->assign_by_ref('userGroups', $userGroups);

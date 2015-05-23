@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -29,8 +29,6 @@ class Table_Code_MainOptions extends Table_Code_Manager
 	public function setCode()
 	{
 		$mo = array();
-
-		$mo[] = 'showProcessing: true';
 
 		/***  onRenderHeader option - change html elements before table renders. Repeated for each column. ***/
 		$orh = array();
@@ -71,22 +69,11 @@ class Table_Code_MainOptions extends Table_Code_Manager
 					}
 				}
 			}
-			//column select
-			if (parent::$s['colselect']['type'] === true) {
-				if (isset($info['priority'])) {
-					$allcols[$col]['attr']['data-priority'] = $info['priority'];
-				}
-			}
 		}
-		unset($col, $info);
 		//process columns
 		if (count($allcols) > 0) {
 			foreach($allcols as $col => $info) {
-				if (parent::$usecolselector) {
-					$orh[$col] = 'if (id == \'' . substr($col,1) . '\'){';
-				} else {
-					$orh[$col] = 'if (index == ' . $col . '){';
-				}
+				$orh[$col] = 'if (index == ' . $col . '){';
 				$orh[$col] .= '$(this)';
 				foreach($info as $attr => $val) {
 					if ($attr == 'addClass') {
@@ -100,13 +87,12 @@ class Table_Code_MainOptions extends Table_Code_Manager
 				}
 				$orh[$col] .= ';}';
 			}
-			unset($col, $info);
 		}
 
 		/* Handle code that applies to all columns now that the array index is not important*/
 		//get rid of self-links
 		if (isset(parent::$s['selflinks']) && parent::$s['selflinks']) {
-			$orh[] = '$(this).find(\'a\').replaceWith(\'<span>\' + $(this).find(\'a\').text() + \'</span>\');';
+			$orh[] = '$(this).find(\'a\').replaceWith($(this).find(\'a\').text());';
 		}
 		//no sort on all columns
 		if (!parent::$sorts) {
@@ -114,9 +100,6 @@ class Table_Code_MainOptions extends Table_Code_Manager
 		}
 		if (count($orh) > 0) {
 			array_unshift($mo, 'headerTemplate: \'{content} {icon}\'');
-			if (parent::$usecolselector) {
-				array_unshift($orh, 'var id = $(this).attr(\'id\');');
-			}
 			$mo[] = $this->iterate($orh, 'onRenderHeader: function(index){', $this->nt2 . '}', $this->nt3, '', '');
 		}
 		/***  end onRenderHeader section ***/
@@ -140,10 +123,6 @@ class Table_Code_MainOptions extends Table_Code_Manager
 		if (parent::$pager) {
 			$w[] = 'pager';
 		}
-		//column selector
-		if (parent::$s['colselect']) {
-			$w[] = 'columnSelector';
-		}
 		if (count($w) > 0) {
 			$mo[] = $this->iterate($w, 'widgets : [', ']', '\'', '\'', ',');
 		}
@@ -162,32 +141,19 @@ class Table_Code_MainOptions extends Table_Code_Manager
 		//Sort list
 		if (parent::$sorts && parent::$sortcol) {
 			$sl = '';
-			$i = 0;
 			foreach (parent::$s['columns'] as $col => $info) {
 				$info = $info['sort'];
-				$colpointer =  parent::$usecolselector ? $i : $col;
 				if (!empty($info['dir'])) {
 					if ($info['dir'] === 'asc') {
-						$sl[] = $colpointer . ',' . '0';
+						$sl[] = $col . ',' . '0';
 					} elseif ($info['dir'] === 'desc') {
-						$sl[] = $colpointer . ',' . '1';
+						$sl[] = $col . ',' . '1';
 					}
 				}
-				$i++;
 			}
-			unset($col, $info);
 			if (is_array($sl)) {
 				$mo[] = $this->iterate($sl, 'sortList : [', ']', '[', ']', ',');
 			}
-		}
-
-		//tiki popover needs to be re-applied due to late loading of tablesorter html
-		$p[] = $this->nt3 . '$(document).tiki_popover();';
-		$mo[] = $this->iterate($p, 'initialized: function(table){', $this->nt2 . '}', '', '', '');
-
-		//Sort image attribute
-		if (!empty(parent::$s['sorts']['imgattr'])) {
-			$mo[] = 'imgAttr: \'title\'';
 		}
 
 		//process main options and add to overall code

@@ -15,13 +15,13 @@
 			</div>
 		{foreachelse}
 			<div class="alert alert-success">
-				{tr}No unread notifications{/tr}
+				{tr}Nothing left!{/tr}
 			</div>
 		{/foreach}
 		<div class="submit">
 			{if $result|count > 0}
 				<a class="btn btn-default clearall custom-handling" href="{service controller=monitor action=clearall timestamp=$timestamp}">
-					{icon name="check"}
+					{glyph name="sort-by-attributes"}
 					{tr}Mark all as read{/tr}
 				</a>
 			{/if}

@@ -1,7 +1,7 @@
 {* $Id$ *}
 {strip}
 {title help="mods"}{tr}Tiki Mods{/tr}{/title}
-<div class="t_navbar margin-bottom-md">
+<div class="t_navbar form-group">
 	{button href="tiki-mods_admin.php" class="btn btn-default" _text="{tr}Mods Configuration{/tr}"}
 	{button href="tiki-mods.php?reload=1$findarg$typearg$versionarg" class="btn btn-default" _text="{tr}Update remote index{/tr}"}
 	{button href="tiki-mods.php?rebuild=1$findarg$typearg$versionarg" class="btn btn-default" _text="{tr}Rebuild local list{/tr}"}
@@ -59,7 +59,7 @@
 		{if $installask.unavailable}
 			<li style='color:#990000'>The following packages are required, but cannot be installed:
 				<ul>{foreach from=$installask.unavailable item=element}
-					<li>{$element->name|escape} ({$element->type|escape}) :
+					<li>{$element->name|escape} ({$element->type|escape}) : 
 						{foreach from=$element->tests item=test}
 							{$test->test}{$test->revision}
 						{/foreach}
@@ -72,7 +72,7 @@
 		{if $installask.conflicts}
 			<li style='color:#990000'>The following packages are required, but in conflicts:
 			<ul>{foreach from=$installask.conflicts item=element}
-					<li>{$element->name|escape} ({$element->type|escape}) :
+					<li>{$element->name|escape} ({$element->type|escape}) : 
 						{foreach from=$element->tests item=test}
 							{$test->test}{$test->revision}
 						{/foreach}
@@ -146,7 +146,7 @@ function update_button_install() {
 	<br>
 	{section name=n loop=$tikifeedback}
 		<div class="alert {if $tikifeedback[n].num > 0} alert-warning{/if}">
-			{if $tikifeedback[n].num > 0}{icon name='remove' alt="Alert" style="vertical-align:middle;"}{/if}{$tikifeedback[n].mes}
+			{if $tikifeedback[n].num > 0}{icon _id=delete alt="Alert" style="vertical-align:middle;"}{/if}{$tikifeedback[n].mes}
 		</div><br>
 	{/section}
 {/if}
@@ -174,7 +174,7 @@ function update_button_install() {
 	{if !$display}
 		{tr}No mods found.{/tr}
 	{/if}
-
+	
 	<table cellspacing="0" cellpadding="2" border="0" class="table normal">
 		{foreach key=type item=i from=$display}
 			<tr><td colspan="{if $prefs.feature_mods_provider eq 'y'}3{else}2{/if}">
@@ -207,7 +207,7 @@ function update_button_install() {
 						<td class="mods_revision"></td>
 					{/if}
 				{/if}
-
+				
 				{if $remote.$type.$item}
 					{if ModsLib::revision_compare($remote.$type.$item->revision, $local.$type.$item->revision) > 0}
 						<td class="mods_hilite">
@@ -221,13 +221,13 @@ function update_button_install() {
 				{else}
 					<td></td>
 				{/if}
-
+				
 				{if $local.$type.$item}
 					<td><b><a href="tiki-mods.php?focus={$local.$type.$item->modname|escape:"url"}{$findarg}{$typearg}{$versionarg}">{$local.$type.$item->name}</a></b></td>
 					<td>{$local.$type.$item->version[0]}</td>
 					<td>{$local.$type.$item->licence}</td>
 					<td>{$local.$type.$item->description}</td>
-					{if $installed.$type.$item}
+					{if $installed.$type.$item} 
 						{if $local.$type.$item->isnewerthan($installed.$type.$item)}
 							<td class="mods_update">{$installed.$type.$item->revision}
 								{if $iswritable}<a href="tiki-mods.php?action=upgrade&amp;package={$local.$type.$item->modname|escape:"url"}{$findarg}{$typearg}{$versionarg}">-&gt;{$local.$type.$item->revision}</a>{/if}
@@ -278,7 +278,7 @@ function update_button_install() {
 											{if $more->help}{$more.help}<br>{/if}
 											{if $more->author}{tr}Author:{/tr} {$more->author[0]}<br>{/if}
 											{if $more->licence}{tr}licence:{/tr} {$more->licence}<br>{/if}
-
+											
 											{tr}Last Modification:{/tr} {$more->lastmodif}<br>
 											{tr}by:{/tr} {$more->contributor[0]}<br>
 										</div></div>

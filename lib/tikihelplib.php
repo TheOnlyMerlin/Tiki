@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -46,16 +46,13 @@ function help_doclink($params)
 	}
 
 	if ($prefs['feature_help'] == 'y' and $url) {
-		if (!isset($desc)) {
-			$smarty = TikiLib::lib('smarty');
-			$smarty->loadPlugin('smarty_function_icon');
+		if (!isset($desc))
 			$desc = tra('Help link');
 
-			$ret = '<a title="' . $url . '|' . htmlentities($desc, ENT_COMPAT, 'UTF-8') . '" href="'
-						. $prefs['helpurl'] . $url . '" target="tikihelp" class="tikihelp btn btn-link">'
-						. smarty_function_icon(array('name' => 'help'), $smarty)
-						. '</a>';
-		}
+			$ret = '<a title="' . htmlentities($desc, ENT_COMPAT, 'UTF-8') . '" href="'
+						. $prefs['helpurl'] . $url . '" target="tikihelp" class="tikihelp">'
+						. '<img src="img/icons/help.png"'
+						. ' height="16" width="16" alt="' . tra('Help', '', true) . '" /></a>';
 	}
 
 	return $ret;

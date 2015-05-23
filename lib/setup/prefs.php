@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -22,15 +22,15 @@ if (basename($_SERVER['SCRIPT_NAME']) == basename(__FILE__)) {
 // ( this is also used in tikilib, not only when reloading prefs )
 global $user_overrider_prefs, $prefs;
 $user_overrider_prefs = array(
-	'language',
-	'userbreadCrumb',
-	'tikiIndex',
-	'wikiHomePage',
-	'default_calendars',
-	'metatag_robots',
-	'themegenerator_theme',
-	'theme',
-	'theme_option',
+				'language',
+				'style',
+				'style_option',
+				'userbreadCrumb',
+				'tikiIndex',
+				'wikiHomePage',
+				'default_calendars',
+				'metatag_robots',
+				'themegenerator_theme'
 );
 
 initialize_prefs();
@@ -400,14 +400,7 @@ function initialize_prefs($force = false)
 	}
 
 	// Override preferences with system-configured preferences.
-	$system = $systemConfiguration->preference->toArray();
-	// Also include the site_ versions
-	foreach ( $user_overrider_prefs as $uop ) {
-		if (isset($system[$uop])) {
-			$system['site_' . $uop] = $system[$uop];
-		}
-	}
-	$prefs = $system + $prefs;
+	$prefs = $systemConfiguration->preference->toArray() + $prefs;
 
 	if ( !defined('TIKI_PREFS_DEFINED') ) define('TIKI_PREFS_DEFINED', 1);
 }

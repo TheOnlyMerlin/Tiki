@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -66,9 +66,14 @@ if (isset($_REQUEST["rename"]) || isset($_REQUEST["confirm"])) {
 	}
 
 	if ($result) {
-		$perspectivelib = TikiLib::lib('perspective');
+		global $perspectivelib; require_once 'lib/perspectivelib.php';
 		$perspectivelib->replace_preference('wsHomepage', $page, $newName);
-		$access->redirect($wikilib->sefurl($newName));
+		if ($prefs['feature_sefurl'] == 'y') {
+			include_once('tiki-sefurl.php');
+			header('location: '. urlencode(filter_out_sefurl("tiki-index.php?page=$newName", 'wiki')));
+		} else {
+			header('location: tiki-index.php?page=' . urlencode($newName));
+		}
 	}
 }
 ask_ticket('rename-page');

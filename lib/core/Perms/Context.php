@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -44,11 +44,11 @@ class Perms_Context
 
 	function activate($globalize = false)
 	{
-		global $user, $globalperms;
+		global $user, $smarty, $globalperms;
 		$perms = Perms::getInstance();
 		$this->previousUser = $user;
 		$this->previousGroupList = $perms->getGroups();
-		$smarty = TikiLib::lib('smarty');
+
 		$user = $this->user;
 		$perms->setGroups($this->groupList);
 

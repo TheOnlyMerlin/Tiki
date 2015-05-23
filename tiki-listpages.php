@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -189,34 +189,6 @@ if (!empty($_REQUEST['submit_mult']) && isset($_REQUEST['checked'])) {
 	}
 }
 
-//add tablesorter sorting and filtering
-$tsOn = Table_Check::isEnabled(true);
-$smarty->assign('tsOn', $tsOn);
-$tsAjax = Table_Check::isAjaxCall();
-$smarty->assign('tsAjax', $tsAjax);
-static $iid = 0;
-++$iid;
-$ts_tableid = 'listpages' . $iid;
-$smarty->assign('ts_tableid', $ts_tableid);
-
-if ($tsAjax) {
-	if (!empty($_REQUEST['categPath_ts']) || !empty($_REQUEST['categ_ts'])) {
-		if (!empty($_REQUEST['categPath_ts'])) {
-			$req = $_REQUEST['categPath_ts'];
-		} else {
-			$req = $_REQUEST['categ_ts'];
-		}
-		$pos = strrpos($req, '::');
-		if ($pos !== false) {
-			$catname = substr($req, $pos + 2);
-		} else {
-			$catname = $req;
-		}
-		$categlib = TikiLib::lib('categ');
-		$_REQUEST['categId'] = $categlib->get_category_id($catname);
-	}
-}
-
 if (!empty($multiprint_pages)) {
 	$smarty->assign('print_page', 'y');
 	$smarty->assign_by_ref('pages', $multiprint_pages);
@@ -330,7 +302,7 @@ if (!empty($multiprint_pages)) {
 			) {
 				$filter_values['orphan'] = 'structure_orphans';
 			}
-			$filters['orphan']['structure_orphans'] = tra('Pages not in a structure');
+			$filters['orphan']['structure_orphans'] = tra('Pages not in structure');
 		}
 	}
 
@@ -445,82 +417,13 @@ if (!empty($multiprint_pages)) {
 	$smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 
 	// Exact match and single result, go to page directly
-	if ( count($listpages['data']) == 1 && !$tsAjax) {
+	if ( count($listpages['data']) == 1 ) {
 		$result = reset($listpages['data']);
 		if ( TikiLib::strtolower($find) == TikiLib::strtolower($result['pageName']) ) {
 			$wikilib = TikiLib::lib('wiki');
 			header('Location: ' . $wikilib->sefurl($result['pageName'], '', $all_langs));
 			exit;
 		}
-	}
-
-	if ($tsOn) {
-		$ts_countid = $ts_tableid . '-count';
-		$ts_offsetid = $ts_tableid . '-offset';
-		$smarty->assign('ts_countid', $ts_countid);
-		$smarty->assign('ts_offsetid', $ts_offsetid);
-	}
-
-
-	if ($tsOn && !$tsAjax) {
-		//create dropdown lists for category name and path filters
-		$cnames = array();
-		$cpaths = array();
-		if (isset($categories) && count($categories) > 0) {
-			foreach($categories as $c) {
-				$cnames[] = $c['name'];
-				$cpaths[] = $c['categpath'];
-			}
-		}
-		//set language dropdown showing only languages that pages are actually in
-		if (isset($languages) && count($languages) > 0) {
-			$pagelangs = array_unique($tikilib->table('tiki_pages')->fetchColumn('lang', array()));
-			$pagelangs = array_flip($pagelangs);
-			$temp_langs = array_column($languages, 'name', 'value');
-			$temp_langs = array_intersect_key($temp_langs, $pagelangs);
-			if (count($temp_langs) > 0) {
-				foreach ($temp_langs as $short => $long) {
-					$ts_langs[$short . '|' . $long] = $long;
-				}
-			} else {
-				$ts_langs = array();
-			}
-		} else {
-			$ts_langs = array();
-		}
-		$settings = array(
-			'id' => $ts_tableid,
-			'total' 	=> $listpages['cant'],
-			'vars'	=> array(
-				'show_actions' => $show_actions,
-			),
-			'ajax' => array(
-				'servercount' => array(
-					'id' => $ts_countid,
-				),
-				'serveroffset' => array(
-					'id' => $ts_offsetid,
-				),
-			),
-			'columns'	=> array(
-				'#language'	=> array(
-					'filter' => array(
-						'options' => $ts_langs,
-					),
-				),
-				'#categories'	=> array(
-					'filter' => array(
-						'options' => $cnames,
-					),
-				),
-				'#catpaths'	=> array(
-					'filter' => array(
-						'options' => $cpaths,
-					),
-				),
-			),
-		);
-		Table_Factory::build('TikiListpages', $settings);
 	}
 
 	if ($access->is_serializable_request()) {
@@ -558,12 +461,8 @@ if (!empty($multiprint_pages)) {
 		}
 	} else {
 		// Display the template
-		if ($tsAjax) {
-			$smarty->display($listpages_orphans ? 'tiki-orphan_pages.tpl' : 'tiki-listpages.tpl');
-		} else {
-			$smarty->assign('mid', ($listpages_orphans ? 'tiki-orphan_pages.tpl' : 'tiki-listpages.tpl'));
-			$smarty->display('tiki.tpl');
-		}
+		$smarty->assign('mid', ($listpages_orphans ? 'tiki-orphan_pages.tpl' : 'tiki-listpages.tpl'));
+		$smarty->display('tiki.tpl');
 	}
 }
 

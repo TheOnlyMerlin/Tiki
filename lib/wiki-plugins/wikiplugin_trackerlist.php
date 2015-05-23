@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -149,18 +149,6 @@ function wikiplugin_trackerlist_info()
 				 'required' => false,
 				 'name' => tra('Last Modification Date'),
 				 'description' => tra('Last modification date display is based on tracker settings unless overriden here'),
-				 'filter' => 'alpha',
-				 'default' => '',
-				 'options' => array(
-					 array('text' => '', 'value' => ''),
-					 array('text' => tra('Yes'), 'value' => 'y'),
-					 array('text' => tra('No'), 'value' => 'n')
-				 )
-			 ),
-			 'showlastmodifby' => array(
-				 'required' => false,
-				 'name' => tra('Last Modified By'),
-				 'description' => tra('Shows the last person who edited the tracker'),
 				 'filter' => 'alpha',
 				 'default' => '',
 				 'options' => array(
@@ -755,6 +743,7 @@ function wikiplugin_trackerlist_info()
 		'tags' => array( 'basic' ),
 		'body' => '<br>' . tr('Additional information when using tablesorter and the server parameter (Server Side Processing) is set to y:') . '<ul>'
 			. '<li>' . tra('Filtering and sorting on some field types (e.g., items list), may behave unexpectedly') . '</li>'
+			. '<li>' . tra('The status column must be filtered using o (open), p (pending) and c (closed)')
 			. '<li>' . tra('For best results the date filter should only be applied to date field types') . '</li>'
 			. '<li>' . tra('To filter the category field type, the exact category name or id needs to be entered') . '</li>'
 			. '</ul>'
@@ -803,7 +792,7 @@ function wikiplugin_trackerlist($data, $params)
 
 	$skip_status_perm_check = false;
 
-	if(isset($force_separate_compile) && $force_separate_compile == 'y') {
+	if($force_separate_compile == 'y') {
 		$smarty->assign('force_separate_compile', 'y');
 	}
 
@@ -838,32 +827,21 @@ function wikiplugin_trackerlist($data, $params)
 		} else {
 			$limit = '';
 		}
-		// Make sure limit is an array
-		if (!is_array($limit)) {
-			$limit = explode(':', $limit);
-		}
-
 		if ($editableall=='y') {
 			$editable = $fields;
 		}
 		if (!empty($filterfield) && !empty($limit)) {
 			$limit = array_unique(array_merge($limit, $filterfield));
 		}
-		
-		// for some reason if param popup is set but empty, the array contains 2 empty elements. We filter them out.
-		if (isset($popup)) {
-			$popup = array_filter($popup);
-			if (!empty($popup)) {
-				$limit = array_unique(array_merge($limit, $popup));
-			}
+		if (!empty($popup)) {
+			$limit = array_unique(array_merge($limit, $popup));
 		}
 		if (!empty($calendarfielddate)) {
 			$limit = array_unique(array_merge($limit, $calendarfielddate));
 		}
 		if (!empty($limit) && $trklib->test_field_type($limit, array('C'))) {
-			$limit = array();
+			$limit = '';
 		}
-
 		$allfields = $trklib->list_tracker_fields($trackerId, 0, -1, 'position_asc', '', true, '', $trklib->flaten($limit));
 		if (!empty($fields)) {
 			$listfields = $fields;
@@ -1213,7 +1191,6 @@ function wikiplugin_trackerlist($data, $params)
 		}
 		$tr_status = $status;
 		$smarty->assign_by_ref('tr_status', $tr_status);
-		
 		if (!isset($list_mode)) {
 			$list_mode = 'y';
 		}
@@ -1223,29 +1200,19 @@ function wikiplugin_trackerlist($data, $params)
 			$showcreated = $tracker_info['showCreated'];
 		}
 		$smarty->assign_by_ref('showcreated', $showcreated);
-		
 		if (!isset($showlastmodif)) {
 			$showlastmodif = $tracker_info['showLastModif'];
 		}
 		$smarty->assign_by_ref('showlastmodif', $showlastmodif);
-		
-		if (!isset($showlastmodifby)) {
-			$showlastmodifby = $tracker_info['showLastModifBy'];
-		}
-		$smarty->assign_by_ref('showlastmodifby', $showlastmodifby);
-		
 		if (!isset($more))
 			$more = 'n';
 		$smarty->assign_by_ref('more', $more);
-		
 		if (!isset($moreurl))
 			$moreurl = 'tiki-view_tracker.php';
 		$smarty->assign_by_ref('moreurl', $moreurl);
-		
 		if (!isset($url))
 			$url = '';
 		$smarty->assign_by_ref('url', $url);
-		
 		if (!isset($export))
 			$export = 'n';
 		$smarty->assign_by_ref('export', $export);
@@ -1541,10 +1508,6 @@ function wikiplugin_trackerlist($data, $params)
 					$allfields["data"][$i]['type'] = $refField['type'];
 				}
 			}
-			// If listfields is a colon separated string, convert it to an array
-			if (!is_array($listfields)) {
-				$listfields = explode(':', $listfields);
-			}
 			if ((in_array($allfields["data"][$i]['fieldId'], $listfields) or in_array($allfields["data"][$i]['fieldId'], $popupfields))and $allfields["data"][$i]['isPublic'] == 'y') {
 				$passfields["{$allfields["data"][$i]['fieldId']}"] = $allfields["data"][$i];
 			}
@@ -1643,7 +1606,7 @@ function wikiplugin_trackerlist($data, $params)
 			}
 		}
 		if (!empty($calendarfielddate)) {
-			$calendarlib = TikiLib::lib('calendar');
+			global $calendarlib; include_once('lib/calendar/calendarlib.php');
 			$focusDate = empty($_REQUEST['todate'])? $tikilib->now: $_REQUEST['todate'];
 			$focus = $calendarlib->infoDate($focusDate);
 			if (!empty($calendardelta)) {
@@ -1751,41 +1714,6 @@ function wikiplugin_trackerlist($data, $params)
 				$trkritems = $tikilib->table('tiki_tracker_items');
 				$itemcount = $trkritems->fetchCount(array('trackerId' => $trackerId));
 				$ts = new Table_Plugin;
-				
-				
-				// when using serverside filtering check wether a dropdown is in use 
-				// and we must take params from tracker definition because no explicit options have been defined
-				if ($tsServer) {
-					//format from plugin: type:text|type:dropdown;option:1=Open;option:2=Closed|type:text|type:nofilter|type:nofilter|type:nofilter
-					if (!empty($tsfilters) && strpos($tsfilters, 'dropdown') !== false) {
-						$tsfiltersArray = explode('|', $tsfilters);
-						$adjustCol = (isset($showstatus) && $showstatus == 'y' && $definition->isEnabled('showStatus')) ? -1 : 0;
-						foreach ($tsfiltersArray as $col => &$tsfilterField) {
-							// only consider dropdown definitions without explicit option
-							if (strpos($tsfilterField, 'dropdown') !== false && strpos($tsfilterField, 'option') === false ) {
-								//content from options (json object): {"options":["1=Open"," 2=Closed]} - note there can be whitespaces - it should not but there can be - yet another fix required
-								if ( $allfields['data'][$col + $adjustCol]['type'] == 'd') { 
-									$options =  $allfields['data'][$col + $adjustCol]['options'];
-									$options = json_decode($options);
-									$options = $options->options;
-									// construct the new dropdown filterfield entry from the trackerfield definition
-									$newTsfilterField = 'type:dropdown';
-									foreach ($options as $option) {
-										$newTsfilterField .= ";option:". trim($option);
-									}
-									// update field - note that we used a ref
-									$tsfilterField = $newTsfilterField;
-								}
-							}
-						}
-						// update tsfilters
-						$tsfilters = implode('|', $tsfiltersArray);
-					}
-				}
-
-				
-				
-				
 				$ts->setSettings(
 					$ts_id,
 					isset($server) ? $server : null,
@@ -1795,7 +1723,6 @@ function wikiplugin_trackerlist($data, $params)
 					isset($tsfilters) ? $tsfilters : null,
 					isset($tsfilteroptions) ? $tsfilteroptions : null,
 					isset($tspaginate) ? $tspaginate : null,
-					isset($tscolselect) ? $tscolselect : null,
 					$GLOBALS['requestUri'],
 					$itemcount
 				);
@@ -1838,8 +1765,7 @@ function wikiplugin_trackerlist($data, $params)
 					$items['data'][$f]['my_rate'] = $tikilib->get_user_vote("tracker.".$trackerId.'.'.$items['data'][$f]['itemId'], $user);
 				}
 			}
-			
-			if (!empty($items['data']) && ($definition->isEnabled('useComments') && $definition->isEnabled('showComments') || $definition->isEnabled('showLastComment') )) {
+			if ($definition->isEnabled('useComments') && $definition->isEnabled('showComments') || $definition->isEnabled('showLastComment') ) {
 				foreach ($items['data'] as $itkey=>$oneitem) {
 					if ($definition->isEnabled('showComments')) {
 						$items['data'][$itkey]['comments'] = $trklib->get_item_nb_comments($items['data'][$itkey]['itemId']);
@@ -1850,14 +1776,12 @@ function wikiplugin_trackerlist($data, $params)
 					}
 				}
 			}
-			
-			if (!empty($items['data']) && ($definition->isEnabled('useAttachments') && $definition->isEnabled('showAttachments'))) {
+			if ($definition->isEnabled('useAttachments') && $definition->isEnabled('showAttachments')) {
 				foreach ($items["data"] as $itkey=>$oneitem) {
 					$res = $trklib->get_item_nb_attachments($items["data"][$itkey]['itemId']);
 					$items["data"][$itkey]['attachments']  = $res['attachments'];
 				}
 			}
-			
 			if (!empty($compute) && !empty($items['data'])) {
 				$fs = preg_split('/ *: */', $compute);
 				foreach ($fs as $fieldId) {
@@ -1936,8 +1860,8 @@ function wikiplugin_trackerlist($data, $params)
 				$smarty->assign('sticky_popup', $calendarstickypopup);
 				$smarty->assign('calendar_popup', $calendarpopup);
 				$smarty->assign('showpopup', 'n');
-				$headerlib = TikiLib::lib('header');
-				$headerlib->add_cssfile('themes/base_files/feature_css/calendar.css', 20);
+				global $headerlib; include_once('lib/headerlib.php');
+				$headerlib->add_cssfile('css/calendar.css', 20);
 				return $smarty->fetch('modules/mod-calendar_new.tpl');
 			}
 			if (!empty($wiki)) {

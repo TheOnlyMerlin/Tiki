@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -40,6 +40,10 @@ function smarty_function_error_report($params, $smarty)
 			return false;
 		});
 	});
+	$("#error_report .clear").on("click", function () {
+		$("#error_report").empty();
+		return false;
+	});
 	'
 	);
 
@@ -52,7 +56,9 @@ function smarty_function_error_report($params, $smarty)
 				'type' => 'errors',
 				'title' => tra('Error(s)'),
 			),
-			'<ul><li>' . implode('</li><li>', $errors) . '</li></ul>',
+			'<a class="clear" style="float: right;" href="#">' .
+			tr('Clear errors') . '</a><ul><li>' .
+			implode('</li><li>', $errors) . '</li></ul>',
 			$smarty,
 			$repeat
 		) . $post;

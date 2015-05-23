@@ -13,39 +13,38 @@
 	* find_show_languages   : If value = 'y' adds lang dropdown with languages value dropdown
 	* find_lang             : lang dropdown selected value
 	* find_show_categories  : If value = 'y' adds categories dropdown with categories array values
-	* find_show_categories_multi : If value = 'y' adds categories dropdown with categories array values with multi selector
+	* find_show_categories_multi  : If value = 'y' adds categories dropdown with categories array values with multi selector
 	* find_categId          : categories selected value
 	* find_show_num_rows    : If value = 'y' adds maxRecords field. Value: maxRecords
 	* find_show_date_range  : If value = 'y' adds date range to filter within
-	* find_show_orphans     : If value = 'y' adds a checkbox orphan
-	* find_show_sub         : If value = 'y' add a checkbox in all the tree
+	* find_show_orphans		: If value = 'y' adds a checkbox orphan
+	* find_show_sub			: If value = 'y' add a checkbox in all the tree
 	* filters               : array( filter_field1 => array( option1_value => option1_text, ... ), filter_field2 => ... )
 	* filter_names          : array( filter_field1 => filter_field1_name, ... )
 	* filter_values         : array( filter_fieldX => filter_fieldX_selected_value, ... )
-	* autocomplete          : name of the variable you want for autocomplete of the input field (only for <input type="text" ... >
-	* find_other            : If value != '', show an input box label with find_other
-	* find_in               : popup to explain on what is the find
-	* map_only              : to only show the pages map (used with tablesorter since other find functions aren't needed)
+	* autocomplete			: name of the variable you want for autocomplete of the input field (only for <input type="text" ... >
+	* find_other 			: If value != '', show an input box label with find_other
+	* find_in 				: popup to explain on what is the find
+	*
 	* Usage examples : {include file='find.tpl'}
-	*                  {include file='find.tpl' find_show_languages='y' find_show_categories='y' find_show_num_rows='y'}
+	*                  {include file='find.tpl' find_show_languages='y' find_show_categories='y' find_show_num_rows='y'} 
 *}
 
-<div class="find clearfix">
-	<form method="post" class="form" role="form">
-	{if !isset($map_only) or $map_only ne 'y'}
+<div class="find container-fluid">
+	<form method="post" action="{$smarty.server.PHP_SELF}" class="form-horizontal" role="form">
 		{if !empty($filegals_manager)}<input type="hidden" name="filegals_manager" value="{$filegals_manager|escape}">{/if}
 		{query _type='form_input' maxRecords='NULL' type='NULL' types='NULL' find='NULL' topic='NULL' lang='NULL' exact_match='NULL' categId='NULL' cat_categories='NULL' filegals_manager='NULL' save='NULL' offset='NULL' searchlist='NULL' searchmap='NULL'}
 		<div class="find-text form-group">
 			<div class="input-group">
 				<span class="input-group-addon">
-					{icon name="search"}
+					<span class="glyphicon glyphicon-search"></span>
 				</span>
 				<input class="form-control" type="text" name="find" id="find" value="{$find|escape}" placeholder="{if empty($whatlabel)}{tr}Find{/tr}...{else}{tr}{$whatlabel}{/tr}{/if}">
 				{if isset($autocomplete)}
 					{jq}$("#find").tiki("autocomplete", "{{$autocomplete}}"){/jq}
 				{/if}
 				{if $prefs.javascript_enabled eq 'y' and (isset($exact_match) or isset($types) or isset($types_tag) or isset($find_topics) or isset($find_show_languages) or isset($find_lang) or isset($find_show_categories) or isset($find_show_categories_multi) or isset($find_categId) or isset($find_show_num_rows) or isset($find_show_date_range) or isset($find_show_orphans) or isset($find_show_sub) or isset($find_show_other))}
-					<div class="input-group-btn btn btn-default btn-sm find-parameters-btn">
+					<div class="input-group-btn btn btn-default btn-sm find-parameters-btn">				
 						<span class="caret"></span>
 					</div>
 				{/if}
@@ -53,14 +52,14 @@
 					<button type="submit" class="btn btn-default" name="search">{tr}Find{/tr}</button>
 				</div>
 			</div>
-			{if !empty($find) or !empty($find_type) or !empty($find_topic) or !empty($find_lang) or !empty($find_langOrphan) or !empty($find_categId) or !empty($find_orphans) or !empty($find_other_val) or $maxRecords ne $prefs.maxRecords}{* $find_date_from & $find_date_to get set usually *}
+			{if !empty($find) or !empty($find_type) or !empty($find_topic) or !empty($find_lang) or !empty($find_langOrphan) or !empty($find_categId) or !empty($find_orphans) or !empty($find_other_val) or $maxRecords ne $prefs.maxRecords}{*  $find_date_from & $find_date_to get set usually *}
 				<div class="find-clear-filter text-center">
-					<a href="{$smarty.server.PHP_SELF}?{query find='' type='' types='' topic='' lang='' langOrphan='' exact_match='' categId='' maxRecords=$prefs.maxRecords find_from_Month='' find_from_Day='' find_from_Year='' find_to_Month='' find_to_Day='' find_to_Year=''}" title="{tr}Clear Filter{/tr}" class="btn btn-link">{tr}Clear Filter{/tr}</a>
+					<a href="{$smarty.server.PHP_SELF}?{query find='' type='' types='' topic='' lang='' langOrphan='' exact_match='' categId='' maxRecords=$prefs.maxRecords find_from_Month='' find_from_Day='' find_from_Year='' find_to_Month='' find_to_Day='' find_to_Year=''}" title="{tr}Clear Filter{/tr}" class="btn btn-link btn-sm">{tr}Clear Filter{/tr}</a>
 				</div>
 			{/if}
 		</div>
 		{*	{if isset($find_in)}{help url="#" desc="{tr}Find in:{/tr} {$find_in}"}{/if} *}
-		<div class="find-parameters form-horizontal col-sm-10 small {if $prefs.javascript_enabled eq 'n' or (!empty($find_type) or !empty($find_topic) or !empty($find_lang) or !empty($find_langOrphan) or !empty($find_show_categories) or !empty($find_categId) or !empty($find_orphans) or !empty($find_other_val) or $maxRecords ne $prefs.maxRecords)}visible{else}hidden{/if}"> {* TODO: figure out why "or !empty($find_show_categories_multi)" does not work *}
+		<div class="find-parameters container-fluid col-sm-10 small {if $prefs.javascript_enabled eq 'n' or (!empty($find_type) or !empty($find_topic) or !empty($find_lang) or !empty($find_langOrphan) or !empty($find_show_categories) or !empty($find_categId) or !empty($find_orphans) or !empty($find_other_val) or $maxRecords ne $prefs.maxRecords)}visible{else}hidden{/if}"> {* TODO: figure out why "or !empty($find_show_categories_multi)" does not work *}
 			{if !empty($types) and ( !isset($types_tag) or $types_tag eq 'select' )}
 				<div class="form-group">
 					<label class="control-label col-sm-4">
@@ -144,7 +143,7 @@
 					<label class="text-right col-sm-4">
 						{tr}Date To{/tr}
 					</label>
-					<div class="col-sm-8">
+					<div class="col-sm-8">						
 						{html_select_date time=$find_date_to prefix="find_to_" month_format="%m"}
 					</div>
 				</div>
@@ -178,21 +177,13 @@
 								{$cat_tree}
 								<div class="clearfix">
 									{if $tiki_p_admin_categories eq 'y'}
-										<div class="pull-right">
-											<a href="tiki-admin_categories.php" class="link">
-												{tr}Admin Categories{/tr} {icon name='wrench'}
-											</a>
-										</div>
+										<div class="pull-right"><a href="tiki-admin_categories.php" class="link">{tr}Admin Categories{/tr} {icon _id='wrench'}</a></div>
 									{/if}
 									{select_all checkbox_names='cat_categories[]' label="{tr}Select/deselect all categories{/tr}"}
 							{else}
 								<div class="clearfix">
 									{if $tiki_p_admin_categories eq 'y'}
-										<div class="pull-right">
-											<a href="tiki-admin_categories.php" class="link">
-												{tr}Admin Categories{/tr} {icon name='wrench'}
-											</a>
-										</div>
+										<div class="pull-right"><a href="tiki-admin_categories.php" class="link">{tr}Admin Categories{/tr} {icon _id='wrench'}</a></div>
 									{/if}
 									{tr}No categories defined{/tr}
 							{/if}
@@ -238,20 +229,20 @@
 			{if !empty($show_find_orphans) and $show_find_orphans eq 'y'}
 				<div class="form-group find-orphans">
 					<label class="find_orphans control-label col-sm-4" for="find_orphans">
-						{tr}Orphans{/tr}
+					   {tr}Orphans{/tr}
 					</label>
 					<div class="col-sm-8">
-						<input type="checkbox" name="find_orphans" id="find_orphans" {if isset($find_orphans) and $find_orphans eq 'y'}checked="checked"{/if}>
+					   <input type="checkbox" name="find_orphans" id="find_orphans" {if isset($find_orphans) and $find_orphans eq 'y'}checked="checked"{/if}>
 					</div>
 				</div>
 			{/if}
 			{if !empty($find_other)}
 				<div class="form-group find-other">
 					<label class="find_other control-label col-sm-4" for="find_other">
-						{tr}{$find_other}{/tr}
+					   {tr}{$find_other}{/tr}
 					</label>
 					<div class="col-sm-4">
-						<input type="text" name="find_other" id="find_other" value="{if !empty($find_other_val)}{$find_other_val|escape}{/if}" class="form-control input-sm">
+					   <input type="text" name="find_other" id="find_other" value="{if !empty($find_other_val)}{$find_other_val|escape}{/if}" class="form-control input-sm">
 					</div>
 				</div>
 			{/if}
@@ -266,8 +257,7 @@
 				</div>
 			{/if}
 		</div><!-- End of find-parameters -->
-		{/if}
-		<div class="find-map form-group">
+		<div class="find-map form-group col-sm-12">
 			{if (isset($gmapbuttons) && $gmapbuttons) and (isset($mapview) && $mapview)}
 				<input class="btn btn-default btn-sm" type="submit" name="searchlist" value="{tr}Hide Map{/tr}">
 				<input type="hidden" name="mapview" value="y">
@@ -282,5 +272,4 @@
 			});
 		{/jq}
 	</form>
-</div>
-<!-- End of find -->
+</div><!-- End of find -->

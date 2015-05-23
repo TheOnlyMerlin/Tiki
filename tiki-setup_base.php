@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -146,14 +146,10 @@ session_name($prefs['session_cookie_name']);
 
 // Only accept PHP's session ID in URL when the request comes from the tiki server itself
 // This is used by features that need to query the server to retrieve tiki's generated html and images (e.g. pdf export)
-// It could be , that the server initiates his request with its own ip, so we check also if server == remote
-// Note: this is an incomplete implemenation - the session handling does not really work this way. Session data is lost and not regenerated.
-// Maybe better to use tokens: see i.e. the example in lib/pdflib.php
-if (isset($_GET[session_name()]) && (($tikilib->get_ip_address() == '127.0.0.1') || ($_SERVER["SERVER_ADDR"] == $_SERVER["REMOTE_ADDR"]))) {
+if (isset($_GET[session_name()]) && $tikilib->get_ip_address() == '127.0.0.1') {
 	$_COOKIE[session_name()] = $_GET[session_name()];
-	session_id($_GET[session_name()]);		
+	session_id($_GET[session_name()]);
 }
-
 
 if ($prefs['cookie_consent_feature'] === 'y' && empty($_COOKIE[$prefs['cookie_consent_name']])) {
 	$feature_no_cookie = true;
@@ -162,8 +158,7 @@ if ($prefs['cookie_consent_feature'] === 'y' && empty($_COOKIE[$prefs['cookie_co
 }
 
 $start_session = true;
-$extra_cookie_name = session_name() . 'CV';
-if ( $prefs['session_silent'] == 'y' && empty($_COOKIE[session_name()]) && empty($_COOKIE[$extra_cookie_name]) ) {
+if ( ($prefs['session_silent'] == 'y' || $feature_no_cookie) && empty($_COOKIE[session_name()]) ) {
 	$start_session = false;
 }
 
@@ -186,7 +181,6 @@ if (isset($_SERVER["REQUEST_URI"])) {
 		unset($session_params);
 
 		try {
-						
 			Zend_Session::start();
 
 			/* This portion may seem strange, but it is an extra validation against session
@@ -197,6 +191,7 @@ if (isset($_SERVER["REQUEST_URI"])) {
 			 * Effectively, in the occurence of a collision, both users are kicked out.
 			 * This is an extremely rare occurence that is hard to reproduce by nature.
 			 */ 
+			$extra_cookie_name = session_name() . 'CV';
 			if (isset($_SESSION['extra_validation'])) {
 				$cookie = isset($_COOKIE[$extra_cookie_name]) ? $_COOKIE[$extra_cookie_name] : null;
 
@@ -221,19 +216,15 @@ if (isset($_SERVER["REQUEST_URI"])) {
 if (isset($prefs['feature_fullscreen']) && $prefs['feature_fullscreen'] == 'y') {
 	require_once ('lib/setup/fullscreen.php');
 }
-
-// Retrieve Tiki addons
-TikiAddons::refresh();
-
 // Retrieve all preferences
 require_once ('lib/setup/prefs.php');
 
-$access = TikiLib::lib('access');
+require_once ('lib/tikiaccesslib.php');
+$access = new TikiAccessLib;
 
 require_once ('lib/setup/absolute_urls.php');
 // Smarty needs session since 2.6.25
-global $smarty;
-$smarty = TikiLib::lib('smarty');
+global $smarty; require_once ('lib/init/smarty.php');
 
 // Define the special maxRecords global variable
 $maxRecords = $prefs['maxRecords'];

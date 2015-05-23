@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -370,11 +370,8 @@ if ($prefs['feature_categories'] == 'y') {
 if (isset($_REQUEST['group'])) {
 	$smarty->assign('indirectly_inherited_groups', indirectly_inherited_groups($inc));
 }
-//group theme - list themes
-$themelib = TikiLib::lib('theme');
-$group_themes = $themelib->list_themes_and_options();
-$smarty->assign_by_ref('group_themes', $group_themes);
-
+$av_themes = $tikilib->list_styles();
+$smarty->assign_by_ref('av_themes', $av_themes);
 $smarty->assign('memberslist', $memberslist);
 
 $bannedlist = $userlib->get_group_banned_users($_REQUEST['group']);

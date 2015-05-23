@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -27,8 +27,7 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
  */
 function smarty_function_menu($params, $smarty)
 {
-	global $prefs;
-	$headerlib = TikiLib::lib('header');
+	global $headerlib, $prefs;
 
 	$default = array('css' => 'y');
 	if (isset($params['params'])) {
@@ -37,12 +36,6 @@ function smarty_function_menu($params, $smarty)
 	}
 	$params = array_merge($default, $params);
 	extract($params, EXTR_SKIP);
-
-	if ($prefs['javascript_enabled'] !== 'y') {
-		$params['css'] = 'y';
-		$params['bootstrap'] = 'n';
-		$params['type'] = 'horiz';
-	}
 
 	if (empty($link_on_section) || $link_on_section == 'y') {
 		$smarty->assign('link_on_section', 'y');
@@ -60,22 +53,25 @@ function smarty_function_menu($params, $smarty)
 	if (empty($drilldown)) {
 		$drilldown = 'n';
 	}
-	if ($params['css'] !== 'n' && $prefs['feature_cssmenus'] == 'y') {
+	if (!isset($css)) {
+		$css = 'y';
+	}
+	if ($css !== 'n' && $prefs['feature_cssmenus'] == 'y' && $drilldown != 'y') {
 		static $idCssmenu = 0;
-		if (empty($params['type'])) {
-			$params['type'] = 'vert';
+		if (empty($type)) {
+			$type = 'vert';
 		}
+		$css = "cssmenu_$type.css";
 		$headerlib->add_jsfile('lib/menubuilder/menu.js');
 		$tpl = 'tiki-user_cssmenu.tpl';
-		$smarty->assign('menu_type', $params['type']);
+		$smarty->assign('menu_type', $type);
 		if (! isset($css_id)) {//adding $css_id parameter to customize menu id and prevent automatic id renaming when a menu is removed
 			$smarty->assign('idCssmenu', $idCssmenu++);
 		} else {
 			$smarty->assign('idCssmenu', $css_id);
 		}
-		if ($drilldown == 'y') {
-			$smarty->assign('drilldownmenu', $drilldown);
-		}
+	} elseif ($drilldown == 'y') {
+		$tpl = 'tiki-user_drilldownmenu.tpl';
 	} else {
 		$tpl = 'tiki-user_menu.tpl';
 	}
@@ -102,27 +98,17 @@ function smarty_function_menu($params, $smarty)
 				} else {
 					$structured[] = $element;
 				}
-			} elseif($element['type'] == '-') {
-				if ($activeSection) {
-					$structured[] = $activeSection;
-				}
-				$activeSection = null;
 			}
 		}
 
 		if ($activeSection) {
 			$structured[] = $activeSection;
 		}
+
 		$smarty->assign('list', $structured);
 		switch ($params['bootstrap']) {
 		case 'navbar':
 			return $smarty->fetch('bootstrap_menu_navbar.tpl');
-		case  'y':
-			if(isset($params['type']) && $params['type'] == "horiz"){
-				return $smarty->fetch('bootstrap_menu_navbar.tpl');
-			}else{
-				return $smarty->fetch('bootstrap_menu.tpl');
-			}
 		default:
 			return $smarty->fetch('bootstrap_menu.tpl');
 		}

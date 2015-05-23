@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -9,7 +9,6 @@ class Search_Elastic_Index implements Search_Index_Interface, Search_Index_Query
 {
 	private $connection;
 	private $index;
-	private $facetCount = 10;
 	private $invalidateList = array();
 
 	private $providedMappings = array();
@@ -74,23 +73,7 @@ class Search_Elastic_Index implements Search_Index_Interface, Search_Index_Query
 
 		$mapping = array_map(
 			function ($entry) {
-				if ($entry instanceof Search_Type_Numeric) {
-					return array(
-						"type" => "float",
-						"fields" => array(
-							"sort" => array(
-								"type" => "float",
-								"null_value" => 0.0,
-								"ignore_malformed" => true,
-							),
-							"nsort" => array(
-								"type" => "float",
-								"null_value" => 0.0,
-								"ignore_malformed" => true,
-							),
-						),
-					);
-				} elseif ($entry instanceof Search_Type_Whole || $entry instanceof Search_Type_MultivaluePlain) {
+				if ($entry instanceof Search_Type_Whole || $entry instanceof Search_Type_MultivaluePlain) {
 					return array(
 						"type" => "string",
 						"index" => "not_analyzed",
@@ -203,12 +186,6 @@ class Search_Elastic_Index implements Search_Index_Interface, Search_Index_Query
 
 	function find(Search_Query_Interface $query, $resultStart, $resultCount)
 	{
-		$builder = new Search_Elastic_OrderBuilder;
-		$orderPart = $builder->build($query->getSortOrder());
-
-		$builder = new Search_Elastic_FacetBuilder($this->facetCount);
-		$facetPart = $builder->build($query->getFacets());
-
 		$builder = new Search_Elastic_RescoreQueryBuilder;
 		$rescorePart = $builder->build($query->getExpr());
 
@@ -216,38 +193,17 @@ class Search_Elastic_Index implements Search_Index_Interface, Search_Index_Query
 		$builder->setDocumentReader($this->createDocumentReader());
 		$queryPart = $builder->build($query->getExpr());
 
-		$postFilterPart = $builder->build($query->getPostFilter()->getExpr());
-		if (empty($postFilterPart)) {
-			$postFilterPart = [];
-		} else {
-			$postFilterPart = ["post_filter" => [
-				'fquery' => $postFilterPart,
-			]];
-		}
+		$builder = new Search_Elastic_OrderBuilder;
+		$orderPart = $builder->build($query->getSortOrder());
 
-		$indices = [$this->index];
-
-		$foreign = array_map(function ($query) use ($builder) {
-			return $builder->build($query->getExpr());
-		}, $query->getForeignQueries());
-
-		foreach ($foreign as $indexName => $foreignQuery) {
-			$indices[] = $indexName;
-			$queryPart = ['query' => [
-				'indices' => [
-					'index' => $indexName,
-					'query' => $foreignQuery['query'],
-					'no_match_query' => $queryPart['query'],
-				],
-			]];
-		}
+		$builder = new Search_Elastic_FacetBuilder;
+		$facetPart = $builder->build($query->getFacets());
 
 		$fullQuery = array_merge(
 			$queryPart,
 			$orderPart,
 			$facetPart,
 			$rescorePart,
-			$postFilterPart,
 			array(
 				"from" => $resultStart,
 				"size" => $resultCount,
@@ -256,50 +212,24 @@ class Search_Elastic_Index implements Search_Index_Interface, Search_Index_Query
 						'contents' => array(
 							"number_of_fragments" => 5,
 						),
-						'file' => array(
-							"number_of_fragments" => 5,
-						),
 					),
 				),
 			)
 		);
 
-		$result = $this->connection->search($indices, $fullQuery);
+		$result = $this->connection->search($this->index, $fullQuery, $resultStart, $resultCount);
 		$hits = $result->hits;
 
-		$indicesMap = array_combine($indices, $indices);
-
 		$entries = array_map(
-			function ($entry) use (& $indicesMap) {
+			function ($entry) {
 				$data = (array) $entry->_source;
 
 				if (isset($entry->highlight->contents)) {
 					$data['_highlight'] = implode('...', $entry->highlight->contents);
-				} elseif (isset($entry->highlight->file)) {
-					$data['_highlight'] = implode('...', $entry->highlight->file);
 				} else {
 					$data['_highlight'] = '';
 				}
 				$data['score'] = round($entry->_score, 2);
-
-				$index = $entry->_index;
-
-				// Make sure we reduce the returned index to something matching what we requested
-				// if what was requested is an alias.
-				// Note: This only supports aliases where the name is a prefix.
-				if (isset($indicesMap[$index])) {
-					$index = $indicesMap[$index];
-				} else {
-					foreach ($indicesMap as $candidate) {
-						if (0 === strpos($index, $candidate . '_')) {
-							$indicesMap[$index] = $candidate;
-							$index = $candidate;
-							break;
-						}
-					}
-				}
-
-				$data['_index'] = $index;
 				return $data;
 			}, $hits->hits
 		);
@@ -316,48 +246,6 @@ class Search_Elastic_Index implements Search_Index_Interface, Search_Index_Query
 		return $resultSet;
 	}
 
-	function scroll(Search_Query_Interface $query)
-	{
-		$builder = new Search_Elastic_OrderBuilder;
-		$orderPart = $builder->build($query->getSortOrder());
-
-		$builder = new Search_Elastic_QueryBuilder;
-		$builder->setDocumentReader($this->createDocumentReader());
-		$queryPart = $builder->build($query->getExpr());
-
-		$indices = [$this->index];
-
-		$fullQuery = array_merge(
-			$queryPart,
-			$orderPart,
-			array(
-				"size" => 100,
-				"highlight" => array(
-					"fields" => array(
-						'contents' => array(
-							"number_of_fragments" => 5,
-						),
-						'file' => array(
-							"number_of_fragments" => 5,
-						),
-					),
-				),
-			)
-		);
-
-		$args = ['scroll' => '5m'];
-		$result = $this->connection->search($indices, $fullQuery, $args);
-		$scrollId = $result->_scroll_id;
-
-		do {
-			foreach ($result->hits->hits as $entry) {
-				yield (array) $entry->_source;
-			}
-
-			$result = $this->connection->scroll($scrollId, $args);
-		} while(count($result->hits->hits) > 0);
-	}
-
 	function getTypeFactory()
 	{
 		return new Search_Elastic_TypeFactory;
@@ -368,16 +256,7 @@ class Search_Elastic_Index implements Search_Index_Interface, Search_Index_Query
 		$connection = $this->connection;
 		$index = $this->index;
 		return function ($type, $object) use ($connection, $index) {
-			static $previous, $content;
-
-			$now = "$index~$type~$object";
-			if ($previous === $now) {
-				return $content;
-			}
-
-			$previous = $now;
-			$content = (array) $connection->document($index, $type, $object);
-			return $content;
+			return (array) $connection->document($index, $type, $object);
 		};
 	}
 
@@ -402,11 +281,6 @@ class Search_Elastic_Index implements Search_Index_Interface, Search_Index_Query
 	function unstore($name)
 	{
 		$this->connection->unstoreQuery($this->index, $name);
-	}
-
-	function setFacetCount($count)
-	{
-		$this->facetCount = (int) $count;
 	}
 }
 

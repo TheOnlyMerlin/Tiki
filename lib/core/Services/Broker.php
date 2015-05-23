@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,12 +10,10 @@ use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 class Services_Broker
 {
 	private $container;
-	private $addonpackage;
 
-	function __construct($container, $addonpackage = '')
+	function __construct($container)
 	{
 		$this->container = $container;
-		$this->addonpackage = $addonpackage;
 	}
 
 	function process($controller, $action, JitFilter $request)
@@ -40,13 +38,12 @@ class Services_Broker
 			if ($access->is_serializable_request()) {
 				echo $access->output_serialized($output);
 			} else {
-				TikiLib::events()->trigger('tiki.process.render');
 				echo $this->render($controller, $action, $output, $request);
 			}
 		} catch (Services_Exception_FieldError $e) {
 			$access->display_error(NULL, $e->getMessage(), $e->getCode());
 		} catch (Exception $e) {
-			if ($request->modal->int() && $access->is_xml_http_request()) {
+			if ($request->modal->int()) {
 				// Special handling for modal dialog requests
 				// Do not send an error code as bootstrap will just blank out
 				// Render the error as a modal
@@ -82,11 +79,7 @@ class Services_Broker
 	private function attemptProcess($controller, $action, $request)
 	{
 		try {
-			if ($this->addonpackage) {
-				$handler = $this->container->get("tikiaddon.controller." . $this->addonpackage . ".$controller");
-			} else {
-				$handler = $this->container->get("tiki.controller.$controller");
-			}
+			$handler = $this->container->get("tiki.controller.$controller");
 			$method = 'action_' . $action;
 
 			if (method_exists($handler, $method)) {

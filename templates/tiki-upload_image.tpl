@@ -18,31 +18,31 @@
 
 {if $batchRes}
 	<h2>{tr}Batch Upload Results{/tr}</h2>
-	<div class="table-responsive">
-		<table class="table normal">
-			<tr>
-				<th>{tr}Filename{/tr}</th>
-				<th>{tr}Status{/tr}</th>
-				<th>{tr}ID{/tr}</th>
-				<th>{tr}Image{/tr}</th>
-			</tr>
+    <div class="table-responsive">
+	<table class="table normal">
+		<tr>
+			<th>{tr}Filename{/tr}</th>
+			<th>{tr}Status{/tr}</th>
+			<th>{tr}ID{/tr}</th>
+			<th>{tr}Image{/tr}</th>
+		</tr>
 
-			{section name=ix loop=$batchRes}
-				<tr>
-					<td>{$batchRes[ix].filename}</td>
-					{if $batchRes[ix].msg}
-						<td colspan="3">
-							{icon name='error' alt="{tr}Errors detected{/tr}" style="vertical-align:middle"} {$batchRes[ix].msg}
-						</td>
-					{else}
-						<td>
-							{icon name='ok' alt="{tr}Upload successful!{/tr}" style="vertical-align:middle"}{tr}Upload successful!{/tr}</td><td>{$batchRes[ix].imageId}</td><td><img src="{$url_show}?id={$batchRes[ix].imageId}&amp;thumb=1" alt="{$batchRes[ix].filename}">
-						</td>
-					{/if}
-				</tr>
-			{/section}
-		</table>
-	</div>
+		{section name=ix loop=$batchRes}
+			<tr>
+				<td>{$batchRes[ix].filename}</td>
+				{if $batchRes[ix].msg}
+					<td colspan="3">
+						{icon _id=exclamation alt="{tr}Errors detected{/tr}" style="vertical-align:middle"} {$batchRes[ix].msg}
+					</td>
+				{else}
+					<td>
+						{icon _id=accept alt="{tr}Upload successful!{/tr}" style="vertical-align:middle"}{tr}Upload successful!{/tr}</td><td>{$batchRes[ix].imageId}</td><td><img src="{$url_show}?id={$batchRes[ix].imageId}&amp;thumb=1" alt="{$batchRes[ix].filename}">
+					</td>
+				{/if}
+			</tr>
+		{/section}
+	</table>
+    </div>
 {/if}
 
 {if $show eq 'y'}
@@ -60,7 +60,11 @@
 			<a class="link" href="{$url_browse}?imageId={$imageId}">{$url_browse}?imageId={$imageId}</a>
 			<br><br>
 			{tr}You can include the image in an Wiki page using:{/tr}&nbsp;
-			<code>{literal}{{/literal}img id={$imageId}{literal}}{/literal}</code>
+			<form>
+				<textarea rows="3" cols="60" style="width: 90%">
+					{literal}{{/literal}img id={$imageId}{literal}}{/literal}
+				</textarea>
+			</form>
 		</div>
 	</div>
 {/if}
@@ -170,7 +174,7 @@
 		</form>
 	</div>
 {else}
-	{icon name='error' alt="{tr}Error{/tr}" style="vertical-align:middle;"} {tr}No gallery available.{/tr} {tr}You have to create a gallery first!{/tr}
+	{icon _id=exclamation alt="{tr}Error{/tr}" style="vertical-align:middle;"} {tr}No gallery available.{/tr} {tr}You have to create a gallery first!{/tr}
 	<p><a href="tiki-galleries.php?edit_mode=1&galleryId=0">{tr}Create New Gallery{/tr}</a></p>
 {/if}
 

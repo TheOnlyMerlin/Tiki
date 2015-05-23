@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -111,7 +111,7 @@ class RelationLib extends TikiDb_Bridge
 	 * relation naming, and document new tiki.*.* names that you add.
 	 * (also grep "add_relation" just in case there are undocumented names already used)
 	 */
-	function add_relation( $relation, $src_type, $src_object, $target_type, $target_object, $ignoreExisting = false )
+	function add_relation( $relation, $src_type, $src_object, $target_type, $target_object )
 	{
 		$relation = TikiFilter::get('attribute_type')->filter($relation);
 
@@ -130,12 +130,7 @@ class RelationLib extends TikiDb_Bridge
 						'target_itemId' => $target_object,
 					)
 				);
-			} elseif ( $ignoreExisting ) {
-				return 0;
 			}
-
-			TikiLib::lib('tiki')->refresh_index($src_type, $src_object);
-			TikiLib::lib('tiki')->refresh_index($target_type, $target_object);
 			return $id;
 		} else {
 			return 0;

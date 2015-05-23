@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -77,7 +77,7 @@ function searchAllDB($search)
 	foreach ($rs as $key => $val) {
 		$vals = array_values($val);
 		$table = $vals[0];
-		$sql2 = "SHOW COLUMNS FROM `$table`";
+		$sql2 = "SHOW COLUMNS FROM ".$table;
 		$rs2 = $tikilib->fetchAll($sql2);
 		foreach ($rs2 as $key2 => $val2) {
 			$vals2 = array_values($val2);
@@ -88,7 +88,7 @@ function searchAllDB($search)
 				$qrySearch = '%'.$search.'%';
 				$args = array($qrySearch);
 				$sql_search_fields[] = "`" . $colum . "` like ?"; // '%" . str_replace("'", "''", $search) . "%'";
-				$sql_search = "select * from `$table` where ";
+				$sql_search = "select * from " . $table . " where ";
 				$sql_search .= implode(" OR ", $sql_search_fields);
 				$rs3 = $tikilib->fetchAll($sql_search, $args);
 				if (!empty($rs3)) {

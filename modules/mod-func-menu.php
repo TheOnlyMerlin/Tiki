@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -40,17 +40,12 @@ function module_menu_info()
 			'bootstrap' => array(
 				'name' => tra('Use Bootstrap menus'),
 				'description' => tra('').' ( y / n )',
-				'default' => 'y',
+				'default' => 'y'
 			),
 			'navbar_toggle' => array(
 				'name' => tra('Show Navbar Toggle Button'),
 				'description' => tra('Used in Bootstrap navbar menus when viewport is too narrow for menu items').' ( y / n )',
-				'default' => 'y',
-			),
-			'navbar_class' => array(
-				'name' => tra('CSS class for the menu nav element'),
-				'description' => tra(''),
-				'default' => 'navbar navbar-default',
+				'default' => 'y'
 			),
 			'css' => array(
 				'name' => tra('CSS/Superfish'),

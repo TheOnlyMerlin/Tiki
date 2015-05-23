@@ -2,22 +2,22 @@
 {title help="Menus" admpage="general&amp;cookietab=3"}{tr}Menus{/tr}{/title}
 
 {if $tiki_p_admin eq 'y'}
-	<div class="t_navbar margin-bottom-md">
-		<a class="btn btn-default" href="{bootstrap_modal controller=menu action=manage_menu}">
-			{icon name="create"} {tr}Create Menu{/tr}
+	<div class="navbar">
+		<a class="btn btn-primary" href="{service controller=menu action=manage modal=true}" data-toggle="modal" data-target="#bootstrap-modal">
+			{glyph name="plus"} {tr}Create Menu{/tr}
 		</a>
-		{button href="tiki-admin_modules.php" _icon_name="administer" _text="{tr}Modules{/tr}"}
+		{button href="tiki-admin_modules.php" _text="{glyph name="cog"} {tr}Admin Modules{/tr}"}
 	</div>
 {/if}
 {include file='find.tpl'}
 <div class="table-responsive">
-	<table class="table table-hover">
+    <table class="table table-hover">
 		<tr>
 			<th>{self_link _sort_arg='sort_mode' _sort_field='menuId'}{tr}ID{/tr}{/self_link}</th>
 			<th>{self_link _sort_arg='sort_mode' _sort_field='name'}{tr}Name{/tr}{/self_link}</th>
 			<th>{self_link _sort_arg='sort_mode' _sort_field='type'}{tr}Type{/tr}{/self_link}</th>
 			<th>{tr}Options{/tr}</th>
-			<th></th>
+			<th>{tr}Action{/tr}</th>
 		</tr>
 
 		{section name=user loop=$channels}
@@ -25,55 +25,38 @@
 				<td class="id">{$channels[user].menuId}</td>
 				<td class="text">
 					{if $tiki_p_edit_menu_option eq 'y' and $channels[user].menuId neq 42}
-						<a class="link tips" href="tiki-admin_menu_options.php?menuId={$channels[user].menuId}" title=":{tr}Menu Options{/tr}">{$channels[user].name|escape}</a>
+						<a class="link" href="tiki-admin_menu_options.php?menuId={$channels[user].menuId}" title="{tr}Configure/Options{/tr}">{$channels[user].name|escape}</a>
 					{else}
 						{$channels[user].name|escape}
 					{/if}
-					<span class="help-block">
-						{$channels[user].description|escape|nl2br}
-					</span>
+					<br>
+					{$channels[user].description|escape|nl2br}
 				</td>
 				<td class="text">{$channels[user].type}</td>
 				<td><span class="badge">{$channels[user].options}</span></td>
 				<td class="action">
-					{capture name=menu_actions}
-						{strip}
-							{if $channels[user].menuId neq 42}
-								{if $tiki_p_edit_menu eq 'y'}
-									<a href="{bootstrap_modal controller=menu action=manage_menu menuId=$channels[user].menuId}">
-										{icon name='edit' _menu_text='y' _menu_icon='y' alt="{tr}Edit{/tr}"}
-									</a>
-								{/if}
-								{if $tiki_p_edit_menu_option eq 'y'}
-									<a href="tiki-admin_menu_options.php?menuId={$channels[user].menuId}">
-										{icon name="list" _menu_text='y' _menu_icon='y' alt="{tr}Menu options{/tr}"}
-									</a>
-								{/if}
-								{if $tiki_p_edit_menu eq 'y'}
-									{self_link remove=$channels[user].menuId _menu_text='y' _menu_icon='y' _icon_name="remove"}
-										{tr}Delete{/tr}
-									{/self_link}
-								{/if}
-							{else}
-								{if $tiki_p_admin eq 'y'}
-									{button reset="y" menuId=$channels[user].menuId _text="{tr}RESET{/tr}" _auto_args="reset,menuId" _class="btn btn-warning btn-sm"}
-									<hr>
-								{/if}
-							{/if}
-							{if $tiki_p_edit_menu eq 'y'}
-								<a href="{bootstrap_modal controller=menu action=clone_menu menuId=$channels[user].menuId}">
-									{icon name="copy" _menu_text='y' _menu_icon='y' alt="{tr}Clone{/tr}"}
-								</a>
-							{/if}
-						{/strip}
-					{/capture}
-					<a class="tips"
-					   title="{tr}Actions{/tr}"
-					   href="#" {popup delay="0|2000" fullhtml="1" center=true text=$smarty.capture.menu_actions|escape:"javascript"|escape:"html"}
-					   style="padding:0; margin:0; border:0"
-							>
-						{icon name='wrench'}
-					</a>
+					{if $channels[user].menuId neq 42}
+						{if $tiki_p_edit_menu eq 'y'}
+							<a class="btn btn-default btn-sm" href="{service controller=menu action=manage menuId={$channels[user].menuId} modal=true}" data-toggle="modal" data-target="#bootstrap-modal" title="{tr}Edit Menu{/tr}">
+								{glyph name="edit"}
+							</a>
+						{/if}
+						{if $tiki_p_edit_menu_option eq 'y'}
+							<a class="btn btn-default btn-sm" href="tiki-admin_menu_options.php?menuId={$channels[user].menuId}" title="{tr}Menu Options{/tr}">{glyph name="list"}</a>
+						{/if}
+						{if $tiki_p_edit_menu eq 'y'}
+							{self_link remove=$channels[user].menuId _title="{tr}Delete{/tr}" _class="btn btn-default btn-sm"}{glyph name="remove"}{/self_link}
+						{/if}
+					{else}
+						{if $tiki_p_admin eq 'y'}
+							{button reset="y" menuId=$channels[user].menuId _text="{tr}RESET{/tr}" _auto_args="reset,menuId" _class="btn btn-warning btn-sm"}
+						{/if}
+					{/if}
+					{if $tiki_p_edit_menu eq 'y'}
+						<a class="btn btn-default btn-sm" href="{service controller=menu action=clone menuId={$channels[user].menuId} modal=true}" data-toggle="modal" data-target="#bootstrap-modal" title="{tr}Clone Menu{/tr}">
+								{glyph name="flash"}
+							</a>
+					{/if}
 				</td>
 			</tr>
 		{sectionelse}

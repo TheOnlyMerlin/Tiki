@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -69,7 +69,7 @@ class Search_GlobalSource_CategorySource implements Search_GlobalSource_Interfac
 
 	function getData($objectType, $objectId, Search_Type_Factory_Interface $typeFactory, array $data = array())
 	{
-		if (isset($data['categories']) || isset($data['deep_categories']) || $objectType === 'category') {
+		if (isset($data['categories']) || isset($data['deep_categories'])) {
 			return array();
 		}
 

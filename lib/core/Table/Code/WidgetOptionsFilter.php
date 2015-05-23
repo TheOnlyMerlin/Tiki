@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -26,9 +26,6 @@ class Table_Code_WidgetOptionsFilter extends Table_Code_WidgetOptions
 	protected function getOptionArray()
 	{
 		if (parent::$filters) {
-			$wof[] = 'filter_cssFilter : \'form-control\'';
-			//allows for different label versus value in dropdowns
-			$wof[] = 'filter_selectSourceSeparator : \'|\'';
 			//server side filtering
 			if (parent::$ajax) {
 				$wof[] = 'filter_serversideFiltering : true';
@@ -47,33 +44,26 @@ class Table_Code_WidgetOptionsFilter extends Table_Code_WidgetOptions
 				$fform = '';
 				foreach (parent::$s['columns'] as $col => $info) {
 					$info = $info['filter'];
-					$colpointer =  parent::$usecolselector ? (string) '\'' . $col . '\'' : (int) $col;
 					switch($info['type']) {
 						case 'dropdown' :
-							$o = [];
+							$o = '';
 							if (array_key_exists('options', $info)) {
 								foreach ($info['options'] as $key => $val) {
 									$label =  addcslashes(is_numeric($key) ? $val : $key,"'/");
-									if (parent::$ajax) {
-										$o[] = '\'' . $label . '\' : function() {}';
-									} else {
-										$o[] = '\'' . $label . '\' : function(e, n, f, i) { return /' . $val
-											. '/.test(e);}';
-									}
+									$o[] = parent::$ajax ? '\'' . $label . '\' : function() {}' :
+										'\'' . $label . '\' : function(e, n, f, i) { return /' . $val . '/.test(e);}';
 								}
-								if (count($o) > 0) {
-									$options = $this->iterate($o, '{', $this->nt4 . '}', $this->nt5, '', ',');
-									$ffunc[] = $colpointer . ' : ' . $options;
-								}
+								$options = $this->iterate($o, '{', $this->nt4 . '}', $this->nt5, '', ',');
+								$ffunc[] = $col . ' : ' . $options;
 							} elseif (!parent::$ajax) {
-								$ffunc[] = $colpointer . ' : true';
+								$ffunc[] = $col . ' : true';
 							}
 							break;
 						case 'range' :
 							$min = isset($info['from']) ? $info['from'] : 0;
 							$max = isset($info['to']) ? $info['to'] : 100;
 							$valtohead = isset($info['style']) && $info['style'] == 'popup' ? 'false' : 'true';
-							$fform[] = $colpointer . ' : function($cell, indx){return $.tablesorter.filterFormatter.uiRange('
+							$fform[] = $col . ' : function($cell, indx){return $.tablesorter.filterFormatter.uiRange('
 								. '$cell, indx, {values: [' . $min . ', ' . $max . '], min: ' . $min . ', max: ' . $max
 								. ', delayed: false, valueToHeader: ' . $valtohead . ', exactMatch: true});}';
 							break;
@@ -81,13 +71,12 @@ class Table_Code_WidgetOptionsFilter extends Table_Code_WidgetOptions
 							$fm = isset($info['from']) ? $info['from'] : '';
 							$to = isset($info['to']) ? $info['to'] : '';
 							$format = isset($info['format']) ? $info['format'] : 'yy-mm-dd';
-							$fform[] = $colpointer . ' : function($cell, indx){return $.tablesorter.filterFormatter.uiDatepicker('
+							$fform[] = $col . ' : function($cell, indx){return $.tablesorter.filterFormatter.uiDatepicker('
 								. '$cell, indx, {from: \'' . $fm . '\', to: \'' . $to . '\', dateFormat: \'' . $format
 								. '\', changeMonth: true, changeYear: true});}';
 							break;
 					}
 				}
-				unset($col, $info);
 				if (is_array($ffunc)) {
 					$wof[] = $this->iterate($ffunc, 'filter_functions : {', $this->nt3 . '}', $this->nt4, '');
 				}

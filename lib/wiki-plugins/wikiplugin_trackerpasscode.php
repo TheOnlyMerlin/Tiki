@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -58,17 +58,16 @@ function wikiplugin_trackerpasscode_info()
 
 function wikiplugin_trackerpasscode( $data, $params )
 {
-	global $user;
-	$smarty = TikiLib::lib('smarty');
-
+	global $smarty, $user, $access;
 	if (empty($params['key']) || empty($params['trackerId']) || empty($params['itemId']) || empty($params['fieldId'])) {
 		return '';
 	}
 	$key = $params['key'];
 	if ( $_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['trackerpasscode'])) {
+		global $access;
+
 		// Check all filled in
 		if (empty($_POST['trackerpasscode'])) {
-			$access = TikiLib::lib('access');
 			$access->redirect($_SERVER['REQUEST_URI'], tr('Please fill in all fields')); 
 			die;
 		}

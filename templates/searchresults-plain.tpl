@@ -4,7 +4,7 @@
 		{foreach from=$facets item=facet}
 			<div class="form-group facet-hide-group">
 				<label for="{$facet.name|escape}">{$facet.label|escape}</label>
-				<select id="{$facet.name|escape}" class="form-control" multiple data-for="#search-form input[name$='filter~{$facet.name|escape}']" data-join="{$facet.operator|escape}">
+				<select id="{$facet.name|escape}" class="form-control" multiple data-for="#search-form input[name='filter~{$facet.name|escape}']" data-join="{$facet.operator|escape}">
 					{foreach from=$facet.options key=value item=label}
 						<option value="{$value|escape}">{$label|escape}</option>
 					{/foreach}
@@ -43,8 +43,6 @@
 		{/if}
 
 		{if !empty($result.parent_object_id)} {tr}in{/tr} {object_link type=$result.parent_object_type id=$result.parent_object_id}{/if}
-
-		{if $result._external}<span class="label label-info">{tr}External{/tr}</span>{/if}
 		</strong>
 
 		<blockquote>

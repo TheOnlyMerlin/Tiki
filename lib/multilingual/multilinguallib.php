@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -1232,10 +1232,12 @@ class MultilingualLib extends TikiLib
 			// Some languages need BiDi support. Add their code names here ...
 			if (Language::isRTL()) {
 				$prefs['feature_bidi'] =  'y';
-				TikiLib::lib('header')->add_cssfile('vendor/morteza/bootstrap-rtl/dist/css/bootstrap-rtl.min.css', 99); // 99 is high rank order as it should load after all other css files
+				TikiLib::lib('header')->add_cssfile('styles/BiDi/BiDi.css');
+				setCookieSection('rtl','y');
 			} else {
 				$prefs['feature_bidi'] =  'n';
-				TikiLib::lib('header')->drop_cssfile('vendor/morteza/bootstrap-rtl/dist/css/bootstrap-rtl.min.css');
+				TikiLib::lib('header')->drop_cssfile('styles/BiDi/BiDi.css');
+				setCookieSection('rtl','n');
 			}
 		}
 	}

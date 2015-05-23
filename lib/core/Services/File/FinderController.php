@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -170,11 +170,7 @@ class Services_File_FinderController
 		if ($input->cmd->text() === 'tikiFileFromHash') {	// intercept tiki only commands
 			$fileId = $elFinder->realpath($input->hash->text());
 			$filegallib = TikiLib::lib('filegal');
-			if (strpos($fileId, 'f_') !== false) {
-				$info = $filegallib->get_file(str_replace('f_', '', $fileId));
-			} else {
-				$info = $filegallib->get_file_gallery(str_replace('d_', '', $fileId));
-			}
+			$info = $filegallib->get_file(str_replace('f_', '', $fileId));
 			$params = array();
 			if ($input->filegals_manager->text()) {
 				$params['filegals_manager'] = $input->filegals_manager->text();

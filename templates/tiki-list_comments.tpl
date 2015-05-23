@@ -11,19 +11,8 @@
 {/if}
 
 {assign var=numbercol value=2}
-
-{* Use css menus as fallback for item dropdown action menu if javascript is not being used *}
-{if $prefs.javascript_enabled !== 'y'}
-	{$js = 'n'}
-	{$libeg = '<li>'}
-	{$liend = '</li>'}
-{else}
-	{$js = 'y'}
-	{$libeg = ''}
-	{$liend = ''}
-{/if}
-		<div class="{if $js === 'y'}table-responsive{/if} comment-table"> {*the table-responsive class cuts off dropdown menus *}
-<table class="table normal table-striped table-hover">
+<div class="table-responsive comment-table">
+<table class="table normal">
 	<tr>
 		{if $comments}
 			<th>
@@ -32,7 +21,7 @@
 			</th>
 		{/if}
 		<th></th>
-
+	
 		{foreach key=headerKey item=headerName from=$headers}
 			<th>
 				{assign var=numbercol value=$numbercol+1}
@@ -54,20 +43,14 @@
 		{/if}
 		<th></th>
 	</tr>
-
+	
 
 	{section name=ix loop=$comments}{assign var=id value=$comments[ix].threadId}
 		{capture name=over_actions}
 			{strip}
-				{$libeg}<a href="{$comments[ix].href}">
-					{icon name='view' _menu_text='y' _menu_icon='y' alt="{tr}Display{/tr}"}
-				</a>{$liend}
-				{$libeg}<a href="{$comments[ix].href|cat:"&amp;comments_threadId=$id&amp;edit_reply=1#form"}">
-					{icon name='edit' _menu_text='y' _menu_icon='y' alt="{tr}Edit{/tr}"}
-				</a>{$liend}
-				{$libeg}{self_link remove=1 checked=$id _menu_text='y' _menu_icon='y' _icon_name='remove'}
-					{tr}Delete{/tr}
-				{/self_link}{$liend}
+				<a href="{$comments[ix].href}">{icon _id='magnifier' alt="{tr}Display{/tr}"}</a>
+				<a href="{$comments[ix].href|cat:"&amp;comments_threadId=$id&amp;edit_reply=1#form"}">{icon _id='page_edit' alt="{tr}Edit{/tr}"}</a>
+				{self_link remove=1 checked=$id _icon='cross'}{tr}Delete{/tr}{/self_link}
 			{/strip}
 		{/capture}
 
@@ -76,7 +59,8 @@
 				{foreach from=$more_info_headers key=headerKey item=headerName}
 					{if (isset($comments[ix].$headerKey))}
 						{assign var=val value=$comments[ix].$headerKey}
-						{$libeg}<b>{tr}{$headerName}{/tr}</b>: {$val}{$liend}
+						<b>{tr}{$headerName}{/tr}</b>: {$val}
+						<br>
 					{/if}
 				{/foreach}
 			{/strip}
@@ -85,19 +69,7 @@
 		<tr class="{cycle}{if $prefs.feature_comments_moderation eq 'y'} post-approved-{$comments[ix].approved}{/if}">
 			<td class="checkbox-cell"><input type="checkbox" name="checked[]" value="{$id}" {if isset($rejected[$id]) }checked="checked"{/if}></td>
 			<td class="action">
-				{if $js === 'n'}<ul class="cssmenu_horiz"><li>{/if}
-				<a
-					class="tips"
-					title="{tr}Actions{/tr}"
-					href="#"
-					{if $js === 'y'}{popup delay="0|2000" fullhtml="1" center=true text=$smarty.capture.over_actions|escape:"javascript"|escape:"html"}{/if}
-					style="padding:0; margin:0; border:0"
-				>
-					{icon name="wrench"}
-				</a>
-				{if $js === 'n'}
-					<ul class="dropdown-menu" role="menu">{$smarty.capture.over_actions}</ul></li></ul>
-				{/if}
+				<a class="tips" title="{tr}Actions{/tr}" href="#" {popup trigger="onClick" sticky=1 mouseoff=1 fullhtml="1" center=true text=$smarty.capture.over_actions|escape:"javascript"|escape:"html"} style="padding:0; margin:0; border:0">{icon _id='wrench' alt="{tr}Actions{/tr}"}</a>
 			</td>
 
 			{foreach key=headerKey item=headerName from=$headers}{assign var=val value=$comments[ix].$headerKey}
@@ -152,19 +124,7 @@
 			{/if}
 
 			<td>
-				{if $js === 'n'}<ul class="cssmenu_horiz"><li>{/if}
-				<a
-					class="tips"
-					title="{tr}More information{/tr}"
-					href="#"
-					{if $js === 'y'}{popup delay="0|2000" fullhtml="1" center=true text=$smarty.capture.over_more_info|escape:"javascript"|escape:"html"}{/if}
-					style="padding:0; margin:0; border:0"
-				>
-					{icon name="information"}
-				</a>
-				{if $js === 'n'}
-					<ul class="dropdown-menu" role="menu">{$smarty.capture.over_more_info}</ul></li></ul>
-				{/if}
+				<a class="tips" title="{tr}More info{/tr}" href="#" {popup trigger="onClick" sticky=1 mouseoff=1 fullhtml="1" center=true text=$smarty.capture.over_more_info|escape:"javascript"|escape:"html"} style="padding:0; margin:0; border:0">{icon _id='information' alt="{tr}More info{/tr}"}</a>
 			</td>
 		</tr>
 	{sectionelse}

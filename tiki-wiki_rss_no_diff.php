@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -74,7 +74,7 @@ if ($output["data"]=="EMPTY") {
 		$_REQUEST['page'] = $data["pageName"];
 
 
-		$curr_page_p = $tikilib->parse_data($curr_page[$descId], array('print'=>true, 'is_html' => $curr_page['is_html']));
+		$curr_page_p = $tikilib->parse_data($curr_page[$descId], array('print'=>true));
 		//	$prev_page_p = $tikilib->parse_data($prev_page[$descId], array('print'=>true));
 
 		// do a diff between both pages

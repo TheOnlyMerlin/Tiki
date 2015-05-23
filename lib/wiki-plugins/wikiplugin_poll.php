@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -69,7 +69,7 @@ function wikiplugin_poll($data, $params)
 	if (!isset($pollId)) {
 	    return WikiParser_PluginOutput::argumentError(array('pollId'));
 	}
-	$polllib = TikiLib::lib('poll');
+	global $polllib;include_once ('lib/polls/polllib.php');
 
 
     $poll_info = $polllib->get_poll($pollId);
