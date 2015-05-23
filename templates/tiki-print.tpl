@@ -1,5 +1,5 @@
 {* $Id$ *}<!DOCTYPE html>
-<html lang="{if !empty($pageLang)}{$pageLang}{else}{$prefs.language}{/if}"{if !empty($page_id)} id="print_page_{$page_id}"{/if}>
+<html id="print" xmlns="http://www.w3.org/1999/xhtml" xml:lang="{if !empty($pageLang)}{$pageLang}{else}{$prefs.language}{/if}" lang="{if !empty($pageLang)}{$pageLang}{else}{$prefs.language}{/if}"{if !empty($page_id)} id="page_{$page_id}"{/if}>
 	<head>
 {include file='header.tpl'}
 	</head>
@@ -12,5 +12,10 @@
 		</div>
 
 {include file='footer.tpl'}
+<!-- Put JS at the end -->
+{if $headerlib}
+	{$headerlib->output_js_files()}
+	{$headerlib->output_js()}
+{/if}
 	</body>
 </html>

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -20,7 +20,6 @@ function wikiplugin_miniquiz_info()
 				'name' => tra('Tracker ID'),
 				'description' => tra('Numeric value representing the miniquiz tracker ID'),
 				'default' => '',
-				'profile_reference' => 'tracker',
 			),
 		),
 	);
@@ -37,12 +36,11 @@ function shuf(&$ar)
 
 function wikiplugin_miniquiz($data, $params)
 {
-	global $user, $group, $prefs;
-	$trklib = TikiLib::lib('trk');
-	$tikilib = TikiLib::lib('tiki');
+	global $tikilib, $user, $group, $prefs, $smarty;
+	global $trklib; include_once('lib/trackers/trackerlib.php');
 	extract($params, EXTR_SKIP);
+
 	if ($prefs['feature_trackers'] != 'y' || !isset($trackerId) || !($tracker = $trklib->get_tracker($trackerId))) {
-		$smarty = TikiLib::lib('smarty');
 		return $smarty->fetch("wiki-plugins/error_tracker.tpl");
 	}
 
@@ -93,7 +91,7 @@ function wikiplugin_miniquiz($data, $params)
 				$out.= "user : $user\n";
 				$out.= "group : $group\n";
 				foreach ($_REQUEST['answer'] as $q=>$a) {
-					if ($info["$q"]['answer'] == $a) {
+					if ($info["$q"]['Answer'] == $a) {
 						$out.= "$q : $a --> yeah !\n";
 						$info["$q"]['qresult'] = 'y';
 					} else {
@@ -124,15 +122,15 @@ function wikiplugin_miniquiz($data, $params)
 					if (!isset($_POST["$id"])) {
 						$back.= '<b>'.$success_mess[array_rand($success_mess)].'</b> '. $success_comment[array_rand($success_comment)].'<br />';
 					}
-					$back.= 'The answer was: <b>'.$item['answer'].'</b></div><br />';
-					$back.= '<input type="hidden" name="answer['.$id.']" value="'. htmlspecialchars($item['answer']).'" />';
+					$back.= 'The answer was: <b>'.$item['Answer'].'</b></div><br />';
+					$back.= '<input type="hidden" name="answer['.$id.']" value="'. htmlspecialchars($item['Answer']).'" />';
 					$back.= '<input type="hidden" name="'.$id.'" value="1" />';
 				} else {
 					if ($item['qresult'] == 'b') {
 						$back.= '<div class="wikitext" style="background-color:#ffcccc;">';
 						$back.= '<b>'.$failed_mess[array_rand($failed_mess)].'</b> '. $failed_comment[array_rand($failed_comment)].'</div>';
 					}
-					$answers = array($item['answer'],$item['option a'],$item['option b'],$item['option c']);
+					$answers = array($item['Answer'],$item['option a'],$item['option b'],$item['option c']);
 					shuf($answers);
 					$back.= '<div class="wikitext">';
 					$i = 1;

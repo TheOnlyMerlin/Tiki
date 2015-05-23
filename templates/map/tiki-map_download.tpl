@@ -4,10 +4,9 @@
 {if $nodownload}
 <b>{tr}This layer has been set by the maps administrator to not be downloadable{/tr}</b>
 {else}
-<b>{$userwatch}</b>, {tr}you have requested to download the layer:{/tr}<b>{$layer}</b> {tr}from the mapfile:{/tr}<b>{$mapfile}</b><br><br>
-{tr}Here are the files to download, do not forget to rename them:{/tr}<br>
-<div class="table-responsive">
-<table class="table normal" >
+<b>{$userwatch}</b>, {tr}you have requested to download the layer:{/tr}<b>{$layer}</b> {tr}from the mapfile:{/tr}<b>{$mapfile}</b><br /><br />
+{tr}Here are the files to download, do not forget to rename them:{/tr}<br />
+<table class="normal" >
 {section name=j loop=$files}
 {if $smarty.section.j.index % 2}
 <tr>
@@ -24,5 +23,4 @@
 {/if}
 {/section}
 </table>
-</div>
 {/if}

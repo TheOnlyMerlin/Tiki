@@ -1,8 +1,8 @@
-<?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
-//
-// All Rights Reserved. See copyright.txt for details and a complete list of authors.
-// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
+<?php                                                                                  
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project           
+//                                                                                     
+// All Rights Reserved. See copyright.txt for details and a complete list of authors.  
+// Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.  
 // $Id$
 
 function wikiplugin_convene_info()
@@ -29,7 +29,6 @@ function wikiplugin_convene_info()
 				'description' => tra('ID number for the site calendar where to store the date for the events with maximum votes'),
 				'filter' => 'digits',
 				'default' => '',
-				'profile_reference' => 'calendar',
 			),
 			'minvotes' => array(
 				'required' => false,
@@ -56,22 +55,21 @@ function wikiplugin_convene_info()
 
 function wikiplugin_convene($data, $params)
 {
-	global $page, $tiki_p_edit;
-	$headerlib = TikiLib::lib('header');
-	$tikilib = TikiLib::lib('tiki');
+	global $tikilib, $headerlib, $page, $tiki_p_edit;
 
 	static $conveneI = 0;
 	++$conveneI;
 	$i = $conveneI;
 
+
 	$params = array_merge(
-		array(
-			"title" => "Convene",
-			"calendarid" => "1",
-			"minvotes" => "3",
-			"dateformat" => "short"
-		),
-		$params
+					array(
+						"title" => "Convene",
+						"calendarid" => "1",
+						"minvotes" => "3",
+						"dateformat" => "short"
+					), 
+					$params
 	);
 
 	extract($params, EXTR_SKIP);
@@ -109,7 +107,7 @@ function wikiplugin_convene($data, $params)
 	foreach ($data['dates'] as $stamp => $date) {
 		foreach ($date as $vote) {
 			if (empty($votes[$stamp])) $votes[$stamp] = 0;
-			$votes[$stamp] += (int)$vote;
+			$votes[$stamp] += $vote;
 		}
 	}
 	//end votes summed together
@@ -148,11 +146,11 @@ function wikiplugin_convene($data, $params)
 	foreach ($votes as $stamp => $totals) {
 		if (!empty($dateformat) && $dateformat == "long") {
 			$dateHeader .= "<td class='conveneHeader'>". $tikilib->get_long_datetime($stamp) .
-				($tiki_p_edit == 'y' ? " <button class='conveneDeleteDate$i icon btn btn-default btn-sm' data-date='$stamp'><img src='img/icons/delete.png' class='icon' width='16' height='16' title='" . tr("Delete Date") . "'/></button>" : "").
+				($tiki_p_edit == 'y' ? " <button class='conveneDeleteDate$i icon ui-widget-header ui-corner-all' data-date='$stamp'><img src='img/icons/delete.png' class='icon' width='16' height='16' title='" . tr("Delete Date") . "'/></button>" : "").
 			"</td>";
 		} else {
 			$dateHeader .= "<td class='conveneHeader'>". $tikilib->get_short_datetime($stamp) .
-				($tiki_p_edit == 'y' ? " <button class='conveneDeleteDate$i icon btn btn-default btn-sm' data-date='$stamp'><img src='img/icons/delete.png' class='icon' width='16' height='16' title='" . tr("Delete Date") . "'/></button>" : "").
+				($tiki_p_edit == 'y' ? " <button class='conveneDeleteDate$i icon ui-widget-header ui-corner-all' data-date='$stamp'><img src='img/icons/delete.png' class='icon' width='16' height='16' title='" . tr("Delete Date") . "'/></button>" : "").
 			"</td>";
 		}
 	}
@@ -168,21 +166,21 @@ function wikiplugin_convene($data, $params)
 	$userList = "";
 	foreach ($rows as $user => $row) {
 		$userList .= "<tr class='conveneVotes conveneUserVotes$i'>";
-		$userList .= "<td>". ($tiki_p_edit == 'y' ? "<button class='conveneUpdateUser$i icon btn btn-default btn-sm'><img src='img/icons/pencil.png' class='icon' width='16' height='16' title='" . tr("Edit User/Save changes") . "' /></button><button data-user='$user' title='" . tr("Delete User") . "' class='conveneDeleteUser$i icon btn btn-default btn-sm'><img src='img/icons/delete.png' class='icon' width='16' height='16' /></button> " : "") . $user . "</td>";
+		$userList .= "<td>". ($tiki_p_edit == 'y' ? "<button class='conveneUpdateUser$i icon ui-widget-header ui-corner-all'><img src='img/icons/pencil.png' class='icon' width='16' height='16' title='" . tr("Edit User/Save changes") . "' /></button><button data-user='$user' title='" . tr("Delete User") . "' class='conveneDeleteUser$i icon ui-widget-header ui-corner-all'><img src='img/icons/delete.png' class='icon' width='16' height='16' /></button> " : "") . $user . "</td>";
 		foreach ($row as $stamp => $vote) {
 			if ($vote == 1) {
-				$class = 	"convene-ok text-center label-success";
+				$class = 	"ui-state-default convene-ok";
 				$text = 	"<img src='img/icons/tick.png' alt='" . tr('Ok') . "' class='vote icon' width='16' height='16' />";
 			} elseif ($vote == -1) {
-				$class = 	"convene-no text-center label-danger";
+				$class = 	"ui-state-default convene-no";
 				$text = 	"<img src='img/icons/cross.png' alt='" . tr('Not ok') . "' class='vote icon' width='16' height='16' />";
 			} else {
-				$class = 	"convene-unconfirmed text-center label-default";
+				$class = 	"ui-state-default convene-unconfirmed";
 				$text = 	"<img src='img/icons/grey_question.png' alt='" . tr('Unconfirmed') . "' class='vote icon' width='16' height='16' />";
 			}
 
 			$userList .= "<td class='$class'>". $text
-				."<input type='hidden' name='dates_" . $stamp . "_" . $user . "' value='$vote' class='conveneUserVote$i form-control' />"
+				."<input type='hidden' name='dates_" . $stamp . "_" . $user . "' value='$vote' class='conveneUserVote$i' />"
 				."</td>";
 		}
 		$userList .= "</tr>";
@@ -198,7 +196,7 @@ function wikiplugin_convene($data, $params)
 	$result .= "<td>".(
 		$tiki_p_edit == 'y'
 			?
-				"<div class='form-group'><div class='col-md-8'><input class='conveneAddUser$i form-control' value='" . tr("Add User") . "' /></div><div class='col-md-4'><input type='button' value='" . tr('Add User') . "' class='conveneAddUserButton$i btn btn-default' /></div></div>"
+				"<input class='conveneAddUser$i' value='" . tr("Add User") . "' /><input type='button' value='" . tr('Add User') . "' class='conveneAddUserButton$i' />"
 			: ""
 		).
 	"</td>";
@@ -212,7 +210,7 @@ function wikiplugin_convene($data, $params)
 		if ($total == $votes[$topVoteStamp]) {
 			$pic .= ($tiki_p_edit != "y" ? "<img src='img/icons/tick.png' class='icon' width='16' height='16' title='" . tr("Selected Date") . "' />" : "");
 			if ($tiki_p_edit == 'y' && $votes[$topVoteStamp] >= $minvotes) {
-				$pic .= "<button class='icon btn btn-default btn-sm' onclick='document.location = $(this).find(\"a\").attr(\"href\"); return false;'><a href='tiki-calendar_edit_item.php?todate=$stamp&calendarId=$calendarid' title='" . tr("Add as Calendar Event") . "'><img src='img/icons/calendar_add.png' class='icon' width='16' height='16' /></a></button>";
+				$pic .= "<button class='icon ui-widget-header ui-corner-all' onclick='document.location = $(this).find(\"a\").attr(\"href\"); return false;'><a href='tiki-calendar_edit_item.php?todate=$stamp&calendarId=$calendarid' title='" . tr("Add as Calendar Event") . "'><img src='img/icons/calendar_add.png' class='icon' width='16' height='16' /></a></button>";
 			}
 		}
 
@@ -223,7 +221,7 @@ function wikiplugin_convene($data, $params)
 	$result .= "<td style='width: 20px;'>" . (
 		$tiki_p_edit == 'y'
 			?
-				"<input type='button' class='conveneAddDate$i btn btn-default' value='" . tr('Add Date') . "'/>"
+				"<input type='button' class='conveneAddDate$i' value='" . tr('Add Date') . "'/>"
 			: ""
 	)."</td>";
 
@@ -233,9 +231,7 @@ function wikiplugin_convene($data, $params)
 
 	$result = <<<FORM
 			<form id='pluginConvene$i'>
-			    <div class="table-responsive">
-    				<table class="table table-bordered">$result</table>
-    		    </div>
+				<table cellpadding="2" cellspacing="2" border="0" style="width: 100%;">$result</table>
 			</form>
 FORM;
 
@@ -253,6 +249,7 @@ FORM;
 	$n = '\n';
 	$regexN = '/[\r\n]+/g';
 
+	$headerlib->add_jsfile("lib/jquery/jquery-ui-timepicker-addon.js");
 	$headerlib->add_jq_onready(
 <<<JQ
 
@@ -301,7 +298,7 @@ FORM;
 
 				this.data = data;
 
-				this.save(true);
+				this.save();
 			},
 			addDate: function(date) {
 				if (!date) return;
@@ -343,36 +340,22 @@ FORM;
 				this.data = newData.join('$n');
 				this.save();
 			},
-			save: function(reload) {
-				$("#page-data").tikiModal(tr("Loading..."));
+			save: function() {
+				$.modal(tr("Loading..."));
 
-				var needReload = reload != undefined;
-				var params = {
-					page: "$page",
-					content: $.trim(this.data),
-					index: $i,
-					type: "convene",
-					params: {
-						title: "$title",
-						calendarid: $calendarid,
-						minvotes: $minvotes
-					}
-				};
-				$.post("tiki-wikiplugin_edit.php", params, function() {
-					$.get($.service("wiki", "get_page", {page: "$page"}), function (data) {
-						if (needReload) {
-							history.go(0);
-						} else {
-							if (data) {
-								var newForm = $("#pluginConvene$i", data);
-								$("#pluginConvene$i", "#page-data").replaceWith(newForm);
-							}
-							initConvene$i();
-							$("#page-data").tikiModal();
-						}
-					});
-
-				});
+				$('<form id="conveneSave$i" method="post" action="tiki-wikiplugin_edit.php">'+
+					'<div>'+
+						'<input type="hidden" name="page" value="$page"/>'+
+						'<input type="hidden" name="content" value="' + $.trim(this.data) + '"/>'+
+						'<input type="hidden" name="index" value="$i"/>'+
+						'<input type="hidden" name="type" value="convene"/>'+
+						'<input type="hidden" name="params[title]" value="$title"/>'+
+						'<input type="hidden" name="params[calendarid]" value="$calendarid"/>'+
+						'<input type="hidden" name="params[minvotes]" value="$minvotes"/>'+
+					'</div>'+
+				'</form>')
+				.appendTo('body')
+				.submit();
 			}
 		}, $conveneData);
 
@@ -410,147 +393,137 @@ FORM;
 			});
 		}
 
-		var initConvene$i = function () {
-			$('.conveneAddDate$i').click(function() {
-				var dialogOptions = {
-					modal: true,
-					title: tr("Add Date"),
-					buttons: {}
-				};
+		$('.conveneAddDate$i').click(function() {
+			var dialogOptions = {
+				modal: true,
+				title: tr("Add Date"),
+				buttons: {}
+			};
 
-				dialogOptions.buttons[tr("Add")] = function() {
-					convene$i.addDate(o.find('input:first').val());
-					o.dialog('close');
-				}
+			dialogOptions.buttons[tr("Add")] = function() {
+				convene$i.addDate(o.find('input:first').val());
+				o.dialog('close');
+			}
 
-				var o = $('<div><input type="text" style="width: 100%;" /></div>')
-					.dialog(dialogOptions);
+			var o = $('<div><input type="text" style="width: 100%;" /></div>')
+				.dialog(dialogOptions);
 
-				o.find('input:first')
-					.datetimepicker()
-					.focus();
+			o.find('input:first')
+				.datetimepicker()
+				.focus();
+			return false;
+		});
+
+		$('.conveneDeleteDate$i')
+			.click(function() {
+				convene$i.deleteDate($(this).data("date"));
 				return false;
 			});
 
-			$('.conveneDeleteDate$i')
-				.click(function() {
-					convene$i.deleteDate($(this).data("date"));
-					return false;
-				});
-
-			$('.conveneDeleteUser$i')
-				.click(function() {
-					if (confirm(tr("Are you sure you want to remove this user's votes?") + "\\n" +
-							tr("There is no undo"))) {
-						convene$i.deleteUser($(this).data("user"));
-					}
-					return false;
-				});
-
-			$('.conveneUpdateUser$i').toggle(function() {
-				$('.conveneUpdateUser$i').not(this).hide();
-				$('.conveneDeleteUser$i').hide();
-				$('.conveneDeleteDate$i').hide();
-				$('.conveneMain$i').hide();
-				$(this).parent().parent()
-					.addClass('ui-state-highlight')
-					.find('td').not(':first')
-					.addClass('conveneTd$i')
-					.removeClass('ui-state-default')
-					.addClass('ui-state-highlight');
-
-				$(this).find('img').attr('src', 'img/icons/accept.png');
-				var parent = $(this).parent().parent();
-				parent.find('.vote').hide();
-				parent.find('input').each(function() {
-					$('<select>' +
-						'<option value="">' + tr('Unconfirmed') + '</option>' +
-						'<option value="-1">' + tr('Not ok') + '</option>' +
-						'<option value="1">' + tr('Ok') + '</option>' +
-					'</select>')
-						.val($(this).val())
-						.insertAfter(this)
-						.change(function() {
-							var cl = '';
-
-							switch($(this).val() * 1) {
-								case 1:     cl = 'convene-ok';break;
-								case -1:    cl = 'convene-no';break;
-								default:    cl = 'convene-unconfirmed';
-							}
-
-							$(this)
-								.parent()
-								.removeClass('convene-no convene-ok convene-unconfirmed')
-								.addClass(cl);
-
-							convene$i.updateUsers = true;
-						});
-				});
-			}, function () {
-				$('.conveneUpdateUser$i').show();
-				$('.conveneDeleteUser$i').show();
-				$('.conveneDeleteDate$i').show();
-				$(this).parent().parent()
-					.removeClass('ui-state-highlight')
-					.find('.conveneTd$i')
-					.removeClass('ui-state-highlight')
-					.addClass('ui-state-default');
-
-				$('.conveneMain$i').show();
-				$(this).find('img').attr('src', 'img/icons/pencil.png');
-				var parent = $(this).parent().parent();
-				parent.find('select').each(function(i) {
-					parent.find('input.conveneUserVote$i').eq(i).val( $(this).val() );
-
-					$(this).remove();
-				});
-
-				if (convene$i.updateUsers) {
-					convene$i.updateUsersVotes();
-				}
+		$('.conveneDeleteUser$i')
+			.click(function() {
+				convene$i.deleteUser($(this).data("user"));
+				return false;
 			});
 
-			var addUsers$i = $('.conveneAddUser$i')
-				.click(function() {
-					if (!$(this).data('clicked')) {
+		$('.conveneUpdateUser$i').toggle(function() {
+			$('.conveneUpdateUser$i').not(this).hide();
+			$('.conveneDeleteUser$i').hide();
+			$('.conveneDeleteDate$i').hide();
+			$('.conveneMain$i').hide();
+			$(this).parent().parent()
+				.addClass('ui-state-highlight')
+				.find('td').not(':first')
+				.addClass('conveneTd$i')
+				.removeClass('ui-state-default')
+				.addClass('ui-state-highlight');
+
+			$(this).find('img').attr('src', 'img/icons/accept.png');
+			var parent = $(this).parent().parent();
+			parent.find('.vote').hide();
+			parent.find('input').each(function() {
+				$('<select>' +
+					'<option value="">' + tr('Unconfirmed') + '</option>' +
+				    '<option value="-1">' + tr('Not ok') + '</option>' +
+				    '<option value="1">' + tr('Ok') + '</option>' +
+				'</select>')
+					.val($(this).val())
+					.insertAfter(this)
+					.change(function() {
+						var cl = '';
+
+						switch($(this).val() * 1) {
+							case 1:     cl = 'convene-ok';break;
+							case -1:    cl = 'convene-no';break;
+							default:    cl = 'convene-unconfirmed';
+						}
+
 						$(this)
-							.data('initval', $(this).val())
-							.val('')
-							.data('clicked', true);
-					}
-				})
-				.blur(function() {
-					if (!$(this).val()) {
-						$(this)
-							.val($(this).data('initval'))
-							.data('clicked', '');
+							.parent()
+							.removeClass('convene-no convene-ok convene-unconfirmed')
+							.addClass(cl);
 
-					}
-				})
-				.keydown(function(e) {
-					var user = $(this).val();
+						convene$i.updateUsers = true;
+					});
+			});
+		}, function () {
+			$('.conveneUpdateUser$i').show();
+			$('.conveneDeleteUser$i').show();
+			$('.conveneDeleteDate$i').show();
+			$(this).parent().parent()
+				.removeClass('ui-state-highlight')
+				.find('.conveneTd$i')
+				.removeClass('ui-state-highlight')
+				.addClass('ui-state-default');
 
-					if (e.which == 13) {//enter
-						convene$i.addUser(user);
-						return false;
-					}
-				});
+			$('.conveneMain$i').show();
+			$(this).find('img').attr('src', 'img/icons/pencil.png');
+			var parent = $(this).parent().parent();
+			parent.find('select').each(function(i) {
+				parent.find('input.conveneUserVote$i').eq(i).val( $(this).val() );
 
-//ensure autocomplete works, it may not be available in mobile mode
-            if (addUsers$i.autocomplete) {
-				addUsers$i.autocomplete({
-					source: $existingUsers
-				});
-            }
+				$(this).remove();
+			});
 
-            $('.conveneAddUserButton$i').click(function() {
-                convene$i.addUser($('.conveneAddUser$i').val());
-            });
+			if (convene$i.updateUsers) {
+				convene$i.updateUsersVotes();
+			}
+		});
 
-			$('#pluginConvene$i .icon').css('cursor', 'pointer');
-		};
-		initConvene$i();
+		$('.conveneAddUser$i')
+			.click(function() {
+				if (!$(this).data('clicked')) {
+					$(this)
+						.data('initval', $(this).val())
+						.val('')
+						.data('clicked', true);
+				}
+			})
+			.blur(function() {
+				if (!$(this).val()) {
+					$(this)
+						.val($(this).data('initval'))
+						.data('clicked', '');
+
+				}
+			})
+			.keydown(function(e) {
+				var user = $(this).val();
+
+				if (e.which == 13) {//enter
+					convene$i.addUser(user);
+					return false;
+				}
+			})
+			.autocomplete({
+				source: $existingUsers
+			});
+
+			$('.conveneAddUserButton$i').click(function() {
+				convene$i.addUser($('.conveneAddUser$i').val());
+			});
+
+		$('#pluginConvene$i .icon').css('cursor', 'pointer');
 JQ
 );
 
@@ -561,13 +534,11 @@ JQ
 	return
 <<<RETURN
 ~np~
-	<div class="panel panel-default">
-		<div class="panel-heading">
-			<h3 class="panel-title">$title</h3>
+	<div class="ui-widget-content ui-corner-all">
+		<div class="ui-widget-header ui-corner-top">
+			<h5 style="margin: 5px;">$title</h5>
 		</div>
-		<div class="panel-body">
-		    $result
-		</div>
+			$result
 	</div>
 ~/np~
 RETURN;

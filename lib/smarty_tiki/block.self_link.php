@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -23,13 +23,11 @@
  *   _class : CSS class to use for the A tag
  *   _template : (see smarty query function 'template' param)
  *   _htmlelement : (see smarty query function 'htmlelement' param)
- *   _icon : file name of the icon to use (e.g. 'page_edit', 'cross', ...) - only works with legacy icons
- *   _icon_name : name of the icon to use in order to use iconsets
+ *   _icon : name of the icon to use (e.g. 'page_edit', 'cross', ...)
  *   _icon_class : CSS class to use for the icon's IMG tag
  *   _menu_text : (see smarty icon function)
  *   _menu_icon : (see smarty icon function)
  *   _title : tooltip to display when the mouse is over the link. Use $content when _icon is used.
- *   _text : show text as part of the link (for instance, after the icon for a menu item)
  *   _alt : alt attribute for the icon's IMG tag (use _title if _alt is not specified).
  *   _script : specify another script than the current one (this disable AJAX for this link when the current script is different).
  *   _on* : specify values of on* (e.g. onclick) HTML attributes used for javascript events
@@ -93,30 +91,26 @@ function smarty_block_self_link($params, $content, $smarty, &$repeat = false)
 						$params['_template'] = '';
 					}
 					$ret = smarty_block_ajax_href(
-						array(
-							'template' => $params['_template'],
-							'htmlelement' => $params['_htmlelement'],
-							'_onclick' => $params['_onclick'],
-							'_anchor'=> $anchor
-						),
-						$ret,
-						$smarty,
-						$tmp = false
+									array(
+										'template' => $params['_template'], 
+										'htmlelement' => $params['_htmlelement'], 
+										'_onclick' => $params['_onclick'], 
+										'_anchor'=> $anchor
+									),
+									$ret,
+									$smarty,
+									$tmp = false
 					);
 				} else {
 					$ret = 'href="' . $ret . '"';
 				}
 			}
 
-			if ( isset($params['_icon']) || isset($params['_icon_name'])) {
+			if ( isset($params['_icon']) ) {
 				if ( ! isset($params['_title']) && $content != '' ) $params['_title'] = $content;
 				$smarty->loadPlugin('smarty_function_icon');
-				if (isset($params['_icon'])) {
-					$icon_params['_id'] = $params['_icon'];
-				} else {
-					$icon_params['name'] = $params['_icon_name'];
-				}
-				$icon_params['_type'] = $default_icon_type;
+
+				$icon_params = array('_id' => $params['_icon'], '_type' => $default_icon_type);
 				if ( isset($params['_alt']) ) {
 					$icon_params['alt'] = $params['_alt'];
 				} elseif ( isset($params['_title']) ) {
@@ -131,15 +125,11 @@ function smarty_block_self_link($params, $content, $smarty, &$repeat = false)
 				}
 				if ( isset($params['_menu_icon']) ) $icon_params['_menu_icon'] = $params['_menu_icon'];
 				if ( isset($params['_icon_class']) ) $icon_params['class'] = $params['_icon_class'];
-
+				
 				if ( isset($params['_width']) ) $icon_params['width'] = $params['_width'];
 				if ( isset($params['_height']) ) $icon_params['height'] = $params['_height'];
-
+				
 				$content = smarty_function_icon($icon_params, $smarty);
-
-				if (isset($params['_text'])) {
-					$content .= ' ' . $params['_text'];
-				}
 			}
 
 			$link = ( !empty($params['_class']) ? 'class="'.$params['_class'].'" ' : '' )
@@ -147,7 +137,7 @@ function smarty_block_self_link($params, $content, $smarty, &$repeat = false)
 				. ( !empty($params['_title']) ? 'title="' . str_replace('"', '\"', $params['_title']) . '" ' : '' )
 				. ( !empty($params['_rel']) ? 'rel="' . str_replace('"', '\"', $params['_rel']) . '" ' : '' );
 			foreach ( $params as $k => $v ) {
-				if ( strlen($k) > 3 && substr($k, 0, 3) == '_on' && !empty($v) ) {
+				if ( strlen($k) > 3 && substr($k, 0, 3) == '_on' ) {
 					$link .= htmlentities(substr($k, 1)).'="'.$v.'" '; // $v should be already htmlentitized in the template
 					unset($params[$k]);
 				}
@@ -162,10 +152,10 @@ function smarty_block_self_link($params, $content, $smarty, &$repeat = false)
 
 			if ( !empty($params['_sort_field']) ) {
 				$smarty->loadPlugin('smarty_function_show_sort');
-				$ret = "<a $link style='text-decoration:none;'>" . $content .
+				$ret .= "<a $link style='text-decoration:none;'>" . 
 								smarty_function_show_sort(
-									array('sort' => $params['_sort_arg'], 'var' => $params['_sort_field']),
-									$smarty
+												array('sort' => $params['_sort_arg'], 'var' => $params['_sort_field']),
+												$smarty
 								) . '</a>';
 			}
 		}

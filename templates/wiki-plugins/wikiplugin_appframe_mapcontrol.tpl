@@ -7,15 +7,8 @@ $('#appframe .map-container').bind('initialized', function () {
 		, mode
 		, controls = []
 		, func
-		, drawStyle = {
-			fillColor: "#6699cc",
-			strokeColor: "#6699cc",
-			pointRadius: 5,
-			fillOpacity: ".3",
-			strokeDashstyle: "solid"
-		}
 		;
-
+	
 	{{if $mapcontrol.function}}
 		func = function () {
 			{{$mapcontrol.function}};

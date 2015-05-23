@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -24,7 +24,6 @@ function prefs_print_list()
 			'description' => tra('URL to a service taking a URL as the query string and returns a PDF document.'),
 			'type' => 'text',
 			'size' => 50,
-			'dependencies' => array('auth_token_access'),
 			'default' => '',
 		),
 		'print_pdf_webkit_path' => array(
@@ -33,7 +32,6 @@ function prefs_print_list()
 			'type' => 'text',
 			'size' => 50,
 			'help' => 'wkhtmltopdf',
-			'dependencies' => array('auth_token_access'),
 			'default' => '',
 		),
 	);

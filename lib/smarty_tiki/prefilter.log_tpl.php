@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -15,8 +15,8 @@ function smarty_prefilter_log_tpl($source, $smarty)
 {
 	global $prefs;
 
-	if ($prefs['log_tpl'] != 'y' || strpos($smarty->template_resource, 'eval:') === 0 || strpos($source, '<!DOCTYPE ') === 0) {
-		// suppress log comment for templates that generate a DOCTYPE which must be output first, or evaluated templates
+	if ($prefs['log_tpl'] != 'y' || $smarty->template_resource == 'evaluated template' ||
+			in_array($smarty->template_resource, array('tiki.tpl', 'error.tpl'))) {	// suppress log comment for templates that generate a DOCTYPE which must be output first
 		return $source;
 	}
 	return '<!-- TPL: ' . $smarty->_current_file . ' -->' . $source . '<!-- /TPL: ' . $smarty->_current_file . ' -->';

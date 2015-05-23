@@ -1,191 +1,145 @@
 {* $Id$ *}
-{if !$tsAjax}
-	{title help="forums" admpage="forums"}{tr}Forums{/tr}{/title}
-	<div class="t_navbar margin-bottom-md">
-		{if $tiki_p_admin_forum eq 'y'}
-			{button href="tiki-admin_forums.php" class="btn btn-default" _icon_name="wrench" _text="{tr}Admin{/tr}"}
-		{/if}
-		{if $tiki_p_forum_read eq 'y' and $prefs.feature_forum_rankings eq 'y'}
-			{button href="tiki-forum_rankings.php" class="btn btn-default" _icon_name="ranking" _text="{tr}Rankings{/tr}"}
-		{/if}
-	</div>
-	{if !$tsOn}
-		{if $channels or ($find ne '')}
-			{if $prefs.feature_forums_search eq 'y' or $prefs.feature_forums_name_search eq 'y'}
+
+{title help="forums" admpage="forums"}{tr}Forums{/tr}{/title}
+
+{if $tiki_p_admin_forum eq 'y'}
+  <div class="navbar">
+		{button href="tiki-admin_forums.php" _text="{tr}Admin forums{/tr}"}
+  </div>
+{/if}
+
+{if $channels or ($find ne '')}
+	{if $prefs.feature_forums_search eq 'y' or $prefs.feature_forums_name_search eq 'y'}
+		<table class="findtable">
+			<tr>
+				<td class="findtable">{tr}Find{/tr}</td>
 				{if $prefs.feature_forums_name_search eq 'y'}
-					<form method="get" class="form" role="form" action="tiki-forums.php">
-						<div class="form-group">
-							<div class="input-group">
-								<span class="input-group-addon">
-									{icon name="search"}
-								</span>
-								<input type="text" name="find" class="form-control" value="{$find|escape}" placeholder="{tr}Find{/tr}...">
-								<div class="input-group-btn">
-									<input type="hidden" name="sort_mode" value="{$sort_mode|escape}">
-									<input type="submit" class="btn btn-default" value="{tr}Search by name{/tr}" name="search">
-								</div>
-							</div>
-						</div>
-					</form>
+					<td class="findtable">
+						<form method="get" action="tiki-forums.php">
+							<input type="text" name="find" value="{$find|escape}" />
+							<input type="submit" value="{tr}Search by name{/tr}" name="search" />
+							<input type="hidden" name="sort_mode" value="{$sort_mode|escape}" />
+						</form>
+					</td>
 				{/if}
+
 				{if $prefs.feature_forums_search eq 'y' and $prefs.feature_search eq 'y'}
-                    <div class="row margin-bottom-md">
-                    <div class="col-md-5 col-md-offset-7">
-					<form class="form" method="get" role="form" action="{if $prefs.feature_search_fulltext neq 'y'}tiki-searchindex.php{else}tiki-searchresults.php{/if}">
-						<div class="form-group">
-							<div class="input-group">
-								<span class="input-group-addon">
-									{icon name="search"}
-								</span>
-								<input name="highlight" type="text" class="form-control" placeholder="{tr}Find{/tr}...">
-								<div class="input-group-btn">
-									<input type="hidden" name="where" value="forums">
-									<input type="hidden" name="filter~type" value="forum post">
-									<input type="submit" class="wikiaction btn btn-default" name="search" value="{tr}Search in content{/tr}">
-								</div>
-							</div>
-						</div>
-					</form>
-                    </div></div>
+					<td>
+						<form class="forms" method="get" action="{if $prefs.feature_forum_local_tiki_search eq 'y'}tiki-searchindex.php{else}tiki-searchresults.php{/if}">
+							<input name="highlight" size="30" type="text" />
+							<input type="hidden" name="where" value="forums" />
+							<input type="submit" class="wikiaction" name="search" value="{tr}Search in content{/tr}"/>
+						</form>
+					</td>
 				{/if}
-			{/if}
-		{/if}
+			</tr>
+		</table>
 	{/if}
 {/if}
-{* Use css menus as fallback for item dropdown action menu if javascript is not being used *}
-{if $prefs.javascript_enabled !== 'y'}
-	{$js = 'n'}
-	{$libeg = '<li>'}
-	{$liend = '</li>'}
-{else}
-	{$js = 'y'}
-	{$libeg = ''}
-	{$liend = ''}
-{/if}
-<div id="{$ts_tableid}-div" class="{if $js === 'y'}table-responsive{/if} ts-wrapperdiv" {if $tsOn}style="visibility:hidden;"{/if}> {*the table-responsive class cuts off dropdown menus *}
-	<table id="{$ts_tableid}" class="table table-striped table-hover normal">
-		<input type="hidden" {if $tsOn}id="{$ts_offsetid|escape}" {/if}name="offset" value="{$offset|escape}">
-		<input type="hidden" {if $tsOn}id="{$ts_countid|escape}" {/if}name="count" value="{$cant|escape}">
-		<thead>
-			<tr>
-				{$numbercol = 1}
-				<th id="name">{self_link _sort_arg='sort_mode' _sort_field='name'}{tr}Name{/tr}{/self_link}</th>
+<table class="normal">
+	<tr>
+		{assign var=numbercol value=1}
+		<th>{self_link _sort_arg='sort_mode' _sort_field='name'}{tr}Name{/tr}{/self_link}</th>
+		 
+		{if $prefs.forum_list_topics eq 'y'}
+			{assign var=numbercol value=$numbercol+1}
+			<th>{self_link _sort_arg='sort_mode' _sort_field='threads'}{tr}Topics{/tr}{/self_link}</th>
+		{/if}	
 
-				{if $prefs.forum_list_topics eq 'y'}
-					{$numbercol = $numbercol + 1}
-					<th id="threads" class="text-right">{self_link _sort_arg='sort_mode' _sort_field='threads'}{tr}Topics{/tr}{/self_link}</th>
-				{/if}
+		{if $prefs.forum_list_posts eq 'y'}
+			{assign var=numbercol value=$numbercol+1}
+			<th>{self_link _sort_arg='sort_mode' _sort_field='comments'}{tr}Posts{/tr}{/self_link}</th>
+		{/if}	
 
-				{if $prefs.forum_list_posts eq 'y'}
-					{$numbercol = $numbercol + 1}
-					<th id="comments" class="text-right">{self_link _sort_arg='sort_mode' _sort_field='comments'}{tr}Posts{/tr}{/self_link}</th>
-				{/if}
+		{if $prefs.forum_list_ppd eq 'y'}
+			{assign var=numbercol value=$numbercol+1}
+			<th>{tr}PPD{/tr}</th>
+		{/if}	
 
-				{if $prefs.forum_list_ppd eq 'y'}
-					{$numbercol = $numbercol + 1}
-					<th id="ppd">{tr}PPD{/tr}</th>
-				{/if}
+		{if $prefs.forum_list_lastpost eq 'y'}	
+			{assign var=numbercol value=$numbercol+1}
+			<th>{self_link _sort_arg='sort_mode' _sort_field='lastPost'}{tr}Last Post{/tr}{/self_link}</th>
+		{/if}
 
-				{if $prefs.forum_list_lastpost eq 'y'}
-					{$numbercol = $numbercol + 1}
-					<th id="lastPost">{self_link _sort_arg='sort_mode' _sort_field='lastPost'}{tr}Last Post{/tr}{/self_link}</th>
-				{/if}
+		{if $prefs.forum_list_visits eq 'y'}
+			{assign var=numbercol value=$numbercol+1}
+			<th>{self_link _sort_arg='sort_mode' _sort_field='hits'}{tr}Visits{/tr}{/self_link}</th>
+		{/if}	
+		
+		{assign var=numbercol value=$numbercol+1}
+		<th>{tr}Actions{/tr}</th>
+	</tr>
 
-				{if $prefs.forum_list_visits eq 'y'}
-					{$numbercol = $numbercol + 1}
-					<th id="hits" class="text-right">{self_link _sort_arg='sort_mode' _sort_field='hits'}{tr}Visits{/tr}{/self_link}</th>
-				{/if}
-				{$numbercol = $numbercol + 1}
-				<th id="actions"></th>
-			</tr>
-		</thead>
-		<tbody>
-			{assign var=section_old value=""}
-			{section name=user loop=$channels}
-				{assign var=section value=$channels[user].section}
-				{if $section ne $section_old}
-					{assign var=section_old value=$section}
-					<td class="third info" colspan="{$numbercol}">{$section|escape}</td>
-				{/if}
-
+	{assign var=section_old value=""}
+	{section name=user loop=$channels}
+		{cycle values="odd,even" print=false}
+		{assign var=section value=$channels[user].section}
+		{if $section ne $section_old}
+			{assign var=section_old value=$section}
+			{if ($tiki_p_admin eq 'y' or $tiki_p_admin_forum eq 'y')} 
 				<tr>
-					<td class="text">
-						{if (isset($channels[user].individual) and $channels[user].individual eq 'n')
-							or ($tiki_p_admin eq 'y') or ($channels[user].individual_tiki_p_forum_read eq 'y')}
-							<a class="forumname" href="{$channels[user].forumId|sefurl:'forum'}">{$channels[user].name|addongroupname|escape}</a>
-						{else}
-							{$channels[user].name|addongroupname|escape}
-						{/if}
-						{if $prefs.forum_list_desc eq 'y'}
-							<div class="help-block">
-								{capture name="parsedDesc"}{wiki}{$channels[user].description}{/wiki}{/capture}
-								{if strlen($smarty.capture.parsedDesc) < $prefs.forum_list_description_len}
-									{$smarty.capture.parsedDesc}
-								{else}
-									{$smarty.capture.parsedDesc|strip_tags|truncate:$prefs.forum_list_description_len:"...":true}
-								{/if}
-							</div>
-						{/if}
-					</td>
-					{if $prefs.forum_list_topics eq 'y'}
-						<td class="integer">{$channels[user].threads}</td>
-					{/if}
-					{if $prefs.forum_list_posts eq 'y'}
-						<td class="integer">{$channels[user].comments}</td>
-					{/if}
-					{if $prefs.forum_list_ppd eq 'y'}
-						<td class="integer">{$channels[user].posts_per_day|string_format:"%.2f"}</td>
-					{/if}
-					{if $prefs.forum_list_lastpost eq 'y'}
-						<td class="text">
-							{if isset($channels[user].lastPost)}
-								{$channels[user].lastPost|tiki_short_datetime}<br>
-								{if $prefs.forum_reply_notitle neq 'y'}<small><i>{$channels[user].lastPostData.title|escape}</i>{/if}
-								{tr}by{/tr} {$channels[user].lastPostData.userName|username}</small>
-							{/if}
-						</td>
-					{/if}
-					{if $prefs.forum_list_visits eq 'y'}
-						<td class="integer">{$channels[user].hits}</td>
-					{/if}
-					<td class="action">
-						{capture name=forum_actions}
-							{strip}
-								{$libeg}<a href="{$channels[user].forumId|sefurl:'forum'}">
-									{icon name="view" _menu_text='y' _menu_icon='y' alt="{tr}View{/tr}"}
-								</a>{$liend}
-								{if ($tiki_p_admin eq 'y') or (($channels[user].individual eq 'n') and ($tiki_p_admin_forum eq 'y')) or ($channels[user].individual_tiki_p_admin_forum eq 'y')}
-									{$libeg}<a href="tiki-admin_forums.php?forumId={$channels[user].forumId}&amp;cookietab=2#content_admin_forums1-2">
-										{icon name="edit" _menu_text='y' _menu_icon='y' alt="{tr}Edit{/tr}"}
-									</a>{$liend}
-								{/if}
-							{/strip}
-						{/capture}
-						{if $js === 'n'}<ul class="cssmenu_horiz"><li>{/if}
-						<a
-							class="tips"
-							title="{tr}Actions{/tr}"
-							href="#"
-							{if $js === 'y'}{popup delay="0|2000" fullhtml="1" center=true text=$smarty.capture.forum_actions|escape:"javascript"|escape:"html"}{/if}
-							style="padding:0; margin:0; border:0"
-						>
-							{icon name='wrench'}
-						</a>
-						{if $js === 'n'}
-							<ul class="dropdown-menu" role="menu">{$smarty.capture.forum_actions}</ul></li></ul>
-						{/if}
-					</td>
+					<td class="third" colspan="7">{$section|escape}</td>
 				</tr>
-			{sectionelse}
-				{if !$tsOn || ($tsOn && $tsAjax)}
-					{norecords _colspan=$numbercol _text="{tr}No forums found{/tr}"}
-				{else}
-					{norecords _colspan=$numbercol _text="{tr}Loading{/tr}..."}
+			{else}
+				<tr>
+					<td class="third" colspan="6">{$section|escape}</td>
+				</tr>
+			{/if}
+		{/if}
+
+		<tr class="{cycle}">
+			<td class="text">
+				<span style="float:left">
+					{if ($channels[user].individual eq 'n') or ($tiki_p_admin eq 'y') or ($channels[user].individual_tiki_p_forum_read eq 'y')}
+						<a class="forumname" href="tiki-view_forum.php?forumId={$channels[user].forumId}">{$channels[user].name|escape}</a>
+					{else}
+						{$channels[user].name|escape}
+					{/if}
+				</span>
+				{if $prefs.forum_list_desc eq 'y'}
+					<br />
+					<div class="subcomment">
+						{capture name="parsedDesc"}{wiki}{$channels[user].description}{/wiki}{/capture}
+						{if strlen($smarty.capture.parsedDesc) < $prefs.forum_list_description_len}
+							{$smarty.capture.parsedDesc}
+						{else}
+							{$smarty.capture.parsedDesc|strip_tags|truncate:$prefs.forum_list_description_len:"...":true}
+						{/if}
+					</div>
 				{/if}
-			{/section}
-		</tbody>
-	</table>
-</div>
-{if !$tsOn}
-	{pagination_links cant=$cant step=$prefs.maxRecords offset=$offset}{/pagination_links}
-{/if}
+			</td>
+			{if $prefs.forum_list_topics eq 'y'}
+				<td class="integer">{$channels[user].threads}</td>
+			{/if}
+			{if $prefs.forum_list_posts eq 'y'}
+				<td class="integer">{$channels[user].comments}</td>
+			{/if}
+			{if $prefs.forum_list_ppd eq 'y'}
+				<td class="integer">{$channels[user].posts_per_day|string_format:"%.2f"}</td>
+			{/if}
+			{if $prefs.forum_list_lastpost eq 'y'}	
+				<td class="text">
+					{if isset($channels[user].lastPost)}
+						{$channels[user].lastPost|tiki_short_datetime}<br />
+						{if $prefs.forum_reply_notitle neq 'y'}<small><i>{$channels[user].lastPostData.title|escape}</i>{/if}
+						{tr}by{/tr} {$channels[user].lastPostData.userName|username}</small>
+					{/if}
+				</td>
+			{/if}
+			{if $prefs.forum_list_visits eq 'y'}
+				<td class="integer">{$channels[user].hits}</td>
+			{/if}	
+
+			<td class="action">
+				<a class="admlink" title="{tr}View{/tr}" href="tiki-view_forum.php?forumId={$channels[user].forumId}">{icon _id='table' alt="{tr}View{/tr}"}</a>
+				{if ($tiki_p_admin eq 'y') or (($channels[user].individual eq 'n') and ($tiki_p_admin_forum eq 'y')) or ($channels[user].individual_tiki_p_admin_forum eq 'y')}
+					<a class="admlink" title="{tr}Configure Forum{/tr}" href="tiki-admin_forums.php?forumId={$channels[user].forumId}&amp;cookietab=2">{icon _id='page_edit'}</a>
+				{/if}
+			</td>
+		</tr>
+	{sectionelse}
+		{norecords _colspan=$numbercol}
+	{/section}
+</table>
+
+{pagination_links cant=$cant step=$prefs.maxRecords offset=$offset}{/pagination_links}

@@ -1,13 +1,13 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 /**
  * Handler class for User Subscription
- *
+ * 
  * Letter key: ~U~
  *
  */
@@ -21,8 +21,8 @@ class Tracker_Field_UserSubscription extends Tracker_Field_Abstract
 				'description' => tr('Allows registered users to subscribe themselves to a tracker item. The item should ideally only be editable by the creator or administrators. Prepend the maximum amount of subscribers to the field value foloowed by # if such a limit is desired. E.g. 50# means that 50 subscriptions will be allowed for this item.'),
 				'help' => 'Subscription Tracker Field',
 				'prefs' => array('trackerfield_subscription'),
+				'tags' => array('experimental'),
 				'default' => 'n',
-				'tags' => array('advanced'),
 				'params' => array(
 				),
 			),
@@ -31,7 +31,7 @@ class Tracker_Field_UserSubscription extends Tracker_Field_Abstract
 
 	function getFieldData(array $requestData = array())
 	{
-		global $user, $jitPost;
+		global $user;
 		$userlib = TikiLib::lib('user');
 		$smarty = TikiLib::lib('smarty');
 
@@ -42,24 +42,16 @@ class Tracker_Field_UserSubscription extends Tracker_Field_Abstract
 			return array( 'value' => $value);
 		} else {
 			$value = $this->getValue();
-			if (!$value) {
-				$value = '0#';		// default to unlimited
-			}
 		}
 		$current_field_ins = $this->parseUsers($value);
-
-		if (isset($requestData['user_subscribe']) || $jitPost->user_subscribe->word()) { // check jitPost too which is used for trackerlist etc
+		if (isset($requestData['user_subscribe'])) { // TODO: do only one time
 			$found = false;
-			if ($current_field_ins['maxsubscriptions']) {
-				$nb = min($current_field_ins['maxsubscriptions'], intval($requestData['user_friends']));
-			} else {
-				$nb = isset($requestData['user_friends']) ? intval($requestData['user_friends']) : $jitPost->user_friends->int();
-			}
+			$nb =  min($current_field_ins['maxsubscriptions'], intval($requestData['user_friends']));
 			foreach ($current_field_ins['users_array'] as $i=>$U) {
 				if ($U['login'] == $user) {
 					$current_field_ins['users_array'][$i]['friends'] = $nb;
 					$found = true;
-					break;
+					break;					
 				}
 			}
 			if (!$found) {
@@ -72,13 +64,14 @@ class Tracker_Field_UserSubscription extends Tracker_Field_Abstract
 			$this->save($value);
 			$current_field_ins = $this->parseUsers($value);
 		}
-		if (isset($requestData['user_unsubscribe']) || $jitPost->user_unsubscribe->word()) {
+		if (isset($requestData['user_unsubscribe'])) { // TODO: do only one time
 			foreach ($current_field_ins['users_array'] as $i=>$U) {
 				if ($U['login'] == $user) {
 					unset($current_field_ins['users_array'][$i]);
 					$value = $this->encodeUsers($current_field_ins);
 					$this->save($value);
 					$current_field_ins = $this->parseUsers($value);
+					$current_field_ins['user_subscription'] = true;
 					break;
 				}
 			}
@@ -87,7 +80,7 @@ class Tracker_Field_UserSubscription extends Tracker_Field_Abstract
 		$smarty->assign('current_field_ins', $current_field_ins);
 		return $current_field_ins;
 	}
-
+	
 	function renderInput($context = array())
 	{
 		return $this->renderTemplate('trackerinput/usersubscription.tpl', $context);
@@ -122,12 +115,12 @@ class Tracker_Field_UserSubscription extends Tracker_Field_Abstract
 		foreach ($match[1] as $j => $id_user) {
 			$temp = $userlib->get_userId_info($id_user);
 			array_push(
-				$users_array,
-				array(
-					'id' => $id_user,
-					'login' => $temp['login'],
-					'friends' => $match[2][$j]
-				)
+							$users_array, 
+							array(
+								'id' => $id_user,
+								'login' => $temp['login'],
+								'friends' => $match[2][$j]
+							)
 			);
 			$current_field_ins['user_nb_users'] += $match[2][$j] + 1;
 			if ($id_user == $id_tiki_user) {

@@ -1,26 +1,20 @@
 {* $Id$ *}
 
-<div class="t_navbar btn-group form-group">
-	{button href="tiki-admingroups.php" class="btn btn-default" _text="{tr}Admin Groups{/tr}"}
-	{button href="tiki-adminusers.php" class="btn btn-default" _text="{tr}Admin Users{/tr}"}
-	{permission_link mode=button label="{tr}Manage permissions{/tr}"}
+<div class="navbar">
+	{button href="tiki-admingroups.php" _text="{tr}Admin Groups{/tr}"}
+	{button href="tiki-adminusers.php" _text="{tr}Admin Users{/tr}"}
+	{button href="tiki-objectpermissions.php" _text="{tr}Manage permissions{/tr}"}	
 </div>
 
 <form action="tiki-admin.php?page=community" method="post">
 	<input type="hidden" name="ticket" value="{$ticket|escape}">
-	<div class="row">
-		<div class="form-group col-lg-12 clearfix">
-			<div class="pull-right">
-				<input type="submit" class="btn btn-primary btn-sm" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}">
-			</div>
-		</div>
+	<div class="input_submit_container clear" style="text-align: right;">
+		<input type="submit" value="{tr}Change preferences{/tr}" />
 	</div>
-
 
 	{tabset name="admin_community"}
 		{tab name="{tr}User features{/tr}"}
-			<h2>{tr}User features{/tr}</h2>
-
+	
 			<div class="admin featurelist">
 				{preference name=feature_score}
 				{preference name=feature_mytiki}
@@ -29,21 +23,6 @@
 				{preference name=feature_notepad}
 				{preference name=feature_user_bookmarks}
 				{preference name=feature_contacts}
-				{preference name=monitor_enabled}
-				<div class="adminoptionboxchild" id="monitor_enabled_childcontainer">
-
-					{preference name=monitor_individual_clear}
-					{preference name=monitor_count_refresh_interval}
-					{preference name=monitor_reply_email_pattern}
-					{preference name=monitor_digest}
-					<div class="alert alert-warning">
-						<p>{tr}For the digest emails to be sent out, you will need to set-up a cron job.{/tr}</p>
-						<p>{tr}Adjust the command parameters for your digest frequency. Default frequency is 7 days.{/tr}</p>
-						<strong>{tr}Sample command:{/tr}</strong>
-						<code>/usr/bin/php {$monitor_command|escape}</code>
-					</div>
-				</div>
-				{preference name=feature_user_watches_translations}
 				{preference name=feature_user_watches}
 				{preference name=feature_group_watches}
 				{preference name=feature_daily_report_watches}
@@ -58,7 +37,7 @@
 				<div class="adminoptionboxchild" id="feature_userfiles_childcontainer">
 					{preference name=feature_use_fgal_for_user_files}
 				</div>
-				{preference name=feature_webmail}
+				{preference name=feature_webmail}				
 				{preference name=feature_userlevels}
 				{preference name=feature_groupalert}
 				{preference name=change_theme}
@@ -71,83 +50,10 @@
 				{preference name=feature_group_transition}
 				{preference name=user_favorites}
 				{preference name=feature_invite}
-				{preference name=feature_wizard_user}
-				{preference name=mustread_enabled}
-				<div class="adminoptionboxchild" id="mustread_enabled_childcontainer">
-					{preference name=mustread_tracker}
-				</div>
 			</div>
 		{/tab}
-
-		{tab name="{tr}Social Network{/tr}"}
-			<h2>{tr}Social Network{/tr}</h2>
-			<fieldset class="table">
-				<legend>{tr}Friendship and Followers{/tr}</legend>
-				{preference name=feature_friends}
-				<div class="adminoptionboxchild" id="feature_friends_childcontainer">
-					{preference name=social_network_type}
-					<fieldset>
-						<legend>{tr}Select which items to display when listing users{/tr}</legend>
-						{preference name=user_list_order}
-						{preference name=feature_community_list_name}
-						{preference name=feature_community_list_score}
-						{preference name=feature_community_list_country}
-						{preference name=feature_community_list_distance}
-					</fieldset>
-				</div>
-			</fieldset>
-
-			<fieldset class="table">
-				<legend>{tr}Activity Stream{/tr}</legend>
-				{preference name=activity_basic_events}
-
-				<div class="adminoptionboxchild" id="activity_basic_events_childcontainer">
-					{preference name=activity_basic_tracker_create}
-					{preference name=activity_basic_tracker_update}
-					{preference name=activity_basic_user_follow_add}
-					{preference name=activity_basic_user_follow_incoming}
-					{preference name=activity_basic_user_friend_add}
-				</div>
-				{preference name=activity_custom_events}
-                {preference name=activity_notifications}
-
-				<div class="adminoptionboxchild" id="activity_custom_events_childcontainer">
-					{* former add_dracula() *}
-					{$headerlib->add_jsfile('lib/dracula/raphael-min.js', true)}
-					{$headerlib->add_jsfile('lib/dracula/graffle.js', true)}
-					{$headerlib->add_jsfile('lib/dracula/graph.js', true)}
-					{$headerlib->add_jsfile('lib/jquery_tiki/activity.js', true)}
-					<div id="graph-canvas" class="graph-canvas" data-graph-nodes="{$event_graph.nodes|@json_encode|escape}" data-graph-edges="{$event_graph.edges|@json_encode|escape}"></div>
-					<div><button href="#" id="graph-draw" class="button">{tr}Draw Event Diagram{/tr}</button></div>
-					<div><button href="{service controller=managestream action=list}" id="show-rules">{tr}Show Rules{/tr}</button></div>
-					{jq}
-						$('#graph-draw').click(function(e) {
-							$('#graph-canvas')
-								.empty()
-								.css('width', $window.width() - 50)
-								.css('height', $window.height() - 130)
-								.dialog({
-									title: "Events",
-									width: $window.width() - 20,
-									height: $window.height() - 100
-								})
-								.drawGraph();
-							return false;
-						});
-					{/jq}
-				</div>
-			</fieldset>
-
-			<fieldset>
-				<legend>{tr}Goal, Recognition and Rewards{/tr}</legend>
-				{preference name=goal_enabled}
-				{preference name=goal_badge_tracker}
-				{preference name=goal_group_blacklist}
-			</fieldset>
-		{/tab}
-
+		
 		{tab name="{tr}Plugins{/tr}"}
-			<h2>{tr}Plugins{/tr}</h2>
 			{preference name=wikiplugin_author}
 			{preference name=wikiplugin_avatar}
 			{preference name=wikiplugin_favorite}
@@ -156,38 +62,35 @@
 			{preference name=wikiplugin_invite}
 			{preference name=wikiplugin_mail}
 			{preference name=wikiplugin_map}
-			{preference name=wikiplugin_memberlist}
+			{preference name=wikiplugin_memberlist}				
 			{preference name=wikiplugin_memberpayment}
 			{preference name=wikiplugin_perm}
 			{preference name=wikiplugin_proposal}
 			{preference name=wikiplugin_realnamelist}
 			{preference name=wikiplugin_subscribegroup}
-			{preference name=wikiplugin_subscribegroups}
-			{preference name=wikiplugin_topfriends}
+			{preference name=wikiplugin_subscribegroups}			
+			{preference name=wikiplugin_topfriends}		
 			{preference name=wikiplugin_usercount}
 			{preference name=wikiplugin_userlink}
 			{preference name=wikiplugin_userlist}
 			{preference name=wikiplugin_userpref}
 		{/tab}
-
+		
 
 		{tab name="{tr}General Settings{/tr}"}
-			<h2>{tr}General Settings{/tr}</h2>
 			{preference name=user_show_realnames}
-			{preference name=user_in_search_result}
 			{preference name=highlight_group}
 			{preference name=feature_display_my_to_others}
 			{preference name=user_tracker_infos}
-			{preference name=user_use_gravatar}
 
 			{preference name=user_who_viewed_my_stuff}
 			{preference name=user_who_viewed_my_stuff_days}
 			{preference name=user_who_viewed_my_stuff_show_others}
-
+			
 			{preference name=user_store_file_gallery_picture}
 			{preference name=user_picture_gallery_id}
 			{preference name=user_default_picture_id}
-
+			
 			<input type="hidden" name="userfeatures" />
 			<fieldset>
 				<legend>{tr}Community{/tr}{help url="Community"}</legend>
@@ -197,6 +100,7 @@
 					{preference name=feature_community_mouseover_name}
 					{preference name=feature_community_mouseover_gender}
 					{preference name=feature_community_mouseover_picture}
+					{preference name=feature_community_mouseover_friends}
 					{preference name=feature_community_mouseover_score}
 					{preference name=feature_community_mouseover_country}
 					{preference name=feature_community_mouseover_email}
@@ -205,6 +109,7 @@
 				</div>
 			</fieldset>
 
+			<input type="hidden" name="users_defaults" />
 			{* ************ Users Default Preferences *}
 			<fieldset>
 				<legend>
@@ -240,7 +145,7 @@
 			</fieldset>
 
 			<fieldset>
-				<legend>{tr}My Account{/tr}</legend>
+				<legend>{tr}My Tiki{/tr}</legend>
 				{preference name=users_prefs_mytiki_pages}
 				{preference name=users_prefs_mytiki_blogs}
 				{preference name=users_prefs_mytiki_gals}
@@ -252,8 +157,23 @@
 			</fieldset>
 		{/tab}
 
+		{tab name="{tr}Friendship Network{/tr}"}
+			{preference name=feature_friends}
+			<div class="adminoptionboxchild" id="feature_friends_childcontainer">
+				<div class="adminoptionbox">
+					<div class="adminoptionlabel">
+						{tr}Select which items to display when listing users{/tr}.
+					</div>
+				</div>
+				{preference name=user_list_order}
+				{preference name=feature_community_list_name}
+				{preference name=feature_community_list_score}
+				{preference name=feature_community_list_country}
+				{preference name=feature_community_list_distance}
+			</div>
+
+		{/tab}
 		{tab name="{tr}BigBlueButton{/tr}"}
-			<h2>{tr}BigBlueButton{/tr}</h2>
 			{preference name=bigbluebutton_feature}
 			<div class="adminoptionboxchild" id="bigbluebutton_feature_childcontainer">
 				{preference name=bigbluebutton_server_location}
@@ -262,15 +182,8 @@
 				{preference name=wikiplugin_bigbluebutton}
 			</div>
 		{/tab}
-
 	{/tabset}
-
-	<br>{* I cheated. *}
-	<div class="row">
-		<div class="form-group col-lg-12 clearfix">
-			<div class="text-center">
-				<input type="submit" class="btn btn-primary btn-sm" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}">
-			</div>
-		</div>
+	<div class="input_submit_container clear" style="text-align: center;">
+		<input type="submit" value="{tr}Change preferences{/tr}" />
 	</div>
 </form>

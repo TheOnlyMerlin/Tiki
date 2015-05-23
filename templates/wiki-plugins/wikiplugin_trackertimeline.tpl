@@ -6,14 +6,14 @@ ttl_showdetails = function( data ) {
 		height: 300,
 		html:	'<h3>' + data.title + '</h3>' +
 				'<p>' + ( data.fstart ) + ' to ' + ( data.fend ) + '</p>'
-				+ '<p>' + ( data.psummary ) + '</p>'
-				+ '<p class="text-right"><a href="tiki-view_tracker_item.php?itemId=' + escape(data.item) + '">Link</a></p>'
+			   + '<p>' + ( data.psummary ) + '</p>'
+			   + '<p class="right"><a href="tiki-view_tracker_item.php?itemId=' + escape(data.item) + '">Link</a></p>'
 	});
 }
 {/jq}
 <table style="width: 100%;">
-	<col width="10%">
-	<col width="90%">
+	<col width="10%"/>
+	<col width="90%"/>
 	{foreach from=$layouts item=layout}
 	<tr>
 		<td></td>

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -17,10 +17,8 @@ class Search_Expr_Parser
 		foreach ($tokenizer->tokenize($string) as $part) {
 			if (in_array(strtoupper($part), $this->special)) {
 				$tokens[] = strtoupper($part);
-			} elseif (strpos($part, ' ') === false) {
-				$tokens[] = new Search_Expr_Token($part);
 			} else {
-				$tokens[] = new Search_Expr_ExplicitPhrase($part);
+				$tokens[] = new Search_Expr_Token($part);
 			}
 		}
 
@@ -37,38 +35,15 @@ class Search_Expr_Parser
 		$tokens = $this->applyOperator($tokens, '+', 'buildAnd');
 		$tokens = array_values($tokens);
 
-		if (count($tokens) === 0) {
-			return new Search_Expr_ImplicitPhrase([]);
-		} elseif (count($tokens) === 1) {
+		if (count($tokens) === 1) {
 			return reset($tokens);
-		}
-
-		// Separate the implicit phrase tokens into tokens of the same type.
-		// Explicit Token Token Explicit -> (Explicit (Token Token) Explicit)
-		$parts = [];
-		$key = 0;
-		$initialClass = get_class(reset($tokens));
-
-		foreach ($tokens as $token) {
-			$class = get_class($token);
-			if ($initialClass != $class) {
-				$key++;
-				$initialClass = $class;
-			}
-
-			$parts[$key][] = $token;
-		}
-
-		if (count($parts) === 1) {
-			return new Search_Expr_ImplicitPhrase(reset($parts));
 		} else {
-			return new Search_Expr_ImplicitPhrase(array_map(function ($p) {
-				if (count($p) === 1) {
-					return reset($p);
-				} else {
-					return new Search_Expr_ImplicitPhrase($p);
-				}
-			}, $parts));
+			global $prefs;
+			if ($prefs['unified_lucene_default_operator'] == Zend_Search_Lucene_Search_QueryParser::B_AND) {
+				return new Search_Expr_And($tokens);
+			} else {
+				return new Search_Expr_Or($tokens);
+			}
 		}
 	}
 
@@ -157,12 +132,8 @@ class Search_Expr_Parser
 
 	private function buildNot(&$tokens, $key)
 	{
-		if (isset($tokens[$key + 1])) {
-			$tokens[$key] = new Search_Expr_Not($tokens[$key + 1]);
-			$tokens[$key + 1] = null;
-		} else {
-			$tokens[$key] = null;
-		}
+		$tokens[$key] = new Search_Expr_Not($tokens[$key + 1]);
+		$tokens[$key + 1] = null;
 	}
 
 	private function filterExcessiveKeywords($tokens)

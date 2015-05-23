@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,11 +7,6 @@
 
 $section_class = 'tiki_login';	// This will be body class instead of $section
 include_once ("tiki-setup.php");
-
-if ($prefs['login_autologin'] == 'y' && $prefs['login_autologin_redirectlogin'] == 'y' && !empty($prefs['login_autologin_redirectlogin_url'])) {
-	$access->redirect($prefs['login_autologin_redirectlogin_url']);
-}
-
 if (isset($_REQUEST['clearmenucache'])) {
 	TikiLib::lib('menu')->empty_menu_cache();
 }
@@ -35,6 +27,20 @@ $headerlib->add_js('$(document).ready( function() {$("#login-user").focus().sele
 // disallow robots to index page:
 $smarty->assign('metatag_robots', 'NOINDEX, NOFOLLOW');
 $smarty->assign('headtitle', tra('Log In'));
+$module_params = array(
+	'mode' => 'module',
+	'show_register'		=> 'y',
+	'show_forgot'		=> 'y',
+	'error'				=> '',
+	'flip'				=> '',
+	'decorations'		=> '',
+	'nobox'				=> '',
+	'notitle'			=> '',
+	'style'				=> '',
+);
+$smarty->assign('mode', '');
+$smarty->assign('section', '');
+$smarty->assign('module_params', $module_params);
 $smarty->assign('mid', 'tiki-login.tpl');
 
 $smarty->display("tiki.tpl");

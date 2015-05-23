@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,6 +11,7 @@
 // Mediawiki authentication plugin for phpBB3 with mysql4
 // By Steve Streeting 26 Dec 2008
 
+require_once('lib/adodb/adodb.inc.php');
 require_once ('lib/auth/PasswordHash.php');
 
 // some definitions for helping with authentication
@@ -57,12 +58,6 @@ class TikiPhpBBLib
 		$dbname = $prefs['auth_phpbb_dbname'];
 		$dbtype = 'mysql';//$prefs['auth_phpbb_dbtype'];
 
-		// Force autoloading
-		if (! class_exists('ADOConnection')) {
-			return false;
-		}
-
-
 		$dbconnection = NewADOConnection($dbtype);
 		$dbconnection->Connect($dbhost, $dbuser, $dbpasswd, $dbname);
 
@@ -84,7 +79,6 @@ class TikiPhpBBLib
 		global $prefs;
 
 		$dbconnection = $this->connectdb();
-		$username = $dbconnection->Quote($username);
 
 		// MySQL queries are case insensitive anyway
 		$query = "select username from ".$prefs['auth_phpbb_table_prefix']."users where lcase(username) = lcase('". $username ."')";
@@ -110,7 +104,6 @@ class TikiPhpBBLib
 		global $prefs;
 
 		$dbconnection = $this->connectdb();
-		$username = $dbconnection->Quote($username);
 
 		$query = "select user_password from ".$prefs['auth_phpbb_table_prefix']."users where lcase(username) = lcase('". $username ."')";
 		$result = $dbconnection->Execute($query);
@@ -142,7 +135,6 @@ class TikiPhpBBLib
 	{
 		global $prefs;
 		$dbconnection = $this->connectdb();
-		$username = $dbconnection->Quote($username);
 
 		// Just add email
 		$query = "select user_email from ".$prefs['auth_phpbb_table_prefix'] . "users where lcase(username) = lcase('". $username ."')";

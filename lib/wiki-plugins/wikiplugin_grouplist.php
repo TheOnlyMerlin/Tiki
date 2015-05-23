@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -43,29 +43,13 @@ function wikiplugin_grouplist_info()
 					array('text' => tra('No'), 'value' => 'n')
 				)
 			),
-            'own' => array(
-                'required' => false,
-                'name' => tra('List only your own'),
-                'description' => tra('Filter the list of groups to include only the groups from the user viewing the page (default is not to filter)'),
-                'default' => 'n',
-                'filter' => 'alpha',
-                'options' => array(
-                    array('text' => '', 'value' => ''),
-                    array('text' => tra('Yes'), 'value' => 'y'),
-                    array('text' => tra('No'), 'value' => 'n')
-                )
-            ),
 		),
 	);
 }
 
 function wikiplugin_grouplist( $data, $params )
 {
-	global $user;
-	$userlib = TikiLib::lib('user');
-	$smarty = TikiLib::lib('smarty');
-	$access = TikiLib::lib('access');
-
+	global $smarty, $userlib, $access;
 	$default = array('recur' => 'n', 'linkhome' => 'n');
 	$params = array_merge($default, $params);
 	if ($params['linkhome'] == 'y') {
@@ -76,11 +60,6 @@ function wikiplugin_grouplist( $data, $params )
 	} else {
 		$groups = $userlib->get_including_groups($params['group'], $params['recur']);
 	}
-    if (!empty($params['own']) && $params['own'] == 'y') {
-        $user_details = $userlib->get_user_details($user);
-        $groups_user = $user_details['groups'];
-        $groups = array_intersect_key($groups_user, $groups);
-    }
 	$groups = $userlib->get_group_info($groups);
 	$smarty->assign_by_ref('groups', $groups);
 	$smarty->assign_by_ref('params', $params);

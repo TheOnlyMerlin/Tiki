@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -34,7 +34,6 @@ class Services_Comment_Controller
 		$this->markEditable($comments['data']);
 
 		return array(
-			'title' => tr('Comments'),
 			'comments' => $comments['data'],
 			'type' => $type,
 			'objectId' => $objectId,
@@ -42,7 +41,7 @@ class Services_Comment_Controller
 			'cant' => $comments['cant'],
 			'offset' => $offset,
 			'per_page' => $per_page,
-			'allow_post' => $this->canPost($type, $objectId) && ! $input->hidepost->int(),
+			'allow_post' => $this->canPost($type, $objectId),
 			'allow_remove' => $this->canRemove($type, $objectId),
 			'allow_lock' => $this->canLock($type, $objectId),
 			'allow_unlock' => $this->canUnlock($type, $objectId),
@@ -58,7 +57,6 @@ class Services_Comment_Controller
 		$type = $input->type->text();
 		$objectId = $input->objectId->pagename();
 		$parentId = $input->parentId->int();
-		$return_url = $input->return_url->url();
 
 		// Check general permissions
 
@@ -95,7 +93,7 @@ class Services_Comment_Controller
 		}
 
 		if ($input->post->int()) {
-			// Validate
+			// Validate 
 
 			if (empty($user)) {
 				if (empty($anonymous_name)) {
@@ -119,11 +117,11 @@ class Services_Comment_Controller
 				$captchalib = TikiLib::lib('captcha');
 
 				if (! $captchalib->validate(
-					array(
-						'recaptcha_challenge_field' => $input->recaptcha_challenge_field->none(),
-						'recaptcha_response_field' => $input->recaptcha_response_field->none(),
-						'captcha' => $input->captcha->none(),
-					)
+								array(
+									'recaptcha_challenge_field' => $input->recaptcha_challenge_field->none(),
+									'recaptcha_response_field' => $input->recaptcha_response_field->none(),
+									'captcha' => $input->captcha->none(),
+								)
 				)
 				) {
 					$errors[] = $captchalib->getErrors();
@@ -131,34 +129,28 @@ class Services_Comment_Controller
 			}
 
 			if ($prefs['comments_notitle'] == 'y') {
-				$title = 'Untitled ' . TikiLib::lib('tiki')->get_long_datetime(TikiLib::lib('tikidate')->getTime());
+				$title = 'Untitled ' . TikiLib::lib('tiki')->get_long_datetime(TikiLib::lib('tikidate')->getTime()); 
 			}
 
 			if (count($errors) === 0) {
 				$message_id = ''; // By ref
 				$threadId = $commentslib->post_new_comment(
-					"$type:$objectId",
-					$parentId,
-					$user,
-					$title,
-					$data,
-					$message_id,
-					isset($parent['message_id']) ? $parent['message_id'] : '',
-					'n',
-					'',
-					'',
-					$contributions,
-					$anonymous_name,
-					'',
-					$anonymous_email,
-					$anonymous_website
+								"$type:$objectId", 
+								$parentId, 
+								$user, 
+								$title, 
+								$data, 
+								$message_id, 
+								$parent ? $parent['message_id'] : '', 
+								'n', 
+								'', 
+								'', 
+								$contributions, 
+								$anonymous_name, 
+								'', 
+								$anonymous_email, 
+								$anonymous_website
 				);
-
-				$feedback = array();
-
-				if ($prefs['feature_comments_moderation'] === 'y' && ! $this->canModerate($type, $objectId)) {
-					$feedback[] = tr('Your message has been queued for approval and will be posted after a moderator approves it.');
-				}
 
 				if ($threadId) {
 					$this->rememberCreatedComment($threadId);
@@ -169,26 +161,16 @@ class Services_Comment_Controller
 					} else if ($type == 'article') {
 						require_once('lib/notifications/notificationemaillib.php');
 						sendCommentNotification('article', $objectId, $title, $data);
-					} elseif ($prefs['feature_blogs'] == 'y' && $type == 'blog post') { // Blog comment mail
-						require_once('lib/notifications/notificationemaillib.php');
-						 sendCommentNotification('blog', $objectId, $title, $data);
 					} elseif ($type == 'trackeritem') {
 						require_once('lib/notifications/notificationemaillib.php');
 						sendCommentNotification('trackeritem', $objectId, $title, $data, $threadId);
 					}
-
-					$access = TikiLib::lib('access');
-					if ($return_url && ! $access->is_xml_http_request()) {
-						$access->redirect($return_url, tr('Your comment was posted.'));
-					}
-					
 
 					return array(
 						'threadId' => $threadId,
 						'parentId' => $parentId,
 						'type' => $type,
 						'objectId' => $objectId,
-						'feedback' => $feedback,
 					);
 				}
 			}
@@ -205,7 +187,6 @@ class Services_Comment_Controller
 			'anonymous_email' => $anonymous_email,
 			'anonymous_website' => $anonymous_website,
 			'errors' => $errors,
-			'return_url' => $return_url,
 		);
 	}
 
@@ -306,15 +287,7 @@ class Services_Comment_Controller
 			$status = 'DONE';
 		}
 
-		if ($mode === 'lock') {
-			$title = tr('Lock comments');
-		} 
-		else {
-			$title = tr('Unlock comments');
-		}
-		
 		return array(
-			'title' => $title,
 			'type' => $type,
 			'objectId' => $objectId,
 			'status' => $status,
@@ -405,80 +378,39 @@ class Services_Comment_Controller
 		);
 	}
 
-	function action_deliberation_item($input)
-	{
-		return array();
-	}
-
 	private function canView($type, $objectId)
 	{
-		// Note: $perms provides a magic method __get as an accessor for attributes.
-		// I.e. $perms->wiki_view_comments or $perms->tracker_view_comments are returend by that accessor method
-		// and do not exist as a property.
-		// Wether they are true or false depends on the assigned permissions stored in $perms->resolver
-		// for the respective groups.
-		 
 		$perms = $this->getApplicablePermissions($type, $objectId);
 
+		if (! ($perms->read_comments || $perms->post_comments || $perms->edit_comments)) {
+			return false;
+		}
+
 		switch ($type) {
-			case 'wiki page':
-				return $perms->wiki_view_comments;
-				break;
-			
-			// canPost() requires also view access frontend/template wise. 
-			// So we return also true if post ($perms->comment_tracker_items) is enabled. 
-			case 'trackeritem':
-				return ($perms->tracker_view_comments || $perms->comment_tracker_items);
-				break;
-				
-			
-			// @TODO which $types do use / or should use these permissions?
-			// taken from the prevoius developer: seems that view should be automatically assigned if edit / post is granted.
-			default:
-				if (! ($perms->read_comments || $perms->post_comments || $perms->edit_comments)) {
-					return false;
-				}
-				break;
+		case 'wiki page':
+			return $perms->wiki_view_comments;
 		}
 
 		return true;
 	}
 
-	
-	public function canPost($type, $objectId)
+	private function canPost($type, $objectId)
 	{
 		global $prefs;
-		
-		// see comment about $perms in canView().
 
 		$perms = $this->getApplicablePermissions($type, $objectId);
+		if (! $perms->post_comments) {
+			return false;
+		}
 
 		if ($prefs['feature_comments_locking'] == 'y' &&  TikiLib::lib('comments')->is_object_locked("$type:$objectId")) {
 			return false;
 		}
-		
-		switch ($type) {
-					
-			// requires also view access from the front/template part
-			// so we add $perms->comment_tracker_items also to canView()
-			case 'trackeritem':
-				return $perms->comment_tracker_items;
-				break;
-		
-			// @TODO which $types do use / or should use these permissions?
-			default:
-				if (! ($perms->post_comments)) {
-					return false;
-				}
-				break;
-		}
-		
 
 		return true;
 	}
-	
 
-	public function isEnabled($type, $objectId)
+	private function isEnabled($type, $objectId)
 	{
 		global $prefs;
 
@@ -510,8 +442,6 @@ class Services_Comment_Controller
 			return true;
 		case 'article':
 			return $prefs['feature_article_comments'] == 'y';
-		case 'activity':
-			return $prefs['activity_basic_events'] == 'y' || $prefs['activity_custom_events'] == 'y' || $prefs['monitor_enabled'] == 'y';
 		default:
 			return false;
 		}

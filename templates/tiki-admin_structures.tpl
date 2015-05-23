@@ -2,20 +2,20 @@
 {title help="Structures"}{tr}Structures{/tr}{/title}
 
 {if $tiki_p_admin eq 'y'}
-	<div class="t_navbar margin-bottom-md">
-		{button href='tiki-import_xml_zip.php' _icon_name="zip" _text="{tr}XML Zip Import{/tr}"}
+	<div class="navbar">
+		{button href='tiki-import_xml_zip.php' _text="{tr}XML Zip Import{/tr}"}
 	</div>
 {/if}
 
 {if $just_created neq 'n' && $tiki_p_edit_structures == 'y'}
-	{remarksbox type="feedback" title="{tr}Feedback{/tr}"}
-		{tr}Structure created{/tr}: <a class='alert-link' href='tiki-edit_structure.php?page_ref_id={$just_created}'>{$just_created_name|escape}</a> <a class='alert-link tips' href='tiki-index.php?page={$just_created_name|escape:"url"}' title=":{tr}View Page{/tr}">{icon name="view"}</a>
+	{remarksbox type='feedback' title="{tr}Feedback{/tr}"}
+		{tr}The structure{/tr} <a class='tablename' href='tiki-edit_structure.php?page_ref_id={$just_created}'>{$just_created_name|escape}</a>&nbsp;&nbsp;<a class='link' href='tiki-index.php?page={$just_created_name|escape:"url"}' title="{tr}View{/tr}">{icon _id='magnifier' alt="{tr}View{/tr}"}</a>&nbsp;&nbsp;{tr}has just been created.{/tr}
 	{/remarksbox}
 {/if}
 
 {if $askremove eq 'y'}
 	{remarksbox type='confirm' title="{tr}Please Confirm{/tr}"}
-		{tr}You will remove structure:{/tr} {$removename|escape}<br>
+		{tr}You will remove structure:{/tr} {$removename|escape}<br />
 		{button href="?rremove=$remove&amp;page=$removename" _text="{tr}Destroy the structure leaving the wiki pages{/tr}"}
 		{if $tiki_p_remove == 'y'}
 			{button href="?rremovex=$remove&amp;page=$removename" _text="{tr}Destroy the structure and remove the pages{/tr}"}
@@ -67,155 +67,107 @@
 
 {tabset}
 	{tab name="{tr}Structures{/tr}"}
-		<h2>{tr}Structures{/tr}</h2>
 		{if $channels or ($find ne '')}
-			<div class="clearfix">
-				{include file='find.tpl' find_show_languages='y' find_show_categories='y' find_show_num_rows='y'}
-			</div>
+			{include file='find.tpl' find_show_languages='y' find_show_categories='y' find_show_num_rows='y'}
 		{/if}
-		<form class="form" role="form">
-			<div class="table-responsive">
-				<table class="table normal table-striped table-hover">
-					<tr>
-						{if $tiki_p_admin eq 'y'}<th width="15">{select_all checkbox_names='action[]'}</th>{/if}
-						<th>{tr}Structure{/tr}</th>
-						<th></th>
-					</tr>
+		<br />
+		<form>
+			<table class="normal">
+				<tr>
+					{if $tiki_p_admin eq 'y'}<th width="15">{select_all checkbox_names='action[]'}</th>{/if}
+					<th>{tr}Structure ID{/tr}</th>
+					<th>{tr}Action{/tr}</th>
+				</tr>
+				{cycle values="odd,even" print=false}
+				{section loop=$channels name=ix}
+					<tr class="{cycle}">
+						{if $tiki_p_admin eq 'y'}
+							<td class="checkbox">
+								<input type="checkbox" name="action[]" value='{$channels[ix].page_ref_id}' style="border:1px;font-size:80%;" />
+							</td>
+						{/if}
+						<td class="text">
+							<a class="tablename" href="tiki-edit_structure.php?page_ref_id={$channels[ix].page_ref_id}" title="{tr}Edit structure{/tr}">
+								{$channels[ix].pageName}
+								{if $channels[ix].page_alias}
+									({$channels[ix].page_alias})
+								{/if}
+							</a>
+						</td>
+						<td class="action">
+							<a class="tablename" href="tiki-edit_structure.php?page_ref_id={$channels[ix].page_ref_id}" title="{tr}View structure{/tr}">{icon _id='information' alt="{tr}View structure{/tr}"}</a>
+							<a class='link' href='{sefurl page=$channels[ix].pageName structure=$channels[ix].pageName page_ref_id=$channels[ix].page_ref_id}' title="{tr}View page{/tr}">{icon _id='magnifier' alt="{tr}View page{/tr}"}</a>
 
-					{section loop=$channels name=ix}
-						<tr>
-							{if $tiki_p_admin eq 'y'}
-								<td class="checkbox-cell">
-									<input type="checkbox" name="action[]" value='{$channels[ix].page_ref_id}' style="border:1px;font-size:80%;">
-								</td>
+							{if $prefs.feature_wiki_export eq 'y' and $tiki_p_admin_wiki eq 'y'}
+								<a title="{tr}Export Pages{/tr}" class="link" href="tiki-admin_structures.php?export={$channels[ix].page_ref_id|escape:"url"}">{icon _id='disk' alt="{tr}Export Pages{/tr}"}</a>
 							{/if}
-							<td class="text">
-								<a class="tips" href="tiki-edit_structure.php?page_ref_id={$channels[ix].page_ref_id}" title=":{tr}View Structure{/tr}">
-									{$channels[ix].pageName}
-									{if $channels[ix].page_alias}
-										({$channels[ix].page_alias})
-									{/if}
-								</a>
-							</td>
-							<td class="action">
-								{capture name=admin_structure_actions}
-									{strip}
-										<a href="tiki-edit_structure.php?page_ref_id={$channels[ix].page_ref_id}">
-											{icon name="information" _menu_text='y' _menu_icon='y' alt="{tr}View structure{/tr}"}
-										</a>
-										<a href='{sefurl page=$channels[ix].pageName structure=$channels[ix].pageName page_ref_id=$channels[ix].page_ref_id}'>
-											{icon name="view" _menu_text='y' _menu_icon='y' alt="{tr}View page{/tr}"}
-										</a>
 
-										{if $prefs.feature_wiki_export eq 'y' and $tiki_p_admin_wiki eq 'y'}
-											<a href="tiki-admin_structures.php?export={$channels[ix].page_ref_id|escape:"url"}">
-												{icon name="export" _menu_text='y' _menu_icon='y' alt="{tr}Export pages{/tr}"}
-											</a>
-										{/if}
+							{if $pdf_export eq 'y'}<a href="tiki-print_multi_pages.php?printstructures=a%3A1%3A%7Bi%3A0%3Bs%3A1%3A%22{$channels[ix].page_ref_id}%22%3B%7D&amp;display=pdf" title="{tr}PDF{/tr}">{icon _id='page_white_acrobat' alt="{tr}PDF{/tr}"}</a>
+							{/if}
 
-										{if $pdf_export eq 'y'}
-											<a href="tiki-print_multi_pages.php?printstructures=a%3A1%3A%7Bi%3A0%3Bs%3A1%3A%22{$channels[ix].page_ref_id}%22%3B%7D&amp;display=pdf">
-												{icon name='pdf' _menu_text='y' _menu_icon='y' alt="{tr}PDF{/tr}"}
-											</a>
-										{/if}
+							{if $tiki_p_edit_structures == 'y'}<a title="{tr}Dump Tree{/tr}" class="link" href="tiki-admin_structures.php?export_tree={$channels[ix].page_ref_id|escape:"url"}">{icon _id='chart_organisation' alt="{tr}Dump Tree{/tr}"}</a>{/if}
 
-										{if $tiki_p_edit_structures == 'y'}
-											<a href="tiki-admin_structures.php?export_tree={$channels[ix].page_ref_id|escape:"url"}">
-												{icon name="structure" _menu_text='y' _menu_icon='y' alt="{tr}Dump tree{/tr}"}
-											</a>
-										{/if}
+							{if $tiki_p_edit_structures == 'y' and $channels[ix].editable == 'y'}<a title="{tr}Delete{/tr}" class="link" href="tiki-admin_structures.php?remove={$channels[ix].page_ref_id|escape:"url"}">{icon _id='cross' alt="{tr}Remove{/tr}"}</a>{/if}
 
-										{if $tiki_p_edit_structures == 'y' and $channels[ix].editable == 'y'}
-											<a href="tiki-admin_structures.php?remove={$channels[ix].page_ref_id|escape:"url"}">
-												{icon name="remove" _menu_text='y' _menu_icon='y' alt="{tr}Remove{/tr}"}
-											</a>
-										{/if}
+							{if $prefs.feature_create_webhelp == 'y' && $tiki_p_edit_structures == 'y'}<a title="{tr}Create WebHelp{/tr}" class="link" href="tiki-create_webhelp.php?struct={$channels[ix].page_ref_id|escape:"url"}">{icon _id='help' alt="{tr}Create WebHelp{/tr}"}</a>{/if}
 
-										{if $prefs.feature_create_webhelp == 'y' && $tiki_p_edit_structures == 'y'}
-											<a href="tiki-create_webhelp.php?struct={$channels[ix].page_ref_id|escape:"url"}">
-												{icon name="help" _menu_text='y' _menu_icon='y' alt="{tr}Create WebHelp{/tr}"}
-											</a>
-										{/if}
+							{if $prefs.feature_create_webhelp == 'y' && $channels[ix].webhelp eq 'y'}
+								<a title="{tr}View WebHelp{/tr}" class="link" href="whelp/{$channels[ix].pageName}/index.html">{icon _id='book_open' alt="{tr}View WebHelp{/tr}"}</a>
+							{/if}
 
-										{if $prefs.feature_create_webhelp == 'y' && $channels[ix].webhelp eq 'y'}
-											<a href="whelp/{$channels[ix].pageName}/index.html">
-												{icon name="documentation" _menu_text='y' _menu_icon='y' alt="{tr}View WebHelp{/tr}"}
-											</a>
-										{/if}
-
-										{if $tiki_p_admin eq 'y'}
-											<a href="tiki-admin_structures.php?zip={$channels[ix].page_ref_id|escape:"url"}">
-												{icon name="zip" _menu_text='y' _menu_icon='y' alt="{tr}XML Zip{/tr}"}
-											</a>
-										{/if}
-									{/strip}
-								{/capture}
-								<a class="tips"
-								   title="{tr}Actions{/tr}"
-								   href="#" {popup delay="0|2000" fullhtml="1" center=true text=$smarty.capture.admin_structure_actions|escape:"javascript"|escape:"html"}
-								   style="padding:0; margin:0; border:0"
-										>
-									{icon name='wrench'}
-								</a>
-							</td>
-						</tr>
-					{sectionelse}
-						{if $tiki_p_admin eq 'y'}{norecords _colspan=3}{else}{norecords _colspan=2}{/if}
-					{/section}
-				</table>
-			</div>
+							{if $tiki_p_admin eq 'y'}
+								<a title="{tr}XML Zip{/tr}" class="link" href="tiki-admin_structures.php?zip={$channels[ix].page_ref_id|escape:"url"}">{icon _id='img/icons/mime/zip.png' alt="{tr}XML Zip{/tr}"}</a>
+							{/if}
+						</td>
+					</tr>
+				{sectionelse}
+					{if $tiki_p_admin eq 'y'}{norecords _colspan=3}{else}{norecords _colspan=2}{/if}
+				{/section}
+			</table>
 
 			{if $tiki_p_admin eq 'y'}
-				<div class="form-group">
-					<label for="batchaction" class="control-label">{tr}Perform action with selected{/tr}</label>
-					<div class="input-group col-sm-6">
-						<select name="batchaction" class="form-control">
-							<option value="">{tr}...{/tr}</option>
-							<option value="delete">{tr}Delete{/tr}</option>
-							<option value="delete_with_page">{tr}Delete with the pages{/tr}</option>
-						</select>
-						<div class="input-group-btn">
-							<input type="submit" class="btn btn-primary" name="act" value="{tr}Ok{/tr}">
-						</div>
-					</div>
-				</div>
-			</form>
+				<div style="text-align:left">
+					{tr}Perform action with checked:{/tr}
+					<select name="batchaction">
+						<option value="">{tr}...{/tr}</option>
+						<option value="delete">{tr}Delete{/tr}</option>
+						<option value="delete_with_page">{tr}Delete with the pages{/tr}</option>
+					</select>
+					<input type="submit" name="act" value="{tr}OK{/tr}" />
+				</form>
+			</div>
 		{/if}
 
 		{pagination_links cant=$cant step=$maxRecords offset=$offset}{/pagination_links}
 	{/tab}
 
 	{if $tiki_p_edit_structures == 'y'}
-		{tab name="{tr}Create Structure{/tr}"}
-			<h2>{tr}Create Structure{/tr}</h2>
-			<form class="form-horizontal" action="tiki-admin_structures.php" method="post">
-				<div class="form-group">
-					<label class="control-label col-md-3">{tr}Structure{/tr}</label>
-					<div class="col-md-9">
-						<input type="text" name="name" id="name" class="form-control">
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label col-md-3">{tr}Alias{/tr}</label>
-					<div class="col-md-9">
-						<input type="text" name="alias" id="alias" class="form-control">
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label col-md-3">{tr}Tree{/tr}</label>
-					<div class="col-md-9">
-						<textarea rows="5" cols="60" id="tree" name="tree" class="form-control"></textarea>
-						<div class="help-block">{tr}Use single spaces to indent structure levels{/tr}</div>
-					</div>
-				</div>
-				{if $prefs.feature_categories eq 'y'}
+		{tab name="{tr}Create New Structure{/tr}"}
+			<form action="tiki-admin_structures.php" method="post">
+				<table class="formcolor">
+					<tr>
+						<td><label for="name">{tr}Structure ID:{/tr}</label></td>
+						<td><input type="text" name="name" id="name" /></td>
+					</tr>
+					<tr>
+						<td><label for="alias">{tr}Alias:{/tr}</label></td>
+						<td><input type="text" name="alias" id="alias" /></td>
+					</tr>
+					<tr>
+						<td><label for="tree">{tr}Tree:{/tr}</label><br />(optional)</td>
+						<td colspan="2">
+							<textarea rows="5" cols="60" id="tree" name="tree" style="width:95%"></textarea>
+							{remarksbox type="tip" title="{tr}Note{/tr}"}{tr}Use single spaces to indent structure levels{/tr}{/remarksbox}
+						</td>
+					</tr>
 					{include file='categorize.tpl'}
-				{/if}
-				<div class="form-group">
-					<div class="submit col-md-9 col-md-push-3">
-						<input type="submit" class="btn btn-primary" value="{tr}Create New Structure{/tr}" name="create">
-					</div>
-				</div>
+					<tr>
+						<td>&nbsp;</td>
+						<td colspan="2">
+							<input type="submit" value="{tr}Create New Structure{/tr}" name="create" />
+						</td>
+					</tr>
+				</table>
 			</form>
 		{/tab}
 	{/if}

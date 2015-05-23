@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -20,12 +20,12 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 function smarty_function_trackerheader($params, $smarty)
 {
 	global $prefs;
-	$headerlib = TikiLib::lib('header');
+	global $headerlib; include_once('lib/headerlib.php');
 	$output = $js = '';
 	static $trackerheaderStack = array();
 	static $iTrackerHeader = 0;
 	$last = count($trackerheaderStack);
-	$default = array('level'=>3, 'inTable'=>'');
+	$default = array('level'=>2, 'inTable'=>'');
 	$params = array_merge($default, $params);
 	extract($params, EXTR_SKIP);
 

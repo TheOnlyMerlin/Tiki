@@ -1,18 +1,15 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 $section = 'mytiki';
 require_once ('tiki-setup.php');
-$modlib = TikiLib::lib('mod');
+include_once ('lib/modules/modlib.php');
 include_once ('lib/userprefs/scrambleEmail.php');
-$userprefslib = TikiLib::lib('userprefs');
+include_once ('lib/userprefs/userprefslib.php');
 // User preferences screen
 if ($prefs['feature_userPreferences'] != 'y' && $prefs['change_password'] != 'y' && $tiki_p_admin_users != 'y') {
 	$smarty->assign('msg', tra("This feature is disabled") . ": feature_userPreferences");
@@ -57,9 +54,8 @@ if (isset($_REQUEST['userId']) || isset($_REQUEST['view_user'])) {
 } else {
 	$userwatch = $user;
 }
-
 // Custom fields
-$registrationlib = TikiLib::lib('registration');
+include_once ('lib/registration/registrationlib.php');
 $customfields = $registrationlib->get_customfields();
 foreach ($customfields as $i => $c) {
 	$customfields[$i]['value'] = $tikilib->get_user_preference($userwatch, $c['prefName']);
@@ -75,18 +71,23 @@ $smarty->assign('show_mouseover_user_info', isset($prefs['show_mouseover_user_in
 if ($prefs['feature_userPreferences'] == 'y' && isset($_REQUEST["new_prefs"])) {
 	check_ticket('user-prefs');
 	// setting preferences
-	if ($prefs['change_theme'] == 'y' && empty($group_theme)) {
-		if (isset($_REQUEST['mytheme'])) {
-			$themeandoption = $themelib->extract_theme_and_option($_REQUEST['mytheme']);
-			$theme = $themeandoption[0];
-			$themeOption = $themeandoption[1];
-			$tikilib->set_user_preference($userwatch, 'theme', $theme);
-			if (isset($themeOption)) {
-				$tikilib->set_user_preference($userwatch, 'theme_option', empty($themeOption) ? '' : $themeOption);
+	if ($prefs['change_theme'] == 'y' && empty($group_style)) {
+		if (isset($_REQUEST["mystyle"])) {
+			if ($user == $userwatch) {
+				$t = $tikidomain ? $tikidomain . '/' : '';
+				if ($_REQUEST["mystyle"] == "") {
+					//If mystyle is empty --> user has selected "Site Default" theme
+					$sitestyle = $tikilib->getOne("select `value` from `tiki_preferences` where `name`=?", 'style');
+					$headerlib->replace_cssfile('styles/' . $t . $prefs['style'], 'styles/' . $t . $sitestyle, 51);
+				} else {
+					$headerlib->replace_cssfile('styles/' . $t . $prefs['style'], 'styles/' . $t . $_REQUEST['mystyle'], 51);
+				}
 			}
-			//Something is needed for the theme change to be displayed without additional manual page refresh. Problem: when modifying another user's settings (not my user's) using any of the below ways the refreshed screen will show my user's preference screen instead of staying on the edited user's preference screen
-			//header("location: tiki-user_preferences.php?view_user=$userwatch");
-			//$access->redirect($_SERVER['REQUEST_URI'], '', 200); 
+			if ($_REQUEST["mystyle"] == "") {
+				$tikilib->set_user_preference($userwatch, 'theme', "");
+			} else {
+				$tikilib->set_user_preference($userwatch, 'theme', $_REQUEST["mystyle"]);
+			}
 		}
 	}
 	if (isset($_REQUEST["userbreadCrumb"])) $tikilib->set_user_preference($userwatch, 'userbreadCrumb', $_REQUEST["userbreadCrumb"]);
@@ -154,11 +155,11 @@ if ($prefs['feature_userPreferences'] == 'y' && isset($_REQUEST["new_prefs"])) {
 		if (isset($_REQUEST[$customfields[$custpref]['prefName']])) $tikilib->set_user_preference($userwatch, $customfields[$custpref]['prefName'], $_REQUEST[$customfields[$custpref]['prefName']]);
 	}
 	if (isset($_REQUEST["realName"]) && ($prefs['auth_ldap_nameattr'] == '' || $prefs['auth_method'] != 'ldap')) {
-		$tikilib->set_user_preference($userwatch, 'realName', $_REQUEST["realName"]);
-		if ( $prefs['user_show_realnames'] == 'y' ) {
-			$cachelib = TikiLib::lib('cache');
-			$cachelib->invalidate('userlink.'.$user.'0');
-		}
+     $tikilib->set_user_preference($userwatch, 'realName', $_REQUEST["realName"]);
+     if ( $prefs['user_show_realnames'] == 'y' ) {
+       global $cachelib;
+       $cachelib->invalidate('userlink.'.$user.'0');
+     }
 	}
 	if ($prefs['feature_community_gender'] == 'y') {
 		if (isset($_REQUEST["gender"])) $tikilib->set_user_preference($userwatch, 'gender', $_REQUEST["gender"]);
@@ -246,14 +247,6 @@ if ($prefs['feature_userPreferences'] == 'y' && isset($_REQUEST["new_prefs"])) {
 	if ($prefs['feature_intertiki'] == 'y' && !empty($prefs['feature_intertiki_mymaster']) && $prefs['feature_intertiki_import_preferences'] == 'y') { //send to the master
 		$userlib->interSendUserInfo($prefs['interlist'][$prefs['feature_intertiki_mymaster']], $userwatch);
 	}
-
-	TikiLib::events()->trigger(
-		'tiki.user.update', array(
-			'type' => 'user',
-			'object' => $userwatch,
-			'user' => $GLOBALS['user'],
-		)
-	);
 }
 if ($prefs['auth_method'] == 'ldap' && $user == 'admin' && $prefs['ldap_skip_admin'] == 'y') {
 	$change_password = 'y';
@@ -300,12 +293,6 @@ if (isset($_REQUEST['chgadmin'])) {
 			die;
 		}
 		$userlib->change_user_password($userwatch, $_REQUEST["pass1"]);
-		if ($prefs['feature_user_encryption'] === 'y') {
-			// Notify CryptLib about the login
-			$cryptlib = TikiLib::lib('crypt');
-			$cryptlib->onChangeUserPassword($_REQUEST["pass"], $_REQUEST["pass1"]);
-		}
-
 		$tikifeedback[] = array('num' => 1, 'mes' => sprintf(tra('Password has been changed')));
 	}
 }
@@ -325,7 +312,7 @@ if (isset($_REQUEST['deleteaccount']) && $tiki_p_delete_account == 'y') {
 	   header("Location: $base_url");
    }
    die();
-}
+} 
 
 $location = array(
 	'lat' => (float) $tikilib->get_user_preference($userwatch, 'lat', ''),
@@ -368,28 +355,22 @@ $tikilib->get_user_preference($userwatch, 'user_dbl', 'y');
 $tikilib->get_user_preference($userwatch, 'display_12hr_clock', 'n');
 $userinfo = $userlib->get_user_info($userwatch);
 $smarty->assign_by_ref('userinfo', $userinfo);
-//user theme
-$themelib = TikiLib::lib('theme');
-$available_themesandoptions = $themelib->get_available_themesandoptions();
-$smarty->assign_by_ref('available_themesandoptions', $available_themesandoptions);
-$userwatch_theme = $tikilib->get_user_preference($userwatch, 'theme', null);
-$userwatch_themeOption = $tikilib->get_user_preference($userwatch, 'theme_option', null);
-$smarty->assign_by_ref('userwatch_theme', $userwatch_theme);
-$smarty->assign_by_ref('userwatch_themeOption', $userwatch_themeOption);
-//user language
+$llist = array();
+$llist = $tikilib->list_styles();
+$smarty->assign_by_ref('styles', $llist);
 $languages = array();
 $languages = $tikilib->list_languages();
 $smarty->assign_by_ref('languages', $languages);
 $user_pages = $tikilib->get_user_pages($userwatch, -1);
 $smarty->assign_by_ref('user_pages', $user_pages);
-$bloglib = TikiLib::lib('blog');
+require_once('lib/blogs/bloglib.php');
 $user_blogs = $bloglib->list_user_blogs($userwatch, false);
 $smarty->assign_by_ref('user_blogs', $user_blogs);
 $user_galleries = $tikilib->get_user_galleries($userwatch, -1);
 $smarty->assign_by_ref('user_galleries', $user_galleries);
 $user_items = TikiLib::lib('trk')->get_user_items($userwatch);
 $smarty->assign_by_ref('user_items', $user_items);
-$flags = $tikilib->get_flags('','','', true);
+$flags = $tikilib->get_flags();
 $smarty->assign_by_ref('flags', $flags);
 $scramblingMethods = array("n", "strtr", "unicode", "x", 'y'); // email_isPublic utilizes 'n'
 $smarty->assign_by_ref('scramblingMethods', $scramblingMethods);
@@ -407,7 +388,7 @@ $useritemId = false;
 if ($prefs['userTracker'] == 'y') {
 	$re = $userlib->get_usertracker($userinfo["userId"]);
 	if (isset($re['usersTrackerId']) and $re['usersTrackerId']) {
-		$trklib = TikiLib::lib('trk');
+		include_once ('lib/trackers/trackerlib.php');
 		$info = $trklib->get_item_id($re['usersTrackerId'], $trklib->get_field_id($re['usersTrackerId'], 'Login'), $userwatch);
 		$usertrackerId = $re['usersTrackerId'];
 		$useritemId = $info;
@@ -425,52 +406,6 @@ if ($prefs['feature_messages'] == 'y' && $tiki_p_messages == 'y') {
 	$smarty->assign('unread', $unread);
 }
 $smarty->assign('timezones', TikiDate::getTimeZoneList());
-
-// Manage time zone data for the user, in a similar way as in lib/setup/user_prefs.php
-if ($prefs['users_prefs_display_timezone'] == 'Site'
-			|| (isset($user_preferences[$user]['display_timezone'])
-			&& $user_preferences[$user]['display_timezone'] == 'Site')
-) {
-	// Stay in the time zone of the server
-	$prefs['display_timezone'] = $prefs['server_timezone'];
-	$smarty->assign('warning_site_timezone_set', 'y');
-} elseif ( !isset($prefs['display_timezone']) and ! isset($user_preferences[$user]['display_timezone'])
-					|| $user_preferences[$user]['display_timezone'] == ''
-					|| $user_preferences[$user]['display_timezone'] == 'Local'
-) {
-	// If the display timezone is not known ...
-	if ( isset($_COOKIE['local_tz'])) {
-		//   ... we try to use the timezone detected by javascript and stored in cookies
-		if (TikiDate::TimezoneIsValidId($_COOKIE['local_tz'])) {
-			$prefs['timezone_offset'] = isset($_COOKIE['local_tzoffset']) ? $_COOKIE['local_tzoffset'] : '';
-			if (isset($_COOKIE['local_tzoffset'])) {
-				$tzname = timezone_name_from_abbr($_COOKIE['local_tz'], $_COOKIE['local_tzoffset'] * 60 * 60);
-				$prefs['timezone_offset'] = $_COOKIE['local_tzoffset'];
-			} else {
-				$tzname = timezone_name_from_abbr($_COOKIE['local_tz']);
-				$prefs['timezone_offset'] = '';
-			}
-			if (TikiDate::TimezoneIsValidId($tzname)) {
-				$prefs['display_timezone'] = $tzname;
-			} else {
-				$prefs['display_timezone'] = $_COOKIE['local_tz'];
-			}
-		} elseif ( $_COOKIE['local_tz'] == 'HAEC' ) {
-			// HAEC, returned by Safari on Mac, is not recognized as a DST timezone (with daylightsavings)
-			//  ... So use one equivalent timezone name
-			$prefs['display_timezone'] = 'Europe/Paris';
-		} else {
-			$prefs['display_timezone'] = $prefs['server_timezone'];
-		}
-	} else {
-		// ... and we fallback to the server timezone if the cookie value is not available
-		$prefs['display_timezone'] = $prefs['server_timezone'];
-	}
-}
-
-if (isset($prefs['display_timezone'])) {
-	$smarty->assign('display_timezone', $prefs['display_timezone']);
-}
 $smarty->assign('userPageExists', 'n');
 if ($prefs['feature_wiki'] == 'y' and $prefs['feature_wiki_userpage'] == 'y') {
 	if ($tikilib->page_exists($prefs['feature_wiki_userpage_prefix'] . $user)) $smarty->assign('userPageExists', 'y');

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -14,10 +14,8 @@ function prefs_unified_list()
 			'type' => 'list',
 			'options' => array(
 				'lucene' => tra('Lucene (PHP Implementation)'),
-				'mysql' => tra('MySQL Full Text Search'),
-				'elastic' => tra('ElasticSearch'),
 			),
-			'default' => 'mysql',
+			'default' => 'lucene',
 		),
 		'unified_lucene_location' => array(
 			'name' => tra('Lucene Index Location'),
@@ -76,14 +74,14 @@ function prefs_unified_list()
 			'size' => 8,
 		),
 		'unified_lucene_default_operator' => array(
-			'name' => tra('Default Boolean Operator'),
+			'name' => tra('Lucene Default Boolean Operator'),
 			'description' => tra('Use OR (default) or AND as the default search operator.'),
 			'type' => 'list',
 			'filter' => 'int',
 			'default' => Zend_Search_Lucene_Search_QueryParser::B_OR,
 			'options' => array(
-				0 => tra('OR'),
-				1 => tra('AND'),
+				Zend_Search_Lucene_Search_QueryParser::B_OR => tra('OR'),
+				Zend_Search_Lucene_Search_QueryParser::B_AND => tra('AND'),
 			),
 		),
 		'unified_lucene_merge_factor' => array(
@@ -103,7 +101,7 @@ function prefs_unified_list()
 		),
 		'unified_field_weight' => array(
 			'name' => tra('Field Weights'),
-			'description' => tra('Allows the field weights to be set that apply when ranking the pages for search listing. The weight only applies when the field is in the query. To nullify the value of a field, use an insignificant amount, not 0, which may lead to unexpected behaviors, such as stripping results.'),
+			'description' => tra('Allows to set the field weights that apply when ranking the pages for search listing. The weight only applies when the field is in the query. To nullify the value of a field, use an insignificant amount, not 0, which may lead to unexpected behaviors, such as stripping results.'),
 			'hint' => tra('One field per line, field_name__:__5.3'),
 			'type' => 'textarea',
 			'size' => 5,
@@ -112,7 +110,7 @@ function prefs_unified_list()
 		),
 		'unified_default_content' => array(
 			'name' => tra('Default content fields'),
-			'description' => tra('All of the content is aggregated in the contents field. For custom weighting to apply, the fields must be included in the query. This option allows other fields to be included in the default content search.'),
+			'description' => tra('All of the content is aggregated in the contents field. For custom weighting to apply, the fields must be included in the query. This option allows to include other fields in the default content search.'),
 			'type' => 'text',
 			'separator' => ',',
 			'filter' => 'word',
@@ -146,7 +144,7 @@ function prefs_unified_list()
 			'description' => tra('Search formatters to cache the output of'),
 			'type' => 'text',
 			'separator' => ',',
-			'default' => array('categorylist'),
+			'default' => array('trackerrender','categorylist'),
 		),
 		'unified_trackerfield_keys' => array(
 			'name' => tra('Format to use for tracker field keys'),
@@ -158,112 +156,12 @@ function prefs_unified_list()
 				'fieldId' => tr('Field ID (Backward compatibility mode with Tiki 7 and 8)'),
 			),
 		),
-		'unified_parse_results' => array(
-			'name' => tra('Parse the results'),
-			'description' => tra('Parse the results. May impact the performance'),
-			'type' => 'flag',
-			'default' => 'n',
-		),
 		'unified_excluded_categories' => array(
 			'name' => tra('Excluded categories'),
 			'description' => tra('List of category ids to exclude from the search index.'),
 			'type' => 'text',
 			'separator' => ',',
 			'default' => array(),
-			'profile_reference' => 'category',
-		),
-		'unified_excluded_plugins' => array(
-			'name' => tra('Excluded plugins'),
-			'description' => tra('List of plugin names to exclude while indexing.'),
-			'type' => 'text',
-			'filter' => 'word',
-			'separator' => ',',
-			'default' => array(),
-		),
-		'unified_exclude_all_plugins' => array(
-			'name' => tra('Exclude all plugins'),
-			'description' => tra('If enabled, indexing will exclude all plugins.'),
-			'type' => 'flag',
-			'default' => 'y',
-		),
-		'unified_included_plugins' => array(
-			'name' => tra('Except included plugins'),
-			'description' => tra('List of plugin names to force include while indexing, when excluding all.'),
-			'type' => 'text',
-			'filter' => 'word',
-			'separator' => ',',
-			'dependencies' => array(
-				'unified_exclude_all_plugins',
-			),
-			'default' => array(),
-		),
-		'unified_elastic_url' => array(
-			'name' => tra('ElasticSearch URL'),
-			'description' => tra('URL of any node in the cluster.'),
-			'type' => 'text',
-			'filter' => 'url',
-			'default' => 'http://localhost:9200',
-			'size' => 40,
-		),
-		'unified_elastic_index_prefix' => array(
-			'name' => tra('ElasticSearch Index Prefix'),
-			'description' => tra('Prefix used for all indexes for this installation in ElasticSearch.'),
-			'type' => 'text',
-			'filter' => 'word',
-			'default' => 'tiki_',
-			'size' => 10,
-		),
-		'unified_elastic_index_current' => array(
-			'name' => tra('ElasticSearch Current Index'),
-			'description' => tra('A new index is created upon rebuild and the old one is then destroyed. This setting allows you to see the currently active one.'),
-			'hint' => tra('Do not change this value unless you know what you are doing.'),
-			'type' => 'text',
-			'filter' => 'word',
-			'size' => '20',
-			'default' => '',
-		),
-		'unified_elastic_camel_case' => array(
-			'name' => tr('Tokenize CamelCase words'),
-			'description' => tr('Consider the different portions of camel case words as separate tokens, allowing to search them individually.'),
-			'warning' => tr('Conflicts with Tokenize Version Numbers.'),
-			'hint' => tr('ElasticSearch only'),
-			'type' => 'flag',
-			'default' => 'n',
-		),
-		'unified_mysql_index_current' => array(
-			'name' => tra('MySQL Full Text Search Current Index'),
-			'description' => tra('A new index is created upon rebuild and the old one is then destroyed. This setting allows you to see the currently active one.'),
-			'hint' => tra('Do not change this value unless you know what you are doing.'),
-			'type' => 'text',
-			'filter' => 'word',
-			'size' => '20',
-			'default' => '',
-		),
-		'unified_identifier_fields' => array(
-			'name' => tr('Unified index identifier fields (Internal)'),
-			'description' => tr('Used to store the fields to be considered as identifiers. Overwritten after each index rebuild.'),
-			'type' => 'text',
-			'hint' => tra('Do not change this value unless you know what you are doing.'),
-			'separator' => ',',
-			'default' => array(),
-			'filter' => 'word',
-		),
-		'unified_add_to_categ_search' => array(
-			'name' => tra('Use Unified Search in Category Admin'),
-			'description' => tra('Use unfied search to find objects to add to categories. Limits types of objects available to those included in the unified index.'),
-			'type' => 'flag',
-			'default' => 'n',
-			'dependencies' => array(
-				'feature_search',
-			),
-		),
-		'unified_stopwords' => array(
-			'name' => tr('Stop Word List'),
-			'description' => tr('Words excluded from the search index as they can be too frequent and cause noise.'),
-			'type' => 'text',
-			'default' => ["a", "an", "and", "are", "as", "at", "be", "but", "by", "for", "if", "in", "into", "is", "it", "no", "not", "of", "on", "or", "s", "such", "t", "that", "the", "their", "then", "there", "these", "they", "this", "to", "was", "will", "with"],
-			'separator' => ',',
-			'hint' => tr('MySQL Full Text Search has its own list of stop words configured in the server.'),
 		),
 	);
 }

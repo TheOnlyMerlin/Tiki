@@ -5,37 +5,49 @@
 {/remarksbox}
 
 <h2>{tr}Create/edit cookies{/tr}</h2>
-<form action="tiki-admin_cookies.php" method="post" class="form-horizontal" role="form">
-	<input type="hidden" name="cookieId" value="{$cookieId|escape}">
-	<div class="form-group">
-		<label class="col-sm-3 control-label" for="cookie">{tr}Cookie{/tr}</label>
-		<div class="col-sm-9">
-			<input type="text" maxlength="255" class="form-control" id="cookie" name="cookie" value="{$cookie|escape}">
-		</div>
-	</div>
-	<div class="form-group text-center">
-		<input type="submit" class="btn btn-primary btn-sm" name="save" value="{tr}Save{/tr}">
-	</div>
+<form action="tiki-admin_cookies.php" method="post">
+	<input type="hidden" name="cookieId" value="{$cookieId|escape}" />
+	<table class="formcolor">
+		<tr>
+			<td>{tr}Cookie:{/tr}</td>
+			<td>
+				<input type="text" maxlength="255" size="40" name="cookie" value="{$cookie|escape}" />
+			</td>
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+			<td>
+				<input type="submit" name="save" value="{tr}Save{/tr}" />
+			</td>
+		</tr>
+	</table>
 </form>
 
 <h2>{tr}Upload Cookies from textfile{/tr}</h2>
-<form enctype="multipart/form-data" action="tiki-admin_cookies.php" method="post" class="form-horizontal" role="form">
-	<div class="form-group">
-		<label class="col-sm-3 control-label" for="cookie">{tr}Upload from disk{/tr}</label>
-		<div class="col-sm-9">
-			<input type="hidden" name="MAX_FILE_SIZE" value="1000000000">
-			<input name="userfile1" type="file" class="form-control">
-		</div>
-	</div>
-	<div class="form-group text-center">
-		<input type="submit" class="btn btn-default btn-sm" name="upload" value="{tr}Upload{/tr}">
-	</div>
+<form enctype="multipart/form-data" action="tiki-admin_cookies.php" method="post">
+	<table class="formcolor">
+		<tr>
+			<td>{tr}Upload from disk:{/tr}</td>
+			<td>
+				<input type="hidden" name="MAX_FILE_SIZE" value="1000000000" />
+				<input name="userfile1" type="file" />
+			</td>
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+			<td>
+				<input type="submit" name="upload" value="{tr}Upload{/tr}" />
+			</td>
+		</tr>
+	</table>
 </form>
+
+<br />
 
 <h2>{tr}Cookies{/tr}</h2>
 {if $channels}
-	<div class="t_navbar">
-		{button href="?removeall=1" _icon_name="trash" _text="{tr}Remove all cookies{/tr}"}
+	<div class="navbar">
+		{button href="?removeall=1" _text="{tr}Remove all cookies{/tr}"}
 	</div>
 {/if}
 
@@ -43,8 +55,7 @@
 	{include file='find.tpl'}
 {/if}
 
-<div class="table-responsive">
-<table class="table normal table-striped table-hover">
+<table class="normal">
 	<tr>
 		<th>
 			<a href="tiki-admin_cookies.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'cookieId_desc'}cookieId_asc{else}cookieId_desc{/if}">{tr}ID{/tr}</a>
@@ -52,37 +63,23 @@
 		<th>
 			<a href="tiki-admin_cookies.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'cookie_desc'}cookie_asc{else}cookie_desc{/if}">{tr}cookie{/tr}</a>
 		</th>
-		<th width="15%"></th>
+		<th width="15%">{tr}Action{/tr}</th>
 	</tr>
 	{cycle values="odd,even" print=false advance=false}
 	{section name=user loop=$channels}
-		<tr>
+		<tr class="{cycle}">
 			<td class="id">{$channels[user].cookieId}</td>
 			<td class="text">{$channels[user].cookie|escape}</td>
 			<td class="action">
-				{capture name=cookies_actions}
-					{strip}
-						<a href="tiki-admin_cookies.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;cookieId={$channels[user].cookieId}">
-							{icon name='edit' _menu_text='y' _menu_icon='y' alt="{tr}Edit{/tr}"}
-						</a>
-						<a href="tiki-admin_cookies.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$channels[user].cookieId}">
-							{icon name='remove' _menu_text='y' _menu_icon='y' alt="{tr}Remove{/tr}"}
-						</a>
-					{/strip}
-				{/capture}
-				<a class="tips"
-				   title="{tr}Actions{/tr}"
-				   href="#" {popup delay="0|2000" fullhtml="1" center=true text=$smarty.capture.coookies_actions|escape:"javascript"|escape:"html"}
-				   style="padding:0; margin:0; border:0"
-						>
-					{icon name='wrench'}
-				</a>
+				&nbsp;&nbsp;
+				<a title="{tr}Edit{/tr}" class="link" href="tiki-admin_cookies.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;cookieId={$channels[user].cookieId}">{icon _id='page_edit'}</a>
+				&nbsp;
+				<a title="{tr}Delete{/tr}" class="link" href="tiki-admin_cookies.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$channels[user].cookieId}" >{icon _id='cross' alt="{tr}Delete{/tr}"}</a>
 			</td>
 		</tr>
 	{sectionelse}
 		{norecords _colspan=3}
 	{/section}
 </table>
-</div>
 
 {pagination_links cant=$cant_pages step=$prefs.maxRecords offset=$offset}{/pagination_links}

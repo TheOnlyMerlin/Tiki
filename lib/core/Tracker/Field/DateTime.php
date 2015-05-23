@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,7 +11,7 @@
  * Letter key: ~f~
  *
  */
-class Tracker_Field_DateTime extends Tracker_Field_Abstract implements Tracker_Field_Synchronizable, Tracker_Field_Exportable, Tracker_Field_Filterable
+class Tracker_Field_DateTime extends Tracker_Field_Abstract implements Tracker_Field_Synchronizable
 {
 	public static function getTypes()
 	{
@@ -32,21 +32,18 @@ class Tracker_Field_DateTime extends Tracker_Field_Abstract implements Tracker_F
 							'dt' => tr('Date and Time'),
 							'd' => tr('Date only'),
 						),
-						'legacy_index' => 0,
 					),
 					'startyear' => array(
 						'name' => tr('Start Year'),
 						'description' => tr('Year to allow selecting from'),
 						'example' => '1987',
 						'filter' => 'digits',
-						'legacy_index' => 1,
 					),
 					'endyear' => array(
 						'name' => tr('End Year'),
 						'description' => tr('Year to allow selecting to'),
 						'example' => '2020',
 						'filter' => 'digits',
-						'legacy_index' => 2,
 					),
 					'blankdate' => array(
 						'name' => tr('Default selection'),
@@ -56,7 +53,6 @@ class Tracker_Field_DateTime extends Tracker_Field_Abstract implements Tracker_F
 							'' => tr('Current Date'),
 							'blank' => tr('Blank'),
 						),
-						'legacy_index' => 3,
 					),
 				),
 			),
@@ -67,13 +63,12 @@ class Tracker_Field_DateTime extends Tracker_Field_Abstract implements Tracker_F
 	{
 		$ins_id = $this->getInsertId();
 
-		$value = $this->getValue();
 		$data = array(
-			'value' => empty($value) ? ($this->getOption('blankdate') == 'blank' ? '' : TikiLib::lib('tiki')->now) : $value,
+			'value' => $this->getValue($this->getOption(3) == 'blank' ? '' : TikiLib::lib('tiki')->now),
 		);
 
 		if (isset($requestData[$ins_id.'Month']) || isset($requestData[$ins_id.'Day']) || isset($requestData[$ins_id.'Year']) || isset($requestData[$ins_id.'Hour']) || isset($requestData[$ins_id.'Minute'])) {
-			$data['value'] = TikiLib::lib('trk')->build_date($requestData, $this->getOption('datetime'), $ins_id);
+			$data['value'] = TikiLib::lib('trk')->build_date($requestData, $this->getOption(0), $ins_id);
 			if (empty($data['value']) && (!empty($requestData[$ins_id.'Month']) || !empty($requestData[$ins_id.'Day']) || !empty($requestData[$ins_id.'Year']) || !empty($requestData[$ins_id.'Hour']) || !empty($requestData[$ins_id.'Minute']))) {
 				$data['error'] = 'y';
 			}
@@ -84,9 +79,6 @@ class Tracker_Field_DateTime extends Tracker_Field_Abstract implements Tracker_F
 	
 	function renderInput($context = array())
 	{
-		global $user;
-
-		TikiLib::lib('smarty')->assign('use_24hr_clock', TikiLib::lib('userprefs')->get_user_clock_pref($user));
 		return $this->renderTemplate('trackerinput/datetime.tpl', $context);
 	}
 
@@ -97,25 +89,24 @@ class Tracker_Field_DateTime extends Tracker_Field_Abstract implements Tracker_F
 
 		if ($value) {
 			$date = $tikilib->get_short_date($value);
-			if ($this->getOption('datetime') == 'd') {
+			if ($this->getOption(0) == 'd') {
 				return $date;
 			}
 			
-			if ($this->getOption('datetime') == 't') {
+			if ($this->getOption(0) == 't') {
 				return $tikilib->get_short_time($value);
 			}
 
 			if ($context['list_mode'] == 'csv') {
-				return $tikilib->get_short_datetime($value);
+				return $tikilib->get_short_datetime($value, false);
 			}
 
 			$current = $tikilib->get_short_date($tikilib->now);
-			global $prefs;
 
-			if ($date == $current && $prefs['tiki_same_day_time_only'] == 'y' ) {
+			if ($date == $current) {
 				return $tikilib->get_short_time($value);
 			} else {
-				return $tikilib->get_short_datetime($value);
+				return $tikilib->get_short_datetime($value, false);
 			}
 		}
 	}
@@ -146,51 +137,12 @@ class Tracker_Field_DateTime extends Tracker_Field_Abstract implements Tracker_F
 		return $info;
 	}
 
-	function getDocumentPart(Search_Type_Factory_Interface $typeFactory)
+	function getDocumentPart($baseKey, Search_Type_Factory_Interface $typeFactory)
 	{
-		$baseKey = $this->getBaseKey();
 		return array(
 			$baseKey => $typeFactory->timestamp($this->getValue()),
 		);
 	}
 
-	function getTabularSchema()
-	{
-		$permName = $this->getConfiguration('permName');
-		$type = $this->getOption('datetime');
-
-		$schema = new Tracker\Tabular\Schema($this->getTrackerDefinition());
-
-		$label = $this->getConfiguration('name');
-		$helper = new Tracker\Tabular\Schema\DateHelper($label);
-		$helper->setupUnix($schema->addNew($permName, 'unix'));
-
-		if ($type == 'd') {
-			$helper->setupFormat('Y-m-d', $schema->addNew($permName, 'yyyy-mm-dd'));
-		} else {
-			$helper->setupFormat('Y-m-d H:i:s', $schema->addNew($permName, 'yyyy-mm-dd hh:mm:ss'));
-		}
-
-		return $schema;
-	}
-
-	function getFilterCollection()
-	{
-		$filters = new Tracker\Filter\Collection($this->getTrackerDefinition());
-		$permName = $this->getConfiguration('permName');
-		$name = $this->getConfiguration('name');
-		$baseKey = $this->getBaseKey();
-
-		$filters->addNew($permName, 'range')
-			->setLabel($name)
-			->setControl(new Tracker\Filter\Control\DateRange("tf_{$permName}_range"))
-			->setApplyCondition(function ($control, Search_Query $query) use ($baseKey) {
-				if ($control->hasValue()) {
-					$query->filterRange($control->getFrom(), $control->getTo(), $baseKey);
-				}
-			});
-
-		return $filters;
-	}
 }
 

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -13,7 +13,9 @@ function prefs_user_list($partial = false)
 	$catree = array('-1' => tra('None'));
 
 	if (! $partial && $prefs['feature_categories'] == 'y') {
-		$categlib = TikiLib::lib('categ');
+		global $categlib;
+
+		include_once ('lib/categories/categlib.php');
 		$all_categs = $categlib->getCategories(NULL, true, false);
 
 		$catree['0'] = tra('All');
@@ -22,8 +24,7 @@ function prefs_user_list($partial = false)
 			$catree[$categ['categId']] = $categ['categpath'];
 		}
 	}
-
-	$fieldFormat = '{title} ({tracker_name})';
+	
 	return array(
 		'user_show_realnames' => array(
 			'name' => tra('Show user\'s real name instead of login (when possible)'),
@@ -43,7 +44,6 @@ function prefs_user_list($partial = false)
 				'userTracker',
 			),
 			'default' => '',
-			'profile_reference' => 'prefs_user_tracker_references',
 		),
 		'user_assigned_modules' => array(
 			'name' => tra('Users can configure modules'),
@@ -64,34 +64,32 @@ function prefs_user_list($partial = false)
 			'default' => 'module',
 		),
 		'user_store_file_gallery_picture' => array(
-			'name' => tra('Store full-size copy of profile picture in file gallery'),
+			'name' => tra('Store full-size copy of avatar in file gallery'),
 			'help' => 'User+Preferences',
 			'type' => 'flag',
 			'default' => 'n',
 		),
 		'user_picture_gallery_id' => array(
-			'name' => tra('File gallery in which to store full-size copy of profile picture'),
+			'name' => tra('File gallery to store full-size copy of avatar in'),
 			'description' => tra('Enter the gallery id here. Please create a dedicated gallery that is admin-only for security, or make sure gallery permissions are set so that only admins can edit.'),
 			'help' => 'User+Preferences',
 			'type' => 'text',
 			'filter' => 'digits',
 			'size' => '3',
 			'default' => 0,
-			'profile_reference' => 'file_gallery',
 		),
 		'user_default_picture_id' => array(
-			'name' => tra('File ID of default profile picture'),
-			'deacription' => tra('File ID of image to use in file gallery as the profile picture if user has no profile picture in file galleries'),
+			'name' => tra('File ID of default avatar image'),
+			'deacription' => tra('File ID of image to use in file gallery as the avatar if user has no avatar image in file galleries'), 
 			'help' => 'User+Preferences',
 			'type' => 'text',
 			'filter' => 'digits',
 			'size' => '5',
 			'default' => 0,
 			'dependencies' => array('user_store_file_gallery_picture'),
-			'profile_reference' => 'file',
 		),
 		'user_who_viewed_my_stuff' => array(
-			'name' => tra('Display who viewed my items on the user information page'),
+			'name' => tra('Display who viewed my stuff on the user information page'),
 			'description' => tra('You will need to activate tracking of views for various items in the action log for this to work'),
 			'type' => 'flag',
 			'dependencies' => array(
@@ -100,16 +98,16 @@ function prefs_user_list($partial = false)
 			'default' => 'n',
 		),
 		'user_who_viewed_my_stuff_days' => array(
-			'name' => tra('Number of days to consider who viewed my items'),
-			'description' => tra('Number of days before current time to consider when showing who viewed my items'),
+			'name' => tra('Number of days to consider who viewed my stuff'),
+			'description' => tra('Number of days before current time to consider when showing who viewed my stuff'),
 			'type' => 'text',
-			'filter' => 'digits',
+			'filter' => 'digit',
 			'size' => '4',
 			'default' => 90,
 		),
 		'user_who_viewed_my_stuff_show_others' => array(
-			'name' => tra('Show to others who viewed my items on the user information page'),
-			'description' => tra('Show to others who viewed my items on the user information page. Admins can always see this information.'),
+			'name' => tra('Show to others who viewed my stuff on the user information page'),
+			'description' => tra('Show to others who viewed my stuff on the user information page. Admins can always see this information.'),
 			'type' => 'flag',
 			'dependencies' => array(
 				'user_who_viewed_my_stuff',
@@ -121,6 +119,13 @@ function prefs_user_list($partial = false)
 			'type' => 'list',
 			'options' => $partial ? array() : UserListOrder(),
 			'default' => 'score_desc',
+		),
+		'user_selector_threshold' => array(
+			'name' => tra('Maximum number of users to show in drop down lists'),
+			'description' => tra('Prevents out of memory and performance issues when user list is very large by using a jQuery autocomplete text input box.'),
+			'type' => 'text',
+			'size' => '5',
+			'dependencies' => array('feature_jquery_autocomplete'),
 		),
 		'user_register_prettytracker' => array(
 			'name' => tra('Use pretty trackers for registration form'),
@@ -141,7 +146,6 @@ function prefs_user_list($partial = false)
 				'user_register_pretty_tracker',
 			),
 			'default' => '',
-			'profile_reference' => 'wiki_page',
 		),
 		'user_register_prettytracker_output' => array(
 			'name' => tra('Output the registration results'),
@@ -152,7 +156,6 @@ function prefs_user_list($partial = false)
 			'dependencies' => array(
 				'userTracker',
 			),
-			'profile_reference' => 'wiki_page',
 		),
 		'user_register_prettytracker_outputwiki' => array(
 			'name' => tra('Output registration pretty tracker template'),
@@ -163,7 +166,6 @@ function prefs_user_list($partial = false)
 			'dependencies' => array(
 				'user_register_prettytracker_output',
 			),
-			'profile_reference' => 'wiki_page',
 		),
 		'user_register_prettytracker_outputtowiki' => array(
 			'name' => tra('Page name fieldId'),
@@ -174,8 +176,6 @@ function prefs_user_list($partial = false)
 			'dependencies' => array(
 				'user_register_prettytracker_output',
 			),
-			'profile_reference' => 'tracker_field',
-			'format' => $fieldFormat,
 		),
 		'user_trackersync_trackers' => array(
 			'name' => tra('User tracker IDs to sync prefs from'),
@@ -186,8 +186,6 @@ function prefs_user_list($partial = false)
 				'userTracker',
 			),
 			'default' => '',
-			'separator' => ',',
-			'profile_reference' => 'tracker',
 		),
 		'user_trackersync_realname' => array(
 			'name' => tra('Tracker field IDs to sync Real Name pref from'),
@@ -199,8 +197,6 @@ function prefs_user_list($partial = false)
 				'user_trackersync_trackers',
 			),
 			'default' => '',
-			'profile_reference' => 'tracker_field',
-			'format' => $fieldFormat,
 		),
 		'user_trackersync_geo' => array(
 			'name' => tra('Synchronize long/lat/zoom to location field'),
@@ -244,17 +240,6 @@ function prefs_user_list($partial = false)
 			),
 			'default' => 'n',
 		),
-		'user_tracker_auto_assign_item_field' => array(
-			'name' => tra('Assign a user tracker item when registering if email equals this field'),
-			'type' => 'text',
-			'filter' => 'digits',
-			'dependencies' => array(
-				'userTracker',
-			),
-			'default' => '',
-			'profile_reference' => 'tracker_field',
-			'format' => $fieldFormat,
-		),
 		'user_selector_threshold' => array(
 			'name' => tra('Maximum number of users to show in drop down lists'),
 			'description' => tra('Prevents out of memory and performance issues when user list is very large by using a jQuery autocomplete text input box.'),
@@ -289,25 +274,6 @@ function prefs_user_list($partial = false)
 			'type' => 'flag',
 			'default' => 'n',
 		),
-		'user_in_search_result' => array(
-			'name' => tr('Users available in search results'),
-			'description' => tr('Users available within search results. Content related to the user will be included in the index.'),
-			'type' => 'list',
-			'dependencies' => array('feature_search'),
-			'options' => array(
-				'none' => tr('None'),
-				'all' => tr('All'),
-				'public' => tr('Public'),
-			),
-			'default' => 'none',
-		),
-		'user_use_gravatar' => array(
-			'name' => tr('Use Gravatar for user profile pictures'),
-			'description' => tr('Always request the Gravatar image for the user profile picture.'),
-			'hint' => tr('See [http://gravatar.com/|Gravatar].'),
-			'type' => 'flag',
-			'default' => 'n',
-		),
 	);
 }
 
@@ -337,15 +303,3 @@ function UserListOrder()
 
 	return $options;
 }
-
-function prefs_user_tracker_references(Tiki_Profile_Writer $writer, $values)
-{
-	$values = array_filter(explode(',', $values));
-	$tracker = array_shift($values);
-
-	$values = $writer->getReference('tracker_field', $values);
-	array_unshift($values, $writer->getReference('tracker', $tracker));
-
-	return implode(',', $values);
-}
-

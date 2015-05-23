@@ -1,57 +1,38 @@
 {* $Id$ *}
 
 {remarksbox type="tip" title="{tr}Tip{/tr}"}
-	{tr}Look under "<a href="tiki-admin_rssmodules.php" target="_blank" class="alert-link">External Feeds</a>" on the application menu if you are searching for the <a href="https://doc.tiki.org/Article+generator" target="_blank" class="alert-link">"Article Generator" on RSS feeds</a>{/tr}.
+	{tr}Look under "Articles" on the application menu for links to{/tr} "<a class="rbox-link" href="tiki-admin_topics.php">{tr}Admin topics{/tr}</a>" {tr}and{/tr} "<a class="rbox-link" href="tiki-article_types.php">{tr}Admin types{/tr}</a>".
 {/remarksbox}
 
 {if !empty($msgs)}
-	<div class="alert alert-warning">
-		{foreach from=$msgs item=msg}
-			{$msg}
-		{/foreach}
+	<div class="simplebox highlight">
+	{foreach from=$msgs item=msg}
+	{$msg}			 
+	{/foreach}
 	</div>
 {/if}
 
 <form method="post" action="tiki-admin.php?page=articles">
 	<input type="hidden" name="ticket" value="{$ticket|escape}">
-	<div class="row">
-		<div class="form-group col-lg-12 clearfix">
-			<a role="button" class="btn btn-default btn-sm tips" href="tiki-list_articles.php" title=":{tr}List{/tr}">
-				{icon name="list"} {tr}Articles{/tr}
-			</a>
-			<a role="button" class="btn btn-default btn-sm tips" href="tiki-article_types.php" title=":{tr}List{/tr}">
-				{icon name="list"} {tr}Article Types{/tr}
-			</a>
-			<a role="button" class="btn btn-default btn-sm tips" href="tiki-admin_topics.php" title=":{tr}List{/tr}">
-				{icon name="list"} {tr}Article Topics{/tr}
-			</a>
-			{if $prefs.feature_submissions eq "y"}
-				<a role="button" class="btn btn-default btn-sm tips" href="tiki-list_submissions.php" title=":{tr}List{/tr}">
-					{icon name="list"} {tr}Submissions{/tr}
-				</a>
-			{/if}
-			<div class="pull-right">
-				<input type="submit" class="btn btn-primary btn-sm" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}">
-			</div>
-		</div>
+	<div class="input_submit_container clear" style="text-align: right;">
+		<input type="submit" value="{tr}Change preferences{/tr}" />
 	</div>
 
 	{tabset name="admin_articles"}
 		{tab name="{tr}General Settings{/tr}"}
-			<h2>{tr}General Settings{/tr}</h2>
 			<input type="hidden" name="articlesprefs" />
 
-			<fieldset class="table">
+			<fieldset class="admin">
 				<legend>{tr}Activate the feature{/tr}</legend>
 				{preference name=feature_articles visible="always"}
 			</fieldset>
 
-			<fieldset class="table">
+			<fieldset class="admin">
 				<legend>{tr}Plugins{/tr}</legend>
 				{preference name=wikiplugin_articles}
 				{preference name=wikiplugin_article}
 			</fieldset>
-
+			
 			{preference name=art_home_title}
 			{preference name=maxArticles}
 
@@ -61,7 +42,6 @@
 				</legend>
 
 				{preference name=feature_submissions}
-				{preference name=article_remembers_creator}
 				{preference name=feature_cms_rankings}
 				{preference name=article_user_rating}
 				<div class="adminoptionboxchild" id="article_user_rating_childcontainer">
@@ -82,26 +62,29 @@
 				{preference name=article_custom_attributes}
 
 				{preference name=geo_locate_article}
-				{preference name=feature_sefurl_title_article}
-
+				
 				{preference name=article_related_articles}
-
-				{preference name=tracker_article_tracker}
-				<div class="adminoptionboxchild" id="tracker_article_tracker_container">
-					{preference name=tracker_article_trackerId}
-				</div>
 
 				<input type="hidden" name="articlesfeatures" />
 			</fieldset>
-
+			
 			<fieldset>
 				<legend>
-					{tr}Default maximum dimensions of custom images{/tr}
+					{tr}Article properties{/tr}
 				</legend>
-				{preference name=article_image_size_x}
-				{preference name=article_image_size_y}
-				{preference name=article_default_list_image_size_x}
-				{preference name=article_default_list_image_size_y}
+				<fieldset>
+					<legend>{tr}Default maximum dimensions of custom images{/tr}</legend>
+					<fieldset>
+						<legend>{tr}General (view mode){/tr}</legend>
+						{preference name=article_image_size_x}
+						{preference name=article_image_size_y}
+					</fieldset>
+					<fieldset>
+						<legend>{tr}List mode{/tr}</legend>
+						{preference name=article_default_list_image_size_x}
+						{preference name=article_default_list_image_size_y}
+					</fieldset>
+				</fieldset>
 			</fieldset>
 
 			<fieldset>
@@ -117,12 +100,13 @@
 			<fieldset>
 				<legend>{tr}Import CSV file{/tr}</legend>
 				<div class="adminoptionbox">
-					<label for="csvlist" class="control-label col-sm-4">{tr}Batch upload (CSV file){/tr}</label>
-					<div class="col-sm-8">
-						<input type="file" name="csvlist" id="csvlist" />
-						<span class="help-block">{tr}File format: title,authorName,heading,body,lang,user{/tr}....</span>
+					<div class="adminoptionlabel">
+						<label for="csvlist">{tr}Batch upload (CSV file):{/tr}</label>
+						<input type="file" name="csvlist" id="csvlist" /> 
+						<br />
+						<em>{tr}File format: title,authorName,heading,body,lang,user{/tr}....</em>
 						<div align="center">
-							<input type="submit" class="btn btn-default btn-sm" name="import" value="{tr}Import{/tr}" />
+							<input type="submit" name="import" value="{tr}Import{/tr}" />
 						</div>
 					</div>
 				</div>
@@ -130,11 +114,16 @@
 		{/tab}
 
 		{tab name="{tr}Articles Listing{/tr}"}
-			<h2>{tr}Articles Listing{/tr}</h2>
 			<fieldset>
 				<legend>{tr}List Articles{/tr}</legend>
+				<div class="adminoptionbox">
+					{tr}Select which items to display when listing articles:{/tr} 	  
+					<a class="rbox-link" href="tiki-list_articles.php">tiki-list_articles.php</a>
+				</div>
 				<input type="hidden" name="artlist" />
+
 				{preference name=art_sort_mode}
+
 				{preference name=art_list_title}
 				<div class="adminoptionboxchild" id="art_list_title_childcontainer">
 					{preference name=art_list_title_len}
@@ -149,11 +138,10 @@
 				{preference name=art_list_author}
 				{preference name=art_list_authorName}
 				{preference name=art_list_rating}
-				{preference name=art_list_usersRating}
 				{preference name=art_list_reads}
 				{preference name=art_list_size}
 				{preference name=art_list_img}
-				{preference name=art_list_ispublished}
+				
 				{preference name=gmap_article_list}
 			</fieldset>
 			<fieldset>
@@ -162,16 +150,9 @@
 				{preference name=art_header_text_pos}
 			</fieldset>
 		{/tab}
-
 	{/tabset}
-
-	<br>{* I cheated. *}
-	<div class="row">
-		<div class="form-group col-lg-12 clearfix">
-			<div class="text-center">
-				<input type="submit" class="btn btn-primary btn-sm" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}">
-			</div>
-		</div>
+	<div class="input_submit_container clear" style="text-align: center;">
+		<input type="submit" value="{tr}Change preferences{/tr}" />
 	</div>
 </form>
 

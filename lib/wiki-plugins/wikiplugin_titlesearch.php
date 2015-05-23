@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -38,8 +38,6 @@ function wikiplugin_titlesearch_info()
 				'name' => tra('Exclude'),
 				'description' => tra('Pipe-separated list of page names to exclude from results.'),
 				'default' => '',
-				'separator' => '|',
-				'profile_reference' => 'wiki_page',
 			),
 			'noheader' => array(
 				'required' => false,
@@ -64,7 +62,7 @@ class WikiPluginTitleSearch extends PluginsLib
 	}
 	function getDefaultArguments()
 	{
-		return array('exclude' => '',
+		return array('exclude' => '' ,
 			'noheader' => 0,
 			'info' => false,
 			'search' => false,
@@ -81,10 +79,9 @@ class WikiPluginTitleSearch extends PluginsLib
 	}
 	function run ($data, $params)
 	{
-		$wikilib = TikiLib::lib('wiki');
-		$tikilib = TikiLib::lib('tiki');
+		global $wikilib; include_once('lib/wiki/wikilib.php');
+		global $tikilib;
 		$aInfoPreset = array_keys($this->aInfoPresetNames);
-		$exclude = $params['exclude'];
 		$params = $this->getParams($params, true);
 		extract($params, EXTR_SKIP);
 		if (!$search) {

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,14 +11,11 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
   exit;
 }
 
-/**
- * @return array
- */
 function module_quickadmin_info()
 {
 	return array(
-		'name' => tra('Quick Administration'),
-		'description' => tra('Some helpful tools for administrators.'),
+		'name' => tra('Quick Admin'),
+		'description' => tra('Some helpful tools for admins.'),
 		'prefs' => array(),
 		'params' => array(
 			'mode' => array(
@@ -29,20 +26,14 @@ function module_quickadmin_info()
 	);
 }
 
-/**
- * @param $mod_reference
- * @param $module_params
- */
 function module_quickadmin($mod_reference, $module_params)
 {
-	global $prefs;
+	global $prefs, $themegenlib;
 	// include and setup themegen editor
 	if ($prefs['themegenerator_feature'] === 'y' &&
 			(strpos($_SERVER['SCRIPT_NAME'], 'tiki-admin.php') === false || strpos($_SERVER['QUERY_STRING'], 'page=look') === false)) {
-		$themegenlib = TikiLib::lib('themegenerator');
+		include_once 'lib/themegenlib.php';
 		$themegenlib->setupEditor();
 	}
-
-	TikiLib::lib('smarty')->assign('recent_prefs', TikiLib::lib('prefs')->getRecent());
 
 }
