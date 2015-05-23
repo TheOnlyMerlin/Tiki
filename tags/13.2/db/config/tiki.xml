@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<container xmlns="http://symfony.com/schema/dic/services">
+	<!--
+
+	Important: This file is part of Tiki.
+	           If you want to load additional services, please create
+			   a 'custom.xml' file to avoid conflicts.
+
+	-->
+	<services>
+		<service id="tiki.lib.admin" class="AdminLib">
+			<file>%kernel.root_dir%/lib/admin/adminlib.php</file>
+		</service>
+		<service id="tiki.lib.art" class="ArtLib">
+			<file>%kernel.root_dir%/lib/articles/artlib.php</file>
+		</service>
+		<service id="tiki.lib.attribute" class="AttributeLib">
+			<file>%kernel.root_dir%/lib/attributes/attributelib.php</file>
+		</service>
+		<service id="tiki.lib.blog" class="BlogLib">
+			<file>%kernel.root_dir%/lib/blogs/bloglib.php</file>
+		</service>
+		<service id="tiki.lib.cache" class="CacheLib">
+			<file>%kernel.root_dir%/lib/cache/cachelib.php</file>
+		</service>
+		<service id="tiki.lib.categ" class="CategLib">
+			<file>%kernel.root_dir%/lib/categories/categlib.php</file>
+		</service>
+		<service id="tiki.lib.comments" class="Comments">
+			<file>%kernel.root_dir%/lib/comments/commentslib.php</file>
+		</service>
+		<service id="tiki.lib.contact" class="ContactLib">
+			<file>%kernel.root_dir%/lib/webmail/contactlib.php</file>
+		</service>
+		<service id="tiki.lib.contribution" class="ContributionLib">
+			<file>%kernel.root_dir%/lib/contribution/contributionlib.php</file>
+		</service>
+		<service id="tiki.lib.css" class="cssLib">
+			<file>%kernel.root_dir%/lib/csslib.php</file>
+		</service>
+		<service id="tiki.lib.flaggedrevision" class="FlaggedRevisionLib">
+			<file>%kernel.root_dir%/lib/wiki/flaggedrevisionlib.php</file>
+		</service>
+		<service id="tiki.lib.filegal" class="FileGalLib">
+			<file>%kernel.root_dir%/lib/filegals/filegallib.php</file>
+		</service>
+		<service id="tiki.lib.freetag" class="FreetagLib">
+			<file>%kernel.root_dir%/lib/freetag/freetaglib.php</file>
+		</service>
+		<service id="tiki.lib.hist" class="HistLib">
+			<file>%kernel.root_dir%/lib/wiki/histlib.php</file>
+		</service>
+		<service id="tiki.lib.imagegal" class="ImageGalsLib">
+			<file>%kernel.root_dir%/lib/imagegals/imagegallib.php</file>
+		</service>
+		<service id="tiki.lib.ldap" class="LdapLib">
+			<file>%kernel.root_dir%/lib/ldap/ldaplib.php</file>
+		</service>
+		<service id="tiki.lib.logs" class="LogsLib">
+			<file>%kernel.root_dir%/lib/logs/logslib.php</file>
+		</service>
+		<service id="tiki.lib.logsqry" class="LogsQueryLib">
+			<file>%kernel.root_dir%/lib/logs/logsquerylib.php</file>
+		</service>
+		<service id="tiki.lib.memcache" class="Memcachelib">
+			<file>%kernel.root_dir%/lib/cache/memcachelib.php</file>
+		</service>
+		<service id="tiki.lib.menu" class="MenuLib">
+			<file>%kernel.root_dir%/lib/menubuilder/menulib.php</file>
+		</service>
+		<service id="tiki.lib.multilingual" class="MultilingualLib">
+			<file>%kernel.root_dir%/lib/multilingual/multilinguallib.php</file>
+		</service>
+		<service id="tiki.lib.notification" class="NotificationLib">
+			<file>%kernel.root_dir%/lib/notifications/notificationlib.php</file>
+		</service>
+		<service id="tiki.lib.object" class="ObjectLib">
+			<file>%kernel.root_dir%/lib/objectlib.php</file>
+		</service>
+		<service id="tiki.lib.quantify" class="QuantifyLib">
+			<file>%kernel.root_dir%/lib/wiki/quantifylib.php</file>
+		</service>
+		<service id="tiki.lib.rating" class="RatingLib">
+			<file>%kernel.root_dir%/lib/rating/ratinglib.php</file>
+		</service>
+		<service id="tiki.lib.relation" class="RelationLib">
+			<file>%kernel.root_dir%/lib/attributes/relationlib.php</file>
+		</service>
+		<service id="tiki.lib.score" class="ScoreLib">
+			<file>%kernel.root_dir%/lib/score/scorelib.php</file>
+		</service>
+		<service id="tiki.lib.semantic" class="SemanticLib">
+			<file>%kernel.root_dir%/lib/wiki/semanticlib.php</file>
+		</service>
+		<service id="tiki.lib.service" class="ServiceLib">
+			<file>%kernel.root_dir%/lib/servicelib.php</file>
+		</service>
+		<service id="tiki.lib.struct" class="StructLib">
+			<file>%kernel.root_dir%/lib/structures/structlib.php</file>
+		</service>
+		<service id="tiki.lib.tikidate" class="TikiDate"/>
+		<service id="tiki.lib.todo" class="TodoLib">
+			<file>%kernel.root_dir%/lib/todolib.php</file>
+		</service>
+		<service id="tiki.lib.trk" class="TrackerLib">
+			<file>%kernel.root_dir%/lib/trackers/trackerlib.php</file>
+		</service>
+		<service id="tiki.lib.user" class="UsersLib">
+			<file>%kernel.root_dir%/lib/userslib.php</file>
+		</service>
+		<service id="tiki.lib.userprefs" class="UserPrefsLib">
+			<file>%kernel.root_dir%/lib/userprefs/userprefslib.php</file>
+		</service>
+		<service id="tiki.lib.wiki" class="WikiLib">
+			<file>%kernel.root_dir%/lib/wiki/wikilib.php</file>
+		</service>
+	</services>
+</container>
