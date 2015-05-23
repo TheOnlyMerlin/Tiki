@@ -1,0 +1,364 @@
+/* $Id$
+	jQuery-mobile default theme definitions (mobile.css) for Tiki Wiki CMS Groupware.
+	Visit http://themes.tiki.org for more information.
+*/
+ 
+/* Don't import foundation CSS files. *
+@import url("lite/lite.css");
+@import url("layout/layout.css");
+@import url("layout/design.css");
+* End of File */
+
+.hidden {
+	display: none;
+}
+
+body {
+	background-color: #fff;
+	color: #000;
+	font-family: sans-serif;
+	font-size: 1em;
+}
+
+/* Fix for too wide images in jQuery mobile view  */
+img {
+	max-width: 100%;
+}
+
+/* lists */
+ul, ol {
+	padding-left: 1em;
+}
+
+hr, form, footer {
+	clear: both;
+}
+
+footer .mobileswitch {
+	display: block;
+	padding: .7em 15px;
+}
+
+/* remarks boxes from layout.css */
+/* also some from design.css */
+
+.rbox {
+	margin: 1em .3em .3em .3em;
+}
+
+.rbox-title,
+.rbox-data {
+	position: relative;
+	padding: 0.3em 0.6em 0.3em 0.4em;
+	border: 1px solid #000;
+	background: #eee;
+	color: #000;
+}
+
+.rbox-title {
+	display: inline-block;
+	width: auto;
+	z-index: 1;
+	bottom: 0;
+	border-bottom-color: #eee;
+	padding: 0.35em 0.9em 0em 0.5em;
+	font-weight: bold;
+}
+
+.rbox-title .icon {
+	padding: 0 .35em 0 0;
+	vertical-align: top;
+}
+
+.rbox-data {
+	padding: 1em 0.5em;
+	top: -1px;
+	z-index: 0;
+}
+
+.rbox-close {
+	float: right;
+	cursor: pointer;
+}
+
+/* end remarks boxes */
+
+/* tree browser */
+
+.tree {
+	list-style: none;
+}
+
+/* tabs */
+
+.ui-mobile .tabcontent {
+	/* from .ui-bar-c */
+	border: 1px solid 		#B3B3B3;
+	background: 			#e9eaeb;
+	color: 					#3E3E3E;
+	font-weight: bold;
+	text-shadow: 0 1px 1px 	#fff;
+	padding: 1em;
+	-moz-border-radius-bottomleft: 		.6em;
+	-webkit-border-bottom-left-radius: 	.6em;
+	border-bottom-left-radius: 			.6em;
+	-moz-border-radius-bottomright: 	.6em;
+	-webkit-border-bottom-right-radius: .6em;
+	border-bottom-right-radius: 		.6em;
+}
+
+/* titlebars (in wiki syntax) */
+.titlebar {
+	background: linear-gradient(#6facd5, #497bae) repeat scroll 0 0 #5e87b0;
+	border: 1px solid #456f9a;
+	color: #fff;
+	clear: both;
+	font-size: 16px;
+	font-weight: bold;
+	display: block;
+	margin: 0;
+	overflow: hidden;
+	padding: 0.4em 15px;
+	position: relative;
+	text-shadow: 0 1px 0 #3e6790;
+}
+
+/* popups */
+
+.ui-popup {
+	padding: .5em 1em;
+}
+
+/* toolbars */
+
+.helptool-admin {
+	display: none;	/* need jquery-ui dialogs */
+}
+
+/* reduce visual clutter */
+.cachedStatus {
+	display: none;
+}
+
+/* some help for tables */
+
+.normal, .wikicell, .wikitable {
+	background-color: #fff;
+	border: 1px solid #ccc;
+	color: #000;
+	border-collapse:	collapse;
+}
+
+.codelisting, .normal td, .normal th, .wikicell, .simplebox {
+	padding: 0.2em 0.4em;
+}
+
+/* simplebox and codelisting */
+.codelisting,
+.simplebox
+{
+	background-color: #f0f0f0;
+	color: #000;
+	border: solid 1px #ccc;
+}
+
+/* quote plugin */
+.quotebody {
+	border-left: 3px solid #ccc;
+	padding-left: 1em;
+}
+
+/* odd and even classes for tr, td, and li */
+.odd {
+        background: #f0f0f0;
+        color: #000;
+}
+table.normal tr:nth-child(2n+1) {
+	background: #f0f0f0;
+	color: #000;
+}
+
+.even {
+        background: #fff;
+        color: #000;
+}
+table.normal tr:nth-child(2n) {
+	background: #fff;
+	color: #000;
+}
+
+.ui-content.ui-body-a .normal th {
+	border:				1px solid #2A2A2A;
+	background: 		#111111;
+	color: 				#ffffff;
+	font-weight:		bold;
+	text-shadow:		0 -1px 1px #000000;
+	background-image: -moz-linear-gradient(top,
+							#3c3c3c,
+							#111111);
+	background-image: -webkit-gradient(linear,left top,left bottom,
+							color-stop(0, 	#3c3c3c),
+							color-stop(1, 		#111111));
+  	-msfilter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#3c3c3c', EndColorStr='#111111')";
+}
+
+.ui-content.ui-content.ui-body-a .even {
+	background: #333;
+}
+
+.ui-content.ui-body-b .normal th {
+	border: 1px solid 		#456f9a;
+	background: 			#5e87b0;
+	color: 					#fff;
+	font-weight: bold;
+	text-shadow: 0 -1px 1px #254f7a;
+	background-image: -moz-linear-gradient(top,
+							#81a8ce,
+							#5e87b0);
+	background-image: -webkit-gradient(linear,left top,left bottom,
+							color-stop(0, 		#81a8ce),
+							color-stop(1, 		#5e87b0));
+	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#81a8ce', EndColorStr='#5e87b0')";
+}
+
+.ui-content.ui-content.ui-body-b .even {
+	background: #ccc;
+}
+
+.ui-content.ui-body-c .normal th {
+	border: 1px solid 		#B3B3B3;
+	background: 			#e9eaeb;
+	color: 					#3E3E3E;
+	font-weight: bold;
+	text-shadow: 0 1px 1px 	#fff;
+	background-image: -moz-linear-gradient(top,
+							#f0f0f0,
+							#e9eaeb);
+	background-image: -webkit-gradient(linear,left top,left bottom,
+							color-stop(0, 	#f0f0f0),
+							color-stop(1, 	#e9eaeb));
+	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#f0f0f0', EndColorStr='#e9eaeb')";
+}
+
+.ui-content.ui-body-c .even {
+	background: #ddd;
+}
+
+.ui-content.ui-body-d .normal th {
+	border: 1px solid 		#ccc;
+	background: 			#bbb;
+	color: 					#333;
+	text-shadow: 0 1px 0 #eee;
+	background-image: -moz-linear-gradient(top,
+							#ddd,
+							#bbb);
+	background-image: -webkit-gradient(linear,left top,left bottom,
+							color-stop(0, 		#ddd),
+							color-stop(1, 		#bbb));
+  	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#dddddd', EndColorStr='#bbbbbb')";
+}
+
+.ui-content.ui-body-d .even {
+	background: #f8f8f8;
+}
+
+.ui-content.ui-body-e table th {
+	border: 1px solid 		#F7C942;
+	background: 			#fadb4e;
+	color: 					#333;
+	text-shadow: 0 1px 0 	#fff;
+	background-image: -moz-linear-gradient(top,
+							#fceda7,
+							#fadb4e);
+	background-image: -webkit-gradient(linear,left top,left bottom,
+							color-stop(0, 		#fceda7),
+							color-stop(1, 		#fadb4e));
+  	-msfilter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#fceda7', EndColorStr='#fadb4e')";
+}
+
+.ui-content.ui-body-e .even {
+	background: #FEEAA1;
+}
+
+/* Generic find.tpl
+
+.find-div label,
+.find-div span,
+.find-div select,
+.find-div input,
+.find-div div
+{
+	display: block;
+	float: left;
+	margin-right: 1em;
+}
+
+.find-div label,
+.find-div a {
+	line-height: 2em;
+}
+
+.find-div label.findsubmit {
+	line-height: inherit;
+} */
+
+/* filegals */
+
+.thumbnailcontener {
+	float: left;
+}
+
+/* wikiplugin_convene */
+
+.conveneHeaderRow td {
+	text-align: center;
+}
+
+.conveneVotes td,
+.conveneFooterRow td,
+.conveneHeaderRow td {
+	vertical-align: middle;
+}
+
+.convene-ok {
+	background-color: #D1F3D1 !important;
+	background-image: none !important;
+	text-align: center;
+}
+.convene-no {
+	background-color: #FFCCCA !important;
+	background-image: none !important;
+	text-align: center;
+}
+.convene-no img {
+	display: none;
+}
+.convene-unconfirmed {
+	text-align: center;
+}
+.conveneFooter, .conveneHeader {
+	text-align: center;
+}
+
+/* Prevent custom inline style in article tag from breaking the layout */
+article [style]:not(img) {
+	box-sizing: border-box;
+	float: none !important;
+	margin-left: 0 !important;
+	margin-right: 0 !important;
+	max-width: 100%;
+	overflow: auto;
+}
+
+/* Prevent tables other than .normal or .wikitable from breaking the layout by making the table elements to display as block */
+article table:not(.normal):not(.wikitable),
+article table:not(.normal):not(.wikitable) tbody,
+article table:not(.normal):not(.wikitable) tfoot,
+article table:not(.normal):not(.wikitable) thead,
+article table:not(.normal):not(.wikitable) tr,
+article table:not(.normal):not(.wikitable) td,
+article table:not(.normal):not(.wikitable) th
+{
+	display: block;
+}
+
