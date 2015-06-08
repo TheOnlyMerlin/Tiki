@@ -161,6 +161,16 @@ function wikiplugin_rr_info() {
 				'since' => 'PluginR 0.2',
 				'advanced' => true,
 			),
+			'parse_body' => array(
+				'required' => false,
+				'safe' => true,
+				'name' => tra('parse_body'),
+				'description' => tra('parses the body content to allow data to be generated from other plugins'),
+				'filter' => 'alpha',
+				'default' => 'n',
+				'since' => 'PluginR 0.90 ?',
+				'advanced' => true,
+			),			
 			'res' => array(
 				'required' => false,
 				'safe' => true,
@@ -621,6 +631,22 @@ function wikiplugin_rr($data, $params) {
 			unlink($r_png);
 		}
 
+	    // if parse_body is set parse the body content to allow data to be generated from other plugins and strip tags - and if echodebug is set show the body content before parsing
+		if (isset($params["echodebug"]) && $params["echodebug"] == '1' && $params["parse_body"] === 'y' ) {
+			$ret .= "<div >DEBUG ECHO:body content before parsing<pre>" . htmlspecialchars($data) . "</pre></div>";
+		}
+		
+	    if ($params["parse_body"] === 'y') {
+		// parse the body content but suppress any icon generation from plugins
+		    $data = TikiLib::lib('parser')->parse_data($data, array('noparseplugins' => false, 'suppress_icons' => true));
+		// strip tags
+		    $data = strip_tags($data);
+		// undo any unwanted parser changes to the body content
+		    $data = str_replace(array("&lt;", "&gt;"), array("<", ">"), $data);
+		// Reclean the <br /> , <p> and </p> tags added by the Tiki or smarty parsers (just in case).
+			$data = str_replace(array("<br />", "<p>", "</p>"), "", $data);
+	    }
+		
 		// execute R program
 		$fn   = runR ($output, convert, $sha1, $data, $r_echo, $ws, $params, $user, $r_cmd, $r_dir, $graph_dir, $loadandsave, $use_cached_script, $cachestrategy);
 
@@ -628,11 +654,14 @@ function wikiplugin_rr($data, $params) {
 		$cache_last_modif_readable = $tikilib->get_long_datetime(time());
 	}
 
-	$ret = file_get_contents ($fn);
+	$ret .= file_get_contents ($fn);
 
-	// Allow debug echo which shows the code even when the script fails (the most useful case for looking at the code)
+	// Allow debug echo which shows the code and other parameters even when the script fails (the most useful case for looking at the code)
 	if (isset($params["echodebug"]) && $params["echodebug"] == '1' ) {
-		$ret .= "<div >DEBUG ECHO<pre>" . htmlspecialchars($data) . "</pre></div>";
+		if ($params["parse_body"] === 'y') {
+		$ret .= "<div >DEBUG ECHO: parse_body parameter set to y</div>";
+		}
+		$ret .= "<div >DEBUG ECHO: body content<pre>" . htmlspecialchars($data) . "</pre></div>";
 	}
 
 	if ( preg_match('/tiki-index.php/', curPageURL() ) == 1) {
