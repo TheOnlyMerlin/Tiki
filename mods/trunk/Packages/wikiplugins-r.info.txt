@@ -2,7 +2,7 @@ contributor:
 $Author: xavi $
 
 revision: 
-$Revision: 0.89.1 $
+$Revision: 0.89.2 $
 
 lastmodif:
 $Date$
@@ -65,3 +65,4 @@ Changelog:
 0.88 Cached files stored by default in folder with page id instead of page name to fix issues with pagenames with special characters (thanks Jyhem). New param cacheby (pageid | pagename) added, which defaults to pageid to be futureproof with people using it in other languages with special characters in pagenames, but allowing to respect previous behavior when choosing the other option pagename which matches current wiki argument variable page for advanced custom R scripts in wiki pages.
 0.89 .htaccess in temp allows js and css files, so that scripts for the R clickme package can be much shorter reusing getwd() for the output path.
 0.89.1 Concatenation character for the url to refresh cache fixed for some SEFURL cases.
+0.89.2 Param parse_body added to allow parsing wiki plugin calls such as trackerlist with csv output inside plugin R. Additional debug output has been added when echodebug is set to '1' (commited on behalf of geoff and jonnyb: thanks!). 
