@@ -212,7 +212,6 @@ class BlogLib extends TikiDb_Bridge
 	function list_posts($offset = 0, $maxRecords = -1, $sort_mode = 'created_desc', $find = '', $filterByBlogId = -1, $author='', $ref='', $date_min = 0, $date_max = 0)
 	{
 		$tikilib = TikiLib::lib('tiki');
-		$filterByBlogIds = explode(':',$filterByBlogId);
 
 		$authorized_blogs = $this->list_blogs(0, -1, 'created_desc', '', $ref);
 		$permit_blogs = array();
@@ -220,23 +219,10 @@ class BlogLib extends TikiDb_Bridge
 			$permit_blogs[] = $authorized_blogs["data"][$i]['blogId'];
 		}
 
-		if ( count($filterByBlogIds) == 1 && $filterByBlogId >= 0) {	// There is one single blog Id
+		if ($filterByBlogId >= 0) {
 			// get posts for a given blogId:
 			$mid = " where ( `blogId` = ? ) ";
 			$bindvars = array($filterByBlogId);
-		} else if ( count($filterByBlogIds) > 1 ) {	// There is more than one blog Id
-			$multimid = array();
-			foreach ( $filterByBlogIds as $blogId ) {
-				if ( $blogId > 0 ) {
-					$multimid[] = ' `blogId` = ? ';
-					$bindvars[] = intval($blogId);
-				}
-			}
-			if ( count($multimid) > 1 ) {
-				$mid = ' WHERE ( ' . implode( ' or ', $multimid ) . ' ) ';
-			} else if ( count($multimid) == 1 ) {
-				$mid = ' where ( ' . $multimid[0] . ' ) ';
-			}
 		} else {
 			// get posts from all blogs
 			$mid = '';
@@ -499,8 +485,6 @@ class BlogLib extends TikiDb_Bridge
 
 	/**
 	 * list_blog_posts Returns all the posts for the blog $blogId
-	 * $blogId can express more than one blog like "1:11" 
-	 * but then own draft posts (private posts) are not shown (FIXME)
 	 *
 	 * @param int $blogId
 	 * @param bool $allowDrafts
@@ -527,30 +511,15 @@ class BlogLib extends TikiDb_Bridge
 
 		$mid = array();
 		$bindvars = array();
-		$blogIds = explode(':',$blogId);
 
 		$ownsblog = 'n';
-		if ( count($blogIds) == 1 && $blogIds[0] > 0 ) {	// There is one single blog Id
+		if ( $blogId > 0 ) {
 			$mid[] = "tbp.`blogId`=?";
 			$bindvars[] = (int)$blogId;
 
 			$blog_data = $this->get_blog($blogId);
 			if ($user && $user == $blog_data["user"]) {
 				$ownsblog = 'y';
-			}
-		} else if ( count($blogIds) > 1 ) {	// There is more than one blog Id
-			$multimid = array();
-			foreach ( $blogIds as $objId ) {
-				if ( $objId > 0 ) {
-					$multimid[] = ' tbp.`blogId`=? ';
-					$bindvars[] = intval($objId);
-					// Note: when there is more than one blog Id, own draft posts (private posts) are not shown (FIXME)
-				}
-			}
-			if ( count($multimid) > 1 ) {
-				$mid[] = ' ( ' . implode( ' or ', $multimid ) . ' ) ';
-			} else if ( count($multimid) == 1 ) {
-				$mid[] = $multimid[0];
 			}
 		}
 		$mid[] = "tbp.blogId = tb.blogId";

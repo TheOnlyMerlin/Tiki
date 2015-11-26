@@ -24,7 +24,7 @@
 
 {section name=ix loop=$rankings}
 	<div class="table-responsive">
-		<table class="table">
+		<table class="table normal">
 			<tr>
 				<th>{tr}Rank{/tr}</th>
 				<th>{$rankings[ix].title}</th>

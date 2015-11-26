@@ -43,7 +43,7 @@ class CategLib extends ObjectLib
 	{
 		$category = $this->get_category($categId);
 		$tepath = array ('Top');
-		foreach ( (array) $category['tepath'] as $pathelem) {
+		foreach ($category['tepath'] as $pathelem) {
 			$tepath[] = $pathelem;
 		}
 		return implode(" > ", $tepath);
@@ -151,7 +151,7 @@ class CategLib extends ObjectLib
 
 		TikiLib::events()->trigger('tiki.category.delete', [
 			'type' => 'category',
-			'object' => $categId,
+			'object' => $id,
 			'user' => $GLOBALS['user'],
 		]);
 
@@ -212,7 +212,7 @@ class CategLib extends ObjectLib
 
 		TikiLib::events()->trigger('tiki.category.update', [
 			'type' => 'category',
-			'object' => $categId,
+			'object' => $id,
 			'user' => $GLOBALS['user'],
 		]);
 	}
@@ -304,7 +304,6 @@ class CategLib extends ObjectLib
 	// Returns the object's OID, or FALSE if the object type is not handled and $checkHandled is FALSE.
 	function add_categorized_object($type, $itemId, $description = NULL, $name = NULL, $href = NULL, $checkHandled = FALSE)
 	{
-		global $prefs;
 		$id = $this->add_object($type, $itemId, $checkHandled, $description, $name, $href);
 		if ($id === FALSE) {
 			return FALSE;
@@ -315,9 +314,7 @@ class CategLib extends ObjectLib
 			$this->query($query, array($id));
 
 			$cachelib = TikiLib::lib('cache');
-			if ($prefs['categories_cache_refresh_on_object_cat'] != "n") {
-				$cachelib->empty_type_cache("allcategs");
-			}
+			$cachelib->empty_type_cache('allcategs');
 			$cachelib->empty_type_cache('fgals_perms');
 		}
 		return $id;
@@ -359,21 +356,12 @@ class CategLib extends ObjectLib
 		$query = "insert into `tiki_category_objects`(`catObjectId`,`categId`) values(?,?)";
 		$result = $this->query($query, array((int) $catObjectId,(int) $categId));
 
-		$cachelib = TikiLib::lib('cache');
-		if ($prefs['categories_cache_refresh_on_object_cat'] != "n") {
-			$cachelib->empty_type_cache("allcategs");
-		}
+		TikiLib::lib('cache')->empty_type_cache("allcategs");
 		$info = TikiLib::lib('object')->get_object_via_objectid($catObjectId);
 		if ($prefs['feature_actionlog'] == 'y') {
 			$logslib = TikiLib::lib('logs');
 			$logslib->add_action('Categorized', $info['itemId'], $info['type'], "categId=$categId", $user);
 		}
-		TikiLib::events()->trigger('tiki.object.categorized', array(
-			'object' => $info['itemId'],
-			'type' => $info['type'],
-			'added' => array($categId),
-			'removed' => array(),
-		));
 		require_once 'lib/search/refresh-functions.php';
 		refresh_index($info['type'], $info['itemId']);
 	}
@@ -384,21 +372,12 @@ class CategLib extends ObjectLib
 		$query = "delete from `tiki_category_objects` where `catObjectId`=? and `categId`=?";
 		$result = $this->query($query, array((int) $catObjectId,(int) $categId), -1, -1, false);
 
-		$cachelib = TikiLib::lib('cache');
-		if ($prefs['categories_cache_refresh_on_object_cat'] != "n") {
-			$cachelib->empty_type_cache("allcategs");
-		}
+		$cachelib->empty_type_cache("allcategs");
 		$info = TikiLib::lib('object')->get_object_via_objectid($catObjectId);
 		if ($prefs['feature_actionlog'] == 'y') {
 			$logslib = TikiLib::lib('logs');
 			$logslib->add_action('Uncategorized', $info['itemId'], $info['type'], "categId=$categId");
 		}
-		TikiLib::events()->trigger('tiki.object.categorized', array(
-			'object' => $info['itemId'],
-			'type' => $info['type'],
-			'added' => array(),
-			'removed' => array($categId),
-		));
 		require_once 'lib/search/refresh-functions.php';
 		refresh_index($info['type'], $info['itemId']);
 	}
@@ -693,7 +672,7 @@ class CategLib extends ObjectLib
 		}
 
 		if ($maxRecords != -1) {	// if filtered result is less than what's there look for more
-			while (count($requiredResult) < $maxRecords && count($requiredResult) < $count) {
+			while (count($requiredResult) < $maxRecords && count($requiredResult) < $cant) {
 				$nextResults = array_slice($result, $maxRecords, $maxRecords - count($requiredResult));
 				if (empty($nextResults)) {
 					break;
@@ -701,7 +680,7 @@ class CategLib extends ObjectLib
 				$requiredResult = array_merge($requiredResult, $nextResults);
 			}
 		} else {
-			$count = count($requiredResult);
+			$cant = count($requiredResult);
 		}
 		$result = $requiredResult;
 		
@@ -773,7 +752,6 @@ class CategLib extends ObjectLib
 	// Removes the object with the given identifer from the categories specified in the $categIds array. The array contains category identifiers.
 	function remove_object_from_categories($catObjectId, $categIds)
 	{
-		global $prefs;
 		if (!empty($categIds)) {
 			$cachelib = TikiLib::lib('cache');
 			$query = "delete from `tiki_category_objects` where `catObjectId`=? and `categId` in (".implode(',', array_fill(0, count($categIds), '?')).")";
@@ -784,9 +762,7 @@ class CategLib extends ObjectLib
 				$query = "delete from `tiki_categorized_objects` where `catObjectId`=?";
 				$result = $this->query($query, array((int) $catObjectId));
 			}
-			if ($prefs['categories_cache_refresh_on_object_cat'] != "n") {
-				$cachelib->empty_type_cache("allcategs");
-			}
+			$cachelib->empty_type_cache('allcategs');
 			$cachelib->empty_type_cache('fgals_perms');
 		}
 	}
@@ -890,21 +866,10 @@ class CategLib extends ObjectLib
 				}
 
 				$path = array($category['categId'] => $category['name']);
-
-				$parent = $category['parentId'];
-				while (!empty($parent)) {
-					if (isset($categories[$parent]['name'])){
-						$path[$parent] = $categories[$parent]['name'];
-					}else {
-						$path[$parent] = "";
-					}
+				for ($parent = $category['parentId']; $parent != 0; $parent = $categories[$parent]['parentId']) {
+					$path[$parent] = $categories[$parent]['name'];
 
 					$categories[$parent]['descendants'][] = $category['categId']; // Link this category from its ascendants for optimization.
-					if (isset($categories[$parent]['parentId'])) {
-						$parent = $categories[$parent]['parentId'];
-					} else {
-						$parent = 0;
-					}
 				}
 				$path = array_reverse($path, true);
 
@@ -940,12 +905,7 @@ class CategLib extends ObjectLib
 				if (!isset($filter['identifier'])) {
 					throw new Exception("Missing base category");
 				}
-				if (!empty($ret) && isset($ret[$filter['identifier']])) {
-					$filterBaseCategory = $ret[$filter['identifier']];
-				} else {
-					$filterBaseCategory = null;
-				}
-
+				$filterBaseCategory = $ret[$filter['identifier']];
 			}
 			switch ($type) {
 				case 'children':
@@ -1088,38 +1048,18 @@ class CategLib extends ObjectLib
 	// Moved from tikilib.php
 	function uncategorize_object($type, $id)
 	{
-		global $prefs;
 		$query = "select `catObjectId` from `tiki_categorized_objects` c, `tiki_objects` o where o.`objectId`=c.`catObjectId` and o.`type`=? and o.`itemId`=?";
 		$catObjectId = $this->getOne($query, array((string) $type,(string) $id));
 
 		if ($catObjectId) {
-			$info = TikiLib::lib('object')->get_object_via_objectid($catObjectId);
-
-		    $query = "select `categId` from `tiki_category_objects` where `catObjectId`=?";
-			$result = $this->fetchAll($query, array((int) $catObjectId));
-			$removed = array();
-			foreach ( $result as $row ) {
-				$removed[] = $row['categId'];
-			}
-			$removed = array_unique($removed);
-
-			$query = "delete from `tiki_category_objects` where `catObjectId`=?";
-		    $this->query($query, array((int) $catObjectId));
+		    $query = "delete from `tiki_category_objects` where `catObjectId`=?";
+		    $result = $this->query($query, array((int) $catObjectId));
 			// must keep tiki_categorized object because poll or ... can use it
 
 		    // Refresh categories
 		    $cachelib = TikiLib::lib('cache');
-			if ($prefs['categories_cache_refresh_on_object_cat'] != "n") {
-				$cachelib->empty_type_cache("allcategs");
-			}
-			$cachelib->empty_type_cache('fgals_perms');
-
-			TikiLib::events()->trigger('tiki.object.categorized', array(
-				'object' => $info['itemId'],
-				'type' => $info['type'],
-				'added' => array(),
-				'removed' => $removed,
-			));
+		    $cachelib->empty_type_cache('allcategs');
+        	$cachelib->empty_type_cache('fgals_perms');
 		}
 	}
 
@@ -1192,10 +1132,9 @@ class CategLib extends ObjectLib
 			"tracker" => "tracker",
 			"wiki" => "wiki page",
 			"calendar" => "calendar",
-			"img" => "image",
-			"template" => "template",
+			"img" => "image"
 		);	//get_strings tra("article");tra("blog");tra("directory");tra("faq");tra("FAQ");tra("file gallery");tra("forum");tra("image gallery");tra("newsletter");
-			//get_strings tra("poll");tra("quiz");tra("survey");tra("tracker");tra("wiki page");tra("image");tra("calendar");tra("template");
+			//get_strings tra("poll");tra("quiz");tra("survey");tra("tracker");tra("wiki page");tra("image");tra("calendar");
 
 		$typetitles = array(
 			"article" => "Articles",
@@ -1213,8 +1152,7 @@ class CategLib extends ObjectLib
 			"tracker" => "Trackers",
 			"wiki page" => "Wiki",
 			"calendar" => "Calendar",
-			"image" => "Image",
-			"template" => "Content Templates",
+			"image" => "Image"
 		);
 
 		$out = "";
@@ -1729,19 +1667,8 @@ class CategLib extends ObjectLib
 				}
 			}
 		}
-
-		$added = $manip->getAddedCategories();
-		$removed = $manip->getRemovedCategories();
-
-		TikiLib::events()->trigger('tiki.object.categorized', array(
-			'object' => $objId,
-			'type' => $objType,
-			'added' => $added,
-			'removed' => $removed,
-		));
-
-		$this->notify_add($added, $name, $objType, $href);
-		$this->notify_remove($removed, $name, $objType, $href);
+		$this->notify_add($manip->getAddedCategories(), $name, $objType, $href);
+		$this->notify_remove($manip->getRemovedCategories(), $name, $objType, $href);
 	}
 
 	function notify_add($new_categories, $name, $objType, $href)

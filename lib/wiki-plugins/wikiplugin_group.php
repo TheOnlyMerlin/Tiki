@@ -160,7 +160,7 @@ function wikiplugin_group($data, $params)
 				$smarty->assign('notgroupValid', 'n');
 			}
 		}
-		if (isset($userNotPending) && (count($userNotPending) < count($notpending))) {
+		if (count($userNotPending) < count($notpending)) {
 			$ok = false;
 		}
 		if (!$ok)

@@ -1032,7 +1032,8 @@ class MultilingualLib extends TikiLib
      */
     function getTemplateIDInLanguage($section, $template_name, $language)
 	{
-		$templateslib = TikiLib::lib('template');
+		global $templateslib;
+		require_once 'lib/templates/templateslib.php';
 
 		$all_templates = $templateslib->list_templates($section, 0, -1, 'name_asc', '');
 		$looking_for_templates_named = array("$template_name-$language");
@@ -1231,10 +1232,10 @@ class MultilingualLib extends TikiLib
 			// Some languages need BiDi support. Add their code names here ...
 			if (Language::isRTL()) {
 				$prefs['feature_bidi'] =  'y';
-				TikiLib::lib('header')->add_cssfile('vendor/morteza/bootstrap-rtl/dist/css/bootstrap-rtl.min.css', 99); // 99 is high rank order as it should load after all other css files
+				TikiLib::lib('header')->add_cssfile('themes/base_files/other/BiDi/BiDi.css');
 			} else {
 				$prefs['feature_bidi'] =  'n';
-				TikiLib::lib('header')->drop_cssfile('vendor/morteza/bootstrap-rtl/dist/css/bootstrap-rtl.min.css');
+				TikiLib::lib('header')->drop_cssfile('themes/base_files/other/BiDi/BiDi.css');
 			}
 		}
 	}

@@ -95,7 +95,7 @@ class Tiki_Profile_InstallHandler_User extends Tiki_Profile_InstallHandler
 		
 			if (isset($user['defaultgroup'])) {
 				$userlib->set_default_group($user['name'], $user['defaultgroup']);
-			}			
+			}
 
 // if a password has been generated then return this value instead of the userId				
 			if ($retpass) {

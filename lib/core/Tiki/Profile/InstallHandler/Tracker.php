@@ -57,8 +57,6 @@ class Tiki_Profile_InstallHandler_Tracker extends Tiki_Profile_InstallHandler
 			'section_format' => 'sectionFormat',
 			'popup_fields' => 'showPopup',
 			'admin_only_view' => 'adminOnlyViewEditItem',
-			'use_form_classes' => 'useFormClasses',
-			'form_classes' => 'formClasses',
 		);
 	} // }}}
 

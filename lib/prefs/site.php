@@ -7,10 +7,7 @@
 
 function prefs_site_list()
 {
-	global $prefs;
-
-	$available_layouts = TikiLib::lib('css')->list_user_selectable_layouts(isset($prefs['site_theme']) ? $prefs['site_theme'] : '', isset($prefs['theme_option']) ? $prefs['theme_option'] : '');
-	$available_admin_layouts = TikiLib::lib('css')->list_user_selectable_layouts(isset($prefs['site_theme_admin']) ? $prefs['site_theme_admin'] : '', isset($prefs['theme_option_admin']) ? $prefs['theme_option_admin'] : '');
+    $available_layouts = TikiLib::lib('css')->list_user_selectable_layouts();
 
 	return array (
 		'site_closed' => array(
@@ -134,15 +131,7 @@ function prefs_site_list()
 			'default' => 'basic',
 			'tags' => array('advanced'),
 			'options' => $available_layouts,
-		),
-		'site_layout_admin' => array(
-			'name' => tr('Admin layout'),
-			'description' => tr('Changes the layout templates for admin pages'),
-			'type' => 'list',
-			'default' => 'basic',
-			'tags' => array('advanced'),
-			'options' => $available_admin_layouts,
-		),
+		),  
 		'site_layout_per_object' => array(
 			'name' => tr('Allow per-object layout'),
 			'description' => tr('Allows objects to define an alternate layout for their rendering.'),

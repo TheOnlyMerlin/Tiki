@@ -99,9 +99,6 @@
 		<service id="tiki.lib.filegal" class="FileGalLib">
 			<file>%kernel.root_dir%/lib/filegals/filegallib.php</file>
 		</service>
-		<service id="tiki.lib.filegalbatch" class="FileGalBatchLib">
-			<file>%kernel.root_dir%/lib/filegals/filegalbatchlib.php</file>
-		</service>
 		<service id="tiki.lib.freetag" class="FreetagLib">
 			<file>%kernel.root_dir%/lib/freetag/freetaglib.php</file>
 		</service>
@@ -274,9 +271,6 @@
 		<service id="tiki.lib.symbols" class="Tiki_Profile_SymbolLoader" />
 		<service id="tiki.lib.tabular" class="Tracker\Tabular\Manager">
 			<argument type="service" id="tiki.lib.db"/>
-		</service>
-		<service id="tiki.lib.template" class="TemplatesLib">
-			<file>%kernel.root_dir%/lib/templates/templateslib.php</file>
 		</service>
 		<service id="tiki.lib.theme" class="ThemeLib">
 			<file>%kernel.root_dir%/lib/theme/themelib.php</file>

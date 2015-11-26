@@ -31,7 +31,7 @@
 
 	<h2>{tr}Answers{/tr}</h2>
 	{section name=ix loop=$channels}
-		<a id="q{$channels[ix].questionId}"></a>
+		<a name="q{$channels[ix].questionId}"></a>
 		<div class="faqqa">
 			<div class="faqquestion">
 				{if $prefs.faq_prefix neq 'none'}
@@ -108,7 +108,7 @@
 		{if count($suggested) != 0}
 			<br>
 			<div class="table-responsive">
-				<table class="table">
+				<table class="table normal">
 					<tr>
 						<th>{tr}Suggested questions{/tr}</th>
 					</tr>

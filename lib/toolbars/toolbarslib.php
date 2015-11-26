@@ -166,7 +166,6 @@ abstract class Toolbar
 					'sheetclose',
 
 					'objectlink',
-					'tikitable',
 				),
 				$plugins
 			)
@@ -537,39 +536,39 @@ class ToolbarCkOnly extends Toolbar
 				return null;
 			}
 		case 'cut':
-			return new self( 'Cut', null, 'scissors'  );
+			return new self( 'Cut' );
 		case 'copy':
 			return new self( 'Copy', null, 'copy' );
 		case 'paste':
-			return new self( 'Paste', null, 'paste' );
+			return new self( 'Paste' );
 		case 'pastetext':
-			return new self( 'PasteText', null, 'paste'  );
+			return new self( 'PasteText' );
 		case 'pasteword':
-			return new self( 'PasteFromWord', null, 'paste'  );
+			return new self( 'PasteFromWord' );
 		case 'print':
-			return new self( 'Print', null, 'print' );
+			return new self( 'Print' );
 		case 'spellcheck':
-			return new self( 'SpellChecker', null, 'ok' );
+			return new self( 'SpellChecker' );
 		case 'undo':
 			return new self( 'Undo', null, 'undo' );
 		case 'redo':
 			return new self( 'Redo', null, 'repeat' );
 		case 'selectall':
-			return new self( 'SelectAll', null, 'selectall' );
+			return new self( 'SelectAll' );
 		case 'removeformat':
-			return new self( 'RemoveFormat', null, 'erase'  );
+			return new self( 'RemoveFormat' );
 		case 'showblocks':
-			return new self( 'ShowBlocks', null, 'box' );
+			return new self( 'ShowBlocks' );
 		case 'left':
-			return new self( 'Justify Left', null, 'align-left' );
+			return new self( 'JustifyLeft' );
 		case 'right':
-			return new self( 'Justify Right', null, 'align-right' );
+			return new self( 'JustifyRight' );
 		case 'full':
-			return new self( 'Justify Block', null, 'align-justify' );
+			return new self( 'JustifyBlock' );
 		case 'indent':
-			return new self( 'Indent', null, 'indent' );
+			return new self( 'Indent' );
 		case 'outdent':
-			return new self( 'Outdent', null, 'outdent' );
+			return new self( 'Outdent' );
 		case 'style':
 			return new self( 'Styles' );
 		case 'fontname':
@@ -589,27 +588,27 @@ class ToolbarCkOnly extends Toolbar
 		case 'autosave':
 			return new self( 'Autosave', 'lib/ckeditor_tiki/plugins/autosave/images/ajaxAutoSaveDirty.gif', 'floppy');
 		case 'inlinesave':
-			return new self( 'Inline save', 'lib/ckeditor_tiki/plugins/inlinesave/images/ajaxSaveDirty.gif');
+			return new self( 'inlinesave', 'lib/ckeditor_tiki/plugins/inlinesave/images/ajaxSaveDirty.gif');
 		case 'inlinecancel':
-			return new self( 'Inline cancel', 'lib/ckeditor_tiki/plugins/inlinecancel/images/cross.png');
+			return new self( 'inlinecancel', 'lib/ckeditor_tiki/plugins/inlinecancel/images/cross.png');
 		case 'sub':
 			return new self( 'Subscript', null, 'subscript' );
 		case 'sup':
 			return new self( 'Superscript', null, 'subscript'  );
 		case 'anchor':
-			return new self( 'Anchor', null, 'anchor' );
+			return new self( 'Anchor' );
 		case 'bidiltr':
-			return new self( 'BidiLtr', null, 'arrow-right' );
+			return new self( 'BidiLtr' );
 		case 'bidirtl':
-			return new self( 'BidiRtl', null, 'arrow-left' );
+			return new self( 'BidiRtl' );
 		case 'image':
-			return new self( 'Image', null, 'image' );
+			return new self( 'Image' );
 		case 'table':
 			return $is_html ? new self( 'Table' ) : null;
 		case 'link':
 			return $is_html ? new self( 'Link' ) : null;
 		case 'unlink':
-			return new self( 'Unlink', null, 'unlink' );
+			return new self( 'Unlink' );
 		}
 	} // }}}
 
@@ -1244,7 +1243,6 @@ class ToolbarDialog extends Toolbar
 			break;
 
 		case 'table':
-		case 'tikitable':
 			$iconname = 'table';
 			$icon = tra('img/icons/table.png');
 			$wysiwyg = 'Table';

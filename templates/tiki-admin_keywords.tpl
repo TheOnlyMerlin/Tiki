@@ -10,53 +10,37 @@
 {if $edit_on}
 	<div id="current_keywords" class="clearfix">
 		<h2>{tr}Edit page keywords{/tr} ({$edit_keywords_page|escape})</h2>
-		<form action="tiki-admin_keywords.php" method="post" class="form-horizontal">
+		<form action="tiki-admin_keywords.php" method="post">
 			<input name="page" value="{$edit_keywords_page|escape}" type="hidden">
-			<div class="form-group">
-				<label class="col-sm-3 control-label">{tr}Keywords{/tr}</label>
-				<div class="col-sm-7 col-sm-offset-1 margin-bottom-sm">
-					<input name="new_keywords" size="65" value="{$edit_keywords|escape}" class="form-control">
-				</div>
-			</div>
-			<div class="form-group">
-				<label class="col-sm-3 control-label"></label>
-				<div class="col-sm-7 col-sm-offset-1 margin-bottom-sm">
-					<input type="submit" class="btn btn-default btn-sm" name="save_keywords" value="{tr}Save{/tr}">
-				</div>
-			</div>
+			<table class="formcolor">
+				<tbody>
+					<tr>
+						<td style="padding-right: 25px;">{tr}Keywords:{/tr}</td>
+						<td><input name="new_keywords" size="65" value="{$edit_keywords|escape}"></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td><input type="submit" class="btn btn-default btn-sm" name="save_keywords" value="{tr}Save{/tr}"></td>
+					</tr>
+				</tbody>
+			</table>
 		</form>
 	</div>
 {/if}
 
 <h2>{tr}Current Page Keywords{/tr}</h2>
-<form method="get" action="tiki-admin_keywords.php" class="form-horizontal">
-	<div class="form-group">
-		<label class="col-sm-3 control-label">{tr}Search by page:{/tr}</label>
-		<div class="col-sm-7 col-sm-offset-1 margin-bottom-sm">
-			<input type="text" name="q" value="{if $smarty.request.q}{$smarty.request.q|escape}{/if}" class="form-control">
-		</div>
-		<div class="col-sm-1">
-			<input type="submit" class="btn btn-default btn-sm" name="search" value="{tr}Go{/tr}">
-		</div>
-	</div>
+<form method="get" action="tiki-admin_keywords.php">
+	<label for="q">{tr}Search by page:{/tr}</label>
+	<input type="text" name="q" value="{if $smarty.request.q}{$smarty.request.q|escape}{/if}">
+	<input type="submit" class="btn btn-default btn-sm" name="search" value="{tr}Go{/tr}">
 </form>
 {if $search_on}
 	<strong>{$search_cant|escape} {tr}results found!{/tr}</strong>
 {/if}
 
 {if $existing_keywords}
-	{* Use css menus as fallback for item dropdown action menu if javascript is not being used *}
-	{if $prefs.javascript_enabled !== 'y'}
-		{$js = 'n'}
-		{$libeg = '<li>'}
-		{$liend = '</li>'}
-	{else}
-		{$js = 'y'}
-		{$libeg = ''}
-		{$liend = ''}
-	{/if}
-	<div class="{if $js === 'y'}table-responsive{/if}"> {* table-responsive class cuts off css drop-down menus *}
-		<table class="table table-striped table-hover">
+	<div class="table-responsive">
+		<table class="table normal table-striped table-hover">
 			<tbody>
 				<tr>
 					<th>{tr}Page{/tr}</th>
@@ -71,27 +55,21 @@
 						<td class="action">
 							{capture name=keywords_actions}
 								{strip}
-									{$libeg}<a href="tiki-admin_keywords.php?page={$existing_keywords[i].page|escape:"url"}">
+									<a href="tiki-admin_keywords.php?page={$existing_keywords[i].page|escape:"url"}">
 										{icon name='edit' _menu_text='y' _menu_icon='y' alt="{tr}Edit{/tr}"}
-									</a>{$liend}
-									{$libeg}<a href="tiki-admin_keywords.php?page={$existing_keywords[i].page|escape:"url"}&amp;remove_keywords=1">
+									</a>
+									<a href="tiki-admin_keywords.php?page={$existing_keywords[i].page|escape:"url"}&amp;remove_keywords=1">
 										{icon name='remove' _menu_text='y' _menu_icon='y' alt="{tr}Remove{/tr}"}
-									</a>{$liend}
+									</a>
 								{/strip}
 							{/capture}
-							{if $js === 'n'}<ul class="cssmenu_horiz"><li>{/if}
-							<a
-								class="tips"
-								title="{tr}Actions{/tr}"
-								href="#"
-								{if $js === 'y'}{popup delay="0|2000" fullhtml="1" center=true text=$smarty.capture.keywords_actions|escape:"javascript"|escape:"html"}{/if}
-								style="padding:0; margin:0; border:0"
-							>
+							<a class="tips"
+							   title="{tr}Actions{/tr}"
+							   href="#" {popup delay="0|2000" fullhtml="1" center=true text=$smarty.capture.keywords_actions|escape:"javascript"|escape:"html"}
+							   style="padding:0; margin:0; border:0"
+									>
 								{icon name='wrench'}
 							</a>
-							{if $js === 'n'}
-								<ul class="dropdown-menu" role="menu">{$smarty.capture.keywords_actions}</ul></li></ul>
-							{/if}
 						</td>
 					</tr>
 				{/section}

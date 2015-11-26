@@ -155,20 +155,19 @@ input[type="submit"],
 .button input {
 	background: @button-background-gradient;
 	text-transform: @button-text-transform;
-	border-width: 2px;
+}
+
+.btn.btn-link,
+input[type="submit"].btn-link {
+	background: none;
 }
 
 .btn:hover,
+.btn-default:hover,
 input[type="reset"]:hover,
 input[type="submit"]:hover,
 .button input:hover {
 	background: @button-hover-background-gradient;
-}
-
-.btn.btn-link,
-.btn-link:hover,
-input[type="submit"].btn-link {
-	background: none;
 }
 
 .topbar {

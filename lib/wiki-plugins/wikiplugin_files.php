@@ -112,20 +112,6 @@ function wikiplugin_files_info()
 					array('text' => tra('No'), 'value' => 'n')
 				)
 			),
-			'showfindisrecursive' => array(
-				'required' => false,
-				'name' => tra('Show Find is recursive'),
-				'description' => tra('The search box digs recursively in sub-galleries (by default)'),
-				'filter' => 'alpha',
-				'default' => 'y',
-				'advanced' => true,
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
-					array('text' => tra('No'), 'value' => 'n')
-				),
-				'parent' => array('name' => 'showfind', 'value' => 'y'),
-			),
 			'showtitle' => array(
 				'required' => false,
 				'name' => tra('Show Title'),
@@ -455,7 +441,8 @@ function wikiplugin_files_info()
 				'description' => tra('Recursive'),
 				'since' => '8.0',
 				'filter' => 'alpha',
-				'default' => 'y',
+				'default' => 'n',
+				'advanced' => true,
 				'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('Yes'), 'value' => 'y'), 
@@ -570,16 +557,7 @@ function wikiplugin_files($data, $params)
 			return "~np~<a onclick=\"javascript:window.open('tiki-list_file_gallery.php?galleryId=$galleryId[0]&amp;sort_mode=" . $sort . "&amp;caption=" . $caption . $creatorparam . $windowtitle . "&amp;slideshow','','menubar=no,width=" . $slidewidth . ",height=" . $slideheight . ",resizable=yes'); return false\" href=\"#\">".tra($data).'</a>~/np~';
 		}
 		$find = isset($_REQUEST['find'])?  $_REQUEST['find']: '';
-		// If we have set recursive == y, then always look recursively
-		// Otherwise, we still want to search recursively when showfindisrecursive == y
-		if ( $recursive == 'y' ) {
-			$look_recursively = true;
-		} else if ( $showfindisrecursive == 'y' && !empty($find) ) {
-			$look_recursively = true;
-		} else {
-			$look_recursively = false;
-		}
-		$fs = $filegallib->get_files(0, $max, $sort, $find, $galleryId, false, $withsubgals=='y', false, true, false, $show_parentName=='y', true, $look_recursively, '', false, false, false, $filter);
+		$fs = $filegallib->get_files(0, $max, $sort, $find, $galleryId, false, $withsubgals=='y', false, true, false, $show_parentName=='y', true, $recursive === 'y', '', false, false, false, $filter);
 		if (isset($categId)) {
 			$objects = $categlib->list_category_objects($categId, 0, -1, 'itemId_asc', 'file');
 			$objects_in_categs = array();

@@ -28,7 +28,7 @@
 	{include file='find.tpl'}
 	<form action="tiki-notepad_list.php" method="post">
 		<div class="{if $js === 'y'}table-responsive{/if}"> {*the table-responsive class cuts off dropdown menus *}
-			<table class="table table-striped table-hover">
+			<table class="table normal table-striped table-hover">
 				<tr>
 					<th style="text-align:center;">
 						<input type="submit" class="btn btn-default btn-sm" name="delete" value="{tr}x{/tr} ">
@@ -114,18 +114,15 @@
 {/if}
 
 <h2>{tr}Upload file{/tr}</h2>
-<form enctype="multipart/form-data" action="tiki-notepad_list.php" method="post" class="form-horizontal">
-	<div class="form-group">
-		<label class="col-sm-3 control-label">{tr}Upload file:{/tr}</label>
-		<div class="col-sm-7">
-	      	<input type="hidden" name="MAX_FILE_SIZE" value="10000000000000">
-			<input size="16" name="userfile1" type="file">
-	    </div>
-    </div>
-    <div class="form-group">
-		<label class="col-sm-3 control-label"></label>
-		<div class="col-sm-7">
-			<input type="submit" class="btn btn-primary btn-sm" name="upload" value="{tr}Upload{/tr}">
-	    </div>
-    </div>
+<form enctype="multipart/form-data" action="tiki-notepad_list.php" method="post">
+	<table class="formcolor">
+		<tr>
+			<td>{tr}Upload file:{/tr}</td>
+			<td>
+				<input type="hidden" name="MAX_FILE_SIZE" value="10000000000000">
+				<input size="16" name="userfile1" type="file">
+				<input type="submit" class="btn btn-primary btn-sm" name="upload" value="{tr}Upload{/tr}">
+			</td>
+		</tr>
+	</table>
 </form>

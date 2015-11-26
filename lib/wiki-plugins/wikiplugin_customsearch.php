@@ -42,7 +42,7 @@ function wikiplugin_customsearch_info()
 					criteria entered by users'),
 				'since' => '8.0',
 				'filter' => 'alnum',
-				'default' => 0,
+				'default' => '0',
 			),
 			'autosearchdelay' => array(
 				'required' => false,
@@ -51,7 +51,7 @@ function wikiplugin_customsearch_info()
 					(%00%1 disables and is the default)', '<code>', '</code>'),
 				'since' => '8.0',
 				'filter' => 'digits',
-				'default' => 0,
+				'default' => '0',
 			),
 			'searchfadediv' => array(
 				'required' => false,
@@ -69,12 +69,11 @@ function wikiplugin_customsearch_info()
 					search page after leaving'),
 				'since' => '8.0',
 				'options' => array(
-					array('text' => tra(''), 'value' => ''),
 					array('text' => tra('No'), 'value' => '0'),
 					array('text' => tra('Yes'), 'value' => '1'),
 				),
 				'filter' => 'digits',
-				'default' => 0,
+				'default' => '0',
 			),
 			'callbackscript' => array(
 				'required' => false,
@@ -98,12 +97,11 @@ function wikiplugin_customsearch_info()
 				'description' => tra('Execute the search when the page loads (default: Yes)'),
 				'since' => '9.0',
 				'options' => array(
-					array('text' => tra(''), 'value' => ''),
 					array('text' => tra('No'), 'value' => '0'),
 					array('text' => tra('Yes'), 'value' => '1'),
 				),
 				'filter' => 'digits',
-				'default' => 1,
+				'default' => '1',
 			),
 			'requireinput' => array(
 				'required' => false,
@@ -111,12 +109,11 @@ function wikiplugin_customsearch_info()
 				'description' => tra('Require first input field to be filled for search to trigger'),
 				'since' => '12.0',
 				'options' => array(
-					array('text' => tra(''), 'value' => ''),
 					array('text' => tra('No'), 'value' => '0'),
 					array('text' => tra('Yes'), 'value' => '1'),
 				),
 				'filter' => 'digits',
-				'default' => 0,
+				'default' => '0',
 			),
 			'forcesortmode' => array(
 				'required' => false,
@@ -124,12 +121,11 @@ function wikiplugin_customsearch_info()
 				'description' => tra('Force the use of specified sort mode in place of search relevance even when there is a text search query'),
 				'since' => '13.0',
 				'options' => array(
-					array('text' => tra(''), 'value' => ''),
 					array('text' => tra('No'), 'value' => '0'),
 					array('text' => tra('Yes'), 'value' => '1'),
 				),
 				'filter' => 'digits',
-				'default' => 1,
+				'default' => '1',
 			),
 			'trimlinefeeds' => array(
 				'required' => false,
@@ -137,25 +133,11 @@ function wikiplugin_customsearch_info()
 				'description' => tra('Remove the linefeeds added after each input which casues the wiki parser to add extra paragraphs.'),
 				'since' => '14.1',
 				'options' => array(
-					array('text' => tra(''), 'value' => ''),
 					array('text' => tra('No'), 'value' => '0'),
 					array('text' => tra('Yes'), 'value' => '1'),
 				),
 				'filter' => 'digits',
-				'default' => 0,
-			),
-			'searchable_only' => array(
-				'required' => false,
-				'name' => tra('Searchable Only Results'),
-				'description' => tra('Only include results marked as searchable in the index.'),
-				'since' => '14.1',
-				'options' => array(
-					array('text' => tra(''), 'value' => ''),
-					array('text' => tra('No'), 'value' => '0'),
-					array('text' => tra('Yes'), 'value' => '1'),
-				),
-				'filter' => 'digits',
-				'default' => 1,
+				'default' => '0',
 			),
 		),
 	);
@@ -164,38 +146,32 @@ function wikiplugin_customsearch_info()
 function wikiplugin_customsearch($data, $params)
 {
 	global $prefs;
-
-	static $instance_id = null;
-
 	if (empty($params['wiki']) && empty($params['tpl'])) {
 		return tra('Template is not specified');
 	} elseif (!empty($params['wiki']) && !TikiLib::lib('tiki')->page_exists($params['wiki'])) {
 		return tra('Template page not found');
 	}
-
 	if (isset($params['id'])) {
 		$id = $params['id'];
 	} else {
-		if ($instance_id === null) {
-			$instance_id = 0;
-		} else {
-			$instance_id++;
-		}
-		$id = (string) $instance_id;
+		$id = '0';
 	}
 	if (isset($params['recalllastsearch']) && $params['recalllastsearch'] == 1 && (!isset($_REQUEST['forgetlastsearch']) || $_REQUEST['forgetlastsearch'] != 'y')) {
 		$recalllastsearch = 1;
 	} else {
 		$recalllastsearch = 0;
 	}
-
-	$defaults = array();
-	$plugininfo = wikiplugin_customsearch_info();
-	foreach ($plugininfo['params'] as $key => $param) {
-		$defaults["$key"] = $param['default'];
+	if (isset($params['searchfadediv'])) {
+		$searchfadediv = $params['searchfadediv'];
+	} else {
+		$searchfadediv = '';
 	}
-	$params = array_merge($defaults, $params);
-
+	if (!isset($params['requireinput'])) {
+		$params['requireinput'] = 0;
+	}
+	if (!isset($params['forcesortmode'])) {
+		$params['forcesortmode'] = 1;
+	}
 	if (!isset($_REQUEST["offset"])) {
 		$offset = 0;
 	} else {
@@ -216,13 +192,17 @@ function wikiplugin_customsearch($data, $params)
 	} else {
 		$sort_mode = '';
 	}
+	if (!isset($params['searchonload'])) {
+		$params['searchonload'] = 1;
+	}
+	if (!isset($params['requireinput'])) {
+		$params['requireinput'] = false;
+	}
 
 	$definitionKey = md5($data);
 	$matches = WikiParser_PluginMatcher::match($data);
 	$query = new Search_Query;
-	if (!isset($params['searchable_only']) || $params['searchable_only'] == 1) {
-		$query->filterIdentifier('y', 'searchable');
-	}
+	$query->filterIdentifier('y', 'searchable');
 	$builder = new Search_Query_WikiBuilder($query);
 	$builder->apply($matches);
 
@@ -285,7 +265,7 @@ function wikiplugin_customsearch($data, $params)
 
 	$options = array(
 		'searchfadetext' => tr('Loading...'),
-		'searchfadediv' => $params['searchfadediv'],
+		'searchfadediv' => $searchfadediv,
 		'results' => empty($params['destdiv']) ? "#customsearch_{$id}_results" : "#{$params['destdiv']}",
 		'autosearchdelay' => isset($params['autosearchdelay']) ? max(1500, (int) $params['autosearchdelay']) : 0,
 		'searchonload' => (int) $params['searchonload'],

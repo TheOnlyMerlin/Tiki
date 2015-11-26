@@ -13,9 +13,6 @@ class Search_Formatter_Builder
 	private $formatterPlugin;
 	private $subFormatters = array();
 	private $alternateOutput;
-	private $id;
-	private $count;
-	private $tsOn;
 
 	function __construct()
 	{
@@ -52,11 +49,6 @@ class Search_Formatter_Builder
 			if ($name == 'alternate') {
 				$this->handleAlternate($match);
 			}
-
-			if ($name == 'tablesorter') {
-				$this->handleTablesorter($match);
-			}
-
 		}
 	}
 
@@ -111,8 +103,6 @@ class Search_Formatter_Builder
 				$arguments['template'] = dirname(__FILE__) . '/../../../../templates/search/list/medialist.tpl';
 			} elseif ($arguments['template'] == 'carousel') {
 				$arguments['template'] = dirname(__FILE__) . '/../../../../templates/search/list/carousel.tpl';
-			} elseif ($arguments['template'] == 'count') {
-				$arguments['template'] = dirname(__FILE__) . '/../../../../templates/search/list/count.tpl';
 			} elseif (!file_exists($arguments['template'])) {
                 $temp = $smarty->get_filename($arguments['template']);
                 if (empty($temp)){ //if get_filename cannot find template, return error
@@ -147,34 +137,6 @@ class Search_Formatter_Builder
 		$this->formatterPlugin = $plugin;
 	}
 
-	private function handleTablesorter($match)
-	{
-		$args = $this->parser->parse($match->getArguments());
-		if (!$this->tsOn) {
-			return false;
-		}
-		if (!Table_Check::isAjaxCall()) {
-			$ts = new Table_Plugin;
-			$ts->setSettings(
-				$this->id,
-				isset($args['server']) ? $args['server'] : 'n',
-				isset($args['sortable']) ? $args['sortable'] : 'y',
-				isset($args['sortList']) ? $args['sortList'] : null,
-				isset($args['tsortcolumns']) ? $args['tsortcolumns'] : null,
-				isset($args['tsfilters']) ? $args['tsfilters'] : null,
-				isset($args['tsfilteroptions']) ? $args['tsfilteroptions'] : null,
-				isset($args['tspaginate']) ? $args['tspaginate'] : null,
-				isset($args['tscolselect']) ? $args['tscolselect'] : null,
-				$GLOBALS['requestUri'],
-				$this->count
-			);
-			if (is_array($ts->settings)) {
-				$ts->settings['ajax']['offset'] = 'offset';
-				Table_Factory::build('PluginWithAjax', $ts->settings);
-			}
-		}
-	}
-
 	private function findFields($outputData, $templateData)
 	{
 		$outputData = TikiLib::array_flat($outputData);
@@ -193,21 +155,6 @@ class Search_Formatter_Builder
 		$fields = array_fill_keys(array_unique($fields), null);
 
 		return $fields;
-	}
-
-	public function setId($id)
-	{
-		$this->id = $id;
-	}
-
-	public function setCount($count)
-	{
-		$this->count = $count;
-	}
-
-	public function setTsOn($tsOn)
-	{
-		$this->tsOn = $tsOn;
 	}
 }
 

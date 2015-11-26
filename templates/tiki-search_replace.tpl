@@ -33,7 +33,7 @@
 	<form action="tiki-search_replace.php" method="post">
 		{if isset($results)}
 			<div class="table-responsive">
-				<table class="table">
+				<table class="table normal">
 					<tr>
 						<td style="text-align: right">
 							{select_all checkbox_names='checked[]'}

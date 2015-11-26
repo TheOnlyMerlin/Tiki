@@ -1,18 +1,7 @@
 {* $Id$ *}
-{if $prefs.javascript_enabled !== 'y'}
-	{$js = 'n'}
-	{$libeg = '<li>'}
-	{$liend = '</li>'}
-{else}
-	{$js = 'y'}
-	{$libeg = ''}
-	{$liend = ''}
-{/if}
 {if !$tsAjax}
 	{$forum_info.name|addonnavbar:'forum'}
-	{block name=title}
-		{title help="forums" admpage="forums" url=$forum_info.forumId|sefurl:'forum'}{$forum_info.name|addongroupname}{/title}
-	{/block}
+	{title help="forums" admpage="forums" url=$forum_info.forumId|sefurl:'forum'}{$forum_info.name|addongroupname}{/title}
 
 	{if $forum_info.show_description eq 'y'}
 		<div class="description help-block">{wiki}{$forum_info.description}{/wiki}</div>
@@ -22,19 +11,24 @@
 		{assign var=thisforum_info value=$forum_info.forumId}
 		{if ($tiki_p_forum_post_topic eq 'y' and ($prefs.feature_wiki_discuss ne 'y' or $prefs.$forumId ne $prefs.wiki_forum_id)) or $tiki_p_admin_forum eq 'y'}
 			{if !isset($comments_threadId) or $comments_threadId eq 0}
-				{button href="tiki-view_forum.php?openpost=1&amp;forumId=$thisforum_info&amp;comments_threadId=0&amp;comments_threshold=$comments_threshold&amp;comments_offset=$comments_offset&amp;thread_sort_mode=$thread_sort_mode&amp;comments_per_page=$comments_per_page" _onclick="$('#forumpost').show();return false;" _icon_name="create" _type="text" class="btn btn-link" _text="{tr}New Topic{/tr}"}
+				{button href="tiki-view_forum.php?openpost=1&amp;forumId=$thisforum_info&amp;comments_threadId=0&amp;comments_threshold=$comments_threshold&amp;comments_offset=$comments_offset&amp;thread_sort_mode=$thread_sort_mode&amp;comments_per_page=$comments_per_page" _onclick="$('#forumpost').show();return false;" _icon_name="create" _text="{tr}New Topic{/tr}"}
 			{else}
-				{button href="tiki-view_forum.php?openpost=1&amp;forumId=$thisforum_info&amp;comments_threadId=0&amp;comments_threshold=$comments_threshold&amp;comments_offset=$comments_offset&amp;thread_sort_mode=$thread_sort_mode&amp;comments_per_page=$comments_per_page" _onclick="$('#forumpost').show();return false;" _icon_name="create" _type="text" class="btn btn-link" _text="{tr}New Topic{/tr}"}
+				{button href="tiki-view_forum.php?openpost=1&amp;forumId=$thisforum_info&amp;comments_threadId=0&amp;comments_threshold=$comments_threshold&amp;comments_offset=$comments_offset&amp;thread_sort_mode=$thread_sort_mode&amp;comments_per_page=$comments_per_page" _onclick="$('#forumpost').show();return false;" _icon_name="create" _text="{tr}New Topic{/tr}"}
 			{/if}
 		{/if}
 		{if $tiki_p_admin_forum eq 'y'}
-			{button href="tiki-admin_forums.php?forumId=$thisforum_info&amp;cookietab=2#content_admin_forums1-2" _icon_name="edit" _type="text" class="btn btn-link" _text="{tr}Edit Forum{/tr}"}
+			{button href="tiki-admin_forums.php?forumId=$thisforum_info&amp;cookietab=2#content_admin_forums1-2" _icon_name="edit" _text="{tr}Edit Forum{/tr}"}
 		{/if}
 		{if $tiki_p_admin_forum eq 'y' or !isset($all_forums) or $all_forums|@count > 1}
 			{* No need for users to go to forum list if they are already looking at the only forum BUT note that all_forums only defined with quickjump feature *}
-			{button href="tiki-forums.php" _icon_name="list" _type="text" class="btn btn-link" _text="{tr}Forum List{/tr}"}
+			{button href="tiki-forums.php" _icon_name="list" _text="{tr}Forum List{/tr}"}
 		{/if}
 
+		{if $prefs.javascript_enabled != 'y'}
+			{$js = 'n'}
+		{else}
+			{$js = 'y'}
+		{/if}
 		<div class="btn-group pull-right">
 			{if $js == 'n'}<ul class="cssmenu_horiz"><li>{/if}
 			<a class="btn btn-link" data-toggle="dropdown" data-hover="dropdown" href="#">
@@ -140,18 +134,11 @@
 			{/foreach}
 		{/remarksbox}
 	{/if}
+	<div id="ajax-feedback" style="display:none"></div>
 	{if isset($ajaxfeedback) && $ajaxfeedback eq 'y'}
 		<div id="posted-ajax-feedback">
 			{include file="utilities/alert.tpl"}
 		</div>
-	{/if}
-	{if isset($tikifeedback)}
-		{remarksbox type="feedback" title="{tr}Feedback{/tr}"}
-		{section name=n loop=$tikifeedback}
-			{tr}{$tikifeedback[n].mes|escape}{/tr}
-			<br>
-		{/section}
-		{/remarksbox}
 	{/if}
 
 	{if $tiki_p_forum_post_topic eq 'y'}
@@ -429,71 +416,94 @@
         </div>
 	{/if}
 {/if}
-{if $tiki_p_admin_forum eq 'y' && ($comments_coms|@count > 0 || $queued > 0 || $reported > 0)}
-	<div class="panel panel-primary">
-		<div class="panel-heading">
-			{tr}Moderator actions on selected topics{/tr}
-		</div>
-		<div class="panel-body">
-			<div class="pull-left">
-				{if $comments_coms|@count > 1}
-					<button
-						type="submit" form="view_forum" name="action" value="merge_topic" title=":{tr}Merge{/tr}"
-						class="btn btn-default btn-sm tips confirm-form"
-					>
-						{icon name="merge"}
-					</button>
-				{/if}
-				{if $all_forums|@count > 1 && $comments_coms|@count > 0}
-					<button
-						type="submit" form="view_forum" name="action" value="move_topic" title=":{tr}Move{/tr}"
-						class="btn btn-default btn-sm tips confirm-form"
-					>
-						{icon name="move"}
-					</button>
-				{/if}
-				{if $comments_coms|@count > 0}
-					<button
-						type="submit" form="view_forum" name="action" value="lock_topic" title=":{tr}Lock{/tr}"
-						class="btn btn-default btn-sm tips confirm-form"
-					>
-						{icon name="lock"}
-					</button>
-					<button
-						type="submit" form="view_forum" name="action" value="unlock_topic" title=":{tr}Unlock{/tr}"
-						class="btn btn-default btn-sm tips confirm-form"
-					>
-						{icon name="unlock"}
-					</button>
-					<button
-						type="submit" form="view_forum" name="action" value="delete_topic" title=":{tr}Delete{/tr}"
-						class="btn btn-default btn-sm tips confirm-form"
-					>
-						{icon name="remove"}
-					</button>
-				{/if}
-			</div>
-			<div class="pull-right">
-				{if $reported > 0}
-					<a class="btn btn-default btn-sm tips" href="tiki-forums_reported.php?forumId={$forumId}" title=":{tr}Reported messages{/tr}">{tr}Reported{/tr} <span class="badge">{$reported}<span></a>
-				{/if}
-				{if $queued > 0}
-					<a class="btn btn-default btn-sm tips" href="tiki-forum_queue.php?forumId={$forumId}" title=":{tr}Queued messages{/tr}">{tr}Queued{/tr} <span class="badge">{$queued}</span></a>
-				{/if}
-			</div>
-		</div>
-	</div>
-{/if}
-<form id="view_forum" method="post" action="{service controller=forum}">
+<form id="view_forum" method="post" action="tiki-view_forum.php">
 	<input type="hidden" name="comments_offset" value="{$comments_offset|escape}">
 	<input type="hidden" name="comments_threadId" value="{$comments_threadId|escape}">
 	<input type="hidden" name="comments_threshold" value="{$comments_threshold|escape}">
 	<input type="hidden" name="thread_sort_mode" value="{$thread_sort_mode|escape}">
 	<input type="hidden" name="forumId" value="{$forumId|escape}">
+	<input type="hidden" name="all_forums" value="{$all_forums_encoded|escape}">
+	<input type="hidden" name="all_coms" value="{$all_coms_encoded|escape}">
+	{if $tiki_p_admin_forum eq 'y' && ($comments_coms|@count > 0 || $queued > 0 || $reported > 0)}
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				{tr}Moderator actions{/tr}
+			</div>
+			<div class="panel-body">
+				<div class="pull-left">
+					{if $comments_coms|@count > 1}
+						<button
+							type="button"
+							id="merge-topic"
+							onclick="confirmModal(this, {ldelim}'controller':'forum','action':'merge_topic','closest':'form'{rdelim});"
+							class="btn btn-default btn-sm tips"
+							title=":{tr}Merge selected topics{/tr}">
+								{icon name="merge"}
+						</button>
+					{/if}
+					{if $all_forums|@count > 1 && $comments_coms|@count > 0}
+						<button
+							type="button"
+							id="move-topic"
+							onclick="confirmModal(this, {ldelim}'controller':'forum','action':'move_topic','closest':'form'{rdelim});"
+							class="btn btn-default btn-sm tips"
+							title=":{tr}Move selected topics{/tr}">
+								{icon name="move"}
+						</button>
+					{/if}
+					{if $comments_coms|@count > 0}
+						<button
+							type="button"
+							id="lock-topic"
+							onclick="confirmModal(this, {ldelim}'controller':'forum','action':'lock_topic','closest':'form'{rdelim});"
+							class="btn btn-default btn-sm tips"
+							title=":{tr}Lock selected topics{/tr}">
+								{icon name="lock"}
+						</button>
+						<button
+							type="button"
+							id="unlock-topic"
+							onclick="confirmModal(this, {ldelim}'controller':'forum','action':'unlock_topic','closest':'form'{rdelim});"
+							class="btn btn-default btn-sm tips"
+							title=":{tr}Unlock selected topics{/tr}">
+								{icon name="unlock"}
+						</button>
+						<button
+							type="button"
+							id="delete-topic"
+							onclick="confirmModal(this, {ldelim}'controller':'forum','action':'delete_topic','closest':'form'{rdelim});"
+							class="btn btn-default btn-sm tips"
+							title=":{tr}Delete selected topics{/tr}">
+								{icon name="remove"}
+						</button>
+					{/if}
+				</div>
+				<div class="pull-right">
+					{if $reported > 0}
+						<a class="btn btn-default btn-sm tips" href="tiki-forums_reported.php?forumId={$forumId}" title=":{tr}Reported messages{/tr}">{tr}Reported{/tr} <span class="badge">{$reported}<span></a>
+					{/if}
+					{if $queued > 0}
+						<a class="btn btn-default btn-sm tips" href="tiki-forum_queue.php?forumId={$forumId}" title=":{tr}Queued messages{/tr}">{tr}Queued{/tr} <span class="badge">{$queued}</span></a>
+					{/if}
+				</div>
+			</div>
+		</div>
+		<div id="ajax-feedback" style="display:none"></div>
+	{/if}
 	{* Use css menus as fallback for item dropdown action menu if javascript is not being used *}
+	{if $prefs.javascript_enabled !== 'y'}
+		{$js = 'n'}
+		{$libeg = '<li>'}
+		{$liend = '</li>'}
+	{else}
+		{$js = 'y'}
+		{$libeg = ''}
+		{$liend = ''}
+	{/if}
 	<div id="{$ts_tableid}-div" class="{if $js === 'y'}table-responsive{/if} ts-wrapperdiv" {if $tsOn}style="visibility:hidden;"{/if}>
-		<table id="{$ts_tableid}" class="table normal table-striped table-hover table-forum" data-count="{$comments_cant|escape}">
-			{block name=forum-header}
+		<table id="{$ts_tableid}" class="table normal table-striped table-hover">
+			<input type="hidden" {if $tsOn}id="{$ts_offsetid|escape}" {/if}name="offset" value="{$comments_offset|escape}">
+			<input type="hidden" {if $tsOn}id="{$ts_countid|escape}" {/if}name="count" value="{$comments_cant}">
 			<thead>
 				<tr>
 					{$cntcol = 0}
@@ -558,7 +568,6 @@
 					{$cntcol = $cntcol + 1}
 				</tr>
 			</thead>
-			{/block}
 			<tbody>
 				{section name=ix loop=$comments_coms}
 					{if $userinfo && $comments_coms[ix].lastPost > $userinfo.lastLogin}
@@ -566,7 +575,6 @@
 					{else}
 						{assign var="newtopic" value=""}
 					{/if}
-					{block name=forum-row}
 					<tr>
 						{if $tiki_p_admin_forum eq 'y'}
 							<td class="checkbox-cell">
@@ -698,22 +706,49 @@
 									{/if}
 									{if $prefs.feature_forum_topics_archiving eq 'y' && $tiki_p_admin_forum eq 'y'}
 										{if $comments_coms[ix].archived eq 'y'}
-											<a href="{service controller=forum action=unarchive_topic forumId={$forum_info.forumId} comments_parentId={$comments_coms[ix].threadId} comments_offset={$comments_offset} thread_sort_mode={$thread_sort_mode} comments_per_page={$comments_per_page}}"
-											class="confirm-click"
+											{$libeg}<a href="#"
+												onclick="confirmModal(this,
+													{ldelim}
+														'controller':'forum',
+														'action':'unarchive_topic',
+														'closest':'form',
+														'params':
+														{ldelim}
+															'comments_parentId':'{$comments_coms[ix].threadId}'
+														{rdelim}
+													{rdelim});$('[data-toggle=popover]').popover('hide');"
 											>
 												{icon name='file-archive-open' _menu_text='y' _menu_icon='y' alt="{tr}Unarchive{/tr}"}
 											</a>{$liend}
 										{else}
-											<a href="{service controller=forum action=archive_topic forumId={$forum_info.forumId} comments_parentId={$comments_coms[ix].threadId} comments_offset={$comments_offset} thread_sort_mode={$thread_sort_mode} comments_per_page={$comments_per_page}}"
-											class="confirm-click"
+											{$libeg}<a href="#"
+												onclick="confirmModal(this,
+													{ldelim}
+														'controller':'forum',
+														'action':'archive_topic',
+														'closest':'form',
+														'params':
+														{ldelim}
+															'comments_parentId':'{$comments_coms[ix].threadId}'
+														{rdelim}
+													{rdelim});$('[data-toggle=popover]').popover('hide');"
 											>
 												{icon name='file-archive' _menu_text='y' _menu_icon='y' alt="{tr}Archive{/tr}"}
 											</a>{$liend}
 										{/if}
 									{/if}
 									{if $tiki_p_admin_forum eq 'y'}
-										<a href="{service controller=forum action=delete_topic forumId={$forum_info.forumId} forumtopic={$comments_coms[ix].threadId} comments_offset={$comments_offset} thread_sort_mode={$thread_sort_mode} comments_per_page={$comments_per_page}}"
-											class="confirm-click"
+										{$libeg}<a href="#"
+											onclick="confirmModal(this,
+												{ldelim}
+													'controller':'forum',
+													'action':'delete_topic',
+													'closest':'form',
+													'params':
+													{ldelim}
+														'forumtopic[]':'{$comments_coms[ix].threadId}'
+													{rdelim}
+												{rdelim});$('[data-toggle=popover]').popover('hide');"
 										>
 											{icon name='remove' _menu_text='y' _menu_icon='y' alt="{tr}Delete{/tr}"}
 										</a>{$liend}
@@ -735,7 +770,6 @@
 							{/if}
 						</td>
 					</tr>
-					{/block}
 				{sectionelse}
 					{if !$tsOn || ($tsOn && $tsAjax)}
 						{norecords _colspan=$cntcol _text="No topics found"}
@@ -754,7 +788,7 @@
 	{if $forum_info.forum_last_n > 0 && count($last_comments)}
 		{* Last n titles *}
 		<div class="table-responsive">
-		<table class="table">
+		<table class="table normal">
 			<tr>
 				<th>{tr}Last{/tr} {$forum_info.forum_last_n} {tr}posts in this forum{/tr}</th>
 			</tr>
@@ -789,7 +823,7 @@
 					<div class="panel-body">
 						<form id='time_control' class="form-horizontal" method="post" action="tiki-view_forum.php">
 							{if $comments_offset neq 0}
-								<input type="hidden" name="comments_offset" value="0"><!--reset the offset when starting a new filtered search-->
+								<input type="hidden" name="comments_offset" value="{$comments_offset|escape}">
 							{/if}
 							{if $comments_threadId neq 0}
 								<input type="hidden" name="comments_threadId" value="{$comments_threadId|escape}">
@@ -896,13 +930,5 @@
 				$forum.submit();
 			}
 		});
-	{/jq}
-	{jq}
-	$('.confirm-form').click(function() {
-		var formId = $(this).attr('form'), form = $('form#' + formId), action = this.value;
-		$(form).attr('action', 'tiki-forum-' + action);
-		confirmForm(form);
-		return false;
-	});
 	{/jq}
 {/if}

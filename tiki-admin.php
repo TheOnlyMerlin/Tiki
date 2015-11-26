@@ -214,8 +214,7 @@ if ( isset( $_REQUEST['lm_preference'] ) ) {
 			$access->redirect($_SERVER['REQUEST_URI'], '', 200);
 		}
 	} else {
-		$smarty->assign('csrferror',
-			tr('Bad request - potential cross-site request forgery (CSRF) detected. Operation blocked. The security ticket may have expired - try reloading the page in this case.'));
+		$smarty->assign('csrferror', tra('Bad request - potential cross-site request forgery (CSRF) detected. Operation blocked'));
 	}
 }
 
@@ -347,7 +346,7 @@ $admin_icons = array(
 		'description' => tr('Search configuration'),
 		'help' => 'Search',
 		'disabled' => $prefs['feature_search'] !== 'y' &&
-						$prefs['feature_search_fulltext'] !== 'y',
+							$prefs['feature_search_fulltext'] !== 'y',
 	),
 	"wiki" => array(
 		'title' => tr('Wiki'),
@@ -410,7 +409,7 @@ $admin_icons = array(
 		'help' => 'Category',
 	),
 	"workspace" => array(
-		'title' => tr('Workspaces'),
+		'title' => tr('Workspaces & Areas'),
 		'disabled' => $prefs['workspace_ui'] != 'y' && $prefs['feature_areas'] != 'y',
 		'description' => tr('Configure workspace feature'),
 		'help' => 'workspace',
@@ -452,7 +451,7 @@ $admin_icons = array(
 		'help' => 'Inter-User+Messages',
 	),
 	"userfiles" => array(
-		'title' => tr('User Files'),
+		'title' => tr('User files'),
 		'disabled' => $prefs['feature_userfiles'] != 'y',
 		'description' => tr('User files settings'),
 		'help' => 'User+Files',
@@ -470,9 +469,9 @@ $admin_icons = array(
 		'help' => 'Wysiwyg',
 	),
 	"ads" => array(
-		'title' => tr('Banners'),
+		'title' => tr('Site Ads and Banners'),
 		'disabled' => $prefs['feature_banners'] != 'y',
-		'description' => tr('Site advertisements and notices'),
+		'description' => tr('Banners are a common way to display advertisements and notices on a Web page.'),
 		'help' => 'Look+and+Feel',
 	),
 	"intertiki" => array(
@@ -482,7 +481,7 @@ $admin_icons = array(
 		'help' => 'InterTiki',
 	),
 	"semantic" => array(
-		'title' => tr('Semantic Links'),
+		'title' => tr('Semantic links'),
 		'disabled' => $prefs['feature_semantic'] != 'y',
 		'description' => tr('Manage semantic wiki links'),
 		'help' => 'Semantic+Admin',
@@ -494,7 +493,7 @@ $admin_icons = array(
 		'help' => 'WebServices',
 	),
 	"sefurl" => array(
-		'title' => tr('SEF URL'),
+		'title' => tr('Search engine friendly url'),
 		'disabled' => $prefs['feature_sefurl'] != 'y' && $prefs['feature_canonical_url'] != 'y',
 		'description' => tr('Search Engine Friendly URLs'),
 		'help' => 'Rewrite+Rules',
@@ -527,18 +526,12 @@ $admin_icons = array(
 
 if (isset($_REQUEST['page'])) {
 	$adminPage = $_REQUEST['page'];
-	$check = key_get(null, null, null, false);
-	$smarty->assign('ticket', $check['ticket']);
-	// Check if the associated incude_*.php file exists. If not, check to see if it might exist in the Addons.
-	// If it exists, include the associated file and generate the ticket.
-	$utilities = new TikiAddons_Utilities();
 	if (file_exists("admin/include_$adminPage.php")) {
+		$check = key_get(null, null, null, false);
+		$smarty->assign('ticket', $check['ticket']);
 		include_once ("admin/include_$adminPage.php");
-	} elseif ($filepath = $utilities->getAddonFilePath("admin/include_$adminPage.php")) {
-		include_once ($filepath);
+		$url = 'tiki-admin.php' . '?page=' . $adminPage;
 	}
-	$url = 'tiki-admin.php' . '?page=' . $adminPage;
-
 	if (isset($admin_icons[$adminPage])) {
 		$admin_icon = $admin_icons[$adminPage];
 

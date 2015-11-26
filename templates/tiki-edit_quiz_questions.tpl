@@ -15,35 +15,36 @@
 </div>
 
 <h2>{tr}Create/edit questions for quiz:{/tr} <a href="tiki-edit_quiz.php?quizId={$quiz_info.quizId}" >{$quiz_info.name|escape}</a></h2>
-<br>
-<form action="tiki-edit_quiz_questions.php" method="post" class="form-horizontal">
+
+<form action="tiki-edit_quiz_questions.php" method="post">
 	<input type="hidden" name="quizId" value="{$quizId|escape}">
 	<input type="hidden" name="questionId" value="{$questionId|escape}">
 
-	<div class="form-group">
-		<label class="col-sm-3 control-label">{tr}Question{/tr}</label>
-		<div class="col-sm-7">
-      		<textarea name="question" rows="5" cols="80" class="form-control">{$question|escape}</textarea>
-  		</div>
-    </div>
-    <div class="form-group">
-		<label class="col-sm-3 control-label">{tr}Position{/tr}</label>
-		<div class="col-sm-7">
-      		<select name="position" class="form-control">{html_options values=$positions output=$positions selected=$position}</select>
-  		</div>
-    </div>
-    <div class="form-group">
-		<label class="col-sm-3 control-label">{tr}Question Type{/tr}</label>
-		<div class="col-sm-7">
-      		<select name="questionType" class="form-control">{html_options options=$questionTypes selected=$type}</select>
-  		</div>
-    </div>
-    <div class="form-group">
-		<label class="col-sm-3 control-label"></label>
-		<div class="col-sm-7">
-      		<input type="submit" class="btn btn-primary btn-sm" name="save" value="{tr}Save{/tr}">
-  		</div>
-    </div>
+	<table class="formcolor">
+		<tr>
+			<td>{tr}Question:{/tr}</td>
+			<td>
+				<textarea name="question" rows="5" cols="80">{$question|escape}</textarea>
+			</td>
+		</tr>
+		<tr>
+			<td>{tr}Position:{/tr}</td>
+			<td>
+				<select name="position">{html_options values=$positions output=$positions selected=$position}</select>
+			</td>
+		</tr>
+
+		<tr>
+			<td>{tr}Question Type:{/tr}</td>
+			<td>
+				<select name="questionType">{html_options options=$questionTypes selected=$type}</select>
+			</td>
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+			<td><input type="submit" class="btn btn-primary btn-sm" name="save" value="{tr}Save{/tr}"></td>
+		</tr>
+	</table>
 </form>
 
 <h2>{tr}Import questions from text{/tr}
@@ -55,40 +56,33 @@
 </h2>
 
 <!-- begin form area for importing questions -->
-<form enctype="multipart/form-data" method="post" action="tiki-edit_quiz_questions.php?quizId={$quiz_info.quizId}" class="form-horizontal">
-	<div class="help-block">
-		{tr}Instructions: Type, or paste your multiple choice questions below. Provide one line for the question, then provide as many answers on want on subsequent lines. Separate questions with a blank line. To indicate correct answers, you may initiate an answer with "*" (without the quotes). None, any or all the answers are possible to be marked as correct.{/tr}
+<form enctype="multipart/form-data" method="post" action="tiki-edit_quiz_questions.php?quizId={$quiz_info.quizId}">
+	<table class="formcolor">
+		<tr>
+			<td colspan="2">
+				{tr}Instructions: Type, or paste, your multiple choice questions below. One line for the question, then start answer choices on subsequent lines. Separate additional questions with a blank line. Indicate correct answers by starting them with a "*" (without the quotes) character.{/tr}
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{tr}Input{/tr}
+			</td>
+			<td>
+				<textarea class="wikiedit" name="input_data" rows="30" cols="80" id='subheading'></textarea>
+			</td>
+		</tr>
+	</table>
+	<div align="center">
+		<input type="submit" class="wikiaction btn btn-default" name="import" value="Import">
 	</div>
-	<div class="form-group">
-		<label class="col-sm-3 control-label">{tr}Input{/tr}</label>
-		<div class="col-sm-7">
-      		<textarea class="form-control wikiedit" name="input_data" rows="30" cols="80" id='subheading'></textarea>
-  		</div>
-    </div>
-    <div class="form-group">
-		<label class="col-sm-3 control-label"></label>
-		<div class="col-sm-7">
-      		<input type="submit" class="wikiaction btn btn-default" name="import" value="Import">
-  		</div>
-    </div>
 </form>
 
 <!-- begin form for searching questions -->
 <h2>{tr}Questions{/tr}</h2>
 {include file='find.tpl'}
 
-{* Use css menus as fallback for item dropdown action menu if javascript is not being used *}
-{if $prefs.javascript_enabled !== 'y'}
-	{$js = 'n'}
-	{$libeg = '<li>'}
-	{$liend = '</li>'}
-{else}
-	{$js = 'y'}
-	{$libeg = ''}
-	{$liend = ''}
-{/if}
-<div class="{if $js === 'y'}table-responsive{/if}"> {* table-responsive class cuts off css drop-down menus *}
-	<table class="table table-striped table-hover">
+<div class="table-responsive">
+	<table class="table normal table-striped table-hover">
 		<tr>
 			<th>
 				<a href="tiki-edit_quiz_questions.php?quizId={$quizId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'questionId_desc'}questionId_asc{else}questionId_desc{/if}">{tr}ID{/tr}</a>
@@ -115,30 +109,24 @@
 				<td class="action">
 					{capture name=edit_questions_actions}
 						{strip}
-							{$libeg}<a href="tiki-edit_question_options.php?quizId={$quizId}&amp;questionId={$channels[user].questionId}">
+							<a href="tiki-edit_question_options.php?quizId={$quizId}&amp;questionId={$channels[user].questionId}">
 								{icon name='list' _menu_text='y' _menu_icon='y' alt="{tr}Options{/tr}"}
-							</a>{$liend}
-							{$libeg}<a href="tiki-edit_quiz_questions.php?quizId={$quizId}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;questionId={$channels[user].questionId}">
+							</a>
+							<a href="tiki-edit_quiz_questions.php?quizId={$quizId}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;questionId={$channels[user].questionId}">
 								{icon name='edit' _menu_text='y' _menu_icon='y' alt="{tr}Edit{/tr}"}
-							</a>{$liend}
-							{$libeg}<a href="tiki-edit_quiz_questions.php?quizId={$quizId}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$channels[user].questionId}">
+							</a>
+							<a href="tiki-edit_quiz_questions.php?quizId={$quizId}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$channels[user].questionId}">
 								{icon name='remove' _menu_text='y' _menu_icon='y' alt="{tr}Remove{/tr}"}
-							</a>{$liend}
+							</a>
 						{/strip}
 					{/capture}
-					{if $js === 'n'}<ul class="cssmenu_horiz"><li>{/if}
-					<a
-						class="tips"
-						title="{tr}Actions{/tr}"
-						href="#"
-						{if $js === 'y'}{popup delay="0|2000" fullhtml="1" center=true text=$smarty.capture.edit_questions_actions|escape:"javascript"|escape:"html"}{/if}
-						style="padding:0; margin:0; border:0"
-					>
+					<a class="tips"
+					   title="{tr}Actions{/tr}"
+					   href="#" {popup delay="0|2000" fullhtml="1" center=true text=$smarty.capture.edit_questions_actions|escape:"javascript"|escape:"html"}
+					   style="padding:0; margin:0; border:0"
+							>
 						{icon name='wrench'}
 					</a>
-					{if $js === 'n'}
-						<ul class="dropdown-menu" role="menu">{$smarty.capture.edit_questions_actions}</ul></li></ul>
-					{/if}
 				</td>
 			</tr>
 		{sectionelse}

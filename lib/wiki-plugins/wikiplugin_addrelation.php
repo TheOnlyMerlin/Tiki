@@ -78,14 +78,6 @@ function wikiplugin_addrelation_info()
 				'since' => '8.0',
 				'default' => '0',
 			),
-			'button_class' => array(
-				'required' => false,
-				'name' => tra('Set Button Class'),
-				'description' => tra('Class or classes for the Button'),
-				'filter' => 'text',
-				'since' => '8.0',
-				'default' => 'btn btn-default',
-			),
 		),
 	);
 }
@@ -101,7 +93,7 @@ function wikiplugin_addrelation($data, $params)
 	if (isset($params['target_object']) && false !== strpos($params['target_object'], ':')) {
 		list($target_object['type'], $target_object['object']) = explode(':', $params['target_object'], 2);
 	} else {
-		$target_object = current_object();
+		$target_object = current_object(); 
 	}
 	if ($source_object == $target_object) {
 		return tra('Source and target object cannot be the same');
@@ -112,7 +104,7 @@ function wikiplugin_addrelation($data, $params)
 		$qualifier = $params['qualifier'];
 	}
 	if (!empty($params['label_add'])) {
-		$labeladd = $params['label_add'];
+		$labeladd = $params['label_add'];	
 	} else {
 		$labeladd = tra('Add Relation');
 	}
@@ -131,21 +123,30 @@ function wikiplugin_addrelation($data, $params)
 	} else {
 		$id = 'wp_addrelation_0';
 	}
-	if (!empty($params['button_class'])) {
-		$button_class = $params['button_class'];
-	} else {
-		$button_class = "btn btn-default";
-	}
 	$relationlib = TikiLib::lib('relation');
 
 	if (isset($_POST[$id])) {
 		if ($_POST[$id] == 'y') {
-			$relationlib->add_relation($qualifier, $source_object['type'], $source_object['object'], $target_object['type'], $target_object['object']);
+			$relationlib->add_relation($qualifier, $source_object['type'], $source_object['object'], $target_object['type'], $target_object['object']);	
+			$finalEvent = 'tiki.social.relation.add';
 		} elseif ($_POST[$id] == 'n') {
-			if ($relation_id = $relationlib->get_relation_id($qualifier, $source_object['type'], $source_object['object'], $target_object['type'], $target_object['object'])) {
-				$relationlib->remove_relation($relation_id);
-			}
+			$relation_id = $relationlib->add_relation($qualifier, $source_object['type'], $source_object['object'], $target_object['type'], $target_object['object']);
+			$relationlib->remove_relation($relation_id);
+			$finalEvent = 'tiki.social.relation.remove';
 		}
+		TikiLib::events()->trigger($finalEvent,
+			array(
+				'type' => $target_object['type'],
+				'object' => $target_object['object'],
+				'sourcetype' => $source_object['type'],
+				'sourceobject' => $source_object['object'],
+				'relation' => $qualifier,
+				'user' => $user,
+                        )
+		);
+		require_once 'lib/search/refresh-functions.php';
+		refresh_index($source_object['type'], $source_object['object']);
+		refresh_index($target_object['type'], $target_object['object']);
 	}
 	$relationsfromsource = $relationlib->get_relations_from($source_object['type'], $source_object['object'], $qualifier);
 	$relationexists = false;
@@ -162,6 +163,5 @@ function wikiplugin_addrelation($data, $params)
 	$smarty->assign('label_add', $labeladd);
 	$smarty->assign('label_added', $labeladded);
 	$smarty->assign('label_remove', $labelremove);
-	$smarty->assign('button_class', $button_class);
 	return $smarty->fetch('wiki-plugins/wikiplugin_addrelation.tpl');
 }

@@ -7,9 +7,8 @@
 		{tr _0="tiki-admin.php?page=general&highlight=sender_email"}Your sender email is not set. You can set it <a href="%0" class="alert-link">in the general admin panel.</a>{/tr}
 	{/remarksbox}
 {/if}
-<div class="page-header">
+<div class="page_header">
 	{title help="$helpUrl"}{$admintitle}{/title}
-	<span class="help-block">{$description}</span>
 </div>
 
 <div id="pageheader">

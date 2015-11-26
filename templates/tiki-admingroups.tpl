@@ -32,19 +32,9 @@
 			{initials_filter_links}
 		{/if}
 
-		{* Use css menus as fallback for item dropdown action menu if javascript is not being used *}
-		{if $prefs.javascript_enabled !== 'y'}
-			{$js = 'n'}
-			{$libeg = '<li>'}
-			{$liend = '</li>'}
-		{else}
-			{$js = 'y'}
-			{$libeg = ''}
-			{$liend = ''}
-		{/if}
 		<form name="checkform" method="post">
-			<div class="{if $js === 'y'}table-responsive{/if}"> {* table-responsive class cuts off css drop-down menus *}
-				<table class="table table-striped table-hover">
+			<div class="table-responsive">
+				<table class="table normal">
 					<tr>
 						<th style="width: 20px;">{select_all checkbox_names='checked[]'}</th>
 						<th>{self_link _sort_arg='sort_mode' _sort_field='id'}{tr}ID{/tr}{/self_link}</th>
@@ -93,30 +83,24 @@
 							<td class="action">
 								{capture name=group_actions}
 									{strip}
-										{$libeg}<a href="tiki-admingroups.php?group={$users[user].groupName|escape:"url"}&amp;cookietab=2{if $prefs.feature_tabs ne 'y'}#tab2{/if}">
+										<a href="tiki-admingroups.php?group={$users[user].groupName|escape:"url"}&amp;cookietab=2{if $prefs.feature_tabs ne 'y'}#tab2{/if}">
 											{icon name="edit" _menu_text='y' _menu_icon='y' alt="{tr}Edit{/tr}"}
-										</a>{$liend}
-										{$libeg}{permission_link mode=text group=$users[user].groupName count=$users[user].permcant}{$liend}
+										</a>
+										{permission_link mode=text group=$users[user].groupName count=$users[user].permcant}
 										{if $users[user].groupName ne 'Anonymous' and $users[user].groupName ne 'Registered' and $users[user].groupName ne 'Admins'}
-											{$libeg}<a href="tiki-admingroups.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;action=delete&amp;group={$users[user].groupName|escape:"url"}">
+											<a href="tiki-admingroups.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;action=delete&amp;group={$users[user].groupName|escape:"url"}">
 												{icon name="remove" _menu_text='y' _menu_icon='y' alt="{tr}Remove{/tr}"}
-											</a>{$liend}
+											</a>
 										{/if}
 									{/strip}
 								{/capture}
-								{if $js === 'n'}<ul class="cssmenu_horiz"><li>{/if}
-								<a
-									class="tips"
-									title="{tr}Actions{/tr}"
-									href="#"
-									{if $js === 'y'}{popup delay="0|2000" fullhtml="1" center=true text=$smarty.capture.group_actions|escape:"javascript"|escape:"html"}{/if}
-									style="padding:0; margin:0; border:0"
-								>
+								<a class="tips"
+								   title="{tr}Actions{/tr}"
+								   href="#" {popup delay="0|2000" fullhtml="1" center=true text=$smarty.capture.group_actions|escape:"javascript"|escape:"html"}
+								   style="padding:0; margin:0; border:0"
+										>
 									{icon name='wrench'}
 								</a>
-								{if $js === 'n'}
-									<ul class="dropdown-menu" role="menu">{$smarty.capture.group_actions}</ul></li></ul>
-								{/if}
 							</td>
 						</tr>
 					{/section}
@@ -450,7 +434,7 @@
 			<form name="checkform" method="post">
 				<input type="hidden" name="group" value="{$group|escape}">
 				<div class="table-responsive">
-					<table class="table">
+					<table class="table normal">
 						<tr>
 							<th class="auto">{if $memberslist}{select_all checkbox_names='members[]'}{/if}</th>
 							<th>{self_link _sort_arg='sort_mode_member' _sort_field='login'}{tr}User{/tr}{/self_link}</th>
@@ -502,7 +486,7 @@
 
 			<h2>{tr}Banned members List:{/tr} {$groupname|escape}</h2>
 			<div class="table-responsive">
-				<table class="table">
+				<table class="table normal">
 					<tr>
 						<th>{tr}User{/tr}</th>
 						<th>{tr}Action{/tr}</th>
@@ -542,7 +526,7 @@
 	{if $groupname}
 		{tab name="{tr}Import/Export{/tr}"}
 			{* ----------------------- tab with import/export --------------------------------------- *}
-			<form method="post" action="tiki-admingroups.php" enctype="multipart/form-data" class="form-horizontal">
+			<form method="post" action="tiki-admingroups.php" enctype="multipart/form-data">
 				<input type="hidden" name="group" value="{$groupname|escape}">
 				{if $errors}
 					<div class="simple highlight">
@@ -553,54 +537,50 @@
 				{/if}
 
 				<h2>{tr}Download CSV export{/tr}</h2>
-                <div class="form-group">
-                    <label class="col-sm-3 control-label">{tr}Charset encoding{/tr}</label>
-                    <div class="col-sm-7">
-                        <select name="encoding" class="form-control">
-                            <option value="UTF-8" selected="selected">{tr}UTF-8{/tr}</option>
-                            <option value="ISO-8859-1">{tr}ISO-8859-1{/tr}</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-3 control-label">{tr}Fields{/tr}</label>
-                    <div class="col-sm-7">
-                       <div class="col-sm-12">
-                           <input type="checkbox" name="username" checked="checked"> {tr}Username{/tr}
-                       </div>
-                        <div class="col-sm-12">
-                            <input type="checkbox" name="email"> {tr}Email{/tr}
-                        </div>
-                        <div class="col-sm-12">
-                            <input type="checkbox" name="lastLogin"> {tr}Last login{/tr}
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-3 control-label"></label>
-                    <div class="col-sm-7">
-                        <input type="submit" class="btn btn-default btn-sm" name="export" value="{tr}Export{/tr}">
-                    </div>
-                </div>
-                <br>
+				<table class="formcolor">
+					<tr>
+						<td class="auto">{tr}Charset encoding:{/tr}</td>
+						<td class="auto">
+							<select name="encoding">
+								<option value="UTF-8" selected="selected">{tr}UTF-8{/tr}</option>
+								<option value="ISO-8859-1">{tr}ISO-8859-1{/tr}</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td class="auto">{tr}Fields:{/tr}</td>
+						<td class="auto">
+							<input type="checkbox" name="username" checked="checked">
+							{tr}Username{/tr}
+							<br>
+							<input type="checkbox" name="email">{tr}Email{/tr}
+							<br>
+							<input type="checkbox" name="lastLogin">{tr}Last login{/tr}
+						</td>
+					</tr>
+					<tr>
+						<td class="auto"></td>
+						<td class="auto"><input type="submit" class="btn btn-default btn-sm" name="export" value="{tr}Export{/tr}"></td>
+					</tr>
+				</table>
+
 				<h2>{tr}Batch upload (CSV file){/tr}</h2>
-                <br>
 				<h3>{tr}Assign users to group:{/tr} {$groupname|escape} </h3>
 				{remarksbox type="tip" title="{tr}Tip{/tr}"}
 					{tr}Each user in the file must already exist.{/tr}<br>{tr}To create users or/and assign them to groups, got to <a href="tiki-adminusers.php">admin->users</a>{/tr}
 				{/remarksbox}
-                <div class="form-group">
-                    <label class="col-sm-3 control-label">{tr}CSV File{/tr}<a title="{tr}Help{/tr}" {popup text='user<br>user1<br>user2'}>{icon name='help'}</a></label>
-                    <div class="col-sm-7">
-                        <input name="csvlist" type="file" >
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-3 control-label"></label>
-                    <div class="col-sm-7">
-                        <input type="submit" class="btn btn-default btn-sm" name="import" value="{tr}Import{/tr}">
-                    </div>
-                </div>
+				<table class="formcolor">
+					<tr>
+						<td class="auto">
+							{tr}CSV File{/tr}<a title="{tr}Help{/tr}" {popup text='user<br>user1<br>user2'}>{icon name='help'}</a>
+						</td>
+						<td class="auto"><input name="csvlist" type="file"></td>
+					</tr>
+					<tr>
+						<td class="auto"></td>
+						<td class="auto"><input type="submit" class="btn btn-default btn-sm" name="import" value="{tr}Import{/tr}"></td>
+					</tr>
+				</table>
 			</form>
 		{/tab}
 	{/if}

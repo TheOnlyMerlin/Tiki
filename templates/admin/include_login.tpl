@@ -100,6 +100,8 @@
 					{preference name=user_trackersync_trackers}
 					{preference name=user_trackersync_realname}
 					{preference name=user_trackersync_geo}
+					{preference name=user_trackersync_groups}
+					{preference name=user_trackersync_parentgroup}
 					{preference name=user_trackersync_lang}
 					{preference name=user_tracker_auto_assign_item_field}
 				</div>
@@ -112,7 +114,6 @@
 				{preference name=feature_challenge}
 
 				{preference name=login_multiple_forbidden}
-				{preference name=login_grab_session}
 				{preference name=session_protected}
 				{preference name=https_login}
 				{preference name=login_http_basic}
@@ -187,21 +188,6 @@
 			</fieldset>
 			{button href="?page=login&amp;refresh_email_group=y" _text="{tr}Assign users to group function of email pattern{/tr}"}
 		{/tab}
-
-    {tab name="{tr}Remote Tiki Autologin{/tr}"}
-      <h2>{tr}Remote Tiki Autologin{/tr}</h2>
-        <fieldset>
-          {preference name=login_autologin}
-          {preference name=login_autologin_user}
-          {preference name=login_autologin_group}
-          {preference name=login_autologin_createnew}
-          {preference name=login_autologin_allowedgroups}
-          {preference name=login_autologin_syncgroups}
-          {preference name=login_autologin_logoutremote}
-          {preference name=login_autologin_redirectlogin}
-          {preference name=login_autologin_redirectlogin_url}
-        </fieldset>
-    {/tab}
 
 		{tab name="{tr}LDAP{/tr}"}
 			<h2>{tr}LDAP{/tr}</h2>

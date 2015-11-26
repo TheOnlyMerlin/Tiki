@@ -1,10 +1,9 @@
 {* $Id$ *}
 
 <div class="t_navbar margin-bottom-md">
-	{button href="tiki-admingroups.php" class="btn btn-link" _icon_name="group" _text="{tr}Groups{/tr}"}
-	{button href="tiki-adminusers.php" class="btn btn-link" _icon_name="user" _text="{tr}Users{/tr}"}
-	{permission_link mode=button label="{tr}Permissions{/tr}"}
-	<a href="{service controller=managestream action=list}" class="btn btn-default">{tr}Activity Rules{/tr}</a>
+	{button href="tiki-admingroups.php" class="btn btn-link" _icon_name="group" _text="{tr}Admin Groups{/tr}"}
+	{button href="tiki-adminusers.php" class="btn btn-link" _icon_name="user" _text="{tr}Admin Users{/tr}"}
+	{permission_link mode=button label="{tr}Manage permissions{/tr}"}
 </div>
 
 <form class="form-horizontal" action="tiki-admin.php?page=community" method="post">
@@ -23,7 +22,6 @@
 			<h2>{tr}User features{/tr}</h2>
 
 			<div class="admin featurelist">
-				{preference name=feature_unified_user_details}
 				{preference name=feature_score}
 				{preference name=feature_mytiki}
 				{preference name=feature_minical}
@@ -33,6 +31,7 @@
 				{preference name=feature_contacts}
 				{preference name=monitor_enabled}
 				<div class="adminoptionboxchild" id="monitor_enabled_childcontainer">
+
 					{preference name=monitor_individual_clear}
 					{preference name=monitor_count_refresh_interval}
 					{preference name=monitor_reply_email_pattern}
@@ -71,7 +70,6 @@
 				</div>
 				{preference name=feature_group_transition}
 				{preference name=user_favorites}
-				{preference name=user_likes}
 				{preference name=feature_invite}
 				{preference name=feature_wizard_user}
 				{preference name=mustread_enabled}
@@ -102,6 +100,7 @@
 			<fieldset class="table">
 				<legend>{tr}Activity Stream{/tr}</legend>
 				{preference name=activity_basic_events}
+
 				<div class="adminoptionboxchild" id="activity_basic_events_childcontainer">
 					{preference name=activity_basic_tracker_create}
 					{preference name=activity_basic_tracker_update}
@@ -110,7 +109,30 @@
 					{preference name=activity_basic_user_friend_add}
 				</div>
 				{preference name=activity_custom_events}
-                {preference name=activity_notifications}
+
+				<div class="adminoptionboxchild" id="activity_custom_events_childcontainer">
+
+					{$headerlib->add_dracula()}
+					{$headerlib->add_jsfile('lib/jquery_tiki/activity.js', 'external')}
+					<div id="graph-canvas" class="graph-canvas" data-graph-nodes="{$event_graph.nodes|@json_encode|escape}" data-graph-edges="{$event_graph.edges|@json_encode|escape}"></div>
+					<div><button href="#" id="graph-draw" class="button">{tr}Draw Event Diagram{/tr}</button></div>
+					<div><button href="{service controller=managestream action=list}" id="show-rules">{tr}Show Rules{/tr}</button></div>
+					{jq}
+						$('#graph-draw').click(function(e) {
+							$('#graph-canvas')
+								.empty()
+								.css('width', $window.width() - 50)
+								.css('height', $window.height() - 130)
+								.dialog({
+									title: "Events",
+									width: $window.width() - 20,
+									height: $window.height() - 100
+								})
+								.drawGraph();
+							return false;
+						});
+					{/jq}
+				</div>
 			</fieldset>
 
 			<fieldset>
@@ -160,8 +182,6 @@
 			{preference name=user_who_viewed_my_stuff_show_others}
 
 			{preference name=user_store_file_gallery_picture}
-			{preference name=user_small_avatar_size}
-			{preference name=user_small_avatar_square_crop}
 			{preference name=user_picture_gallery_id}
 			{preference name=user_default_picture_id}
 

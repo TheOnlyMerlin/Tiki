@@ -265,7 +265,7 @@ if (isset($_REQUEST['batch']) && is_uploaded_file($_FILES['csvlist']['tmp_name']
 		);
 		$AddUser=false;
 	}
-	if ($_REQUEST['pass'] != $_REQUEST['passAgain']) {
+	if ($_REQUEST['pass'] != $_REQUEST['pass2']) {
 		$errors[] = array(
 			'num' => 1,
 			'mes' => tra('The passwords do not match')
@@ -614,6 +614,12 @@ static $iid = 0;
 $ts_tableid = 'adminusers' . $iid;
 $smarty->assign('ts_tableid', $ts_tableid);
 
+if ($tsOn) {
+	$ts_countid = $ts_tableid . '-count';
+	$ts_offsetid = $ts_tableid . '-offset';
+	$smarty->assign('ts_countid', $ts_countid);
+	$smarty->assign('ts_offsetid', $ts_offsetid);
+}
 if (!$tsOn || ($tsOn && $tsAjax)) {
 	$users = $userlib->get_users(
 		$offset,
@@ -649,6 +655,14 @@ if ($tsOn && !$tsAjax) {
 				 	)
 				)
 			 ),
+			'ajax' => array(
+				'servercount' => array(
+					'id' => $ts_countid,
+				),
+				'serveroffset' => array(
+					'id' => $ts_offsetid,
+				),
+			),
 		)
 	);
 }
@@ -677,6 +691,8 @@ if (isset($_POST['ajaxtype'])) {
 	$smarty->assign($ajaxpost);
 }
 $smarty->assign_by_ref('all_groups', $all_groups);
+// replace single quote marks and ampersands in the group names as these chars break the service
+$smarty->assign('all_groups_encoded', str_replace(['\'','&'], ['%39;','%26'], json_encode($all_groups)));
 $smarty->assign('userinfo', $userinfo);
 $smarty->assign('userId', $_REQUEST['user']);
 $smarty->assign('username', $username);

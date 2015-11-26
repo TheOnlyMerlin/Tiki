@@ -1,10 +1,10 @@
+@import url("//fonts.googleapis.com/css?family=Droid+Sans:400,700");
 /*!
  * Bootstrap v3.3.5 (http://getbootstrap.com)
  * Copyright 2011-2015 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
-@import url("//fonts.googleapis.com/css?family=Droid+Sans:400,700");
 html {
   font-family: sans-serif;
   -ms-text-size-adjust: 100%;
@@ -6845,30 +6845,33 @@ header.page-header::before,
   border: none;
   background-color: #252525;
 }
-table.tablesorter {
+.tablesorter {
   /* style header */
 }
-table.tablesorter thead tr.tablesorter-headerRow th.tablesorter-headerUnSorted:not(.sorter-false) {
+.tablesorter-header {
   background-image: url(data:image/gif;base64,R0lGODlhFQAJAIAAAP///////yH5BAEAAAEALAAAAAAVAAkAAAIXjI+AywnaYnhUMoqt3gZXPmVg94yJVQAAOw==);
 }
-table.tablesorter thead tr.tablesorter-headerRow th.tablesorter-headerAsc {
+tr.tablesorter-headerRow,
+tr.tablesorter-filter-row {
+  background-color: #181818;
+}
+.tablesorter .bootstrap-icon-unsorted {
+  background-image: url(data:image/gif;base64,R0lGODlhFQAJAIAAAP///////yH5BAEAAAEALAAAAAAVAAkAAAIXjI+AywnaYnhUMoqt3gZXPmVg94yJVQAAOw==);
+}
+.tablesorter-headerAsc {
   background-image: url(data:image/gif;base64,R0lGODlhFQAEAIAAAP///////yH5BAEAAAEALAAAAAAVAAQAAAINjI8Bya2wnINUMopZAQA7);
 }
-table.tablesorter thead tr.tablesorter-headerRow th.tablesorter-headerDesc {
+.tablesorter-headerDesc {
   background-image: url(data:image/gif;base64,R0lGODlhFQAEAIAAAP///////yH5BAEAAAEALAAAAAAVAAQAAAINjB+gC+jP2ptn0WskLQA7);
 }
-table.tablesorter thead tr.tablesorter-filter-row input.tablesorter-filter {
+input.tablesorter-filter {
   border: none;
   background-color: #252525;
 }
-table.tablesorter thead tr.tablesorter-filter-row input.dateFrom,
-table.tablesorter thead tr.tablesorter-filter-row input.dateTo {
+.tablesorter input.dateFrom,
+.tablesorter input.dateTo {
   border: none;
   background-color: #252525;
-}
-table.tablesorter thead tr.tablesorter-headerRow,
-table.tablesorter thead tr.tablesorter-filter-row {
-  background-color: #181818;
 }
 .navbar-collapse.collapse.in {
   background: #060606;
@@ -7359,18 +7362,11 @@ ul.all_languages > li {
   border: 1px solid;
   border-color: #f05800;
 }
-.autotoc > .nav {
-  background: #222222;
-  border: 1px solid #282828;
-  border-radius: 4px;
+div#outerToc {
+  background: #adafae;
 }
-.autotoc * {
-  color: #2a9fd6;
-}
-.autotoc .nav > li > a:hover,
-.autotoc .nav .nav > li > a:hover {
+div#outerToc * {
   color: #888888;
-  background: transparent;
 }
 .plugin-form-float {
   background: #060606;

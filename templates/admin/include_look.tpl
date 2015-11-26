@@ -41,7 +41,6 @@
 				{preference name=theme_option_admin}
 			</div>
 			{preference name=site_layout}
-			{preference name=site_layout_admin}
 			{preference name=site_layout_per_object}
 			{preference name=theme_iconset}
 			{if $prefs.javascript_enabled eq 'n' or $prefs.feature_jquery eq 'n'}
@@ -51,13 +50,13 @@
 				{if $prefs.feature_jquery_ui eq 'y'}
 					{preference name=feature_jquery_ui_theme}
 				{/if}
+
+				{if $prefs.change_theme eq 'y' and ($user_prefs.theme neq '' and $prefs.site_style neq $user_prefs.theme) or ($prefs.style neq '' and $prefs.site_style neq $prefs.style)}
+					{remarksbox type="warning" title="{tr}Admin{/tr}"}{tr}The "users can change theme" feature will override the theme displayed.{/tr}{/remarksbox}
+				{/if}
+
 				{if $prefs.themegenerator_feature eq 'y' and $prefs.site_style != $a_style}
-					<div class="form-group">
-						<label class="col-md-4 control-label"></label>
-						<div class="col-md-8">
-							{remarksbox type="note" title="{tr}Note{/tr}"}{tr}Theme not saved yet - click "Apply"{/tr}{/remarksbox}
-						</div>
-					</div>
+					{remarksbox type="note" title="{tr}Note{/tr}"}{tr}Theme not saved yet - click "Apply"{/tr}{/remarksbox}
 				{/if}
 			</div>
 
@@ -206,7 +205,6 @@
 					</div>
 					{preference name=feature_jscalendar}
 					{preference name=feature_hidden_links}
-                    {preference name=feature_equal_height_rows_js}
 				</div>
 			</fieldset>
 		{/tab}
@@ -266,7 +264,6 @@
 				{preference name="header_custom_js" syntax="javascript"}
 
 				{preference name="layout_add_body_group_class"}
-				{preference name=categories_add_class_to_body_tag}
 			</fieldset>
 
 			<fieldset>

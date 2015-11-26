@@ -1,26 +1,25 @@
 {if $save eq 'y'}
 	<h2>{tr}Tiki site registered{/tr}</h2>
 	{tr}The following site was added and validation by admin may be needed before appearing on the lists{/tr}
-	<div class="table-responsive">
-		<table class="table">
-			<tr>
-				<td>{tr}Name:{/tr}</td>
-				<td>{$info.name}</td>
-			</tr>
-			<tr>
-				<td>{tr}Description:{/tr}</td>
-				<td>{$info.description}</td>
-			</tr>
-			<tr>
-				<td>{tr}URL:{/tr}</td>
-				<td>{$info.url}</td>
-			</tr>
-			<tr>
-				<td>{tr}Country:{/tr}</td>
-				<td>{$info.country}</td>
-			</tr>
-		</table>
-	</div>
+	<table class="formcolor">
+		<tr>
+			<td>{tr}Name:{/tr}</td>
+			<td>{$info.name}</td>
+		</tr>
+		<tr>
+			<td>{tr}Description:{/tr}</td>
+			<td>{$info.description}</td>
+		</tr>
+		<tr>
+			<td>{tr}URL:{/tr}</td>
+			<td>{$info.url}</td>
+		</tr>
+		<tr>
+			<td>{tr}Country:{/tr}</td>
+			<td>{$info.country}</td>
+		</tr>
+	</table>
+
 {else}
 	<div class="panel panel-default">
 		{if $tiki_p_admin ne 'y'}
@@ -66,44 +65,38 @@
 
 				<br><br>
 				<b>{tr}Information about your site:{/tr}</b>
-				<br><br>
-				<form action="http://tiki.org/tiki-directory_add_tiki_site.php" method="post" class="form-horizontal">
+				<br>
+				<form action="http://tiki.org/tiki-directory_add_tiki_site.php" method="post">
 					<input type="hidden" name="registertiki" value="true">
-					<div class="form-group">
-						<label class="control-label col-sm-3">{tr}Name:{/tr}</label>
-						<div class="col-sm-7">
-							<input type="text" name="name" class="form-control" size="60" value="{$info.name|escape}">
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="control-label col-sm-3">{tr}Description:{/tr}</label>
-						<div class="col-sm-7">
-							<textarea rows="5" cols="60" name="description" class="form-control">{$info.description|escape}</textarea>
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="control-label col-sm-3">{tr}URL:{/tr}</label>
-						<div class="col-sm-7 form-control-static">
-							<input type="hidden" name="url" value="{$info.url|escape}" class="form-control">{$info.url|escape}
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="control-label col-sm-3">{tr}Country:{/tr}</label>
-						<div class="col-sm-7">
-							<select name="country" class="form-control">
-								{section name=ux loop=$countries}
-									<option value="{$countries[ux]|escape}" {if $info.country eq $countries[ux]}selected="selected"{/if}>{$countries[ux]}</option>
-								{/section}
-							</select>
-						</div>
-					</div>
-					<input name="isValid" type="hidden" value="">
-					<div class="form-group">
-						<label class="control-label col-sm-3"></label>
-						<div class="col-sm-7">
-							<input type="submit" class="btn btn-primary btn-sm" name="save" value="{tr}Save{/tr}">
-						</div>
-					</div>
+					<table class="formcolor">
+						<tr>
+							<td>{tr}Name:{/tr}</td>
+							<td><input type="text" name="name" size="60" value="{$info.name|escape}"></td>
+						</tr>
+						<tr>
+							<td>{tr}Description:{/tr}</td>
+							<td><textarea rows="5" cols="60" name="description">{$info.description|escape}</textarea></td>
+						</tr>
+						<tr>
+							<td>{tr}URL:{/tr}</td>
+							<td><input type="hidden" name="url" value="{$info.url|escape}">{$info.url|escape}</td>
+						</tr>
+						<tr>
+							<td>{tr}Country:{/tr}</td>
+							<td>
+								<select name="country">
+									{section name=ux loop=$countries}
+										<option value="{$countries[ux]|escape}" {if $info.country eq $countries[ux]}selected="selected"{/if}>{$countries[ux]}</option>
+									{/section}
+								</select>
+							</td>
+						</tr>
+						<input name="isValid" type="hidden" value="">
+						<tr>
+							<td>&nbsp;</td>
+							<td><input type="submit" class="btn btn-primary btn-sm" name="save" value="{tr}Save{/tr}"></td>
+						</tr>
+					</table>
 				</form>
 			</div>
 		{/if}

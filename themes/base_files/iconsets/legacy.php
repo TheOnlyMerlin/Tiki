@@ -189,16 +189,6 @@ function iconset_legacy()
 			'align-center' => array(
 				'id' => 'text_align_center',
 			),
-			'align-justify' => array(
-				'id' => 'text_align_justify',
-			),
-			'align-left' => array(
-				'id' => 'text_align_left',
-			),
-			'align-right' => array(
-				'id' => 'text_align_right',
-			),
-			//anchor in defaults
 			'arrow-up' => array(
 				'id' => 'arrow-up',
 			),
@@ -326,9 +316,6 @@ function iconset_legacy()
 			'delete' => array(
 				'id' => 'cross',
 			),
-			'difference' => array(
-				'id' => 'text_strikethrough',
-			),
 			'disable' => array(
 				'id' => 'delete',
 			),
@@ -355,9 +342,6 @@ function iconset_legacy()
 			),
 			'error' => array(
 				'id' => 'exclamation',
-			),
-			'erase' => array(
-					'id' => 'page_edit',
 			),
 			'excel' => array(
 				'id' => 'mime/xls',
@@ -408,7 +392,6 @@ function iconset_legacy()
 				'id' => 'application_get',
 			),
 			//google in defaults
-			//group in defaults
 			'h1' => array(
 				'id' => 'text_heading_1',
 			),
@@ -432,9 +415,6 @@ function iconset_legacy()
 			//image in defaults
 			'import' => array(
 				'id' => 'upload',
-			),
-			'indent' => array(
-				'id' => 'text_indent',
 			),
 			'index' => array(
 				'id' => 'table_refresh',
@@ -525,14 +505,8 @@ function iconset_legacy()
 			'ok' => array(
 				'id' => 'accept',
 			),
-			'outdent' => array(
-				'id' => 'text_indent_remove',
-			),
 			'page-break' => array(
 				'id' => 'page_break',
-			),
-			'paste' => array(
-				'id' => 'control_pause',
 			),
 			'pause' => array(
 				'id' => 'control_pause',
@@ -582,17 +556,11 @@ function iconset_legacy()
 			'rss' => array(
 				'id' => 'feed',
 			),
-			'scissors' => array(
-					'id' => 'cut',
-			),
 			'screencapture' => array(
 				'id' => 'camera',
 			),
 			'search' => array(
 				'id' => 'magnifier',
-			),
-			'selectall' => array(
-				'id' => 'page-lightning',
 			),
 			'send' => array(
 				'id' => 'email_go',
@@ -752,9 +720,6 @@ function iconset_legacy()
 			'undo' => array(
 				'id' => 'arrow_undo',
 			),
-			'unlink' => array(
-				'id' => 'lock_delete',
-			),
 			'unlock' => array(
 				'id' => 'lock_open',
 			),
@@ -796,12 +761,10 @@ function iconset_legacy()
 		),
 		'defaults' => array(
 			'add',
-			'anchor',
 			'book',
 			'bug',
 			'calendar',
 			'computer',
-			'cut',
 			'database',
 			'font',
 			'google',

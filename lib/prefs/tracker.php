@@ -53,13 +53,7 @@ function prefs_tracker_list()
 			'description' => tr('Use the legacy tracker insertion screen as a tab instead of the dialog.'),
 			'type' => 'flag',
 			'default' => 'n',
-		),
-		'tracker_status_in_objectlink' => array(
-			'name' => tr('Show tracker status in objectlink'),
-			'description' => tr('Sets whether we want to show the status when doing an objectlink. This can be used if you want the status to show in tracker screens but not in outputs.'),
-			'type' => 'flag',
-			'default' => 'y',
-		),
+		),		
 		'tracker_wikirelation_synctitle' => array(
 			'name' => tr('Sync wiki page name to linked tracker field'),
 			'description' => tr('When wiki page is renamed or when the value of the trackerfield that is linked to the wiki page is changed, make the corresponding change as well to the other linked via tiki.wiki.linkedfield relation.'),
@@ -93,14 +87,6 @@ function prefs_tracker_list()
  			'default' => '',
  			'profile_reference' => 'tracker',
  		),
-		'tracker_article_indexing' => array(
-			'name' => tr("Index article info in trackeritem. See Description for more info."),
-			'description' => tr('Sets whether the article info should be indexed in the trackeritem. This automatically sets the article field to read-only and sets up categorization synchronization between articles and tracker items.'),
-			'type' => 'flag',
-			'tags' => array('advanced'),
-			'default' => 'n',
-			'dependencies' => array('feature_articles', 'feature_trackers', 'tracker_article_trackerId', 'tracker_article_tracker'),
-		),
 		'tracker_tabular_enabled' => array(
 			'name' => tr('Tracker Tabular'),
 			'description' => tr('Allows to manage import/export tracker profiles and manage custom list formats.'),

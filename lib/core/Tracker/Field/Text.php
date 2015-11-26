@@ -305,7 +305,7 @@ class Tracker_Field_Text extends Tracker_Field_Abstract implements Tracker_Field
 		return 'sortable';
 	}
 
-	function isValid($ins_fields_data)
+	function isValid()
 	{
 		$value = $this->getValue();
 

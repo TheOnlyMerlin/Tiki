@@ -26,7 +26,7 @@
 {if count($online_operators) > 0}
 <h2>{tr}Online operators{/tr}</h2>
 <div class="table-responsive">
-<table class="table">
+<table class="table normal">
 	<tr>
 		<th style="text-align:center;">
 		{tr}Operator{/tr}
@@ -75,7 +75,7 @@
 <h2>{tr}Offline operators{/tr}</h2>
 {cycle values='odd,even' print=false}
 <div class="table-responsive">
-<table class="table">
+<table class="table normal">
 	<tr>
 		<th style="text-align:center;">
 		{tr}Operator{/tr}
@@ -117,27 +117,26 @@
 
 {if $tiki_p_live_support_admin eq 'y'}
 <h2>{tr}Add an operator to the system{/tr}</h2>
-<br>
-<form method="post" action="tiki-live_support_admin.php" class="form-horizontal">
-	<div class="form-group">
-		<label class="col-sm-3 control-label">{tr}User{/tr}</label>
-		<div class="col-sm-7">
-		    <select name="user" class="form-control">
+<small>{tr}Operators must be tiki users{/tr}</small>
+<form method="post" action="tiki-live_support_admin.php">
+<table class="formcolor">
+	<tr>
+		<td>{tr}User{/tr}</td>
+		<td>
+			<select name="user">
 				{section name=ix loop=$users}
 					<option value="{$users[ix].user|escape}">{$users[ix].user|escape}</option>
 				{/section}
 			</select>
-			<div class="help-block">
-				{tr}Operators must be tiki users{/tr}
-			</div>
-	    </div>
-    </div>
-    <div class="form-group">
-		<label class="col-sm-3 control-label"></label>
-		<div class="col-sm-7">
-		    <input type="submit" class="btn btn-default btn-sm" name="adduser" value="{tr}Set as Operator{/tr}">
-	    </div>
-    </div>
+		</td>
+	</tr>
+	<tr>
+		<td>&nbsp;</td>
+		<td>
+			<input type="submit" class="btn btn-default btn-sm" name="adduser" value="{tr}Set as Operator{/tr}">
+		</td>
+	</tr>
+</table>
 </form>
 {/if}
 

@@ -12,7 +12,8 @@ $section = 'admin';
 require_once ('tiki-setup.php');
 $access->check_feature(array('feature_wiki_templates','feature_cms_templates'), '', 'features', true);
 
-$templateslib = TikiLib::lib('template');
+global $templateslib;
+include_once ('lib/templates/templateslib.php');
 
 $auto_query_args = array('templateId');
 
@@ -65,9 +66,6 @@ if ($_REQUEST["templateId"]) {
 	} else {
 		$info["section_cms"] = 'n';
 	}
-	$cat_type = 'template';
-	$cat_objid = $_REQUEST['templateId'];
-	include_once ("categorize_list.php");
 } else {
 	$info = array();
 	$info["name"] = '';
@@ -132,8 +130,6 @@ if (isset($_REQUEST["preview"])) {
 	$info['page_name'] = $_REQUEST['page_name'];
 	$info['template_type'] = $_REQUEST['template_type'];
 	$smarty->assign('info', $info);
-
-	$cookietab = 2;
 }
 if (isset($_REQUEST["save"])) {
 	check_ticket('admin-content-templates');
@@ -192,15 +188,6 @@ if (isset($_REQUEST["save"])) {
 		} else {
 			$templateslib->remove_template_from_section($tid, 'html');
 		}
-
-		$cat_type = 'template';
-		$cat_objid = $tid;
-		$cat_desc = '';
-		$cat_name = $_REQUEST["name"];
-		$cat_href = "tiki-admin_content_templates.php?templateId=" . $cat_objid;
-		include_once ("categorize.php");
-
-		$cookietab = 1;
 	} else {
 		$smarty->assign("templateId", '0');
 		$info["name"] = '';
@@ -214,8 +201,6 @@ if (isset($_REQUEST["save"])) {
 		$info["section_html"] = (isset($_REQUEST["section_html"]) && $_REQUEST["section_html"] == 'on') ? 'y' : 'n';
 		$smarty->assign('info', $info);
 		$smarty->assign('emptyname', "true");
-
-		$cookietab = 2;
 	}
 }
 if (!isset($_REQUEST["sort_mode"])) {

@@ -29,14 +29,11 @@ class Table_Code_Manager extends Table_Code_Abstract
 	 * @var array
 	 */
 	protected $subclasses = array(
-		//other is jQuery needed before the tablesorter function call
 		'other' => '',
-		//this is the jQuery tablesorter function call
 		'main' => array(
 			'mainOptions' => '',
 			'widgetOptions' => '',
 		),
-		//events to bind to the tablesorter function call
 		'bind' => ''
 	);
 

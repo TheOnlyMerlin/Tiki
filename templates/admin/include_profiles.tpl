@@ -251,7 +251,7 @@
 				<input type="hidden" name="ticket" value="{$ticket|escape}">
 				<h4>{tr}Find Profiles{/tr} <small>{tr}Search by name, types and repository{/tr}</small></h4>
 				<div class="table-responsive">
-					<table class="table">
+					<table class="table normal">
 						<tr>
 							<td class="col-lg-6">
 								<div class="form-group">
@@ -333,11 +333,11 @@
 				</table>
 				</div>
 			</form>
-			<a id="step2"></a>
+			<a name="step2"></a>
 			{if isset($result) && $result|@count != '0'}
 				<h4>{tr}Select and apply profile <small>Click on a Configuration Profile Name below to review it and apply it on your site</small>{/tr}</h4>
 				<div class="table-responsive">
-					<table class="table">
+					<table class="table normal">
 						<tr>
 							<th>{tr}Profile Name{/tr}</th>
 							<th>{tr}Repository{/tr}</th>
@@ -476,7 +476,7 @@
 		<h2>{tr}Advanced{/tr}</h2>
 		<fieldset>
 			<h4>{tr}Repository Status{/tr} <small>{tr}Status of the registered profile repositories{/tr}</small></h4>
-			<table class="table">
+			<table class="table normal">
 				<tr>
 					<th>{tr}Profile repository{/tr}</th>
 					<th>{tr}Status{/tr}</th>

@@ -1,6 +1,6 @@
 {* $Id$ *}
 
-<a id="attachments"></a>
+<a name="attachments"></a>
 {if $tiki_p_wiki_view_attachments == 'y' || $tiki_p_wiki_admin_attachments == 'y' || $tiki_p_wiki_attach_files == 'y'}
 
 	<div
@@ -39,7 +39,7 @@
 		{/if}
 
 		<div class="{if $js === 'y'}table-responsive{/if}"> {*the table-responsive class cuts off dropdown menus *}
-			<table class="table table-striped table-hover">
+			<table class="table normal table-striped table-hover">
 				<h3>{tr}Attached files{/tr}</h3>
 				<tr>
 					<th>

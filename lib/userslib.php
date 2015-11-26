@@ -42,7 +42,6 @@ class UsersLib extends TikiLib
 	public $userobjectperm_cache; // used to cache queries in object_has_one_permission()
 	public $get_object_permissions_for_user_cache;
 	static $cas_initialized = false;
-	static $userexists_cache = array();
 
 	function __construct()
 	{
@@ -208,12 +207,13 @@ class UsersLib extends TikiLib
 
 	function user_exists($user)
 	{
-		if (!isset($userexists_cache[$user])) {
+		static $rv = array();
+		if (!isset($rv[$user])) {
 			$query = 'select count(*) from `users_users` where upper(`login`) = ?';
 			$result = $this->getOne($query, array(TikiLib::strtoupper($user)));
-			$userexists_cache[$user] = $result;
+			$rv[$user] = $result;
 		}
-		return $userexists_cache[$user];
+		return $rv[$user];
 	}
 	function get_user_real_case($user)
 	{
@@ -342,23 +342,6 @@ class UsersLib extends TikiLib
 		);
 	}
 
-	/**
-	 * Force a logout for the specified user
-	 * @param $user
-	 */
-	function force_logout($user)
-	{
-		if (!empty($user)) {
-			// Clear the timestamp for the existing session,
-			//	which will force a logout next time the user accesses the session
-			$this->query('delete from `tiki_sessions` where `user`=?', array($user));
-
-			// Add a log entry
-			$logslib = TikiLib::lib('logs');
-			$logslib->add_log("login", "logged out", $user, '', '', $this->now);
-		}
-	}
-
 	// For each auth method, validate user in auth, if valid, verify tiki user exists and create if necessary (as configured)
 	// Once complete, update_lastlogin and return result, username and login message.
 	function validate_user($user, $pass, $challenge = '', $response = '', $validate_phase=false)
@@ -417,15 +400,9 @@ class UsersLib extends TikiLib
 		// If preference login_multiple_forbidden is set, don't let user login if already logged in
 		if ($result == USER_VALID && $prefs['login_multiple_forbidden'] == 'y' && $user != 'admin' ) {
 			$tikilib = TikiLib::lib('tiki');
-			$grabSessionOnAlreadyLoggedIn = !empty($prefs['login_grab_session']) ? $prefs['login_grab_session'] : 'n';
-			if ($grabSessionOnAlreadyLoggedIn === 'y') {
-				// Log out first, then proceed to log in again
-				$this->force_logout($user);
-			} else {
-				$tikilib->update_session();
-				if ( $tikilib->is_user_online($user) ) {
-					$result = USER_ALREADY_LOGGED;
-				}
+			$tikilib->update_session();
+			if ( $tikilib->is_user_online($user) ) {
+				$result = USER_ALREADY_LOGGED;
 			}
 		}
 
@@ -2023,6 +2000,10 @@ class UsersLib extends TikiLib
 		$query = 'update `users_users` set `default_group`=? where `login`=? and `default_group`=?';
 		$this->query($query, array('Registered', $user, $group));
 
+		if ($prefs['user_trackersync_groups'] == 'y') {
+			$this->uncategorize_user_tracker_item($user, $group);
+		}
+
 		if ($prefs['feature_community_send_mail_leave'] == 'y') {
 			$api = new TikiAddons_Api_Group;
 			if ($api->isOrganicGroup($group)) {
@@ -2059,6 +2040,12 @@ class UsersLib extends TikiLib
 	function remove_user_from_all_groups($user)
 	{
 		global $prefs;
+		if ($prefs['user_trackersync_groups'] == 'y') {
+			$groups = $this->get_user_groups($user);
+			foreach ($groups as $group) {
+				$this->uncategorize_user_tracker_item($user, $group);
+			}
+		}
 		$userid = $this->get_user_id($user);
 		$query = 'delete from `users_usergroups` where `userId` = ?';
 		$result = $this->query($query, array($userid));
@@ -2200,8 +2187,6 @@ class UsersLib extends TikiLib
 
 		if ( $user == 'admin' ) return false;
 
-		$userexists_cache[$user] = NULL;
-
 		$userId = $this->getOne('select `userId` from `users_users` where `login` = ?', array($user));
 
 		$groupTracker = $this->get_tracker_usergroup($user);
@@ -2249,8 +2234,6 @@ class UsersLib extends TikiLib
 		$cachelib = TikiLib::lib('cache');
 
 		if ( $from == 'admin' ) return false;
-
-		$userexists_cache[$user] = NULL;
 
 		$userId = $this->getOne('select `userId` from `users_users` where `login` = ?', array($from));
 
@@ -3650,7 +3633,7 @@ class UsersLib extends TikiLib
 				'type' => 'content templates',
 				'admin' => true,
 				'prefs' => array('feature_wiki_templates', 'feature_cms_templates'),
-				'scope' => 'object',
+				'scope' => 'global',
 			),
 			array(
 				'name' => 'tiki_p_edit_content_templates',
@@ -3659,7 +3642,7 @@ class UsersLib extends TikiLib
 				'type' => 'content templates',
 				'admin' => false,
 				'prefs' => array('feature_wiki_templates', 'feature_cms_templates'),
-				'scope' => 'object',
+				'scope' => 'global',
 			),
 			array(
 				'name' => 'tiki_p_use_content_templates',
@@ -3668,7 +3651,7 @@ class UsersLib extends TikiLib
 				'type' => 'content templates',
 				'admin' => false,
 				'prefs' => array('feature_wiki_templates', 'feature_cms_templates'),
-				'scope' => 'object',
+				'scope' => 'global',
 			),
 			array(
 				'name' => 'tiki_p_admin_contribution',
@@ -6003,12 +5986,6 @@ class UsersLib extends TikiLib
 
 	function assign_user_to_group($user, $group, $bulk = false)
 	{
-		if (!$this->group_exists($group)) {
-			throw new Exception(tr('Cannot add user %0 to nonexistent group %1', $user, $group));
-		}
-		if (!$this->user_exists($user)) {
-			throw new Exception(tr('Cannot add nonexistent user %0 to group %1', $user, $group));
-		}
 		global $prefs, $tiki_p_admin, $page;
 		$cachelib = TikiLib::lib('cache');
 		$tikilib = TikiLib::lib('tiki');
@@ -6035,6 +6012,9 @@ class UsersLib extends TikiLib
 			$query = "insert ignore into `users_usergroups`(`userId`,`groupName`, `created`) values(?,?,?)";
 			$result = $this->query($query, array($userid, $group, $tikilib->now), -1, -1, false);
 			$group_ret = true;
+			if ($prefs['user_trackersync_groups'] == 'y') {
+				$this->categorize_user_tracker_item($user, $group);
+			}
 		}
 		$this->update_group_expiries();
 
@@ -6247,8 +6227,6 @@ class UsersLib extends TikiLib
 		) {
 			return false;
 		}
-
-		$userexists_cache[$user] = NULL;
 
 		// Generate a unique hash; this is also done below in set_user_fields()
 		$lastLogin = null;
@@ -6904,7 +6882,7 @@ class UsersLib extends TikiLib
 
 		return $rv[$group];
 	}
-	
+
 	function count_users_consolidated($groups)
 	{
 		$groupset = implode("','",$groups);
@@ -6912,7 +6890,7 @@ class UsersLib extends TikiLib
 		$result = $this->fetchAll($query, array());
 		$resultcons = array_unique(array_column($result, 'userId'));
 		return count($resultcons);
-	}	
+	}
 
 	function related_users($user, $max = 10, $type = 'wiki')
 	{
@@ -7804,28 +7782,7 @@ class UsersLib extends TikiLib
 		return $ret;
 	}
 
-	/**
-	 * This is a function to automatically login a user programatically
-	 * @param $uname The user account name to log the user in as
-	 * @return bool true means that successfully logged in or already logged in. false means no such user.
-	 */
-	function autologin_user($uname)
-	{
-		global $user;
-		if ($user) {
-			// already logged in
-			return true;
-		}
-		if (!$this->user_exists($uname)) {
-			// no such user
-			return false;
-		}
-		// Conduct login
-		global $user_cookie_site;
-		$_SESSION[$user_cookie_site] = $uname;
-		$this->update_expired_groups();
-		return true;
-	}
+
 }
 
 /* For the emacs weenies in the crowd.

@@ -81,20 +81,6 @@ function wikiplugin_bigbluebutton_info()
 					array('value' => 1, 'text' => tr('On')),
 				),
 			),
-			'showrecording' => array(
-				'required' => false,
-				'name' => tra('Display Recordings'),
-				'description' => tra('Enable or Disable the display of video recordings.'),
-				'filter' => 'alpha',
-				'default' => 'y',
-			),
-			'showattendees' => array(
-				'required' => false,
-				'name' => tra('Display Attendees'),
-				'description' => tra('Enable or Disable the display of attendees list.'),
-				'filter' => 'alpha',
-				'default' => 'y',
-			),
 		),
 	);
 }
@@ -107,7 +93,7 @@ function wikiplugin_bigbluebutton( $data, $params )
 		$meeting = $params['name']; // Meeting is more descriptive than name, but parameter name was already decided.
 		$smarty = TikiLib::lib('smarty');
 		$smarty->assign('bbb_meeting', $meeting);
-
+		
 		$perms = Perms::get('bigbluebutton', $meeting);
 
 		$params = array_merge(array('prefix' => '', 'recording' => 0), $params);
@@ -121,7 +107,7 @@ function wikiplugin_bigbluebutton( $data, $params )
 
 		if ( ! $bigbluebuttonlib->roomExists($meeting) ) {
 			if ( ! isset($_POST['bbb']) || $_POST['bbb'] != $meeting || ! $perms->bigbluebutton_create ) {
-				if ($perms->bigbluebutton_view_rec && $params['showrecording'] != 'n') {
+				if ($perms->bigbluebutton_view_rec) {
 					$smarty->assign('bbb_recordings', $bigbluebuttonlib->getRecordings($meeting));
 				} else {
 					$smarty->assign('bbb_recordings', null);
@@ -136,13 +122,8 @@ function wikiplugin_bigbluebutton( $data, $params )
 			$smarty->assign('bbb_recordings', null);
 		}
 
-		if ($perms->bigbluebutton_join) {
-			if ($params['showattendees'] != 'n') {
-				$smarty->assign('bbb_attendees', $bigbluebuttonlib->getAttendees($meeting));
-				$smarty->assign('bbb_show_attendees', true);
-			} else {
-				$smarty->assign('bbb_show_attendees', false);
-			}
+		if ( $perms->bigbluebutton_join ) {
+			$smarty->assign('bbb_attendees', $bigbluebuttonlib->getAttendees($meeting));
 
 			return $smarty->fetch('wiki-plugins/wikiplugin_bigbluebutton.tpl');
 

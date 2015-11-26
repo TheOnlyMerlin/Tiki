@@ -9,46 +9,22 @@
 </div>
 
 <h2>{tr}Create/edit options for question:{/tr} <a href="tiki-edit_quiz_questions.php?quizId={$question_info.quizId}&amp;questionId={$question_info.questionId}">{$question_info.question|escape}</a></h2>
-<form action="tiki-edit_question_options.php" method="post" class="form-horizontal">
+<form action="tiki-edit_question_options.php" method="post">
 	<input type="hidden" name="optionId" value="{$optionId|escape}">
 	<input type="hidden" name="questionId" value="{$questionId|escape}">
-
-    <div class="form-group">
-		<label class="col-sm-3 control-label">{tr}Option{/tr}</label>
-		<div class="col-sm-7">
-	      	<textarea name="optionText" rows="5" cols="40" class="form-control">{$optionText|escape}</textarea>
-	    </div>
-    </div>
-    <div class="form-group">
-		<label class="col-sm-3 control-label">{tr}Points{/tr}</label>
-		<div class="col-sm-7">
-	      	<input type="text" name="points" value="{$points|escape}" class="form-control">
-	    </div>
-    </div>
-    <div class="form-group">
-		<label class="col-sm-3 control-label"></label>
-		<div class="col-sm-7">
-	      	<input type="submit" class="btn btn-primary btn-sm" name="save" value="{tr}Save{/tr}">
-	    </div>
-    </div>
+	<table class="formcolor">
+		<tr><td>{tr}Option:{/tr}</td><td><textarea name="optionText" rows="5" cols="40">{$optionText|escape}</textarea></td></tr>
+		<tr><td>{tr}Points:{/tr}</td><td><input type="text" name="points" value="{$points|escape}"></td></tr>
+		<tr><td >&nbsp;</td><td><input type="submit" class="btn btn-primary btn-sm" name="save" value="{tr}Save{/tr}"></td></tr>
+	</table>
 </form>
 
 <h2>Options</h2>
 
 {include file='find.tpl'}
 
-{* Use css menus as fallback for item dropdown action menu if javascript is not being used *}
-{if $prefs.javascript_enabled !== 'y'}
-	{$js = 'n'}
-	{$libeg = '<li>'}
-	{$liend = '</li>'}
-{else}
-	{$js = 'y'}
-	{$libeg = ''}
-	{$liend = ''}
-{/if}
-<div class="{if $js === 'y'}table-responsive{/if}"> {* table-responsive class cuts off css drop-down menus *}
-	<table class="table table-striped table-hover">
+<div class="table-responsive">
+	<table class="table normal table-striped table-hover">
 		<tr>
 			<th><a href="tiki-edit_question_options.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'optionId_desc'}optionId_asc{else}optionId_desc{/if}">{tr}ID{/tr}</a></th>
 			<th><a href="tiki-edit_question_options.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'optionText_desc'}optionText_asc{else}optionText_desc{/if}">{tr}text{/tr}</a></th>
@@ -65,27 +41,21 @@
 				<td class="action">
 					{capture name=question_option_actions}
 						{strip}
-							{$libeg}<a href="tiki-edit_question_options.php?questionId={$questionId}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;optionId={$channels[user].optionId}">
+							<a href="tiki-edit_question_options.php?questionId={$questionId}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;optionId={$channels[user].optionId}">
 								{icon name='edit' _menu_text='y' _menu_icon='y' alt="{tr}Edit{/tr}"}
-							</a>{$liend}
-							{$libeg}<a href="tiki-edit_question_options.php?questionId={$questionId}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$channels[user].optionId}">
+							</a>
+							<a href="tiki-edit_question_options.php?questionId={$questionId}&amp;offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$channels[user].optionId}">
 								{icon name='remove' _menu_text='y' _menu_icon='y' alt="{tr}Remove{/tr}"}
-							</a>{$liend}
+							</a>
 						{/strip}
 					{/capture}
-					{if $js === 'n'}<ul class="cssmenu_horiz"><li>{/if}
-					<a
-						class="tips"
-						title="{tr}Actions{/tr}"
-						href="#"
-						{if $js === 'y'}{popup delay="0|2000" fullhtml="1" center=true text=$smarty.capture.question_option_actions|escape:"javascript"|escape:"html"}{/if}
-						style="padding:0; margin:0; border:0"
-					>
+					<a class="tips"
+					   title="{tr}Actions{/tr}"
+					   href="#" {popup delay="0|2000" fullhtml="1" center=true text=$smarty.capture.question_option_actions|escape:"javascript"|escape:"html"}
+					   style="padding:0; margin:0; border:0"
+							>
 						{icon name='wrench'}
 					</a>
-					{if $js === 'n'}
-						<ul class="dropdown-menu" role="menu">{$smarty.capture.question_option_actions}</ul></li></ul>
-					{/if}
 				</td>
 			</tr>
 		{sectionelse}

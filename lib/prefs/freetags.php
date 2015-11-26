@@ -75,8 +75,8 @@ function prefs_freetags_list()
 			'default' => 'y',
 		),
 		'freetags_browse_amount_tags_suggestion' => array(
-			'name' => tra('Tag Suggestions'),
-            'description' => tra('Number of Tags to show in Tag Suggestions'),
+			'name' => tra('Number of Tags to show in Tag Suggestions'),
+            'description' => tra(''),
 			'type' => 'text',
 			'size' => '4',
 			'filter' => 'digits',

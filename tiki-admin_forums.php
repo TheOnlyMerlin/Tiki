@@ -265,6 +265,12 @@ static $iid = 0;
 ++$iid;
 $ts_tableid = 'adminforums' . $iid;
 $smarty->assign('ts_tableid', $ts_tableid);
+if ($tsOn) {
+	$ts_countid = $ts_tableid . '-count';
+	$ts_offsetid = $ts_tableid . '-offset';
+	$smarty->assign('ts_countid', $ts_countid);
+	$smarty->assign('ts_offsetid', $ts_offsetid);
+}
 //initialize tablesorter
 if ($tsOn && !$tsAjax) {
 	//set tablesorter code
@@ -273,6 +279,14 @@ if ($tsOn && !$tsAjax) {
 		array(
 			'id' => $ts_tableid,
 			'total' => $channels['cant'],
+			'ajax' => array(
+				'servercount' => array(
+					'id' => $ts_countid,
+				),
+				'serveroffset' => array(
+					'id' => $ts_offsetid,
+				),
+			),
 		)
 	);
 }

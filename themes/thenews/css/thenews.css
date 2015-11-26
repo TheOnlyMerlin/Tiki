@@ -7254,18 +7254,11 @@ ul.all_languages > li {
   border: 1px solid;
   border-color: #faebcc;
 }
-.autotoc > .nav {
-  background: #ffffff;
-  border: 1px solid #dddddd;
-  border-radius: 4px;
+div#outerToc {
+  background: #eeeeee;
 }
-.autotoc * {
-  color: #005faa;
-}
-.autotoc .nav > li > a:hover,
-.autotoc .nav .nav > li > a:hover {
-  color: #777777;
-  background: transparent;
+div#outerToc * {
+  color: #333333;
 }
 .plugin-form-float {
   background: #f4f4f4;
@@ -7519,30 +7512,33 @@ a.admbox.off:active {
   border: none;
   background-color: #ececec;
 }
-table.tablesorter {
+.tablesorter {
   /* style header */
 }
-table.tablesorter thead tr.tablesorter-headerRow th.tablesorter-headerUnSorted:not(.sorter-false) {
+.tablesorter-header {
   background-image: url(data:image/gif;base64,R0lGODlhFQAJAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAkAAAIXjI+AywnaYnhUMoqt3gZXPmVg94yJVQAAOw==);
 }
-table.tablesorter thead tr.tablesorter-headerRow th.tablesorter-headerAsc {
+tr.tablesorter-headerRow,
+tr.tablesorter-filter-row {
+  background-color: #f4f4f4;
+}
+.tablesorter .bootstrap-icon-unsorted {
+  background-image: url(data:image/gif;base64,R0lGODlhFQAJAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAkAAAIXjI+AywnaYnhUMoqt3gZXPmVg94yJVQAAOw==);
+}
+.tablesorter-headerAsc {
   background-image: url(data:image/gif;base64,R0lGODlhFQAEAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAQAAAINjI8Bya2wnINUMopZAQA7);
 }
-table.tablesorter thead tr.tablesorter-headerRow th.tablesorter-headerDesc {
+.tablesorter-headerDesc {
   background-image: url(data:image/gif;base64,R0lGODlhFQAEAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAQAAAINjB+gC+jP2ptn0WskLQA7);
 }
-table.tablesorter thead tr.tablesorter-filter-row input.tablesorter-filter {
+input.tablesorter-filter {
   border: none;
   background-color: #ececec;
 }
-table.tablesorter thead tr.tablesorter-filter-row input.dateFrom,
-table.tablesorter thead tr.tablesorter-filter-row input.dateTo {
+.tablesorter input.dateFrom,
+.tablesorter input.dateTo {
   border: none;
   background-color: #ececec;
-}
-table.tablesorter thead tr.tablesorter-headerRow,
-table.tablesorter thead tr.tablesorter-filter-row {
-  background-color: #f4f4f4;
 }
 body > .container {
   border: 1px solid #aaa;

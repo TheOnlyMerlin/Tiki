@@ -8,7 +8,7 @@
 
 
 	<div class="table-responsive">
-		<table class="table">
+		<table class="table normal">
 			<tr>
 				<th>{self_link _sort_arg='sort_mode' _sort_field='user'}{tr}User{/tr}{/self_link}</th>
 				<th>{self_link _sort_arg='sort_mode' _sort_field='page'}{tr}Page{/tr}{/self_link}</th>

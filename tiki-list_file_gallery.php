@@ -24,7 +24,10 @@ if ($prefs['feature_categories'] == 'y') {
 	$categlib = TikiLib::lib('categ');
 }
 
-$templateslib = TikiLib::lib('template');
+if ($prefs['feature_file_galleries_templates'] == 'y') {
+	global $templateslib;
+	include_once ('lib/templates/templateslib.php');
+}
 
 if ($prefs['feature_groupalert'] == 'y') {
 	$groupalertlib = TikiLib::lib('groupalert');

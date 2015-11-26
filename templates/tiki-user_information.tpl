@@ -17,7 +17,7 @@
 		{if $infoPublic eq 'y'}
 			<h2>{$userinfo.login}</h2>
 			<div class="clearfix">
-				<div class="col-sm-8">
+				<div class="pull-right">
 					{if $tiki_p_admin eq 'y' or $userinfo.login eq $user}
 						{if $tiki_p_admin eq 'y'}
 							<a class="link tips" href="tiki-assignuser.php?assign_user={$userinfo.login|escape:"url"}" title=":{tr}Assign group{/tr}">
@@ -36,15 +36,13 @@
 					{wikiplugin _name="img" fileId="$user_picture_id"}{/wikiplugin}
 				</div>
 			{/if}
-			<div class="row">
-				<div class="col-sm-8 col-sm-offset-1">
 
 			<div class="panel panel-default">
 				<div class="panel-body">
 					{if $avatar}
-						<div class="row margin-bottom-sm">
-							<div class="col-sm-4">{tr}Profile picture{/tr} ({tr}User Icon{/tr}):</div>
-							<div class="col-sm-8">
+						<div class="clearfix {cycle}">
+							<div class="pull-left">{tr}Profile picture{/tr} ({tr}User Icon{/tr}):</div>
+							<div class="pull-right">
 								{if $userinfo.login eq $user}<a href="tiki-pick_avatar.php">{/if}
 								{$avatar}
 								{if $userinfo.login eq $user}</a>{/if}
@@ -53,53 +51,53 @@
 					{/if}
 
 					{if $realName}
-						<div class="row margin-bottom-sm">
-							<div class="col-sm-4">{tr}Real Name:{/tr}</div>
-							<div class="col-sm-8">{$realName|escape}</div>
+						<div class="clearfix {cycle}">
+							<div class="pull-left">{tr}Real Name:{/tr}</div>
+							<div class="pull-right">{$realName|escape}</div>
 						</div>
 					{/if}
 					{if $prefs.feature_community_gender eq 'y' and $gender neq 'Hidden' and $gender}
-						<div class="row margin-bottom-sm">
-							<div class="col-sm-4">{tr}Gender:{/tr}</div>
-							<div class="col-sm-8">{tr}{$gender}{/tr}</div>
+						<div class="clearfix {cycle}">
+							<div class="pull-left">{tr}Gender:{/tr}</div>
+							<div class="pull-right">{tr}{$gender}{/tr}</div>
 						</div>
 					{/if}
 					{if $email_isPublic neq 'n' and $userinfo.email neq ''}
-						<div class="row margin-bottom-sm">
-							<div class="col-sm-4">{tr}Email:{/tr}</div>
-							<div class="col-sm-8">{mailto address=$userinfo.email text=$scrambledEmail encode="javascript"}</div>
+						<div class="clearfix {cycle}">
+							<div class="pull-left">{tr}Email:{/tr}</div>
+							<div class="pull-right">{mailto address=$userinfo.email text=$scrambledEmail encode="javascript"}</div>
 						</div>
 					{elseif $email_isPublic eq 'n' and $userinfo.email neq '' and $tiki_p_admin eq 'y'}
-						<div class="row margin-bottom-sm">
-							<div class="col-sm-4">{tr}Email:{/tr}</div>
-							<div class="col-sm-8">
+						<div class="clearfix {cycle}">
+							<div class="pull-left">{tr}Email:{/tr}</div>
+							<div class="pull-right">
 								{mailto address=$userinfo.email encode="javascript"}
 								<i>{tr}(non public){/tr}</i>
 							</div>
 						</div>
 					{/if}
 					{if !empty($country) and $country != 'Other'}
-						<div class="row margin-bottom-sm">
-							<div class="col-sm-4">{tr}Country:{/tr}</div>
-							<div class="col-sm-8">{$userinfo.login|countryflag} {tr}{$country|stringfix}{/tr}</div>
+						<div class="clearfix {cycle}">
+							<div class="pull-left">{tr}Country:{/tr}</div>
+							<div class="pull-right">{$userinfo.login|countryflag} {tr}{$country|stringfix}{/tr}</div>
 						</div>
 					{/if}
 					{if $prefs.change_theme ne 'n'}
-						<div class="row margin-bottom-sm">
-							<div class="col-sm-4">{tr}Theme:{/tr}</div>
-							<div class="col-sm-8">{$user_style}</div>
+						<div class="clearfix {cycle}">
+							<div class="pull-left">{tr}Theme:{/tr}</div>
+							<div class="pull-right">{$user_style}</div>
 						</div>
 					{/if}
 					{if $prefs.change_language eq 'y'}
-						<div class="row margin-bottom-sm">
-							<div class="col-sm-4">{tr}Language:{/tr}</div>
-							<div class="col-sm-8">{$user_language}</div>
+						<div class="clearfix {cycle}">
+							<div class="pull-left">{tr}Language:{/tr}</div>
+							<div class="pull-right">{$user_language}</div>
 						</div>
 					{/if}
 					{if $homePage}
-						<div class="row margin-bottom-sm">
-							<div class="col-sm-4">{tr}Homepage:{/tr}</div>
-							<div class="col-sm-8">
+						<div class="clearfix {cycle}">
+							<div class="pull-left">{tr}Homepage:{/tr}</div>
+							<div class="pull-right">
 								<a href="{$homePage|escape}" class="link" title="{tr}User's homepage{/tr}">
 									{$homePage|escape}
 								</a>
@@ -107,15 +105,15 @@
 						</div>
 					{/if}
 					{if $prefs.feature_score eq 'y'}
-						<div class="row margin-bottom-sm">
-							<div class="col-sm-4">{tr}Score:{/tr}</div>
-							<div class="col-sm-8">{$userinfo.score|star}{$userinfo.score}</div>
+						<div class="clearfix {cycle}">
+							<div class="pull-left">{tr}Score:{/tr}</div>
+							<div class="pull-right">{$userinfo.score|star}{$userinfo.score}</div>
 						</div>
 					{/if}
 					{if $prefs.feature_wiki eq 'y' && $prefs.feature_wiki_userpage eq 'y' && ($userPage_exists or $user == $userinfo.login)}
-						<div class="row margin-bottom-sm">
-							<div class="col-sm-4">{tr}Personal Wiki Page:{/tr}</div>
-							<div class="col-sm-8">
+						<div class="clearfix {cycle}">
+							<div class="pull-left">{tr}Personal Wiki Page:{/tr}</div>
+							<div class="pull-right">
 								{if $userPage_exists}
 									<a class="link" href="tiki-index.php?page={$prefs.feature_wiki_userpage_prefix|escape:'url'}{$userinfo.login|escape:'url'}">
 										{$prefs.feature_wiki_userpage_prefix}{$userinfo.login}
@@ -129,24 +127,24 @@
 						</div>
 					{/if}
 
-					<div class="row margin-bottom-sm">
-						<div class="col-sm-4">{tr}Last login:{/tr}</div>
-						<div class="col-sm-8">{$userinfo.lastLogin|tiki_short_datetime}</div>
+					<div class="clearfix {cycle}">
+						<div class="pull-left">{tr}Last login:{/tr}</div>
+						<div class="pull-right">{$userinfo.lastLogin|tiki_short_datetime}</div>
 					</div>
 
 					{* Custom database fields *}
 					{section name=ir loop=$customfields}
 
 						{if $customfields[ir].show}
-							<div class="row margin-bottom-sm">
-								<div class="col-sm-4">{$customfields[ir].label}:</div>
-								<div class="col-sm-8">{$customfields[ir].value}</div>
+							<div class="clearfix {cycle}">
+								<div class="pull-left">{$customfields[ir].label}:</div>
+								<div class="pull-right">{$customfields[ir].value}</div>
 							</div>
 						{/if}
 					{/section}
 				</div>
 			</div>
-				</div></div>
+
 			{if $prefs.feature_friends eq 'y'}
 			<h3>{tr}Friendship Network{/tr}</h3>
 				{if $user eq $userinfo.login}
@@ -177,7 +175,7 @@
 				<div class="panel-body">
 
 					<div class="clearfix">
-						<div class="col-sm-8">
+						<div class="pull-right">
 							{if $userinfo.login eq $user}
 								<a class="link tips" href="tiki-view_tracker_item.php?view=+user&cookietab=2" title=":{tr}Change user information{/tr}">
 									{icon name='wrench' align="right" alt="{tr}Change user information{/tr}"}
@@ -188,9 +186,9 @@
 
 					{foreach item=itemField from=$userItem.field_values}
 						{if $itemField.value ne '' or !empty($itemField.categs) or !empty($itemField.links)}
-							<div class="row">
-								<div class="col-sm-4" style="width: 25%">{$itemField.name}:</div>
-								<div class="col-sm-8" style="width: 75%">{trackeroutput field=$itemField item=$itemField}</div>
+							<div class="clearfix {cycle}">
+								<div class="pull-left" style="width: 25%">{$itemField.name}:</div>
+								<div class="pull-right" style="width: 75%">{trackeroutput field=$itemField item=$itemField}</div>
 							</div>
 						{/if}
 					{/foreach}
@@ -215,6 +213,7 @@
 					{if $user_pages|@count > 0}
 						<h3>{tr}Wiki Pages{/tr}</h3>
 						<div class="table normal">
+
 							{section name=ix loop=$user_pages}
 								<div>
 									<div>
@@ -345,11 +344,11 @@
 					<h2 class="text-center">{if $user eq $userinfo.login}{tr}Who Looks at Your Items?{/tr}{else}{tr}Who Looks at His or Her Items?{/tr}{/if}</h2>
 
 					{section name=ix loop=$whoviewed}
-						<div class="row">
-							<div class="form col-sm-4">
+						<div class="clearfix {cycle}">
+							<div class="form pull-left">
 								{$whoviewed[ix].user|userlink} - {$whoviewed[ix].lastViewed|tiki_short_datetime}
 							</div>
-							<div class="form col-sm-8">
+							<div class="form pull-right">
 								<a href="{$whoviewed[ix].link|escape}">
 									{$whoviewed[ix].object|escape} ({$whoviewed[ix].objectType|escape})
 								</a>

@@ -32,7 +32,6 @@
 							{preference name=style_option}
 							{preference name=style_admin}
 							{preference name=style_admin_option}
-							{preference name=site_layout_admin}
 						</div>
 						{preference name=site_layout}
 						{preference name=site_layout_per_object}

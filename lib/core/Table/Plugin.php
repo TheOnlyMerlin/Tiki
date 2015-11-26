@@ -33,13 +33,6 @@ class Table_Plugin
 	public $settings;
 
 	/**
-	 * Available types of column and table calculations
-	 * @var array
-	 */
-	private $mathtypes = ['count', 'sum', 'max', 'min', 'mean', 'median', 'mode', 'range', 'varp', 'vars', 'stdevp',
-			'stdevs'];
-
-	/**
 	 * Creates parameters that can be appended to a plugin's native parameters so the user can
 	 * set tablesorter functionality
 	 */
@@ -190,40 +183,6 @@ class Table_Plugin
 				'filter' => 'striptags',
 				'advanced' => true,
 			),
-			'tsmathoptions' => array(
-				'required' => false,
-				'name' => tra('Math Options'),
-				'description' => tr('Set the number format, generate table or column totals and set labels, using %0
-					separated by a semi-colon:', '<code>type:value</code>')
-					. '<br><strong>format(pattern)</strong> - ' . tr('sets the number format (see patterns at %0).
-					Example:', '<a href="http://mottie.github.io/tablesorter/docs/example-widget-math.html#mask_examples">mask_examples</a>')
-					. ' <code>format:$#,##0.00</code><br>'
-					. '<strong>coltotal</strong> - ' . tr('will add a column total row for columns not set to be
-					ignored. Limited to amounts on the page if %0. Can add multiple totals.
-					Example:', '<code>server="y"</code>') . ' <code>coltotal:sum</code><br>'
-						. tr('The types of column and table totals that can be set are:') . ' <code>sum</code>,
-					<code>count</code>, <code>max</code>, <code>min</code>, <code>mean</code>, <code>median</code>,
-					<code>mode</code>, <code>range</code>, <code>varp</code>, <code>vars</code>, <code>stdevp</code>,
-					<code>stdevs</code>. ' . tr('See %0 for a description of these options.',
-					'<a href="http://mottie.github.io/tablesorter/docs/example-widget-math.html#attribute_settings">attribute_settings</a>')
-					. '<br><strong>tabletotal</strong> - ' . tr('will add a total row for all amounts in the
-					table not set to be ignored. Limited to amounts on the page if %0. Can add multiple totals.
-					Example with two totals:', '<code>server="y"</code>')
-					. ' <code>tabletotal:range;tabletotal:sum</code><br>'
-					. '<strong>ignore</strong> - ' . tr('indicate comma-separated columns (by number starting
-					with 0) that should be excluded from all column and table totals. Example:')
-					. '<code>ignore:0,1,4</code><br>'
-					. '<strong>collabel</strong>, <strong>tablelabel</strong> - '
-					. tr('set labels for page and column totals. Example, %0 and %1.',
-					'<code>tablelabel:Table total</code>', '<code>collabel:Column totals</code>')
-					. '<br>' . tr('Combined example:')
-					. ' <code>format:$(#,###.00);coltotal:sum;tabletotal:sum;collabel:Sum;tablelabel:Table total</code><br>',
-				'since' => '15.0',
-				'doctype' => 'tablesorter',
-				'default' => '',
-				'filter' => 'striptags',
-				'advanced' => true,
-			),
 		);
 	}
 
@@ -243,7 +202,7 @@ class Table_Plugin
 	 */
 	public function setSettings ($id = null, $server = 'n', $sortable = 'n', $sortList = null, $tsortcolumns = null,
 		$tsfilters = null, $tsfilteroptions = null, $tspaginate = null, $tscolselect = null, $ajaxurl = null,
-		$totalrows = null, $tsmathoptions = null)
+		$totalrows = null)
 	{
 		$s = array();
 
@@ -262,7 +221,7 @@ class Table_Plugin
 				$s['sorts']['type'] = false;
 				break;
 			default:
-				$sp = Table_Check::parseParam($sortable);
+				$sp = $this->parseParam($sortable);
 				if (isset($sp[0]['type'])) {
 					$s['sorts']['type'] = $sp[0]['type'];
 				}
@@ -308,7 +267,7 @@ class Table_Plugin
 		}
 
 		if (!empty($tsortcolumns)) {
-			$tsc = Table_Check::parseParam($tsortcolumns);
+			$tsc = $this->parseParam($tsortcolumns);
 			if (is_array($tsc)) {
 				foreach ($tsc as $col => $sortinfo) {
 					if (isset($s['columns'][$col]['sort'])) {
@@ -333,7 +292,7 @@ class Table_Plugin
 					$s['filters']['type'] = false;
 					break;
 				default:
-					$tsf = Table_Check::parseParam($tsfilters);
+					$tsf = $this->parseParam($tsfilters);
 					if (is_array($tsf)) {
 						foreach ($tsf as $col => $filterinfo) {
 							if (isset($filterinfo) && $filterinfo['type'] === 'dropdown'
@@ -354,7 +313,7 @@ class Table_Plugin
 
 		//tsfilteroptions
 		if (!empty($tsfilteroptions) && !empty($s['filters']['type'])) {
-			$tsfo = Table_Check::parseParam($tsfilteroptions);
+			$tsfo = $this->parseParam($tsfilteroptions);
 			switch ($tsfo[0]['type']) {
 				case 'reset':
 					$s['filters']['type'] = 'reset';
@@ -370,7 +329,7 @@ class Table_Plugin
 			$tspaginate = $server === 'y' ? 'y' : '';
 		}
 		if (!empty($tspaginate)) {
-			$tsp = Table_Check::parseParam($tspaginate);
+			$tsp = $this->parseParam($tspaginate);
 			//pagination must be on if server side processing is on ($server == 'y')
 			if (is_array($tsp[0]) || $tsp[0] !== 'n' || ($tsp[0] === 'n' && $server === 'y')) {
 				if (is_array($tsp[0])) {
@@ -393,7 +352,7 @@ class Table_Plugin
 
 		//tscolselect
 		if (!empty($tscolselect)) {
-			$tscs = Table_Check::parseParam($tscolselect);
+			$tscs = $this->parseParam($tscolselect);
 			if (is_array($tscs)) {
 				$s['colselect']['type'] = true;
 				foreach ($tscs as $col => $priority) {
@@ -417,27 +376,54 @@ class Table_Plugin
 			$s['total'] = $totalrows;
 		}
 
-		//tsmathoptions
-		if (!empty($tsmathoptions)) {
-			$tsmo = Table_Check::parseParam($tsmathoptions);
-			if (is_array($tsmo)) {
-				//column and table totals and labels
-				foreach(['col', 'table'] as $type) {
-					if (!empty($tsmo[0][$type . 'total'])) {
-						$label = !empty($tsmo[0][$type . 'label']) ? $tsmo[0][$type . 'label'] : null;
-						$tsmo[0][$type . 'total'] = $this->setTotals($tsmo[0][$type . 'total'], $label);
-					}
-				}
-				//ignore
-				if (!empty($tsmo[0]['ignore'])) {
-					$tsmo[0]['ignore'] = explode(',', $tsmo[0]['ignore']);
-				}
-				$s['math'] = $tsmo[0];
-			}
-		}
-
 		$this->settings = $s;
 
+	}
+
+	/**
+	 * Utility to convert string entered by user for a parameter setting to an array
+	 *
+	 * @param $param
+	 *
+	 * @return array
+	 */
+	function parseParam ($param)
+	{
+		if (!empty($param)) {
+			$ret = explode('|', $param);
+			foreach ($ret as $key => $pipe) {
+				$ret[$key] = strpos($pipe, ';') !== false ? explode(';', $pipe) : $pipe;
+				if (!is_array($ret[$key])) {
+					if (strpos($ret[$key], ':') !== false) {
+						$colon = explode(':', $ret[$key]);
+						unset($ret[$key]);
+						if ($colon[1] == 'nofilter') {
+							$colon[1] = false;
+						}
+						$ret[$key][$colon[0]] = $colon[1];
+					}
+				} elseif (is_array($ret[$key])) {
+					foreach ($ret[$key] as $key2 => $subparam) {
+						if (strpos($subparam, ':') !== false) {
+							$colon = explode(':', $subparam);
+							unset($ret[$key][$key2]);
+							if ($colon[0] == 'expand' || $colon[0] == 'option') {
+								if ($colon[0] == 'option') {
+									$colon[0] = 'options';
+								}
+								$ret[$key][$colon[0]][] = $colon[1];
+							} else {
+								$ret[$key][$colon[0]] = $colon[1];
+							}
+						}
+					}
+				}
+			}
+			ksort($ret);
+			return $ret;
+		} else {
+			return $param;
+		}
 	}
 
 	/**
@@ -457,26 +443,6 @@ class Table_Plugin
 			$url['query'] = '?' . $str;
 		}
 		return $url;
-	}
-
-	private function setTotals($total, $label)
-	{
-		if (!empty($total)) {
-			foreach($total as $row => $value) {
-				if (!empty($value) && in_array($value, $this->mathtypes)) {
-					$t[$row]['type'] = $value;
-					if (isset($label[$row])) {
-						$jitlabel = new JitFilter(['label' => $label[$row]]);
-						$t[$row]['label'] = $jitlabel->label->text();
-					}
-				}
-			}
-			if (isset($t)) {
-				return $t;
-			} else {
-				return false;
-			}
-		}
 	}
 
 }

@@ -659,55 +659,13 @@ class Tracker_Field_Category extends Tracker_Field_Abstract implements Tracker_F
 					$prefs['unified_incremental_update'] = $incPref;
 				}
 			}
-		}
-		// Indexing the value of the field anyway as it could be different from the 'categories' field if
-		// you need to be more specific for filtering under a certain parent only.
-		//
-		// Warning to upgraders: older Tikis had no getDocumentPart so the comma-separated string was indexed
-		// in the past. It now indexes an array. Use {$baseKey}_text instead for a space delimited string.
-		$baseKey = $this->getBaseKey();
-		return array(
-			$baseKey => $typeFactory->multivalue($value),
-			"{$baseKey}_text" => $typeFactory->plaintext(implode(' ', $value)),
-		);
-	}
 
-	static public function syncCategoryFields($args)
-	{
-		if ($args['type'] == 'trackeritem') {
-			$itemId = $args['object'];
-			$trackerId = TikiLib::lib('trk')->get_tracker_for_item($itemId);
-			$definition = Tracker_Definition::get($trackerId);
-			if ($fieldIds = $definition->getCategorizedFields()) {
-				foreach ($fieldIds as $fieldId) {
-					$field = $definition->getField($fieldId);
-					$handler = TikiLib::lib('trk')->get_field_handler($field);
-					$data = $handler->getFieldData();
-					$applicable = array_keys($data['list']);
-					$value = $old_value = explode(",", TikiLib::lib('trk')->get_item_value($trackerId, $itemId, $fieldId));
-					foreach ($args['added'] as $added) {
-						if (!in_array($added, $applicable)) {
-							continue;
-						}
-						if (!in_array($added, $value)) {
-							$value[] = $added;
-						}
-					}
-					foreach ($args['removed'] as $removed) {
-						if (!in_array($removed, $applicable)) {
-							continue;
-						}
-						if (in_array($removed, $value)) {
-							$value = array_diff($value, [$removed]);
-						}
-					}
-					if ($value != $old_value) {
-						$value = implode(",", $value);
-						TikiLib::lib('trk')->modify_field($itemId, $fieldId, $value);
-					}
-				}
-			}
 		}
+
+		// Preserve previous behaviour in indexing the basic comma-separated value
+		// N.B. This will be different from Tiki 15 onwards, see r56096
+
+		return parent::getDocumentPart($typeFactory);
 	}
 }
 

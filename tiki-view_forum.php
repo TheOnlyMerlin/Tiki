@@ -57,7 +57,9 @@ $tikilib->get_perm_object($_REQUEST['forumId'], 'forum', $forum_info, true);
 
 // Now if the user is the moderator then give him forum admin privs -. SHOULD BE IN get_perm_object
 if ($tiki_p_admin_forum != 'y' && $user) {
-	if ($commentslib->admin_forum($_REQUEST['forumId']))
+	if ($forum_info['moderator'] == $user
+		|| in_array($forum_info['moderator_group'], $userlib->get_user_groups($user))
+		|| Perms::get('forum', $_REQUEST['forumId'])->admin_forum)
 	{
 		$tiki_p_admin_forum = 'y';
 	}
@@ -86,6 +88,12 @@ static $iid = 0;
 ++$iid;
 $ts_tableid = 'viewforum' . $_REQUEST['forumId'] . '-' . $iid;
 $smarty->assign('ts_tableid', $ts_tableid);
+if ($tsOn) {
+	$ts_countid = $ts_tableid . '-count';
+	$ts_offsetid = $ts_tableid . '-offset';
+	$smarty->assign('ts_countid', $ts_countid);
+	$smarty->assign('ts_offsetid', $ts_offsetid);
+}
 
 if (!$tsOn || ($tsOn && $tsAjax)) {
 	$commentslib->forum_add_hit($_REQUEST["forumId"]);
@@ -360,6 +368,12 @@ if ($tsOn && !$tsAjax) {
 				'requiredparams' => array(
 					'forumId' => $_REQUEST['forumId'],
 				),
+				'servercount' => array(
+					'id' => $ts_countid,
+				),
+				'serveroffset' => array(
+					'id' => $ts_offsetid,
+				),
 			),
 		)
 	);
@@ -372,6 +386,10 @@ $smarty->assign_by_ref('last_comments', $last_comments);
 $smarty->assign('comments_cant', $comments_cant);
 $comments_maxRecords = $_REQUEST["comments_per_page"];
 $smarty->assign_by_ref('comments_coms', $comments_coms);
+
+$all_coms = $commentslib->get_forum_topics($_REQUEST['forumId'], 0, -1);
+$all_coms = array_column($all_coms, 'title', 'threadId');
+$smarty->assign('all_coms_encoded', json_encode($all_coms));
 
 $cat_type = 'forum';
 $cat_objid = $_REQUEST["forumId"];
@@ -442,6 +460,8 @@ if ($tiki_p_admin_forum == 'y' || $prefs['feature_forum_quickjump'] == 'y') {
 		}
 	}
 	$smarty->assign('all_forums', $all_forums['data']);
+	$all_names = array_column($all_forums['data'], 'name', 'forumId');
+	$smarty->assign('all_forums_encoded', json_encode($all_names));
 }
 
 $smarty->assign('unread', 0);
@@ -479,16 +499,15 @@ if ($prefs['feature_forum_parse'] == 'y') {
 	$smarty->assign_by_ref('plugins', $plugins);
 }
 
-$session = isset($_GET['deleted_parentId']) && !empty($_SESSION['ajaxpost' . $_GET['deleted_parentId']]) ?: false;
-if (isset($_POST['ajaxtype']) || $session) {
+$del = isset($_GET['deleted_parentId']) ? $_GET['deleted_parentId'] : '';
+if (isset($_POST['ajaxtype']) || !empty($_SESSION['ajaxpost' . $del])) {
 	$smarty->assign('ajaxfeedback', 'y');
-	$posted = isset($_POST['ajaxtype']) ? $_POST : $_SESSION['ajaxpost' . $_GET['deleted_parentId']];
-	if ($session) {
-		unset($_SESSION['ajaxpost' . $_GET['deleted_parentId']]);
-	}
+	$posted = isset($_POST['ajaxtype']) ? $_POST : $_SESSION['ajaxpost' . $del];
+	unset($_SESSION['ajaxpost' . $del]);
 	$ajaxpost = array_intersect_key($posted, [
 		'ajaxtype' => '',
 		'ajaxheading' => '',
+		'ajaxicon' => '',
 		'ajaxitems' => '',
 		'ajaxmsg' => '',
 		'ajaxtoMsg' => '',

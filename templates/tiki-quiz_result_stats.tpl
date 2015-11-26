@@ -7,33 +7,32 @@
 	{button href="tiki-edit_quiz.php?quizId=$quizId" class="btn btn-default" _text="{tr}Edit this Quiz{/tr}"}
 	{button href="tiki-edit_quiz.php" class="btn btn-default" _text="{tr}Admin Quizzes{/tr}"}
 </div>
-<div class="table-responsive">
-	<table class="table">
-		<tr>
-			<th colspan="2">{tr}Quiz stats{/tr}</th>
-		</tr>
-		<tr>
-			<td class="even">{tr}Quiz{/tr}</td>
-			<td class="even">{$quiz_info.name}</td>
-		</tr>
-		<tr>
-			<td class="even">{tr}User{/tr} </td>
-			<td class="even">{$ur_info.user|userlink}</td>
-		</tr>
-		<tr>
-			<td class="even">{tr}Date{/tr}</td>
-			<td class="even">{$ur_info.timestamp|tiki_short_datetime}</td>
-		</tr>
-		<tr>
-			<td class="even">{tr}Points{/tr}</td>
-			<td class="even">{$ur_info.points} / {$ur_info.maxPoints}</td>
-		</tr>
-		<tr>
-			<td class="even">{tr}Time{/tr}</td>
-			<td class="even">{$ur_info.timeTaken} secs</td>
-		</tr>
-	</table>
-</div>
+
+<table class="formcolor">
+	<tr>
+		<th colspan="2">{tr}Quiz stats{/tr}</th>
+	</tr>
+	<tr>
+		<td class="even">{tr}Quiz{/tr}</td>
+		<td class="even">{$quiz_info.name}</td>
+	</tr>
+	<tr>
+		<td class="even">{tr}User{/tr} </td>
+		<td class="even">{$ur_info.user|userlink}</td>
+	</tr>
+	<tr>
+		<td class="even">{tr}Date{/tr}</td>
+		<td class="even">{$ur_info.timestamp|tiki_short_datetime}</td>
+	</tr>
+	<tr>
+		<td class="even">{tr}Points{/tr}</td>
+		<td class="even">{$ur_info.points} / {$ur_info.maxPoints}</td>
+	</tr>
+	<tr>
+		<td class="even">{tr}Time{/tr}</td>
+		<td class="even">{$ur_info.timeTaken} secs</td>
+	</tr>
+</table>
 
 <br>
 {tr}Answer:{/tr}
@@ -42,7 +41,7 @@
 
 <h2>{tr}User answers{/tr}</h2>
 <div class="table-responsive">
-<table class="table">
+<table class="table normal">
 	<tr>
 		<th>
 			<a href="tiki-quiz_result_stats.php?quizId={$quizId}&amp;offset={$offset}&amp;sort_mode={if $sort_mode eq 'question_desc'}question_asc{else}question_desc{/if}">{tr}Questions{/tr}</a>

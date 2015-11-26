@@ -47,7 +47,7 @@ class TikiLib extends TikiDb_Bridge
 	/** Gets a library reference
 	 *
 	 * @param $name
-	 * @return \ActivityLib|\AreasLib|array|\AutoSaveLib|\BannerLib|\BigBlueButtonLib|\CalendarLib|\Captcha|\CartLib|\CreditsLib|\CryptLib|\DCSLib|\EditLib|\ErrorReportLib|\FaqLib|\FlaggedRevisionLib|\FileGalLib|\FileGalBatchLib|\GeoLib|\GoalEventLib|\GoalLib|\GoalRewardLib|\groupAlertLib|\HeaderLib|\IconsetLib|\KalturaLib|\LoginLib|\LogsLib|\MailinLib|\MimeLib|mixed|\ModLib|\MonitorLib|\MonitorMailLib|\OAuthLib|object|\PageContentLib|\ParserLib|\PaymentLib|\PerspectiveLib|\PollLib|\PollLibShared|\PreferencesLib|\QueueLib|\QuizLib|\RatingConfigLib|\ReferencesLib|\RegistrationLib|\RSSLib|\ScormLib|\SearchStatsLib|\SheetLib|\Smarty_Tiki|\SocialLib|\StatsLib|\StoredSearchLib|\ThemeControlLib|\ThemeGenLib|\ThemeLib|\Tiki_Connect_Client|\Tiki\Wiki\SlugManager|\Tiki_Connect_Server|\TikiAccessLib|\TikiLib|\Tracker\Tabular\Manager|\TrackerLib|\UnifiedSearchLib|\UserMailinLib|\UserModulesLib|\Validators|\VimeoLib|\WikiLingoTikiEvents|\WizardLib|\WYSIWYGLib|\ZoteroLib
+	 * @return \ActivityLib|\AreasLib|array|\AutoSaveLib|\BannerLib|\BigBlueButtonLib|\CalendarLib|\Captcha|\CartLib|\CreditsLib|\CryptLib|\DCSLib|\EditLib|\ErrorReportLib|\FaqLib|\FlaggedRevisionLib|\GeoLib|\GoalEventLib|\GoalLib|\GoalRewardLib|\groupAlertLib|\HeaderLib|\IconsetLib|\KalturaLib|\LoginLib|\LogsLib|\MailinLib|\MimeLib|mixed|\ModLib|\MonitorLib|\MonitorMailLib|\OAuthLib|object|\PageContentLib|\ParserLib|\PaymentLib|\PerspectiveLib|\PollLib|\PollLibShared|\PreferencesLib|\QueueLib|\QuizLib|\RatingConfigLib|\ReferencesLib|\RegistrationLib|\RSSLib|\ScormLib|\SearchStatsLib|\SheetLib|\Smarty_Tiki|\SocialLib|\StatsLib|\StoredSearchLib|\ThemeControlLib|\ThemeGenLib|\ThemeLib|\Tiki_Connect_Client|\Tiki\Wiki\SlugManager|\Tiki_Connect_Server|\TikiAccessLib|\TikiLib|\Tracker\Tabular\Manager|\TrackerLib|\UnifiedSearchLib|\UserMailinLib|\UserModulesLib|\Validators|\VimeoLib|\WikiLingoTikiEvents|\WizardLib|\WYSIWYGLib|\ZoteroLib
 	 * @throws Exception
 	 */
 	public static function lib($name)
@@ -57,14 +57,7 @@ class TikiLib extends TikiDb_Bridge
 		}
 
 		$container = TikiInit::getContainer();
-
-		//if no period in the lib name, default to tiki.lib prefix.
-		if (strpos($name, ".") !== false) {
-			$service = $name;
-		} else {
-			$service = "tiki.lib.$name";
-		}
-
+		$service = "tiki.lib.$name";
 		if ($lib = $container->get($service, \Symfony\Component\DependencyInjection\ContainerInterface::NULL_ON_INVALID_REFERENCE)) {
 			return $lib;
 		}
@@ -307,13 +300,6 @@ class TikiLib extends TikiDb_Bridge
 	{
 		global $prefs;
 		$response = $client->request();
-
-		$attempts = 0;
-		while ($response->isRedirect() && $attempts < 10) { // prevent redirect loop
-			$client->setUri($client->getUri());
-			$response = $client->request();
-			$attempts++;
-		}
 
 		if ($prefs['http_skip_frameset'] == 'y') {
 			if ($outcome = $this->http_perform_request_skip_frameset($client, $response)) {
@@ -2447,9 +2433,8 @@ class TikiLib extends TikiDb_Bridge
 					$logslib->add_log("login", "back", $user, '', '', $this->now);
 				} else {
 					// Prevent multiple sessions for same user
-					// Must check any user session, not only timed out ones
-					$query = "SELECT count(*) FROM `tiki_sessions` WHERE user = ?";
-					$cant = $this->getOne($query, array($user));
+					$query = "SELECT count(*) FROM `tiki_sessions` WHERE `timestamp`<? AND user = ?";
+					$cant = $this->getOne($query, array($oldy,$user));
 					if ($cant == 0) {
 						// Recover after timeout (no other session)
 						$logslib->add_log("login", "back", $user, '', '', $this->now);
@@ -4573,6 +4558,10 @@ class TikiLib extends TikiDb_Bridge
 			$html = 1;
 		}
 
+		if ( $html == 0 ) {
+			$edit_data = str_replace('<x>', '', $edit_data);
+		}
+
 		$parserlib = TikiLib::lib('parser');
 		$edit_data = $parserlib->process_save_plugins(
 			$edit_data,
@@ -4928,50 +4917,6 @@ class TikiLib extends TikiDb_Bridge
 			$tz = 'UTC';
 		}
 		return $tz;
-	}
-
-	function set_display_timezone($user)
-	{
-		global $prefs;
-		if ($prefs['users_prefs_display_timezone'] == 'Site'
-			|| (isset($user_preferences[$user]['display_timezone'])
-				&& $user_preferences[$user]['display_timezone'] == 'Site')
-		) {
-			// Stay in the time zone of the server
-			$prefs['display_timezone'] = $prefs['server_timezone'];
-		} elseif ( !isset($prefs['display_timezone']) and ! isset($user_preferences[$user]['display_timezone'])
-			|| $user_preferences[$user]['display_timezone'] == ''
-			|| $user_preferences[$user]['display_timezone'] == 'Local'
-		) {
-			// If the display timezone is not known ...
-			if ( isset($_COOKIE['local_tz'])) {
-				//   ... we try to use the timezone detected by javascript and stored in cookies
-				if (TikiDate::TimezoneIsValidId($_COOKIE['local_tz'])) {
-					$prefs['timezone_offset'] = isset($_COOKIE['local_tzoffset']) ? $_COOKIE['local_tzoffset'] : '';
-					if (isset($_COOKIE['local_tzoffset'])) {
-						$tzname = timezone_name_from_abbr($_COOKIE['local_tz'], $_COOKIE['local_tzoffset'] * 60 * 60);
-						$prefs['timezone_offset'] = $_COOKIE['local_tzoffset'];
-					} else {
-						$tzname = timezone_name_from_abbr($_COOKIE['local_tz']);
-						$prefs['timezone_offset'] = '';
-					}
-					if (TikiDate::TimezoneIsValidId($tzname)) {
-						$prefs['display_timezone'] = $tzname;
-					} else {
-						$prefs['display_timezone'] = $_COOKIE['local_tz'];
-					}
-				} elseif ( $_COOKIE['local_tz'] == 'HAEC' ) {
-					// HAEC, returned by Safari on Mac, is not recognized as a DST timezone (with daylightsavings)
-					//  ... So use one equivalent timezone name
-					$prefs['display_timezone'] = 'Europe/Paris';
-				} else {
-					$prefs['display_timezone'] = $prefs['server_timezone'];
-				}
-			} else {
-				// ... and we fallback to the server timezone if the cookie value is not available
-				$prefs['display_timezone'] = $prefs['server_timezone'];
-			}
-		}
 	}
 
 	function get_long_date_format()
@@ -5535,11 +5480,9 @@ class TikiLib extends TikiDb_Bridge
 
 
 	/**
-	 * Get URL Scheme (http / https)
-	 * Considers the use of a reverse proxy / ssl offloader. I.e If request is https -> ssl offloader -> http tiki, then it will correctly return https
-	 * @return string http | https
+	 * @return string
 	 */
-	static function httpScheme()
+	function httpScheme()
 	{
 		global $url_scheme;
 		return $url_scheme;
@@ -6449,36 +6392,6 @@ JS;
 			}
 		}
 		return $out;
-	}
-
-	/**
-	 * This checks the modifier array and scans the template directory for templates
-	 * that match the modifiers.
-	 * Example: if we are looking at modifier "blog" for the articles.tpl, this function
-	 * looks for the existence of articles--blog.tpl to use before using the standard articles.tpl
-	 *
-	 * @param $basetpl
-	 * @param $modifier_arr
-	 * @return string
-	 * @throws Exception
-	 */
-	public static function custom_template($basetpl,$modifier_arr){
-		//if it's an item passed and not an array, put the item in an array
-		if (!is_array($modifier_arr)) {
-			$modifier_arr = [$modifier_arr];
-		}
-		//strip the .tpl
-		$temp = explode('.', $basetpl);
-		$ext  = array_pop($temp);
-		$base = implode('.', $temp);
-
-		$smarty = TikiLib::lib('smarty');
-		foreach ($modifier_arr as $modifier){
-			if ($smarty->templateExists("$base--$modifier.tpl")) {
-				return "$base--$modifier.tpl";
-			}
-		}
-		return "$base.tpl";
 	}
 
 	/**

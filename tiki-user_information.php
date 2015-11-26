@@ -11,12 +11,6 @@
 require_once ('tiki-setup.php');
 include_once ('lib/messu/messulib.php');
 include_once ('lib/userprefs/scrambleEmail.php');
-
-if ($prefs['feature_unified_user_details'] == 'y'){
-	include "tiki-user_unified_details.php";
-	die;
-}
-
 $registrationlib = TikiLib::lib('registration');
 $trklib = TikiLib::lib('trk');
 if (isset($_REQUEST['userId'])) {

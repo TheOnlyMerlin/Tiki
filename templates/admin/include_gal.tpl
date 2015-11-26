@@ -283,7 +283,7 @@
 	</form>
 </fieldset>
 
-<fieldset>
+<fieldset class="table">
 	<legend>{tr}Image galleries comments settings{/tr}</legend>
 	<form method="post" action="tiki-admin.php?page=gal">
 		<input type="hidden" name="ticket" value="{$ticket|escape}">

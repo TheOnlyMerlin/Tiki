@@ -215,17 +215,6 @@ class Tracker_Definition
 		}
 	}
 
-	function getWikiFields()
-	{
-		$fields = array(); 
-		foreach ($this->getFields() as $field) {
-			if ($field['type'] == 'wiki') {
-				$fields[] = $field['fieldId'];
-			}
-		}
-		return $fields;
-	}
-
 	function getIconField()
 	{
 		foreach ($this->getFields() as $field) {
@@ -286,16 +275,6 @@ class Tracker_Definition
 		}
 
 		return $out;
-	}
-
-	function getRelationField($relation)
-	{
-		foreach ($this->getFields() as $field) {
-			if ($field['type'] == 'REL'
-				&& $field['options_map']['relation'] == $relation) {
-				return $field['fieldId'];
-			}
-		}
 	}
 	
 	/**

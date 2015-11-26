@@ -254,13 +254,6 @@ function prefs_feature_list($partial = false)
 				'textFilter' => 'categ', // intentional use of categ so it catches category and categories
 			),
 		),
-		'feature_unified_user_details' => array(
-			'name' => tra('Use Unified User Details '),
-			'description' => tra('Use User Details Page using the Unified Index.'),
-			'help' => 'User+Preferences',
-			'type' => 'flag',
-			'default' => 'n',
-		),
 		'feature_score' => array(
 			'name' => tra('Score'),
 			'description' => tra('Score is a game to motivate participants to increase their contribution by comparing to other users.'),
@@ -1258,7 +1251,7 @@ function prefs_feature_list($partial = false)
 			'default' => 'n',
 		),
 		'feature_sefurl_title_article' => array(
-			'name' => tra('Display article title in the search engine friendly URL'),
+			'name' => tra('Display article title in the SEFURL'),
             'description' => tra(''),
 			'type' => 'flag',
 			'perspective' => false,
@@ -1266,7 +1259,7 @@ function prefs_feature_list($partial = false)
 			'default' =>'y',
 		),
 		'feature_sefurl_title_blog' => array(
-			'name' => tra('Display blog title in the search engine friendly URL'),
+			'name' => tra('Display blog title in the SEFURL'),
             'description' => tra(''),
 			'type' => 'flag',
 			'perspective' => false,
@@ -1300,7 +1293,7 @@ function prefs_feature_list($partial = false)
 		),
 		'feature_modulecontrols' => array(
 			'name' => tra('Show module controls'),
-            'description' => tra('Enable controls in modules'),
+            'description' => tra('enable controls in modules'),
 			'help' => 'Module',
 			'type' => 'flag',
 			'default' => 'n',
@@ -1602,7 +1595,7 @@ function prefs_feature_list($partial = false)
 			'description' => tra('Direct import of local files into a File Gallery. Can handle large files. User can upload file via FTP to target folder'),
 			'hint' => tra('Use batch uploading to integrate large files into File Galleries'),
 			'type' => 'flag',
-			'help' => 'Batch+Upload',
+			'help' => 'File+Gallery+Config',
 			'default' => 'n',
 		),
 		'feature_forum_rankings' => array(
@@ -1636,13 +1629,6 @@ function prefs_feature_list($partial = false)
 			'type' => 'flag',
 			'hint' => tra('If disabled, replies will quote the original post'),
 			'default' => 'y',
-			'tags' => array('basic'),
-		),
-		'feature_forum_allow_flat_forum_quotes' => array(
-			'name' => tra('Allows quoting in flat forums'),
-			'description' => tra('Allows users to reply/'),
-			'type' => 'flag',
-			'default' => 'n',
 			'tags' => array('basic'),
 		),
 		'feature_forums_allow_thread_titles' => array(
@@ -1692,12 +1678,6 @@ function prefs_feature_list($partial = false)
 			'dependencies' => array(
 				'feature_search_fulltext',
 			),
-		),
-		'feature_forum_post_index' => array(
-			'name' => tra('Index posts on forum section change.'),
-			'description' => tra('Re-indexes forum posts to match the parent section when the section is changed'),
-			'type' => 'flag',
-			'default' => 'y',
 		),
 		'feature_clear_passwords' => array(
 			'name' => tra('Store password as plain text'),
@@ -2000,14 +1980,6 @@ function prefs_feature_list($partial = false)
 			'type' => 'flag',
 			'help' => 'PluginMediaPlayer',
 			'default' => 'n',
-		),
-		'feature_jquery_tagcanvas' => array(
-			'name' => tra('TagCanvas'),
-            'description' => tra('TagCanvas is a Javascript class which will draw and animate a HTML5 canvas based tag cloud'),
-			'type' => 'flag',
-			'help' => 'TagCanvas',
-			'default' => 'y',
-			'tags' => array('basic'),
 		),
 		'feature_jquery_zoom' => array(
 			'name' => tra('jQuery Zoom'),
@@ -2845,14 +2817,6 @@ function prefs_feature_list($partial = false)
 			'description' => tra('This is useful to share a URL to exact location on the page.'),
 			'type' => 'flag',
 			'default' => 'y',
-			'tags' => array('advanced'),
-		),
-		'feature_equal_height_rows_js' => array(
-			'name' => tra('Enable Equal Height Rows JS Pugin'),
-			'description' => tra('This allows responsive rows to be set so that each contained element has the same height '),
-			'type' => 'flag',
-			'default' => 'n',
-			'help' => "https://github.com/Sam152/Javascript-Equal-Height-Responsive-Rows",
 			'tags' => array('advanced'),
 		),
 		'feature_theme_control_savesession' => array(

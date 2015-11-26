@@ -116,6 +116,11 @@ class Tiki_Profile_Object
 		$this->profile->replaceReferences($data, $suppliedUserData);
 	} // }}}
 
+	public function refreshExternals() // {{{
+	{
+		$this->profile->refreshYaml();
+	} // }}}
+
 	private function traverseForReferences( $value ) // {{{
 	{
 		$array = array();

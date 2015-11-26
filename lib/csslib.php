@@ -13,21 +13,8 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 
 class cssLib extends TikiLib
 {
-	function list_layouts($theme = null, $theme_option = null)
+	function list_layouts()
 	{
-		global $prefs;
-
-		if (empty($theme) && empty($theme_option)){ // if you submit no parameters, return the current theme/theme option
-			if (isset($prefs['site_theme'])) {
-				$theme = $prefs['site_theme'];
-			}
-			if (isset($prefs['theme_option'])) {
-				$theme_option = $prefs['theme_option'];
-			}
-		}
-
-		$themelib = TikiLib::lib('theme');
-
 		$available_layouts = array();
 		foreach (scandir(TIKI_PATH . '/templates/layouts/') as $layoutName) {
 			if ($layoutName[0] != '.' && $layoutName != 'index.php') {
@@ -43,47 +30,13 @@ class cssLib extends TikiLib
 				}
 			}
                 }
-
-		$main_theme_path = $themelib->get_theme_path($theme, '', '', 'templates'); // path to the main site theme
-
-		if (file_exists(TIKI_PATH ."/". $main_theme_path . '/layouts/') ){
-			foreach (scandir(TIKI_PATH ."/". $main_theme_path . '/layouts/') as $layoutName) {
-				if ($layoutName[0] != '.' && $layoutName != 'index.php') {
-					$available_layouts[$layoutName] = ucfirst($layoutName);
-				}
-			}
-		}
-
-		if ($theme_option) {
-			$theme_path = $themelib->get_theme_path($theme, $theme_option, '', 'templates'); // path to the site theme options
-
-			if (file_exists(TIKI_PATH ."/". $theme_path . '/layouts/') ) {
-				foreach (scandir(TIKI_PATH . "/" . $theme_path . '/layouts/') as $layoutName) {
-					if ($layoutName[0] != '.' && $layoutName != 'index.php') {
-						$available_layouts[$layoutName] = ucfirst($layoutName);
-					}
-				}
-			}
-		}
 		return $available_layouts;
 	}
 
-	function list_user_selectable_layouts($theme = null, $theme_option = null)
+	function list_user_selectable_layouts()
 	{
-		global $prefs;
-
-		if (empty($theme) && empty($theme_option)){ // if you submit no parameters, return the current theme/theme option
-			if (isset($prefs['site_theme'])) {
-				$theme = $prefs['site_theme'];
-			}
-			if (isset($prefs['theme_option'])) {
-				$theme_option = $prefs['theme_option'];
-			}
-		}
-
 		$selectable_layouts = array();
-		$available_layouts = $this->list_layouts($theme,$theme_option);
-
+		$available_layouts = $this->list_layouts();
 		foreach ($available_layouts as $layoutName => $layoutLabel) {
 			if ($layoutName == 'mobile'
 				|| $layoutName == 'layout_plain.tpl'

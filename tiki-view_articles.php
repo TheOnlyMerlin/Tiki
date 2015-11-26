@@ -12,12 +12,6 @@ $section = 'cms';
 //get_strings tra('Articles Home');
 require_once ('tiki-setup.php');
 $artlib = TikiLib::lib('art');
-
-if ($prefs['article_use_new_list_articles'] == 'y') {
-	include "lists/articles.php";
-	die;
-}
-
 if ($prefs['feature_freetags'] == 'y') {
 	$freetaglib = TikiLib::lib('freetag');
 }

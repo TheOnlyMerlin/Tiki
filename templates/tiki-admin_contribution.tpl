@@ -100,19 +100,10 @@
 		<input type="submit" class="btn btn-default btn-sm" name="add" value="{tr}Add{/tr}">
 	</div>
 </form>
+
 <h2>{tr}List of contributions{/tr}</h2>
-{* Use css menus as fallback for item dropdown action menu if javascript is not being used *}
-{if $prefs.javascript_enabled !== 'y'}
-	{$js = 'n'}
-	{$libeg = '<li>'}
-	{$liend = '</li>'}
-{else}
-	{$js = 'y'}
-	{$libeg = ''}
-	{$liend = ''}
-{/if}
-<div class="{if $js === 'y'}table-responsive{/if}"> {* table-responsive class cuts off css drop-down menus *}
-	<table class="table table-striped table-hover">
+<div class="table-responsive">
+	<table class="table normal table-striped table-hover">
 		<tr>
 			<th>{tr}Name{/tr}</th>
 			<th>{tr}Description{/tr}</th>
@@ -126,27 +117,21 @@
 				<td class="action">
 					{capture name=contribution_actions}
 						{strip}
-							{$libeg}<a href="tiki-admin_contribution.php?contributionId={$contributions[ix].contributionId}">
+							<a href="tiki-admin_contribution.php?contributionId={$contributions[ix].contributionId}">
 								{icon name='edit' _menu_text='y' _menu_icon='y' alt="{tr}Edit{/tr}"}
-							</a>{$liend}
-							{$libeg}<a href="tiki-admin_contribution.php?remove={$contributions[ix].contributionId}">
+							</a>
+							<a href="tiki-admin_contribution.php?remove={$contributions[ix].contributionId}">
 								{icon name='remove' _menu_text='y' _menu_icon='y' alt="{tr}Remove{/tr}"}
-							</a>{$liend}
+							</a>
 						{/strip}
 					{/capture}
-					{if $js === 'n'}<ul class="cssmenu_horiz"><li>{/if}
-					<a
-						class="tips"
-						title="{tr}Actions{/tr}"
-						href="#"
-						{if $js === 'y'}{popup delay="0|2000" fullhtml="1" center=true text=$smarty.capture.contribution_actions|escape:"javascript"|escape:"html"}{/if}
-						style="padding:0; margin:0; border:0"
-					>
+					<a class="tips"
+					   title="{tr}Actions{/tr}"
+					   href="#" {popup delay="0|2000" fullhtml="1" center=true text=$smarty.capture.contribution_actions|escape:"javascript"|escape:"html"}
+					   style="padding:0; margin:0; border:0"
+							>
 						{icon name='wrench'}
 					</a>
-					{if $js === 'n'}
-						<ul class="dropdown-menu" role="menu">{$smarty.capture.contribution_actions}</ul></li></ul>
-					{/if}
 				</td>
 			</tr>
 		{sectionelse}

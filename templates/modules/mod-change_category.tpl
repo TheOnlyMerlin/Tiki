@@ -16,7 +16,7 @@
 
 			{if $detailed eq 'y'}
 				<div class="table-responsive">
-					<table class="table">
+					<table class="table normal">
 						{foreach key=k item=i from=$modcatlist}
 							{if $i.incat eq 'y'}
 								<tr>

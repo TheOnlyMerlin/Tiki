@@ -1,14 +1,12 @@
 {* $Id$ *}
 {if !$tsAjax}
-	{block name=title}
-		{title help="forums" admpage="forums"}{tr}Forums{/tr}{/title}
-	{/block}
+	{title help="forums" admpage="forums"}{tr}Forums{/tr}{/title}
 	<div class="t_navbar margin-bottom-md">
 		{if $tiki_p_admin_forum eq 'y'}
-			{button href="tiki-admin_forums.php" _type="text" class="btn btn-link" _icon_name="wrench" _text="{tr}Admin{/tr}"}
+			{button href="tiki-admin_forums.php" class="btn btn-default" _icon_name="wrench" _text="{tr}Admin{/tr}"}
 		{/if}
 		{if $tiki_p_forum_read eq 'y' and $prefs.feature_forum_rankings eq 'y'}
-			{button href="tiki-forum_rankings.php" _type="text" class="btn btn-link" _icon_name="ranking" _text="{tr}Rankings{/tr}"}
+			{button href="tiki-forum_rankings.php" class="btn btn-default" _icon_name="ranking" _text="{tr}Rankings{/tr}"}
 		{/if}
 	</div>
 	{if !$tsOn}
@@ -65,8 +63,9 @@
 	{$liend = ''}
 {/if}
 <div id="{$ts_tableid}-div" class="{if $js === 'y'}table-responsive{/if} ts-wrapperdiv" {if $tsOn}style="visibility:hidden;"{/if}> {*the table-responsive class cuts off dropdown menus *}
-	<table id="{$ts_tableid}" class="table table-striped table-hover table-forum normal" data-count="{$cant|escape}">
-		{block name=forum-header}
+	<table id="{$ts_tableid}" class="table table-striped table-hover normal">
+		<input type="hidden" {if $tsOn}id="{$ts_offsetid|escape}" {/if}name="offset" value="{$offset|escape}">
+		<input type="hidden" {if $tsOn}id="{$ts_countid|escape}" {/if}name="count" value="{$cant|escape}">
 		<thead>
 			<tr>
 				{$numbercol = 1}
@@ -100,7 +99,6 @@
 				<th id="actions"></th>
 			</tr>
 		</thead>
-		{/block}
 		<tbody>
 			{assign var=section_old value=""}
 			{section name=user loop=$channels}
@@ -109,7 +107,7 @@
 					{assign var=section_old value=$section}
 					<td class="third info" colspan="{$numbercol}">{$section|escape}</td>
 				{/if}
-				{block name=forum-row}
+
 				<tr>
 					<td class="text">
 						{if (isset($channels[user].individual) and $channels[user].individual eq 'n')
@@ -178,7 +176,6 @@
 						{/if}
 					</td>
 				</tr>
-				{/block}
 			{sectionelse}
 				{if !$tsOn || ($tsOn && $tsAjax)}
 					{norecords _colspan=$numbercol _text="{tr}No forums found{/tr}"}

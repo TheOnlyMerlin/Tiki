@@ -182,18 +182,6 @@ function wikiplugin_carousel_info()
 				'accepted' => tra('Real between 0 and 1, or integer over 10'),
 				'advanced' => true,
 			),
-			'clickable' => array(
-				'required' => false,
-				'name' => tra('Makes images clickable'),
-				'description' => tra('In case there are URLs in the image description, the image is made clickable and links to the first URL found'),
-				'filter' => 'digits',
-				'options' => array(
-					array('text' => tra('No'), 'value' => '0'),
-					array('text' => tra('Yes'), 'value' => '1'),
-				),
-				'default' => '0',
-				'advanced' => true,
-			),
 		),
 	);
 }
@@ -208,7 +196,6 @@ function wikiplugin_carousel( $body, $params )
 	$params = array_merge($default, $params);
 
 	$unique = 'wpcarousel-' . ++$id;
-	$uniqueId = 'carousel'.$id;
 
 	$filegallib = TikiLib::lib('filegal');
 	$files = $filegallib->get_files(0, -1, $params['sort_mode'], '', $params['fgalId']);
@@ -243,31 +230,6 @@ function wikiplugin_carousel( $body, $params )
 		TikiLib::lib('header')->add_css(".ic_button { float: left; width: {$params['thumbnailWidth']}; height: {$params['thumbnailHeight']};}");
 	}
 
-	if (isset($params['clickable']) && $params['clickable'] == 1 ) {
-		$jq_clickable = '
-function carousel_callback(){
-	$("#' . $uniqueId . ' div.ic_tray div.ic_caption").each(function(){
-		var $this = $(this);
-		//console.log("JML" + $this.text());
-		var source = $this.text();
-		var regexToken = /https?:\/\/[\-\w@:%_\+.~#?,&\/\/=]+/;
-		var matchArray;
-		if ( (matchArray = regexToken.exec( source )) !== null) {
-			//console.log("JJJ" + matchArray[0]);
-			$this.parent().click(function(){
-				window.location = matchArray[0];
-			}).css("cursor", "pointer");
-		};
-	});
-};
-	';
-	} else {
-		$jq_clickable = '
-function carousel_callback(){ };
-	';
-	}
-	TikiLib::lib('header')->add_jq_onready($jq_clickable);
-
 	unset(
 		$params['displayProgressBar'],
 		$params['displayThumbnails'],
@@ -278,14 +240,14 @@ function carousel_callback(){ };
 		$params['thumbnailFontSize']
 	);
 
-	TikiLib::lib('header')->add_jq_onready('setTimeout( function() { $("#' . $unique . '").tiki("carousel", "", '. json_encode($params).'); carousel_callback();}, 1000);');
+	TikiLib::lib('header')->add_jq_onready('setTimeout( function() { $("#' . $unique . '").tiki("carousel", "", '. json_encode($params).'); }, 1000);');
 
 	if (empty($params['displaySize'])) {
 		$size = 'width: 1px; height: 1px;';
 	} else if ($params['displaySize'] > 10) {
 		$size = "width: {$params['displaySize']}px; height: {$params['displaySize']}px;";
 	}
-	$html = '<div id="'.$uniqueId.'" ><div id="'.$unique. '" class="clearfix carousel" style="' . $size . ' overflow: hidden"><ul>';
+	$html = '<div id="'.$unique. '" class="clearfix carousel" style="' . $size . ' overflow: hidden"><ul>';
 	foreach ($files['data'] as $file) {
 		$html .= '<li><img src="tiki-download_file.php?fileId='.$file['fileId'].'&amp;display';
 		if (!empty($params['displaySize'])) {
@@ -314,8 +276,7 @@ function carousel_callback(){ };
 		}
 		$html .= $caption . '</li>';
 	}
-	$html .= '</ul></div></div>';
-
+	$html .= '</ul></div>';
 	return "~np~$html~/np~";
 }
 

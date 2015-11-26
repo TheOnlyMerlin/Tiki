@@ -415,9 +415,6 @@ class TikiAccessLib extends TikiLib
 						($prefs['permission_denied_login_box'] == 'y' || !empty($prefs['permission_denied_url']))
 			) {
 				$_SESSION['loginfrom'] = $_SERVER['REQUEST_URI'];
-				if ($prefs['login_autologin'] == 'y' && $prefs['login_autologin_redirectlogin'] == 'y' && !empty($prefs['login_autologin_redirectlogin_url'])) {
-					$this->redirect($prefs['login_autologin_redirectlogin_url']);
-				}
 			}
 
 			$smarty->assign('errortitle', $detail['errortitle']);
@@ -466,13 +463,11 @@ class TikiAccessLib extends TikiLib
 
 	/**
 	 * Utility function redirect the browser location to another url
-
-	 * @param string $url       The target web address
-	 * @param string $msg       An optional message to display
-	 * @param int $code         HTTP code
-	 * @param string $msgtype   Type of message which determines styling (e.g., success, error, warning, etc.)
+	 *
+	 * @param string The target web address
+	 * @param string an optional message to display
 	 */
-	function redirect( $url = '', $msg = '', $code = 302, $msgtype = '')
+	function redirect( $url = '', $msg = '', $code = 302 )
 	{
 		global $prefs;
 
@@ -486,11 +481,13 @@ class TikiAccessLib extends TikiLib
 		if (trim($msg)) {
 			$session = session_id();
 			if ( empty($session) ) {
-				$start = strpos($url, '?') ? '&' : '?';
-				$url = $start . 'msg=' . urlencode($msg) . '&msgtype=' . urlencode($msgtype);
+				if (strpos($url, '?')) {
+					$url .= '&msg=' . urlencode($msg);
+				} else {
+					$url .= '?msg=' . urlencode($msg);
+				}
 			} else {
 				$_SESSION['msg'] = $msg;
-				$_SESSION['msgtype'] = $msgtype;
 			}
 		}
 
