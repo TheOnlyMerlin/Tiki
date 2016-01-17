@@ -10,12 +10,12 @@
 			{elseif $when eq 'month'}{tr}Month{/tr}
 			{elseif $when eq 'lastyear'}{tr}Last Year{/tr}
 			{elseif $when eq 'year'}{tr}Year{/tr}{/if}
-		{/capture}
+		{/capture}	
 		{tab name=$smarty.capture.tabtitle}
 			 <ul>
 			{foreach from=$typeStat key=type item=list}
-				{foreach from=$list key=what item=nb}
-					<li>{$what}: {$nb}</li>
+				{foreach from=$list key=what item=nb} 
+					<li>{tr}{$what}{/tr}: {$nb}</li>
 				{/foreach}
 			{/foreach}
 			</ul>

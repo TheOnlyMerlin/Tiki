@@ -1,35 +1,30 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_userpref_info()
-{
+function wikiplugin_userpref_info() {
 	return array(
-		'name' => tra('User Preference'),
+		'name' => tra('Userpref'),
 		'documentation' => 'PluginUserpref',
-		'description' => tra('Display contents based on user preference settings'),
-		'body' => tr('Wiki text to display if conditions are met. The body may contain %0. Text after the marker
-			will be displayed to users not matching the conditions.', '<code>{ELSE}</code>'),
+		'description' => tra("Display wiki text if user has a pref set to a value"),
+		'body' => tra('Wiki text to display if conditions are met. The body may contain {ELSE}. Text after the marker will be displayed to users not matching the condition.'),
 		'prefs' => array('wikiplugin_userpref'),
 		'filter' => 'wikicontent',
 		'extraparams' => true,
-		'iconname' => 'user',
-		'introduced' => 4,
 		'params' => array(
 		),
 	);
 }
 
-function wikiplugin_userpref($data, $params)
-{
+function wikiplugin_userpref($data, $params) {
 	global $user, $prefs, $tikilib;
 	$dataelse = '';
-	if (strpos($data, '{ELSE}')) {
-		$dataelse = substr($data, strpos($data, '{ELSE}')+6);
-		$data = substr($data, 0, strpos($data, '{ELSE}'));
+	if (strpos($data,'{ELSE}')) {
+		$dataelse = substr($data,strpos($data,'{ELSE}')+6);
+		$data = substr($data,0,strpos($data,'{ELSE}'));
 	}
 
 	$else = false;

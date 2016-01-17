@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -7,8 +7,8 @@
 
 $section = 'galleries';
 require_once ('tiki-setup.php');
-$categlib = TikiLib::lib('categ');
-$imagegallib = TikiLib::lib('imagegal');
+include_once ('lib/categories/categlib.php');
+include_once ('lib/imagegals/imagegallib.php');
 $access->check_feature(array('feature_galleries', 'feature_gal_batch'));
 
 // Now check permissions to access this page
@@ -18,7 +18,7 @@ $access->check_permission('tiki_p_batch_upload_image_dir');
 if (!isset($prefs['gal_batch_dir']) or !is_dir($prefs['gal_batch_dir'])) {
 	$msg = tra("Incorrect directory chosen for batch upload of images.") . "<br />";
 	if ($tiki_p_admin == 'y') {
-		$msg.= tra("Please setup that dir on ") . '<a href="tiki-admin.php?page=gal">' . tra('Image Galleries Configuration Panel') . '</a>.';
+		$msg.= tra("Please setup that dir on ") . '<a href="tiki-admin.php?page=gal">' . tra('Image Galleries Admin Panel') . '</a>.';
 	} else {
 		$msg.= tra("Please contact the website administrator.");
 	}
@@ -38,16 +38,11 @@ $allowed_types = array(
 	'.gif'
 ); // list of filetypes you want to show
 // recursively get all images from all subdirectories
-/**
- * @param $sub
- */
-function getDirContent($sub)
-{
-	$smarty = TikiLib::lib('smarty');
+function getDirContent($sub) {
 	global $allowed_types;
 	global $a_img;
 	global $a_path;
-	global $imgdir;
+	global $imgdir, $smarty;
 	$allimg = array();
 	$tmp = $imgdir;
 	if ($sub <> "") $tmp.= '/' . $sub;
@@ -63,13 +58,13 @@ function getDirContent($sub)
 		}
 	}
 	sort($allimg);
-	foreach ($allimg as $imgfile) {
+	foreach($allimg as $imgfile) {
 		if (is_dir($tmp . "/" . $imgfile)) {
 			if ((substr($sub, -1) <> "/") && (substr($sub, -1) <> "\\")) {
 				$sub.= '/';
 			}
 			getDirContent($sub . $imgfile);
-		} elseif (in_array(strtolower(substr($imgfile, -(strlen($imgfile) - strrpos($imgfile, ".")))), $allowed_types)) {
+		} elseif (in_array(strtolower(substr($imgfile, -(strlen($imgfile) - strrpos($imgfile, ".")))) , $allowed_types)) {
 			$a_img[] = $imgfile;
 			$a_path[] = $sub;
 		}
@@ -77,11 +72,10 @@ function getDirContent($sub)
 	closedir($dimg);
 }
 // build a complete list of all images on filesystem including all necessary image info
-function buildImageList() 
-{
+function buildImageList() {
 	global $a_img;
 	global $a_path;
-	global $imgdir;
+	global $imgdir, $smarty;
 	global $imgstring;
 	getDirContent('');
 	$totimg = count($a_img); // total image number
@@ -109,7 +103,6 @@ function buildImageList()
 		$imgstring[$x][4] = $tmp;
 		$totalsize+= $filesize;
 	}
-	$smarty = TikiLib::lib('smarty');
 	$smarty->assign('totimg', $totimg);
 	$smarty->assign('totalsize', $totalsize);
 	$smarty->assign('imgstring', $imgstring);
@@ -152,7 +145,7 @@ if (isset($_REQUEST["batch_upload"]) and isset($_REQUEST['imgs']) and is_array($
 		$data = '';
 		$fp = @fopen($filepath, 'r');
 		if (!$fp) {
-			$feedback[] = "!!!" . sprintf(tra('Could not read image %s.'), $filepath);
+			$feedback[] = "!!!" . sprintf(tra('Could not read image %s.') , $filepath);
 		} else {
 			while (!feof($fp)) {
 				$data.= @fread($fp, 1024);
@@ -194,13 +187,13 @@ if (isset($_REQUEST["batch_upload"]) and isset($_REQUEST['imgs']) and is_array($
 			// add image to gallery
 			$imageId = $imagegallib->insert_image($tmpGalId, $tmpName, $tmpDesc, $imgArray[$x], $type, $data, $filesize, $size[0], $size[1], $user, '', '');
 			if (!$imageId) {
-				$feedback[] = "!!!" . sprintf(tra('Image %s upload failed.'), $imgArray[$x]);
+				$feedback[] = "!!!" . sprintf(tra('Image %s upload failed.') , $imgArray[$x]);
 			} else {
-				$feedback[] = sprintf(tra('Image %s uploaded successfully.'), $imgArray[$x]);
+				$feedback[] = sprintf(tra('Image %s uploaded successfully.') , $imgArray[$x]);
 				if (@unlink($filepath)) {
-					$feedback[] = sprintf(tra('Image %s removed from Batch directory.'), $imgArray[$x]);
+					$feedback[] = sprintf(tra('Image %s removed from Batch directory.') , $imgArray[$x]);
 				} else {
-					$feedback[] = "!!! " . sprintf(tra('Impossible to remove image %s from Batch directory.'), $imgArray[$x]);
+					$feedback[] = "!!! " . sprintf(tra('Impossible to remove image %s from Batch directory.') , $imgArray[$x]);
 				}
 			}
 		}

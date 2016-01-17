@@ -1,78 +1,49 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_lastmod_info()
-{
+// Wiki plugin to display last modification information.
+// rlpowell 31 Dec 2006
+
+function wikiplugin_lastmod_help() {
+        return tra("The last_mod plugin replaces itself with last modification time of the named wiki page, or the current page if no name given").":<br />~np~{LASTMOD(page=>pagename)/}~/np~";
+}
+
+function wikiplugin_lastmod_info() {
 	return array(
 		'name' => tra('Last Modification'),
-		'documentation' => 'PluginLastMod',
-		'description' => tra('Show the last modification date for a page'),
+		'documentation' => tra('PluginLastMod'),			
+		'description' => tra('The Last Mod plugin displays the last modification time of the named wiki page, or the current page if no name given'),
 		'prefs' => array('feature_wiki', 'wikiplugin_lastmod'),
-		'iconname' => 'edit',
-		'introduced' => 2,
 		'params' => array(
 			'page' => array(
 				'required' => false,
 				'name' => tra('Page'),
 				'description' => tra('Page name to display information of. Default value is current page.'),
-				'since' => '2.0',
-				'profile_reference' => 'wiki_page',
-				'filter' => 'pagename',
-			),
-			'format' => array(
-				'required' => false,
-				'name' => tra('Date format'),
-				'description' => tra('Set date and time format according to site settings.'),
-				'since' => '15.0',
-				'filter' => 'text',
-				'options' => [
-					['text' => '', 'value' => ''],
-					['text' => tra('Long date'), 'value' => 'long_date'],
-					['text' => tra('Short date'), 'value' => 'short_date'],
-					['text' => tra('Long datetime'), 'value' => 'long_datetime'],
-					['text' => tra('Short datetime'), 'value' => 'short_datetime'],
-					['text' => tra('ISO'), 'value' => 'iso'],
-				],
 			),
 		),
 	);
 }
 
-function wikiplugin_lastmod($data, $params)
-{
-	$tikilib = TikiLib::lib('tiki');
-	global $page, $user;
-	//set page
-	if (!isset($params['page'])) {
-		if (!empty($page)) {
-			$thispage = $page;
-		} else {
-			return false;
+function wikiplugin_lastmod($data, $params) {
+
+	global $tikilib;
+	
+	extract ($params,EXTR_SKIP);
+
+	if (!isset($page)) {
+		# See if we're being called from a wiki page; stolen from wikiplugin_attach
+		if( strstr( $_REQUEST["SCRIPT_NAME"], "tiki-index.php" ) || strstr( $_REQUEST["SCRIPT_NAME"], "tiki-editpage.php" ) || strstr( $_REQUEST["SCRIPT_NAME"], 'tiki-pagehistory.php') ) {
+			$page = $_REQUEST["page"];
 		}
-	} else {
-		$thispage = $params['page'];
+
 	}
-	//set datetime format
-	$format = isset($params['format']) ? $params['format'] : 'long_datetime';
-	switch ($format) {
-		case 'long_date':
-			$lastmod = $tikilib->get_long_date($tikilib->page_exists_modtime($thispage), $user);
-			break;
-		case 'short_date':
-			$lastmod = $tikilib->get_short_date($tikilib->page_exists_modtime($thispage), $user);
-			break;
-		case 'short_datetime':
-			$lastmod = $tikilib->get_short_datetime($tikilib->page_exists_modtime($thispage), $user);
-			break;
-		case 'iso':
-			$lastmod = $tikilib->get_iso8601_datetime($tikilib->page_exists_modtime($thispage), $user);
-			break;
-		default:
-			$lastmod = $tikilib->get_long_datetime($tikilib->page_exists_modtime($thispage), $user);
-	}
+
+	$lastmod = $tikilib->date_format( "%a, %e %b %Y %H:%M:%S %Z", $tikilib->page_exists_modtime($page) );
+
 	return $lastmod;
+
 }

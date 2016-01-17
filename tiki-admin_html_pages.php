@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -31,7 +28,8 @@ if (isset($_REQUEST["remove"])) {
 	$htmlpageslib->remove_html_page($_REQUEST["remove"]);
 }
 if (isset($_REQUEST["templateId"]) && $_REQUEST["templateId"] > 0) {
-	$template_data = TikiLib::lib('template')->get_template($_REQUEST["templateId"]);
+	global $templateslib; require_once 'lib/templates/templateslib.php';
+	$template_data = $templateslib->get_template($_REQUEST["templateId"]);
 	$_REQUEST["content"] = $template_data["content"];
 	$_REQUEST["preview"] = 1;
 }
@@ -78,8 +76,10 @@ $smarty->assign_by_ref('sort_mode', $sort_mode);
 $channels = $htmlpageslib->list_html_pages($offset, $maxRecords, $sort_mode, $find);
 $smarty->assign_by_ref('cant_pages', $channels["cant"]);
 $smarty->assign_by_ref('channels', $channels["data"]);
-$templates = TikiLib::lib('template')->list_templates('html', 0, -1, 'name_asc', '');
-
+if ($tiki_p_use_content_templates == 'y') {
+	global $templateslib; require_once 'lib/templates/templateslib.php';
+	$templates = $templateslib->list_templates('html', 0, -1, 'name_asc', '');
+}
 $smarty->assign_by_ref('templates', $templates["data"]);
 ask_ticket('admin-html-pages');
 // disallow robots to index page:

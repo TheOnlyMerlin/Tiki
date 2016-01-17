@@ -1,4 +1,1 @@
-{if $prefs.login_autogenerate eq 'y'}
-	<strong>Your account ID {$username} has been generated.</strong>
-{/if}
-{tr}You will receive an email with the information needed to log into this site the first time.{/tr}
+{tr}You will receive an email with information to login for the first time into this site{/tr}

@@ -1,78 +1,71 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_objecthits_info()
-{
+// Wiki plugin to display the number of hits per object
+// Franck Martin 2005
+
+function wikiplugin_objecthits_help() {
+        return tra("Displays object hit info by object and days").":<br />~np~{OBJECTHITS(object=>,type=>,days=>)/}~/np~";
+}
+
+function wikiplugin_objecthits_info() {
 	return array(
 		'name' => tra('Object Hits'),
-		'documentation' => 'PluginObjectHits',
-		'description' => tra('Display the number of hits for certain objects'),
+		'documentation' => tra('PluginObjectHits'),			
+		'description' => tra('Displays object hit info by object and days'),
 		'prefs' => array( 'wikiplugin_objecthits' ),
-		'iconname' => 'chart',
-		'introduced' => 1,
 		'params' => array(
 			'object' => array(
 				'required' => false,
-				'name' => tra('Object'),
-				'description' => tra('For a wiki page, the page name, for other object types: ID number + ? +
-					object title'),
-				'since' => '1',
+				'name' => tra( 'Object' ),
+				'description' => tra( 'For a wiki page, the page name, for other object types: ID number + ? + object title' ),
 				'default' => '',
-				'filter' => 'text',
-				'profile_reference' => 'type_in_param',
 			),
 			'type' => array(
 				'required' => false,
 				'name' => tra('Type'),
-				'description' => tr('Object type, such as wiki, file gallery, file, article, etc. Default is
-					%0wiki%1.', '<code>', '</code>'),
-				'since' => '1',
+				'description' => tra('Object type, such as wiki, file gallery, file, article, etc. Default is "wiki".'),
 				'filter' => 'alpha',
 				'default' => 'wiki',
 			),
 			'days' => array(
 				'required' => false,
 				'name' => tra('Days'),
-				'description' => tra('Show the number of hits over the past number of days indicated. Default is to
-					show all hits.'),
-				'since' => '1',
-				'filter' => 'digits',
+				'description' => tra('Show the number of hits over the past number of days indicated. Default is to show all hits.'),
 				'default' => 0,
-			),
-			'since' => array(
-				'required' => false,
-				'name' => tra('Since a date'),
-				'description' => tra('Date since the hits are collected in a format supported by strtotime'),
-				'since' => '10.0',
-				'default' => '',
-				'filter' => 'text',
-			),
+			)
 		)
 	);
 }
 
-function wikiplugin_objecthits($data, $params)
-{
-	$tikilib = TikiLib::lib('tiki');
-	$default = array('days' => 0, 'since' => '', 'type' => 'wiki');
-	$params = array_merge($default, $params);
+function wikiplugin_objecthits($data, $params) {
+	global $tikilib;
 
-	$statslib = TikiLib::lib('stats');
+	global $statslib;
+	if (!is_object($statslib)) {
+		global $dbTiki;
+		include "lib/stats/statslib.php";
+	}
  
-	extract($params, EXTR_SKIP);
+	extract ($params,EXTR_SKIP);
 
 	if (!isset($object)) {
-		global $page;
+	  global $page;
 		$object = $page;
 		$type= "wiki";
 	}
-	if (!empty($since)) {
-		$since = strtotime($since);
+
+	if (!isset($days)) {
+		$days=0;
 	}
 	
-	return $statslib->object_hits($object, $type, $days, $since);
+	if (!isset($type)) {
+		$type="wiki";
+	}
+	
+  return $statslib->object_hits($object,$type,$days);
 }

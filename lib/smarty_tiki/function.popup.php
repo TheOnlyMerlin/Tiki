@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -8,6 +8,7 @@
 /**
  * Smarty plugin for Tiki using jQuery ClueTip instead of OverLib
  */
+
 
 /**
  * Smarty {popup} function plugin
@@ -20,107 +21,112 @@
  * @author   Jonny Bradley, replacing Smarty original (by Monte Ohrt <monte at ohrt dot com>)
  * @param    array
  * @param    Smarty
- * @return   string now formatted to use popover natively
- *
+ * @return   string now formatted to use convertOverlib() in tiki-jquery.js
+ * 
  * params still relevant:
- *
+ * 
  *     text        Required: the text/html to display in the popup window
- *     trigger     'onClick' and native bootstrap params: 'click', 'hover', 'focus', 'manual' ('hover' default)
- *     sticky      false/true - this is currently an alias for trigger['click'] which is wrong. 
- *     							Sticky should define whether the popup should stay until clicked, not how it is triggered.
+ *     trigger     'onMouseOver' or 'onClick' (onMouseOver default)
+ *     sticky      false/true
  *     width       in pixels?
- *     fullhtml
- *     delay       number of miliseconds to delay showing or hiding of popover. If just one number, then it will apply to both
- *                 show and hide, or use "500|1000" to have a 500 ms show delay and a 1000 ms hide delay
+ *     fullhtml    
  */
-function smarty_function_popup($params, $smarty)
+function smarty_function_popup($params, &$smarty)
 {
-	$options = array(
-		'data-toggle' => 'popover',
-		'data-container' => 'body',
-		'data-trigger' => 'hover focus',
-		'data-content' => '',
-	);
+    $append = '';
+    foreach ($params as $_key=>$_value) {
+        switch ($_key) {
+            case 'text':
+            case 'trigger':
+            case 'function':
+            case 'inarray':
+                $$_key = (string)$_value;
+                if ($_key == 'function' || $_key == 'inarray')
+                    $append .= ',\'' . strtoupper($_key) . "=$_value'";
+                break;
 
-	foreach ($params as $key => $value) {
-		switch ($key) {
-			case 'text':
-				$options['data-content'] = $value;
-				break;
-			case 'trigger':
-				switch ($value) {
-					// is this legacy? should not be used anywhere
-					case 'onclick':
-					case 'onClick':
-						$options['data-trigger'] = 'click';
-						break;
-					// support native bootstrap params - could be moved to default but not sure whether it breaks something
-					case 'hover focus':
-					case 'focus hover':
-					case 'click':
-					case 'hover':
-					case 'focus':
-					case 'manual':
-						$options['data-trigger'] = $value;
-						break;
-					default:
-						break;
-				}
-				break;
-			case 'caption':
-				$options['title'] = $value;
-				break;
-			case 'width':
-			case 'height':
-				$options[$key] = $value;
-				break;
-			case 'sticky':
-				$options['data-trigger'] = 'click';
-				break;
-			case 'fullhtml':
-				$options['data-html'] = true;
-				break;
-			case 'background':
-				if (!empty($params['width'])) {
-					if (!isset($params["height"])) {
-						$params["height"] = 300;
-					}
-					$options['data-content'] = "<div style='background-image:url(" . $value . ");background-repeat:no-repeat;width:" . $params["width"] . "px;height:" . $params["height"] . "px;'>" . $options['data-content'] . "</div>";
-				} else {
-					$options['data-content'] = "<div style='background-image:url(" . $value . ");width:100%;height:100%;'>" . $options['data-content'] . "</div>";
-				}
-				$options['data-html'] = true;
-				break;
-		}
-	}
+            case 'caption':
+            case 'closetext':
+            case 'status':
+                $append .= ',\'' . strtoupper($_key) . "=" . str_replace("'","\'",$_value) . "'";
+                break;
 
-    if (empty($options['title']) && empty($options['data-content'])) {
-		trigger_error("popover: attribute 'text' or 'caption' required");
+            case 'fgcolor':
+            case 'bgcolor':
+            case 'textcolor':
+            case 'capcolor':
+            case 'closecolor':
+            case 'textfont':
+            case 'captionfont':
+            case 'closefont':
+            case 'fgbackground':
+            case 'bgbackground':
+            case 'caparray':
+            case 'capicon':
+            case 'background':
+            case 'frame':
+                $append .= ',\'' . strtoupper($_key) . "=$_value'";
+                break;
+
+            case 'textsize':
+            case 'captionsize':
+            case 'closesize':
+            case 'width':
+            case 'height':
+            case 'border':
+            case 'offsetx':
+            case 'offsety':
+            case 'snapx':
+            case 'snapy':
+            case 'fixx':
+            case 'fixy':
+            case 'padx':
+            case 'pady':
+            case 'timeout':
+            case 'delay':
+                $append .= ',\'' . strtoupper($_key) . "=$_value'";
+                break;
+
+            case 'sticky':
+            case 'left':
+            case 'right':
+            case 'center':
+            case 'above':
+            case 'below':
+            case 'noclose':
+            case 'autostatus':
+            case 'autostatuscap':
+            case 'fullhtml':
+            case 'hauto':
+            case 'vauto':
+            case 'mouseoff':
+            case 'followmouse':
+            case 'closeclick':
+                if ($_value) $append .= ',\'' . strtoupper($_key) . '\'';
+                break;
+
+            default:
+                $smarty->trigger_error("[popup] unknown parameter $_key", E_USER_WARNING);
+        }
+    }
+
+    if (empty($text) && !isset($inarray) && empty($function)) {
+        $smarty->trigger_error("overlib: attribute 'text' or 'inarray' or 'function' required");
         return false;
+    }
+
+    if (empty($trigger)) {
+    	$trigger = "onmouseover";
+	} else {
+		$append .= ',\'' . $trigger . '\'';
 	}
 
+	$text = preg_replace(array('/\\\\r\n/','/\\\\n/','/\\\\r/'), "", $text);	// Remove newlines to avoid JavaScript statement over several lines
+	$retval = $trigger . '="return convertOverlib(this,\''.$text.'\'';
+	$append = trim($append, ',');
+    $retval .= ',[' . $append . ']);"';
 
-	$options['data-content'] = preg_replace(array('/\\\\r\n/','/\\\\n/','/\\\\r/', '/\\t/'), '', $options['data-content']);
-	$options['data-content'] = str_replace('\&#039;', '&#039;', $options['data-content']);	// unescape previous js escapes
-	$options['data-content'] = str_replace('\&quot;', '&quot;', $options['data-content']);
-	$options['data-content'] = str_replace('&lt;\/', '&lt;/', $options['data-content']);
-
-	$retval = '';
-
-	foreach ($options as $k => $v) {
-		$retval .= $k . '=' . json_encode($v, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ' ';
-	}
-
-	//handle delay param here since slashes added by the above break the code
-	if (!empty($params['delay'])) {
-		$explode = explode('|', $params['delay']);
-		if (count($explode) == 1) {
-			$delay = (int) $explode[0];
-		} else {
-			$delay = '{"show":"'. (int) $explode[0] . '", "hide":"' . (int) $explode[1] . '"}';
-		}
-		$retval .= ' data-delay=\'' . $delay . '\'';
-	}
-
-	return $retval;
+    return $retval;
 }
+
+/* vim: set expandtab: */

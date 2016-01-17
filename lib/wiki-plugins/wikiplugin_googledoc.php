@@ -1,68 +1,67 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_googledoc_info()
-{
+/*
+ * Google Docs plugin. Creates an iframe and loads the Google Doc within the frame.
+ *
+ * MatWho 13/09/08
+ */
+
+function wikiplugin_googledoc_help() {
+	return tra("googledoc").":~np~{GOOGLEDOC(type=sheet|doc|pres|spreadsheet|document|presentation, key=XXXXX name=xxx, size=small|medium|large, width=100, height=100, align=top|middle|bottom|left|right, frameborder=1|0, marginheight=0, marginwidth=0, scrolling=yes|no|auto, editLink=top|bottom|both)}{GOOGLEDOC}~/np~";
+}
+
+function wikiplugin_googledoc_info() {
 	return array(
 		'name' => tra('Google Doc'),
-		'documentation' => 'PluginGoogleDoc',
-		'description' => tra('Display a Google document'),
+		'documentation' => tra('PluginGoogleDoc'),
+		'description' => tra('Displays a Google document'),
 		'prefs' => array( 'wikiplugin_googledoc' ),
 		'body' => tra('Leave this empty.'),
 //		'validate' => 'all',
-		'iconname' => 'google',
-		'tags' => array( 'basic' ),
-		'introduced' => 3,
 		'params' => array(
 			'type' => array(
 				'safe' => true,
 				'required' => true,
 				'name' => tra('Type'),
 				'description' => tra('Type of Google document'),
-				'since' => '3.0',
-				'filter' => 'word',
+				'filter' => 'alpha',
 				'default' => '',
 				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Document'), 'value' => 'document'),
-					array('text' => tra('Presentation'), 'value' => 'presentation'),
-					array('text' => tra('Spreadsheet'), 'value' => 'spreadsheet')
+					array('text' => '', 'value' => ''), 
+					array('text' => tra('Document'), 'value' => 'document'), 
+					array('text' => tra('Presentation'), 'value' => 'presentation'), 
+					array('text' => tra('Spreadsheet'), 'value' => 'speadsheet')
 				)
 			),
 			'key' => array(
 					'safe' => true,
 					'required' => true,
-					'name' => tra('Key'),
-					'description' => tra('Google doc key - for example:') . ' <code>pXsHENf1bGGY92X1iEeJJI</code>',
-					'since' => '3.0',
-					'filter' => 'text',
+					'name' => tra('key'),
+					'description' => tra('Google doc key - for example: pXsHENf1bGGY92X1iEeJJI'),
 					'default' => ''
 				),
 			'name' => array(
 				'safe' => true,
 				'required' => false,
 				'name' => tra('Name'),
-				'description' => tra('Name of iframe. Default is "Frame" + the key'),
-				'filter' => 'text',
-				'since' => '3.0',
+				'description' => tra('Name of iframe. Default is "Frame" + the key')
 			),
 			'size' => array(
 				'safe' => true,
 				'required' => false,
 				'name' => tra('Size'),
-				'description' => tra('Size of frame. Use instead of width and height. The sizes will fit the Google
-					presentations sizes exactly.'),
-				'since' => '3.0',
-				'filter' => 'word',
+				'description' => tra('Size of frame. Use instead of width and height. The sizes will fit the Google presentations sizes exactly.'),
+				'filter' => 'alpha',
 				'default' => '',
 				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Small'), 'value' => 'small'),
-					array('text' => tra('Medium'), 'value' => 'medium'),
+					array('text' => '', 'value' => ''), 
+					array('text' => tra('Small'), 'value' => 'small'), 
+					array('text' => tra('Medium'), 'value' => 'medium'), 
 					array('text' => tra('Large'), 'value' => 'large')
 				)
 			),
@@ -71,7 +70,6 @@ function wikiplugin_googledoc_info()
 				'required' => false,
 				'name' => tra('Width'),
 				'description' => tra('Width in pixels or %'),
-				'since' => '3.0',
 				'filter' => 'digits',
 				'default' => 800
 			),
@@ -80,7 +78,6 @@ function wikiplugin_googledoc_info()
 				'required' => false,
 				'name' => tra('Height'),
 				'description' => tra('Height in pixels or %'),
-				'since' => '3.0',
 				'filter' => 'digits',
 				'default' => 400
 			),
@@ -88,30 +85,26 @@ function wikiplugin_googledoc_info()
 				'safe' => true,
 				'required' => false,
 				'name' => tra('Alignment'),
-				'description' => tra('Position of frame on page'),
-				'since' => '3.0',
+				'description' => 'top|middle|bottom|left|right',
 				'default' => '',
-				'filter' => 'word',
 				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Top'), 'value' => 'top'),
-					array('text' => tra('Middle'), 'value' => 'middle'),
-					array('text' => tra('Bottom'), 'value' => 'bottom'),
-					array('text' => tra('Left'), 'value' => 'left'),
-					array('text' => tra('Right'), 'value' => 'right')
+					array('text' => '', 'value' => ''), 
+					array('text' => tra('Top'), 'value' => 'top'), 
+					array('text' => tra('Middle'), 'value' => 'middle'), 
+					array('text' => tra('Bottom'), 'value' => 'bottom'), 
+					array('text' => tra('Left'), 'value' => 'left'), 
+					array('text' => tra('Right'), 'value' => 'right') 
 				)
 			),
 			'frameborder' => array(
 				'safe' => true,
 				'required' => false,
-				'name' => tra('Frame Border'),
+				'name' => 'Frame Border',
 				'description' => tra('Choose whether to show a border around the iframe'),
-				'since' => '3.0',
 				'default' => 0,
-				'filter' => 'digits',
 				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 1),
+					array('text' => '', 'value' => ''), 
+					array('text' => tra('Yes'), 'value' => 1), 
 					array('text' => tra('No'), 'value' => 0)
 				)
 			),
@@ -120,8 +113,6 @@ function wikiplugin_googledoc_info()
 				'required' => false,
 				'name' => tra('Margin Height'),
 				'description' => tra('Margin height in pixels'),
-				'filter' => 'digits',
-				'since' => '3.0',
 				'default' => ''
 			),
 			'marginwidth' => array(
@@ -129,8 +120,6 @@ function wikiplugin_googledoc_info()
 				'required' => false,
 				'name' => tra('Margin Width'),
 				'description' => tra('Margin width in pixels'),
-				'since' => '3.0',
-				'filter' => 'digits',
 				'default' => ''
 			),
 			'scrolling' => array(
@@ -138,12 +127,10 @@ function wikiplugin_googledoc_info()
 				'required' => false,
 				'name' => tra('Scrolling'),
 				'description' => tra('Choose whether to add a scroll bar'),
-				'since' => '3.0',
 				'default' => '',
-				'filter' => 'word',
 				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'yes'),
+					array('text' => '', 'value' => ''), 
+					array('text' => tra('Yes'), 'value' => 'yes'), 
 					array('text' => tra('No'), 'value' => 'no'),
 					array('text' => tra('Auto'), 'value' => 'auto')
 				)
@@ -153,12 +140,11 @@ function wikiplugin_googledoc_info()
 				'required' => false,
 				'name' => tra('Edit Link'),
 				'description' => tra('Choose whether to show an edit link and set its location'),
-				'since' => '3.0',
-				'filter' => 'word',
+				'filter' => 'alpha',
 				'default' => '',
 				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Top'), 'value' => 'top'),
+					array('text' => '', 'value' => ''), 
+					array('text' => tra('Top'), 'value' => 'top'), 
 					array('text' => tra('Bottom'), 'value' => 'bottom'),
 					array('text' => tra('Both'), 'value' => 'both')
 				)
@@ -167,10 +153,10 @@ function wikiplugin_googledoc_info()
 	);
 }
 
-function wikiplugin_googledoc($data, $params)
-{
-	extract($params, EXTR_SKIP);
+function wikiplugin_googledoc($data, $params) {
 
+	extract ($params, EXTR_SKIP);
+	
 	if (empty($type)) {
 		return tra('Required parameter "type" missing');
 	}
@@ -178,10 +164,9 @@ function wikiplugin_googledoc($data, $params)
 		return tra('Required parameter "key" missing');
 	}
 
-	if ($type =="sheet" or $type=="spreadsheet") {
-		$srcUrl="\"https://docs.google.com/spreadsheet/pub?key=$key &output=html&widget=true\"";
-		$editSrcUrl="\"https://docs.google.com/spreadsheet/ccc?key=$key &output=html&widget=true\"";
-		$editHtml=" <p><a href=$editSrcUrl target=\"$frameName\">Edit this Google Document</a></p>";
+    if ($type =="sheet" or $type=="spreadsheet") {
+		$srcUrl="\"http://spreadsheets.google.com/pub?key=$key &output=html&widget=true\"";
+		$editHtml=" <P><A HREF=$srcUrl Target=\"$frameName\">Edit this Google Document</A></P>";
 	}
 	if ($type =="doc" or $type=="document") {
 		$srcUrl="\"http://docs.google.com/View?docid=$key\"";
@@ -191,9 +176,9 @@ function wikiplugin_googledoc($data, $params)
 		$srcUrl="\"http://docs.google.com/EmbedSlideshow?docid=$key\"";
 		$editHtml="";
 	}
-
+	
 	$ret = "";
-
+	
 	if (isset($name)) {
 		$frameName=$name;
 	} else {
@@ -205,17 +190,11 @@ function wikiplugin_googledoc($data, $params)
 
 	$ret .= '<iframe ';
 	$ret .= " name=\"$frameName\"";
-
-	if ($size == 'small') {
-		$width= 410; $height= 342;
-	}
-	if ($size == 'medium') {
-		$width= 555; $height= 451;
-	}
-	if ($size == 'large') {
-		$width= 700; $height= 559;
-	}
-
+	
+	if($size == 'small') { $width= 410; $height= 342;}
+	if($size == 'medium'){ $width= 555; $height= 451;}
+	if($size == 'large') { $width= 700; $height= 559;}
+	
 	if (isset($width)) {
 		$ret .= " width=\"$width\"";
 	} else {

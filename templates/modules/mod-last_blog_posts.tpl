@@ -13,7 +13,4 @@
 		</li>
 	{/section}
 {/modules_list}
-{if ($tiki_p_blog_post eq 'y' or $tiki_p_blog_admin eq 'y')}
-	<a class="btn btn-link" href="tiki-blog_post.php?blogId={$blogid}">{icon name="add"} {tr}Add Post{/tr}</a>
-{/if}
 {/tikimodule}

@@ -1,13 +1,12 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 require_once ('tiki-setup.php');
-$searchstatslib = TikiLib::lib('searchstats');
-//get_strings tra('Search Stats')
+include_once ('lib/search/searchstatslib.php');
 
 $access->check_feature('feature_search_stats');
 $access->check_permission('tiki_p_admin');

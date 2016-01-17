@@ -1,25 +1,30 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_listpages_info()
-{
+function wikiplugin_listpages_help() {
+	$help = tra("List wiki pages.");
+	$help .= "<br />";
+	$help .= "~np~{LISTPAGES(initial=txt, showNameOnly=y|n, categId=id, structHead=y|n, showPageAlias=y|n, offset=num, max=num, find=txt, exact_match=y|n, only_orphan_pages=y|n, for_list_pages=y|n)}{LISTPAGES}~/np~";
+
+	return $help;
+}
+
+function wikiplugin_listpages_info() {
 	return array(
 		'name' => tra('List Pages'),
-		'documentation' => 'PluginListpages',
-		'description' => tra('List pages based on various criteria'),
-		'prefs' => array('wikiplugin_listpages', 'feature_listPages'),
-		'iconname' => 'copy',
-		'introduced' => 2,
+		'documentation' => tra('PluginListpages'),
+		'description' => tra('List wiki pages.'),
+		'prefs' => array('wikiplugin_listpages'),
+		'icon' => 'pics/icons/page_white_stack.png',
 		'params' => array(
 			'offset' => array(
 				'required' => false,
 				'name' => tra('Result Offset'),
 				'description' => tra('Result number at which the listing should start.'),
-				'since' => '2.0',
 				'filter' => 'digits',
 				'default' => 0,
 			),
@@ -27,54 +32,42 @@ function wikiplugin_listpages_info()
 				'required' => false,
 				'name' => tra('Max'),
 				'description' => tra('Limit number of items displayed in the list. Default is to display all.'),
-				'since' => '2.0',
-				'filter' => 'int',
+				'filter' => 'digits',
 				'default' => -1,
 			),
 			'initial' => array(
 				'required' => false,
 				'name' => tra('Initial'),
-				'description' => tra('Initial page to show'),
-				'since' => '2.0',
+				'description' => tra('txt'),
 				'default' => '',
 			),
 			'showNameOnly' => array(
 				'required' => false,
 				'name' => tra('Show Name Only'),
 				'description' => tra('Show only the page names'),
-				'since' => '2.0',
 				'filter' => 'alpha',
 				'default' => '',
 				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
+					array('text' => '', 'value' => ''), 
+					array('text' => tra('Yes'), 'value' => 'y'), 
 					array('text' => tra('No'), 'value' => 'n')
 				)
 			),
 			'categId' => array(
 				'required' => false,
-				'name' => tra('Category Filter'),
-				'description' => tra('Filter categories by Id numbers. Use different separators to filter as follows:').'<br />'
-					. '<code>:</code> - ' . tr('Page is in any of the specified categories. Example:') . ' <code>1:2:3</code><br />'
-					. '<code>+</code> - ' . tr('Page must be in all of the specified categories. Example:') . ' <code>1+2+3</code><br />'
-					. '<code>-</code> - ' .tr('Page is in the first specified category and not in any of the others. Example:')
-						. ' <code>1-2-3</code><br />',
-				'since' => '2.0',
-				'filter' => 'text',
-				'accepted' => tra('Valid category ID or list separated by :, + or -'),
-				'default' => '',
-				'profile_reference' => 'category',
+				'name' => tra('Category filter'),
+				 'description' => tra('If set to a category identifier, restrict the pages displayed to those in the specified category.').' ' . tra('Example value:') . ' 42. ' . tra('If set to a list of category identifiers separated by colons (:), restrict the pages to those in any of the specified categories.') . ' ' . tra('Example value:') . ' 1:2. ' . tra('If set to a list of category identifiers separated by plus signs (+), only display a page if it is in all of the specified categories.') . ' ' . tra('Example value:') . ' 1+2. ' .  tra('If set to a list of category identifiers separated by minus signs (-), only display a page if it is in the first specified category and not in any of the following categories.') . ' ' . tra('Example value:') . ' 1-2-3.', 
+				'filter' => 'striptags',
 			),
 			'structHead' => array(
 				'required' => false,
 				'name' => tra('Structure Head'),
 				'description' => tra('Filter by structure head'),
-				'since' => '2.0',
 				'filter' => 'alpha',
 				'default' => '',
 				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
+					array('text' => '', 'value' => ''), 
+					array('text' => tra('Yes'), 'value' => 'y'), 
 					array('text' => tra('No'), 'value' => 'n')
 				)
 			),
@@ -82,89 +75,45 @@ function wikiplugin_listpages_info()
 				'required' => false,
 				'name' => tra('Show Page Alias'),
 				'description' => tra('Show page alias in the list'),
-				'since' => '2.0',
 				'filter' => 'alpha',
 				'default' => '',
 				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
+					array('text' => '', 'value' => ''), 
+					array('text' => tra('Yes'), 'value' => 'y'), 
 					array('text' => tra('No'), 'value' => 'n')
 				)
-			),
-			'includetag' => array(
-				'required' => false,
-				'name' => tra('Include Freetag'),
-				'description' => tr('Only pages with specific tag (separate tags using %0)', '<code>;</code>'),
-				'since' => '10.3',
-				'advanced' => true,
-			),
-			'excludetag' => array(
-				'required' => false,
-				'name' => tra('Exclude Freetag'),
-				'description' => tr('Only pages with specific tag excluded (separate tags using %0)', '<code>;</code>'),
-				'since' => '10.3',
-				'advanced' => true,
-			),
-			'showNumberOfPages' => array(
-				'required' => false,
-				'name' => tra('Show Number of Pages'),
-				'description' => tra('Show the number of pages matching criteria'),
-				'since' => '10.3',
-				'filter' => 'alpha',
-				'default' => 'n',
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
-					array('text' => tra('No'), 'value' => 'n')
-				),
-				'advanced' => true,
 			),
 			'find' => array(
 				'required' => false,
 				'name' => tra('Find'),
 				'description' => tra('Only pages with names similar the text entered for this parameter will be listed'),
-				'since' => '2.0',
 			),
 			'lang' => array(
 				'required' => false,
 				'name' => tra('Language'),
 				'description' => tra('Two letter language code to filter pages listed.'),
-				'since' => '3.0',
 				'filter' => 'alpha',
 			),
 			'langOrphan' => array(
 				'required' => false,
 				'name' => tra('Orphan Language'),
-				'description' => tra('Two letter language code to filter pages listed. Only pages not available in the
-					provided language will be listed.'),
-				'since' => '3.0',
+				'description' => tra('Two letter language code to filter pages listed. Only pages not available in the provided language will be listed.'),
 				'filter' => 'alpha',
 			),
 			'translations' => array(
 				'required' => false,
 				'name' => tra('Load Translations'),
-				'description' => tra('User or pipe separated list of two letter language codes for additional languages
-					to display. If the language parameter is not defined, the first element of this list will be used
-					as the primary filter.'),
-				'since' => '3.0',
-			),
-			'translationOrphan' => array(
-				'required' => false,
-				'name' => tra('No translation'),
-				'description' => tra('User or pipe separated list of two letter language codes for additional languages
-					to display. List pages with no language or with a missing translation in one of the language'),
-				'since' => '7.0',
+				'description' => tra('User or pipe separated list of two letter language codes for additional languages to display. If the language parameter is not defined, the first element of this list will be used as the primary filter.'),
 			),
 			'exact_match' => array(
 				'required' => false,
 				'name' => tra('Exact Match'),
 				'description' => tra('Page name and text entered for the filter parameter must match exactly to be listed'),
-				'since' => '2.0',
 				'filter' => 'alpha',
 				'default' => '',
 				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
+					array('text' => '', 'value' => ''), 
+					array('text' => tra('Yes'), 'value' => 'y'), 
 					array('text' => tra('No'), 'value' => 'n')
 				)
 			),
@@ -172,84 +121,58 @@ function wikiplugin_listpages_info()
 				'required' => false,
 				'name' => tra('Only Orphan Pages'),
 				'description' => tra('Only list orphan pages'),
-				'since' => '2.0',
 				'filter' => 'alpha',
 				'default' => '',
 				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
+					array('text' => '', 'value' => ''), 
+					array('text' => tra('Yes'), 'value' => 'y'), 
 					array('text' => tra('No'), 'value' => 'n')
 				)
 			),
 			'for_list_pages' => array(
 				'required' => false,
 				'name' => tra('For List Pages'),
-				'description' => '',
-				'since' => '2.0',
+				'description' => 'y|n',
 				'filter' => 'alpha',
-				'default' => 'y',
+				'default' => '',
 				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
+					array('text' => '', 'value' => ''), 
+					array('text' => tra('Yes'), 'value' => 'y'), 
 					array('text' => tra('No'), 'value' => 'n')
 				)
 			),
 			'sort' => array(
 				'required' => false,
 				'name' => tra('Sort'),
-				'description' => tra('Sort ascending or descending on any field in the tiki_pages table. Syntax is
-					field name followed by _asc or _desc. Two examples:')
-					. ' <code>lastModif_desc</code> <code>pageName_asc</code>',
-				'since' => '2.0',
-				'filter' => 'text',
+				'description' => tra('Sort ascending or descending on any field in the tiki_pages table. Syntax is field name followed by _asc or _desc. Example: ')
+									. 'lastModif_desc' . tra('or') . 'pageName_asc',
 				'default' => 'pageName_asc',
 			),
 			'start' => array(
 				'required' => false,
 				'name' => tra('Start'),
-				'description' => tra('When only a portion of the page should be included, specify the marker from which
-					inclusion should start.'),
-				'since' => '5.0',
+				'description' => tra('When only a portion of the page should be included, specify the marker from which inclusion should start.'),
 				'default' => '',
 			),
 			'end' => array(
 				'required' => false,
 				'name' => tra('Stop'),
-				'description' => tra('When only a portion of the page should be included, specify the marker at which
-					inclusion should end.'),
-				'since' => '5.0',
+				'description' => tra('When only a portion of the page should be included, specify the marker at which inclusion should end.'),
 				'default' => '',
 			),
 			'length' => array(
 				'required' => false,
 				'name' => tra('Length'),
 				'description' => tra('Number of characters to display'),
-				'since' => '5.0',
 				'filter' => 'int',
 				'default' => '',
-			),
-			'showCheckbox' => array(
-				'required' => false,
-				'name' => tra('Checkboxes'),
-				'description' => 'Option to show checkboxes',
-				'since' => '7.0',
-				'filter' => 'alpha',
-				'default' => 'y',
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
-					array('text' => tra('No'), 'value' => 'n')
-				)
 			)
 		)
 	);
 }
 
-function wikiplugin_listpages($data, $params)
-{
-	global $prefs, $tiki_p_view;
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
+function wikiplugin_listpages($data, $params) {
+	global $prefs, $tiki_p_view, $tikilib, $smarty;
 
 	if ( isset($prefs) ) {
 		// Handle 1.10.x prefs
@@ -264,22 +187,9 @@ function wikiplugin_listpages($data, $params)
 		// the feature is disabled or the user can't read wiki pages
 		return '';
 	}
-	$default = array(
-		'offset'=>0,
-		'max'=>-1,
-		'sort'=>'pageName_asc',
-		'find'=>'',
-		'start'=>'',
-		'end'=>'',
-		'length'=>-1,
-		'translations'=>null,
-		'translationOrphan'=>null,
-		'showCheckbox' => 'y',
-		'showNumberOfPages' => 'n',
-		'for_list_pages' => 'y',
-	);
+	$default = array('offset'=>0, 'max'=>-1, 'sort'=>'pageName_asc', 'find'=>'', 'start'=>'', 'end'=>'', 'length'=>-1, 'translations'=>null);
 	$params = array_merge($default, $params);
-	extract($params, EXTR_SKIP);
+	extract($params,EXTR_SKIP);
 	$filter = array();
 	if (!isset($initial)) {
 		if (isset($_REQUEST['initial'])) {
@@ -293,10 +203,6 @@ function wikiplugin_listpages($data, $params)
 			$filter['categId'] = explode(':', $categId);
 		} elseif (strstr($categId, '+')) {
 			$filter['andCategId'] = explode('+', $categId);
-		} elseif (strstr($categId, '-')) {
-			$categories = explode('-', $categId);
-			$filter['categId'] = array_shift($categories);
-			$filter['notCategId'] = $categories;
 		} else {
 			$filter['categId'] = $categId;
 		}
@@ -305,15 +211,13 @@ function wikiplugin_listpages($data, $params)
 		$filter['structHead'] = $structHead;
 	}
 	if (!empty($translations) && $prefs['feature_multilingual'] == 'y') {
-		$multilinguallib = TikiLib::lib('multilingual');
+		global $multilinguallib;
+		require_once 'lib/multilingual/multilinguallib.php';
 		if ($translations == 'user') {
 			$translations = $multilinguallib->preferredLangs();
 		} else {
-			$translations = explode('|', $translations);
+			$translations = explode( '|', $translations );
 		}
-	}
-	if (!empty($translationOrphan)) {
-		$filter['translationOrphan'] = explode('|', $translationOrphan);
 	}
 	if (!empty($langOrphan)) {
 		$filter['langOrphan'] = $langOrphan;
@@ -330,65 +234,23 @@ function wikiplugin_listpages($data, $params)
 	$only_cant = false;
 	$listpages = $tikilib->list_pages($offset, $max, $sort, $find, $initial, $exact_match, $only_name, $for_list_pages, $only_orphan_pages, $filter, $only_cant);
 
-	if (!empty($includetag) || !empty($excludetag)) {
-		if (preg_match('/;/', $includetag)) {
-			$aIncludetag = explode(';', $includetag);
-		} else {
-			$aIncludetag[] = $includetag;
-		}
-		if (preg_match('/;/', $excludetag)) {
-			$aExcludetag = explode(';', $excludetag);
-		} else {
-			$aExcludetag[] = $excludetag;
-		}
-		$freetaglib = TikiLib::lib('freetag');
-		$i = 0;
-
-		foreach ( $listpages['data'] as $page ) {
-			$bToRemove = true;
-			$aListTags = $freetaglib->get_tags_on_object($page['pageName'], 'wiki page');
-			if (!empty($aListTags['cant'])) {
-				foreach ($aListTags['data'] as $aListTag) {
-					if (in_array($aListTag['tag'], $aExcludetag) && !empty($aExcludetag[0])) {
-						unset($listpages['data'][$i]);
-						break;
-					}
-					if (in_array($aListTag['tag'], $aIncludetag) === true && !empty($aIncludetag[0])) {
-						$bToRemove = false;
-					}
-				}
-			} elseif (!empty($aIncludetag[0])) {
-				unset($listpages['data'][$i]);
-			}
-			if ($bToRemove && !empty($aIncludetag[0])) {
-				unset($listpages['data'][$i]);
-			}
-			$i++;
-		}
-		sort($listpages['data']);
-		unset($aIncludetag);
-		unset($aExcludetag);
-	}
-
-	if ( is_array($translations) ) {
+	if ( is_array( $translations ) ) {
 		$used = array();
-		foreach ( $listpages['data'] as &$page ) {
+		foreach( $listpages['data'] as &$page ) {
 			$pages = $multilinguallib->getTranslations('wiki page', $page['page_id']);
 
 			$page['translations'] = array();
-			foreach ( $pages as $trad )
-				if ( $trad['lang'] != $lang && in_array($trad['lang'], $translations) ) {
+			foreach( $pages as $trad )
+				if( $trad['lang'] != $lang && in_array($trad['lang'], $translations) ) {
 					$page['translations'][ $trad['lang'] ] = $trad['objName'];
 					$used[$trad['lang']] = $trad['langName'];
 				}
 		}
 
-		$smarty->assign('wplp_used', $used);
+		$smarty->assign( 'wplp_used', $used );
 	}
 
 	$smarty->assign_by_ref('listpages', $listpages['data']);
-	$smarty->assign_by_ref('checkboxes_on', $showCheckbox);
-	$smarty->assign_by_ref('showNumberOfPages', $showNumberOfPages);
 	if (!empty($showPageAlias) && $showPageAlias == 'y')
 		$smarty->assign_by_ref('showPageAlias', $showPageAlias);
 	if (isset($showNameOnly) && $showNameOnly == 'y') {
@@ -396,7 +258,7 @@ function wikiplugin_listpages($data, $params)
 	} else {
 		if (!empty($start) || !empty($end) || $length > 0) {
 			foreach ($listpages['data'] as $i=>$page) {
-				$listpages['data'][$i]['snippet'] = $tikilib->get_snippet($page['data'], $page['outputType'], ! empty($page['is_html']), '', $length, $start, $end);
+				$listpages['data'][$i]['snippet'] = $tikilib->get_snippet($page['data'], $page['is_html'], '', $length, $start, $end);
 			}
 		}
 		$ret = $smarty->fetch('tiki-listpages_content.tpl');

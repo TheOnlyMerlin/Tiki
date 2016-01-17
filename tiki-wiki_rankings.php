@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -14,7 +11,10 @@ require_once ('tiki-setup.php');
 
 include_once ('lib/rankings/ranklib.php');
 
-$access->check_feature(array('feature_wiki', 'feature_wiki_rankings'));
+$smarty->assign('headtitle',tra('Rankings'));
+
+
+$access->check_feature( array('feature_wiki', 'feature_wiki_rankings') );
 $access->check_permission('tiki_p_view');
 
 if (!isset($_REQUEST["limit"])) {
@@ -25,11 +25,11 @@ if (!isset($_REQUEST["limit"])) {
 
 if (isset($_REQUEST["categId"]) && $_REQUEST["categId"] > 0) {
 	$smarty->assign('categIdstr', $_REQUEST["categId"]);
-	$categs = explode(",", $_REQUEST["categId"]);
+	$categs = explode(",",$_REQUEST["categId"]);
 } else {
 	$categs = array();	
 }
-$smarty->assign('categId', $categs);
+$smarty->assign('categId',$categs);
 
 $allrankings = array(
 	array(
@@ -41,7 +41,7 @@ $allrankings = array(
 	'value' => 'wiki_ranking_last_pages'
 ),
 	array(
-	'name' => tra('Most-relevant pages'),
+	'name' => tra('Most relevant pages'),
 	'value' => 'wiki_ranking_top_pagerank'
 ),
 	array(

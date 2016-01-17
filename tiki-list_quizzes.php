@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,7 +7,7 @@
 
 $section = 'quizzes';
 require_once ('tiki-setup.php');
-$quizlib = TikiLib::lib('quiz');
+include_once ('lib/quizzes/quizlib.php');
 $auto_query_args = array('sort_mode', 'offset', 'find');
 $access->check_feature('feature_quizzes');
 $access->check_permission('tiki_p_take_quiz');
@@ -33,10 +30,10 @@ if (isset($_REQUEST["find"])) {
 $smarty->assign('find', $find);
 $smarty->assign_by_ref('sort_mode', $sort_mode);
 $channels = $quizlib->list_quizzes($offset, $maxRecords, $sort_mode, $find);
-Perms::bulk(array( 'type' => 'quiz' ), 'object', $channels['data'], 'quizId');
+Perms::bulk( array( 'type' => 'quiz' ), 'object', $channels['data'], 'quizId' );
 $temp_max = count($channels["data"]);
 for ($i = 0; $i < $temp_max; $i++) {
-	$quizperms = Perms::get(array( 'type' => 'quiz', 'object' => $channels['data'][$i]['quizId'] ));
+	$quizperms = Perms::get( array( 'type' => 'quiz', 'object' => $channels['data'][$i]['quizId'] ) );
 	$channels["data"][$i]["individual_tiki_p_take_quiz"] = $quizperms->take_quiz ? 'y' : 'n';
 	$channels["data"][$i]["individual_tiki_p_view_quiz_stats"] = $quizperms->view_quiz_stats ? 'y' : 'n';
 	$channels["data"][$i]["individual_tiki_p_view_user_stats"] = $quizperms->view_user_stats ? 'y' : 'n';

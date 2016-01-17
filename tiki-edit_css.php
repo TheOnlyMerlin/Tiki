@@ -1,118 +1,150 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-$inputConfiguration = array(
-	array( 'staticKeyFilters' => array(
-		'data' => 'none',
-	)),
-);
-
 include_once ("tiki-setup.php");
-$csslib = TikiLib::lib('css');
-$themelib = TikiLib::lib('theme');
+include_once ("lib/csslib.php");
+
+//
+// Load CSS2 styled file (@import aware)
+//
+// TODO: Will M$ windowz eat '/' as path delimiter?
+//
+function load_css2_file($filename, $styledir) {
+	$data = '';
+
+	$lines = file($filename);
+
+	//
+	foreach ($lines as $line) {
+	/*
+		if (preg_match_all("/@import( |\t)+('|\")(.*)(|\")( |\t)*;/U", $line, $importfiles, PREG_SET_ORDER)) {
+			foreach ($importfiles as $file) {
+				$import = $styledir . '/' . $file[3];
+
+				$data .= load_css2_file($import, substr($import, 0, strrpos($import, "/")));
+				$line = str_replace($file[0], "", $line);
+			}
+		}
+	*/
+		// TODO: Does it matter what $line may contain smth before '@import'? :)
+		$data .= $line;
+	}
+
+	return $data;
+}
+
+if (!isset($prefs['feature_editcss']))
+	$prefs['feature_editcss'] = 'n';
+
+if (!isset($tiki_p_create_css))
+	$tiki_p_create_css = 'n';
 $access->check_feature('feature_editcss');
 $access->check_permission('tiki_p_create_css');
 
-//selecting the theme
-if(!empty($_SESSION['try_theme']) && !isset($_REQUEST['theme'])) {
-	$theme = $_SESSION['try_theme'];
-} elseif (!isset($_REQUEST['theme'])) {
-	$theme = '';
-} else {	
-	$theme = $_REQUEST['theme'];
-}
-$themeOptionName = $themelib->extract_theme_and_option($theme);
-$theme_name = $themeOptionName[0];
-$theme_option_name = $themeOptionName[1];
-$file = $themelib->get_theme_css($theme_name, $theme_option_name);
-$smarty->assign('file', $file);
+if (!isset($_REQUEST["editstyle"]))
+	$_REQUEST["editstyle"] = '';
 
-if (!empty($_REQUEST['edit'])) {
+if (!isset($_REQUEST["sub"]))
+	$_REQUEST["sub"] = '';
+
+if (!isset($_REQUEST["try"]))
+	$_REQUEST["try"] = '';
+
+$editstyle = preg_replace("/[^-_a-z\d]/i","",$_REQUEST["editstyle"]);
+$styledir = "styles";
+
+function get_style_path($editstyle, $styledir) {
+    global $tikidomain;
+	if ($tikidomain and is_file("$styledir/$tikidomain/$editstyle.css")) {
+		return "$styledir/$tikidomain/$editstyle.css";
+	} else {
+		return "$styledir/$editstyle.css";
+	}    
+}
+
+function get_style_mod($editstyle, $styledir) {
+	$style=get_style_path($editstyle, $styledir);
+	$stat=stat($style);
+	return $stat['mode'] & 0666;
+}
+
+if (isset($_REQUEST["edit"])and $_REQUEST["edit"]) {
+
+	$action = 'edit';
+	$data = load_css2_file(get_style_path($editstyle, $styledir), $styledir);
+
+} elseif ((isset($_REQUEST["save"]) and $_REQUEST["save"]) or (isset($_REQUEST["save2"]) and $_REQUEST["save2"])) {
 	check_ticket('edit-css');
-	if (($data = file_get_contents($file)) === false) {
-		$smarty->assign('msg', tra('The specified file does not exist'));
-		$smarty->display('error.tpl');
-		die;
-	}
 	$action = 'edit';
 
-} elseif (!empty($_REQUEST['save']) || !empty($_REQUEST['save_and_view'])) {
-	check_ticket('edit-css');
-	if (file_exists($file)) {
-		$stat = stat($file);
-		$mod = $stat['mode'] & 0666;
+	$data = '';
+	if ($tikidomain and is_dir("$styledir/$tikidomain")) {
+		$style = "$styledir/$tikidomain/$editstyle.css";
 	} else {
-		$mod = NULL;
+		$style = "$styledir/$editstyle.css";
 	}
-	$fp = fopen($file, "w");
+
+	$mod=NULL;
+	$mod = get_style_mod($editstyle, $styledir);
+	$fp = fopen($style, "w");
 	if (!$fp) {
-		$smarty->assign('msg', tra("You do not have permission to write the css file")." $file");
+		$smarty->assign('errortype', 401);
+		$smarty->assign('msg', tra("You do not have permission to write the style sheet")." $style");
+
 		$smarty->display("error.tpl");
 		die;
 	}
 
-	fwrite($fp, $_REQUEST['data']);
-	fclose($fp);
+	fwrite($fp, $_REQUEST["data"]);
+	fclose ($fp);
 	if ($mod !== NULL) {
-		chmod($file, $mod);
+		chmod($style, $mod);
 	}
 
-	if (!empty($_REQUEST['save_and_view'])) {
-		$action = 'view';
-		header("location: tiki-edit_css.php?theme=$theme");
+	if ($_REQUEST["save2"]) {
+		$action = 'display';
+		header("location: tiki-edit_css.php?editstyle=$editstyle");
 	} else {
-		$action = 'edit';
-		header("location: tiki-edit_css.php?theme=$theme&edit=".tra('Edit')."");
+		header("location: tiki-edit_css.php?editstyle=$editstyle&edit=".tra('Edit')."");
 	}
-	$data = '';
-
 } else {
-	$action = 'view';
+	$action = 'display';
+
 	$data = '';
 }
 
 $smarty->assign('action', $action);
 $smarty->assign('data', $data);
 
-if (!empty($theme)) {
-	$cssfile = $themelib->get_theme_css($theme_name, $theme_option_name);
-	$smarty->assign('writable', file_exists($cssfile)? is_writable($cssfile): is_writable(dirname($cssfile)));
-	$cssdata = $csslib->browse_css($cssfile);
-	if ((!$cssdata["error"]) and is_array($cssdata["content"])) {
-		$parsedcss = $csslib->parse_css($cssdata["content"]);
-	} else {
-		$parsedcss = $cssdata["error"];
-	}
-	$smarty->assign('css', $parsedcss);
+if ($tikidomain and is_file("$styledir/$tikidomain/$editstyle.css")) {
+	$cssdata = $csslib->browse_css("$styledir/$tikidomain/$editstyle.css");
+} else {
+	$cssdata = $csslib->browse_css("$styledir/$editstyle.css");
+}
+if ((!$cssdata["error"]) and is_array($cssdata["content"])) {
+	$parsedcss = $csslib->parse_css($cssdata["content"]);
+} else {
+	$parsedcss = $cssdata["error"];
 }
 
-if (!empty($_REQUEST['try'])) {
-	$_SESSION['try_theme'] = $theme;
-	header("location: tiki-edit_css.php?theme=$theme");
+$smarty->assign('css', $parsedcss);
+$smarty->assign('editstyle', $editstyle);
+
+if ($_REQUEST["try"]) {
+	$style = "$editstyle.css";
+	$_SESSION['try_style'] = $style;
+	$prefs['style'] = $style;
 }
 
-if (!empty($_SESSION['try_theme'])) {
-	$try_active = true;
-	$smarty->assign('try_active', $try_active);
-	list($try_theme, $try_theme_option) = $themelib->extract_theme_and_option($_SESSION['try_theme']);
-	$smarty->assign('try_theme', $try_theme);
-	$smarty->assign('try_theme_option', $try_theme_option);
+$list = $csslib->list_css($styledir);
+if ($tikidomain and is_dir("$styledir/$tikidomain")) {
+	$list = array_unique(array_merge($list,$csslib->list_css("$styledir/$tikidomain")));
 }
-
-if (!empty($_REQUEST['cancel_try'])) {
-	$_SESSION['try_theme'] = '';
-	header("location: tiki-edit_css.php?theme=$theme");
-}
-$smarty->assign('theme', $theme);
-$themes = $themelib->list_themes_and_options();
-$smarty->assign('themes', $themes);
+$smarty->assign('list', $list);
 
 ask_ticket('edit-css');
 

@@ -1,37 +1,28 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_calendar_info()
-{
+function wikiplugin_calendar_info() {
 	return array(
 		'name' => tra('Calendar'),
-		'documentation' => 'PluginCalendar',
-		'description' => tra('Display a calendar and its events'),
+		'documentation' => tra('PluginCalendar'),
+		'description' => tra('Includes a calendar and/or a list of calendar events.'),
 		'prefs' => array( 'feature_calendar', 'wikiplugin_calendar' ),
-		'iconname' => 'calendar',
-		'format' => 'html',
-		'introduced' => 4,
 		'params' => array(
 			'calIds' => array(
 				'name' => tra('Calendar IDs'),
-				'description' => tra('Comma-separated list of calendar Ids to restrict the events to specified calendars.')
-					. " " . tra('Example values:') . '<code>13</code>, <code>4,7</code> ' . tra('Not set by default.'),
-				'since' => '4.0',
+				'description' => tra('If set to a list of calendar identifiers, restricts the events to those in the identified calendars. Identifiers are separated by commas (",").') . " " . tra('Example values:') . '"13", "4,7", "31,49". ' . tra('Not set by default.'),
 				'filter' => 'digits',
 				'separator' => ',',
 				'default' => '',
-				'profile_reference' => 'calendar',
 			),
 			'viewlist' => array(
 				'required' => false,
 				'name' => tra('View Type'),
-				'description' => tra('Determines how events.') . ' ' . tr('%0 (default) shows events in a calendar.',
-					'<code>table</code>'),
-				'since' => '4.0',
+				'description' => tra('Determines how to show events.') . ' ' . tra('Possible values:') . ' ' . 'table, list, both. ' . tra('"table" shows events in a calendar.') . ' ' . tra('Default value:') . ' table.',
 				'filter' => 'word',
 				'default' => 'table',
 				'options' => array(
@@ -43,9 +34,8 @@ function wikiplugin_calendar_info()
 			),
 			'viewmode' => array(
 				'name' => tra('View Time Span'),
-				'description' => tr('If in calendar (%0) View Type, determines the time span displayed by the
-					calendar.', '<code>table</code>') . tra('Default is month'),
-				'since' => '4.0',
+				'description' => tra('If in calendar (or "table") view type, determines the time span displayed by the calendar.') . ' ' . tra('Possible values:') . ' year, semester, quarter, month, week, day. '
+										. tra('Default is month'),
 				'filter' => 'word',
 				'default' => 'month',
 				'options' => array(
@@ -61,8 +51,7 @@ function wikiplugin_calendar_info()
 			'viewnavbar' => array(
 				'required' => false,
 				'name' => tra('Navigation Bar'),
-				'description' => tra('Show or hide the navigation bar (not shown by default)'),
-				'since' => '4.0',
+				'description' => tra('Decide or not to show the navigation bar (not shown by default)'),
 				'filter' => 'alpha',
 				'default' => 'n',
 				'options' => array(
@@ -75,14 +64,11 @@ function wikiplugin_calendar_info()
 	);
 }
 
-function wikiplugin_calendar($data, $params)
-{
-	global $prefs, $tiki_p_admin, $tiki_p_view_calendar;
-	global $dc, $user;
+function wikiplugin_calendar($data, $params) {
+    global $smarty, $tikilib, $prefs, $tiki_p_admin, $tiki_p_view_calendar;
+    global $dbTiki, $dc, $user, $calendarlib;
 
-	$smarty = TikiLib::lib('smarty');
-	$tikilib = TikiLib::lib('tiki');
-	$calendarlib = TikiLib::lib('calendar');
+    require_once("lib/calendar/calendarlib.php");
 
 	if ( empty($params['calIds']) ) {
 		$params['calIds'] = array(1);
@@ -109,14 +95,14 @@ function wikiplugin_calendar($data, $params)
 		'ord' => null,
 	);
 
-	$modlib = TikiLib::lib('mod');
+	global $modlib; require_once 'lib/modules/modlib.php';
 	$out = '';
 	if ($params['viewlist'] == 'table' || $params['viewlist'] == 'both') {
-		$out .= $modlib->execute_module($module_reference);
+		$out .= $modlib->execute_module( $module_reference );
 	}
 	if ( $params['viewlist'] == 'list' || $params['viewlist'] == 'both' ) {
 		$module_reference['params']['viewlist'] = 'list';
-		$out .= "<div>".$modlib->execute_module($module_reference)."</div>";
+		$out .= "<div>".$modlib->execute_module( $module_reference )."</div>";
 	}
 
 	return "<div>$out</div>";

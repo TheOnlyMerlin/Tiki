@@ -1,51 +1,42 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_subscribenewsletter_info()
-{
+function wikiplugin_subscribenewsletter_info() {
 	return array(
 		'name' => tra('Subscribe newsletter'),
-		'documentation' => 'PluginSubscribeNewsletter',
-		'description' => tra('Allow users to subscribe to a newsletter'),
+		'documentation' => tra('PluginSubscribeNewsletter'),
+		'description' => tra('A button to subscribe to a newsletter available for a user if not already in'),
 		'prefs' => array('feature_newsletters', 'wikiplugin_subscribenewsletter'),
 		'body' => tra('Invitation message'),
-		'iconname' => 'articles',
-		'introduced' => 5,
-		'tags' => array( 'basic' ),
 		'params' => array(
 			'nlId' => array(
 				'required' => true,
 				'name' => tra('Newsletter ID'),
-				'description' => tra('Identification number of the Newsletter that you want to allow the users to subscribe to'),
-				'since' => '5.0',
+				'description' => tra('Identification number (nlId) of the Newsletter that you want to allow the users to subscribe to'),
 				'filter' => 'digits',
 				'default' => '',
-				'profile_reference' => 'newsletter',
 			),
 			'thanks' => array(
 				'required' => false,
 				'name' => tra('Confirmation Message'),
 				'description' => tra('Confirmation message after posting form. The plugin body is then the button label.'),
-				'since' => '5.0',
 				'filter' => 'wikicontent',
 			),
 			'button' => array(
 				'required' => false,
 				'name' => tra('Button'),
 				'description' => tra('Button label. The plugin body is then the confirmation message'),
-				'since' => '5.0',
 				'filter' => 'wikicontent',
 			),
 			'wikisyntax' => array(
 				'required' => false,
 				'safe' => true,
 				'name' => tra('Wiki Syntax'),
-				'description' => tra('Choose whether the output should be parsed as wiki syntax'),
-				'since' => '6.0',
+				'description' => tra('Choose whether the output should be parsed as wiki syntax (Optional). Options: 0 (no parsing, default), 1 (parsing)'),
 				'filter' => 'int',
 				'default' => 0,
 				'options' => array(
@@ -58,12 +49,8 @@ function wikiplugin_subscribenewsletter_info()
 		),
 	);
 }
-function wikiplugin_subscribenewsletter($data, $params)
-{
-	global $prefs, $user;
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
+function wikiplugin_subscribenewsletter($data, $params) {
+	global $prefs, $user, $userlib, $smarty, $tikilib;
 	global $nllib; include_once('lib/newsletters/nllib.php');
 	extract($params, EXTR_SKIP);
 	if ($prefs['feature_newsletters'] != 'y') {
@@ -114,7 +101,7 @@ function wikiplugin_subscribenewsletter($data, $params)
 	$res = $smarty->fetch('wiki-plugins/wikiplugin_subscribenewsletter.tpl');
 	if (isset($params["wikisyntax"]) && $params["wikisyntax"]==1) {
 		return $res;
-	} else { 		// if wikisyntax != 1 : no parsing of any wiki syntax
+	}else{ 		// if wikisyntax != 1 : no parsing of any wiki syntax
 		return '~np~'.$res.'~/np~';
 	}
 }

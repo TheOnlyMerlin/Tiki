@@ -1,18 +1,12 @@
-{* $Id$ *}<!DOCTYPE html>
-<html id="print" lang="{if !empty($pageLang)}{$pageLang}{else}{$prefs.language}{/if}">
-	<head>
-{include file='header.tpl'}
-	</head>
-	<body{html_body_attributes}>
-
-		<div id="tiki-clean">
+<html id="print">
+	<head><title>{$post_info.title|escape}</title></head>
+	<body class="tiki_blogs print">
+		<div style="margin: 2%">
 			{include file='blog_wrapper.tpl' blog_post_context='print'}
-			<hr>
+			<hr />
 			<small>
-				{tr}Permalink:{/tr} <a class="link" href="{$post_info.postId|sefurl:blogpost}">{$base_url}{$post_info.postId|sefurl:blogpost}</a>
+				{tr}Permalink{/tr}: <a class="link" href="{$post_info.postId|sefurl:blogpost}">{$base_url}{$post_info.postId|sefurl:blogpost}</a>
 			</small>
 		</div>
-
-{include file='footer.tpl'}
 	</body>
 </html>

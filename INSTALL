@@ -1,7 +1,7 @@
-This directory contains source code to Tiki Wiki CMS Groupware
+This directory contains source code to Tiki Wiki CMS/Groupware
 
 
-Tiki Wiki CMS Groupware is Free and Open Source Software (FOSS). It is a community-driven project. 
+Tiki Wiki CMS/Groupware is Free and Open Source Software (FOSS). It is a community-driven project. 
 It exists and improves by the participation of people just like YOU.
 
 
@@ -75,13 +75,13 @@ Next you can configure Tiki to suit your needs:
 
 * Use a profile to populate your database.
 * Choose which features you want enabled
-  - go to tiki-admin.php by clicking on the "Control Panels" link
+  - go to tiki-admin.php by clicking on the "Admin" or "Admin Home" link
   on the left side of your screen 
 * (Optionally) create groups of users that share permissions
 * Assign appropriate permissions 
 
 
-Good luck and have fun with Tiki Wiki CMS Groupware!
+Good luck and have fun with Tiki Wiki CMS/Groupware!
 
 --------------------------------------------------------------------------------
 

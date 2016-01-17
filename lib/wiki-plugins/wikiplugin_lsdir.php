@@ -1,44 +1,47 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
+/*
+ * Tikiwiki LSDIR plugin: lists files in a directory
+ * 
+ * Syntax:
+ * 
+ *  {LSDIR([dir=>/dirpath/],[urlprefix=>prefix],[sortby=>name|atime|ctime|mtime|size],[sortmode=>asc|desc],[filter=>search_text],[limit=>#])}
+ *  {LSDIR}
+ */
 
-function wikiplugin_lsdir_info()
-{
+function wikiplugin_lsdir_help() {
+	return tra("Lists files in a directory").":<br />~np~{LSDIR(dir=>/dirpath/,urlprefix=>http://localhost/,sort=>name,filter=>.ext,limit=>5)}{LSDIR}~/np~";
+}
+
+function wikiplugin_lsdir_info() {
 	return array(
 		'name' => tra('List Directory'),
-		'documentation' => 'PluginLsDir',
-		'description' => tra('List files in a directory'),
+		'documentation' => tra('PluginLsDir'),	
+		'description' => tra('Lists files in a directory'),
 		'prefs' => array( 'wikiplugin_lsdir' ),
 		'validate' => 'all',
-		'iconname' => 'file-archive',
-		'introduced' => 1,
 		'params' => array(
 			'dir' => array(
 				'required' => true,
 				'name' => tra('Directory'),
 				'description' => tra('Full path to the server-local directory. Default is the document root.'),
-				'since' => '1',
 				'default' => '',
 			),
 			'urlprefix' => array(
 				'required' => false,
 				'name' => tra('URL Prefix'),
-				'description' => tra('Make the file name a link to the file by adding the URL path preceding the file
-					name. Example:') . ' <code>http://yoursite.com/tiki/</code>',
-				'since' => '1',
-				'default' => NULL,
-				'filter' => 'url',
+				'description' => tra('Make the file name a link to the file by adding the url path preceding the file name. Example: http://yoursite.com/tiki/'),
+				'default' => NULL
 			),
 			'sort' => array(
 				'required' => false,
 				'name' => tra('Sort Order'),
 				'description' => tra('Set the sort order of the file list'),
-				'since' => '1',
 				'default' => 'name',
-				'filter' => 'word',
 				'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('File Name'), 'value' => 'name'), 
@@ -51,25 +54,20 @@ function wikiplugin_lsdir_info()
 			'filter' => array(
 				'required' => false,
 				'name' => tra('Filter'),
-				'description' => tra('Only list files with file names that contain this filter. Example:')
-					. ' <code>.jpg</code>',
-				'since' => '1',
+				'description' => tra('Only list files with filenames that contain this filter. Example: ".jpg"'),
 				'default' => NULL
 			),
 			'limit' => array(
 				'required' => false,
 				'name' => tra('Limit'),
 				'description' => tra('Maximum amount of files to display. Default is no limit.'),
-				'since' => '1',
 				'default' => 0,
-				'filter' => 'digits',
 			),
 		),
 	);
 }
 
-function wikiplugin_lsdir($data, $params)
-{
+function wikiplugin_lsdir($data, $params) {
 	global $tikilib;
 //	$dir = '';
 	$dir = $params['dir'];
@@ -138,7 +136,7 @@ function wikiplugin_lsdir($data, $params)
 	}
 	
 	while ($file = readdir($dh)) {
-		if (empty($filter) || stristr($file, $filter)) {
+		if (empty($filter) || stristr($file,$filter)) {
 			//Don't list subdirectories
 			if (!is_dir("$dir/$file")) {
 				if ($sort == 'name') {
@@ -158,7 +156,7 @@ function wikiplugin_lsdir($data, $params)
 		krsort($tmp_array);
 	}
 	
-	foreach ($tmp_array as $filename) {
+	foreach($tmp_array as $filename) {
 		if ($count >= $limit) {
 			break 1;
 		}

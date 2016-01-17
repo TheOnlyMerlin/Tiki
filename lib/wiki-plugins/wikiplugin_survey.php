@@ -1,44 +1,48 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2010 by authors of the Tiki Wiki/CMS/Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-function wikiplugin_survey_info()
-{
+/*
+ *
+ * SURVEY plugin. Display a survey.
+ *
+ * Syntax:
+ *
+ * {SURVEY(id=xxx, lang=xxx)}{SURVEY}
+ *
+ */
+function wikiplugin_survey_help() {
+	return tra("survey").":~np~{SURVEY(id=xxx, lang=xxx)}{SURVEY}~/np~";
+}
+
+function wikiplugin_survey_info() {
 	return array(
 		'name' => tra('Survey'),
-		'documentation' => 'PluginSurvey',
-		'description' => tra('Embed a survey'),
+		'documentation' => tra('PluginSurvey'),		
+		'description' => tra('Displays a survey'),
 		'prefs' => array( 'feature_surveys', 'wikiplugin_survey' ),
 		'body' => '',
-		'iconname' => 'thumbs-up',
-		'introduced' => 3,
 		'params' => array(
 			'id' => array(
 				'required' => true,
 				'name' => tra('Id'),
-				'description' => tra('Id of the survey set up by the administrator'),
-				'since' => '3.0',
+				'description' => tra('Id'),
 				'filter' => 'digits',
 				'default' => '',
-				'profile_reference' => 'survey',
 			),
 			'page' => array(
 				'required' => false,
 				'name' => tra('Page'),
 				'description' => tra('Wiki Page to redirect the user after his vote'),
-				'since' => '3.0',
-				'filter' => 'text',
 				'default' => 'tiki-list_surveys.php',
-				'profile_reference' => 'wiki_page',
 			),
 			'lang' => array(
 				'required' => false,
 				'name' => tra('Language'),
-				'description' => tra('Language for the survey'),
-				'since' => '3.0',
+				'description' => tra('Language'),
 				'filter' => 'alpha',
 				'default' => '',
 			),
@@ -46,8 +50,7 @@ function wikiplugin_survey_info()
 	);
 }
 
-function wikiplugin_survey($data, $params)
-{
+function wikiplugin_survey($data, $params) {
 	global $tiki_p_take_survey;
 	if ( $tiki_p_take_survey != 'y' ) return '';
 
@@ -87,7 +90,7 @@ function wikiplugin_survey($data, $params)
 
 	$survey_info = $srvlib->get_survey($params['id']);
 
-	$smarty = TikiLib::lib('smarty');
+	global $smarty;
 	$smarty->assign('surveyId', $params['id']);
 	$smarty->assign('survey_info', $survey_info);
 	$smarty->assign('questions', $questions['data']);
