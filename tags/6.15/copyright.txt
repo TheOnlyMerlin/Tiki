@@ -1,0 +1,2437 @@
+Tiki Copyright
+----------------
+
+The following list attempts to gather the copyright holders for Tiki
+as of version 6.0.
+
+Accounts listed below with commits have contributed source code to CVS or SVN. 
+Please note that even more people contributed on various other aspects (documentation, 
+bug reporting, testing, etc.)
+
+This is how we implement the Tiki Social Contract.
+http://tiki.org/Social+Contract
+
+List of members of the Community
+As of 2016-01-17, the community has:
+  * 287 members on SourceForge.net,
+  * 0 of those people who made at least one code commit
+
+This list is automatically generated and alphabetically sorted
+from subversion repository by the following script:
+  doc/devtools/release_copyright.php
+
+Counting the commits is not as trivial as it may sound. If your number of commits
+seems incorrect, it could be that the script is not detecting them all. This 
+has been reported especially for commits early on in the project. Nonetheless, 
+the list provides a general idea.
+
+====================================================================
+
+Nickname: ace_mtp
+Name: Vianney Lecroart
+SF Role: Developer
+    
+    
+    
+        Cyril Chaboisseau
+
+Nickname: afahlvik
+Name: Arve Fahlvik
+First Commit: 2004-03-25
+SF Role: Developer
+    
+    
+    
+        Adam Gorski
+
+Nickname: aholmes99
+Name: Aaron Holmes
+SF Role: Developer
+    
+    
+    
+        Aigars Mahinovs
+
+Nickname: ajd24
+Name: Art
+SF Role: Developer
+    
+    
+    
+        Akshi Gupta
+
+Nickname: alain_desilets
+Name: Alain DÃ©silets
+First Commit: 2008-03-11
+SF Role: Developer
+    
+    
+    
+        Al Brown
+
+Nickname: alenaernst
+Name: Alena Ernst
+First Commit: 2009-12-10
+SF Role: Developer
+    
+    
+    
+        Alexandre Cunha
+
+Nickname: alex
+Name: Alexander Meisel
+SF Role: Developer
+    
+    
+    
+        Alexandre Freire
+
+Nickname: alexandrequessy
+Name: Alexandre Quessy
+First Commit: 2014-04-17
+SF Role: Developer
+    
+    
+    
+        Alessandro
+
+Nickname: ameoba32
+Name: Constantin Bosneaga
+SF Role: Developer
+    
+    
+    
+        Alexander Mette
+
+Nickname: amnabilal
+Name: Amna Bilal
+SF Role: Developer
+    
+    
+    
+        Andreas Motl
+
+Nickname: anbumania
+Name: Anbumani
+SF Role: Developer
+    
+    
+    
+        Andreas Bacouroff
+
+Nickname: andrew-cl
+Name: Andrew Cunningham-Lee
+SF Role: Developer
+    
+    
+    
+        Claudio Anelli
+
+Nickname: anenga
+Name: Chris Kaleiki
+SF Role: Developer
+    
+    
+    
+        Andreas Neuhaus
+
+Nickname: ang23
+Name: Lorinc Czegledi
+First Commit: 2004-08-11
+SF Role: Developer
+    
+    
+    
+        Andrzej
+
+Nickname: anzhe
+Name: Drew Heath
+SF Role: Developer
+    
+    
+    
+        APNIC Solutions
+
+Nickname: app_maker
+Name: apPmaKer
+SF Role: Developer
+    
+    
+    
+        André Proulx
+
+Nickname: arildb
+First Commit: 2011-09-04
+SF Role: Developer
+    
+    
+    
+        Xavier Soler
+
+Nickname: as6o
+Name: Aaron Siri
+SF Role: Developer
+    
+    
+    
+        atooni
+
+Nickname: aurel42
+Name: Marc
+First Commit: 2004-03-01
+SF Role: Developer
+    
+    
+    
+        Andre
+
+Nickname: awolfff
+Name: Andreas Wolff
+First Commit: 2007-01-21
+SF Role: Developer
+    
+    
+    
+        Aldo Bg
+
+Nickname: az3rty
+SF Role: Developer
+    
+    
+    
+        Chris Bacigalupo
+
+Nickname: bajur
+Name: Bartek Jurkiewicz
+First Commit: 2011-03-15
+SF Role: Developer
+    
+    
+    
+        Markus Liljergren
+
+Nickname: bburgaud
+Name: Baptiste Burgaud
+First Commit: 2003-12-15
+SF Role: Developer
+    
+    
+    
+        Valentin Nedkov
+
+Nickname: beastrider
+Name: Wayne Herbert
+SF Role: Developer
+    
+    
+    
+        Benoit Grégoire
+
+Nickname: bergmann
+Name: Sebastian Bergmann
+First Commit: 2009-10-14
+SF Role: Developer
+    
+    
+    
+        Berry Parker
+
+Nickname: beuc
+Name: Beuc
+First Commit: 2006-05-22
+SF Role: Developer
+    
+    
+    
+        billsos
+
+Nickname: bitey
+Name: Bitey McBiterson
+First Commit: 2008-08-27
+SF Role: Developer
+    
+    
+    
+        Benoit des Ligneris
+
+Nickname: bludok
+Name: Bludok Systems Limited
+SF Role: Developer
+    
+    
+    
+        Dave Thacker
+
+Nickname: bluybrink
+Name: Bluy Brink
+SF Role: Developer
+    
+    
+    
+        bobenrieth
+
+Nickname: bozze
+Name: Bruno Zuzze
+SF Role: Developer
+    
+    
+    
+        Alan Schmitt
+
+Nickname: brian_moore
+Name: Brian Moore
+First Commit: 2008-04-16
+SF Role: Developer
+    
+    
+    
+        Vincent B
+
+Nickname: btallman
+Name: Ben Tallman
+SF Role: Developer
+    
+    
+    
+        Brian Todoroff
+
+Nickname: bubi
+Name: Burghard W.V. Britzke
+First Commit: 2010-05-19
+SF Role: Developer
+    
+    
+    
+        Nick Rapitosovich
+
+Nickname: c0ldfusi0n
+Name: Pier Luc Petitclerc
+SF Role: Developer
+    
+    
+    
+        Carsten Schmitz
+
+Nickname: caevermann
+Name: carsten aevermann
+First Commit: 2011-03-07
+SF Role: Developer
+    
+    
+    
+        Patricia  M Campbell
+
+Nickname: carlom
+SF Role: Developer
+    
+    
+    
+        Carol Gauthier
+
+Nickname: carpasbo
+SF Role: Developer
+    
+    
+    
+        Chris Austin
+
+Nickname: cbowman
+Name: Christopher
+SF Role: Developer
+    
+    
+    
+        Ccardinal
+
+Nickname: cdrwhite
+Name: JÃ¶rn Ott
+First Commit: 2010-05-10
+SF Role: Developer
+    
+    
+    
+        Claudio Bustos
+
+Nickname: cfreeze
+Name: Chris Freeze
+SF Role: Developer
+    
+    
+    
+        Christophe Weis
+
+Nickname: chandi
+Name: Chandi Bernier
+SF Role: Developer
+    
+    
+    
+        Philippe Cloutier
+
+Nickname: changi67
+Name: Jean-FranÃ§ois  B.
+First Commit: 2009-04-23
+SF Role: Admin
+    
+    
+    
+        Gary Cunningham-Lee
+
+Nickname: chessy
+Name: Juanan Pereira
+SF Role: Developer
+    
+    
+    
+        Chris Holman
+
+Nickname: chriscramer
+Name: Chris Cramer
+First Commit: 2008-03-04
+SF Role: Developer
+    
+    
+    
+        Chuck Hagenbuch
+
+Nickname: citadelrock
+Name: Citadel Rock Online Communities
+First Commit: 2012-04-24
+SF Role: Developer
+    
+    
+    
+        Chris Claborne
+
+Nickname: colinmo
+Name: Colin Morris
+SF Role: Developer
+    
+    
+    
+        Dac Chartrand
+
+Nickname: connermo
+Name: Conner Mo
+First Commit: 2003-07-30
+SF Role: Developer
+    
+    
+    
+        Bruno Moreira
+
+Nickname: cyantree
+First Commit: 2004-08-10
+SF Role: Developer
+    
+    
+    
+        Daniel Cedilotte
+
+Nickname: d0cster
+Name: Docster
+First Commit: 2012-10-13
+SF Role: Developer
+    
+    
+    
+        Daniel Pocock
+
+Nickname: dabright
+Name: D.A. Bright
+First Commit: 2003-11-12
+SF Role: Developer
+    
+    
+    
+        Dirk Aevermann
+
+Nickname: dan-btown
+Name: Dan.BTown
+SF Role: Developer
+    
+    
+    
+        daniam
+
+Nickname: darzee
+Name: C. Outteryck
+First Commit: 2007-01-23
+SF Role: Developer
+    
+    
+    
+        Daniel Cedilotte
+
+Nickname: dclem
+Name: Daniel Clemente
+First Commit: 2010-11-22
+SF Role: Developer
+    
+    
+    
+        Salem Derisavi
+
+Nickname: devilwct
+Name: Johnny Verstijlen
+SF Role: Developer
+    
+    
+    
+        Nicolas Vilz
+
+Nickname: dexl_2000
+Name: Thunder_Dex
+First Commit: 2009-06-02
+SF Role: Developer
+    
+    
+    
+        Douglas Green
+
+Nickname: dialogik
+Name: Dia Logik
+SF Role: Developer
+    
+    
+    
+        diE
+
+Nickname: dim_m
+Name: Dimitris Moraitis
+SF Role: Developer
+    
+    
+    
+        dimaz
+
+Nickname: djnz
+Name: MrAnchovy
+First Commit: 2004-03-02
+SF Role: Developer
+    
+    
+    
+        Damien Joguet
+
+Nickname: djpgm
+Name: Philippe Dallaire
+First Commit: 2011-04-08
+SF Role: Developer
+    
+    
+    
+        David (djst) Tenser
+
+Nickname: dlech27
+Name: David Lechner
+SF Role: Developer
+    
+    
+    
+        Dmytro Kovalov
+
+Nickname: docekal
+Name: Jan LindÃ¥ker
+First Commit: 2003-09-03
+SF Role: Developer
+    
+    
+    
+        Christoph Drieschner
+
+Nickname: drsassafras
+Name: Dr. Sassafras
+First Commit: 2014-04-03
+SF Role: Developer
+    
+    
+    
+        duebel
+
+Nickname: durkin10
+Name: Sean B. Durkin
+First Commit: 2011-10-17
+SF Role: Developer
+    
+    
+    
+        Emin
+
+Nickname: eesa
+Name: Abdul-Wahid Paterson
+SF Role: Developer
+    
+    
+    
+        egma
+
+Nickname: einstine
+Name: Thomas
+SF Role: Developer
+    
+    
+    
+        Nicolas Marchildon
+
+Nickname: eliasgonzales
+Name: Elias Gonzales
+First Commit: 2014-03-12
+SF Role: Developer
+    
+    
+    
+        emanuelq
+
+Nickname: emenems
+Name: Marcel van Groenigen
+SF Role: Developer
+    
+    
+    
+        Espen Oyslebo
+
+Nickname: epolidor
+Name: Eduardo Daniel Polidor
+First Commit: 2002-11-25
+SF Role: Developer
+    
+    
+    
+        Jason M. Felice
+
+Nickname: ericisgood
+Name: EricIsGood
+First Commit: 2008-11-02
+SF Role: Developer
+    
+    
+    
+        eromneg
+
+Nickname: essele
+Name: Lee Essen
+SF Role: Developer
+    
+    
+    
+        Etienne Lachance
+
+Nickname: etuate
+Name: edagentile
+First Commit: 2008-05-14
+SF Role: Developer
+    
+    
+    
+        Evan Prodromou
+
+Nickname: evertpot
+Name: Evert
+SF Role: Developer
+    
+    
+    
+        Enrico Würfel
+
+Nickname: ezago
+Name: Eric Zago
+SF Role: Developer
+    
+    
+    
+        Ephes
+
+Nickname: fanzila
+Name: Pierre Doleans
+SF Role: Developer
+    
+    
+    
+        FAREH Abdelhak
+
+Nickname: fbergeron
+Name: Frederic Bergeron
+SF Role: Developer
+    
+    
+    
+        Fernăo Lopes
+
+Nickname: fhcorrea
+Name: Fernando Henrique
+First Commit: 2004-06-15
+SF Role: Developer
+    
+    
+    
+        Filip Miletic
+
+Nickname: floh1111
+Name: Floh1111
+First Commit: 2009-06-11
+SF Role: Developer
+    
+    
+    
+        Florian Link
+
+Nickname: fmathias
+Name: Fabio Rampazzo Mathias
+First Commit: 2006-09-07
+SF Role: Developer
+    
+    
+    
+        Frank Guthausen
+
+Nickname: fmjrey
+Name: FranÃ§ois Rey
+SF Role: Developer
+    
+    
+    
+        Frank M. Kromann
+
+Nickname: fr_rodo
+Name: rodo
+First Commit: 2006-11-28
+SF Role: Developer
+    
+    
+    
+        Franck Martin
+
+Nickname: freephile
+Name: Greg Rundlett
+SF Role: Developer
+    
+    
+    
+        alain vicet
+
+Nickname: fukuchi
+Name: Kentaro Fukuchi
+First Commit: 2003-08-10
+SF Role: Developer
+    
+    
+    
+        John Bair
+
+Nickname: funkju
+Name: Justin Funk
+SF Role: Developer
+    
+    
+    
+        Alain Gaeremynck
+
+Nickname: garethmcc
+Name: Gareth McCumskey
+SF Role: Developer
+    
+    
+    
+        Garfield
+
+Nickname: garypp
+Name: Gary Pomerant
+First Commit: 2011-07-05
+SF Role: Developer
+    
+    
+    
+        gaxweb
+
+Nickname: gene203
+Name: Gene
+SF Role: Developer
+    
+    
+    
+        Gert Dewit
+
+Nickname: gezzzan
+Name: gezza
+First Commit: 2009-05-02
+SF Role: Developer
+    
+    
+    
+        Gour
+
+Nickname: ggeller
+Name: George Geller
+First Commit: 2003-12-07
+SF Role: Developer
+    
+    
+    
+        Giacomel
+
+Nickname: gillesm
+Name: Gilles Maire
+First Commit: 2003-11-04
+SF Role: Developer
+    
+    
+    
+        Gil Shwartz
+
+Nickname: giottomx
+Name: Giotto
+First Commit: 2004-07-15
+SF Role: Developer
+    
+    
+    
+        Gustavo Muslera
+
+Nickname: gongo
+Name: Dimitri Smits
+First Commit: 2003-11-09
+SF Role: Developer
+    
+    
+    
+        spider
+
+Nickname: gregejack
+Name: Greg J
+SF Role: Developer
+    
+    
+    
+        Greg Martin
+
+Nickname: grom_3
+Name: Cameron Zemek
+SF Role: Developer
+    
+    
+    
+        Stephane Grundschober
+
+Nickname: gspira
+Name: Greg Spira
+SF Role: Developer
+    
+    
+    
+        gta74
+
+Nickname: guideweb
+Name: Samuel Denis D&#39;Ortun
+First Commit: 2003-08-24
+SF Role: Developer
+    
+    
+    
+        Guido Scherp
+
+Nickname: gunnarre
+Name: Gunnar RenÃ© Åie
+First Commit: 2004-04-22
+SF Role: Developer
+    
+    
+    
+        Sean
+
+Nickname: guyfr
+Name: Francois Guy
+SF Role: Developer
+    
+    
+    
+        Marc Kalberer
+
+Nickname: hans33
+Name: Hans van Ee
+SF Role: Developer
+    
+    
+    
+        Hartsa1
+
+Nickname: hina
+Name: hinasita
+SF Role: Developer
+    
+    
+    
+        hollmeer
+
+Nickname: homunq
+Name: Homunq
+SF Role: Developer
+    
+    
+    
+        Hans Saelens
+
+Nickname: hubert_doublev3
+Name: Hubert Sirois
+SF Role: Developer
+    
+    
+    
+        Peter.Lucius
+
+Nickname: hyper
+Name: Bobby Joe
+SF Role: Developer
+    
+    
+    
+        Dennis Cooley
+
+Nickname: ice8878
+Name: Conrad Rentsch
+First Commit: 2006-03-03
+SF Role: Developer
+    
+    
+    
+        Idou
+
+Nickname: ikky
+SF Role: Developer
+    
+    
+    
+        illori
+
+Nickname: ingesol
+Name: Inge Solvoll
+First Commit: 2003-05-28
+SF Role: Developer
+    
+    
+    
+        Mike Benoit
+
+Nickname: isotopp
+Name: Kristian KÃ¶hntopp
+First Commit: 2003-07-25
+SF Role: Developer
+    
+    
+    
+        Elvira
+
+Nickname: jaan1024
+Name: Ivan Muravyev
+SF Role: Developer
+    
+    
+    
+        jacmoe
+
+Nickname: jahlewis
+Name: John Lewis
+SF Role: Developer
+    
+    
+    
+        Djamel Kadi
+
+Nickname: janptak
+Name: jan ptak
+SF Role: Developer
+    
+    
+    
+        Jason Diceman
+
+Nickname: jasonhendee
+Name: Jason Hendee
+SF Role: Developer
+    
+    
+    
+        Chandra
+
+Nickname: jaycampbell
+Name: Jay Campbell
+SF Role: Developer
+    
+    
+    
+        Josh Burley
+
+Nickname: jcwinnie
+Name: Jonathan Smith
+SF Role: Developer
+    
+    
+    
+        Jana Sullinger
+
+Nickname: jdrexler
+Name: Josef Drexler
+First Commit: 2006-02-01
+SF Role: Developer
+    
+    
+    
+        Jean-Luc NAVARRO
+
+Nickname: jeanhabib
+Name: habib
+SF Role: Developer
+    
+    
+    
+        Larry Lewis
+
+Nickname: jeremy_lee
+Name: Jeremy Lee
+First Commit: 2009-02-16
+SF Role: Developer
+    
+    
+    
+        Jean-François Noubel
+
+Nickname: jjermann
+Name: Jonas Jermann
+SF Role: Developer
+    
+    
+    
+        John Jolly
+
+Nickname: jjongsma
+Name: Jeremy Jongsma
+SF Role: Developer
+    
+    
+    
+        Jim Kring
+
+Nickname: jlgordo
+Name: JosÃ© Luis Gordo Romero
+SF Role: Developer
+    
+    
+    
+        Joshua Morin
+
+Nickname: jmaspons
+Name: Joan Maspons
+First Commit: 2006-06-11
+SF Role: Developer
+    
+    
+    
+        Juzan Jean-Michel
+
+Nickname: jobicarter
+First Commit: 2013-11-14
+SF Role: Developer
+    
+    
+    
+        Johann-Peter Hartmann
+
+Nickname: johan_mx
+Name: Johan Hovold
+SF Role: Developer
+    
+    
+    
+        Johannes Moser
+
+Nickname: johndpar
+Name: John
+SF Role: Developer
+    
+    
+    
+        John Parker
+
+Nickname: jonnybradley
+Name: jonny Bradley
+First Commit: 2007-08-15
+SF Role: Admin
+    
+    
+    
+        Jean-Marc Libs
+
+Nickname: josefgc
+First Commit: 2006-11-20
+SF Role: Developer
+    
+    
+    
+        Jocelyn Poitras
+
+Nickname: jp_eagle
+Name: John.P.Eagle
+First Commit: 2014-04-02
+SF Role: Developer
+    
+    
+    
+        Juan Pablo Giménez
+
+Nickname: jpowys
+Name: Jason powers
+SF Role: Developer
+    
+    
+    
+        Javier Reyes
+
+Nickname: jshauk
+Name: Gavin Crenshaw
+First Commit: 2014-01-21
+SF Role: Developer
+    
+    
+    
+        James Socol
+
+Nickname: jtpuk
+Name: Suzanne Jones
+SF Role: Developer
+    
+    
+    
+        It is just me
+
+Nickname: juxtagonale
+Name: Marie-Michelle Ouellet
+First Commit: 2013-11-18
+SF Role: Developer
+    
+    
+    
+        James Wigdahl
+
+Nickname: jyesbeat
+Name: Jyes Beat
+SF Role: Developer
+    
+    
+    
+        Martin Minka
+
+Nickname: kalendin
+Name: Till
+SF Role: Developer
+    
+    
+    
+        Mike Kerr
+
+Nickname: kfink
+Name: Kimberly Fink
+SF Role: Developer
+    
+    
+    
+        Killian EBEL
+
+Nickname: kissaki
+Name: Kissaki
+First Commit: 2009-07-26
+SF Role: Developer
+    
+    
+    
+        KodeWulf
+
+Nickname: kokohuyb
+Name: koko
+First Commit: 2008-03-25
+SF Role: Developer
+    
+    
+    
+        Simon Vogl
+
+Nickname: koohiisan
+Name: Koohiisan
+First Commit: 2014-02-13
+SF Role: Developer
+    
+    
+    
+        Kent Primrose
+
+Nickname: kstingel
+Name: Karen Stingel
+First Commit: 2011-07-15
+SF Role: Developer
+    
+    
+    
+        Scott Harmon
+
+Nickname: kunzol
+SF Role: Developer
+    
+    
+    
+        Clifton Kussmaul
+
+Nickname: kwem
+Name: Karsten Wemheuer
+First Commit: 2012-10-05
+SF Role: Developer
+    
+    
+    
+        Kyle Bishop
+
+Nickname: kyori
+Name: Kyori Yaganagi
+SF Role: Developer
+    
+    
+    
+        Jim Ramsay
+
+Nickname: lady_6thofau
+Name: lady
+SF Role: Developer
+    
+    
+    
+        laetzer
+
+Nickname: lauraxthomson
+Name: Laura Thomson
+SF Role: Developer
+    
+    
+    
+        Léa Gris
+
+Nickname: lechuckdapirate
+Name: Joan VilariÅo
+First Commit: 2003-05-02
+SF Role: Developer
+    
+    
+    
+        Vincent Lee
+
+Nickname: leyan
+Name: Yan Levasseur
+First Commit: 2008-03-01
+SF Role: Developer
+    
+    
+    
+        Luis Fagundes
+
+Nickname: lihaowei2008
+Name: Haowei
+First Commit: 2007-09-09
+SF Role: Developer
+    
+    
+    
+        Steve Brewer
+
+Nickname: limited1
+Name: Lee Wilson (aka stella12)
+SF Role: Developer
+    
+    
+    
+        lindon
+
+Nickname: llunax
+Name: Lluna
+SF Role: Developer
+    
+    
+    
+        Laurent Moss
+
+Nickname: lnewby
+Name: Lew Newby
+SF Role: Developer
+    
+    
+    
+        Wells Wang
+
+Nickname: lorfds
+Name: Jon
+SF Role: Developer
+    
+    
+    
+        Louis-Martin Richard
+
+Nickname: lphuberdeau
+Name: Louis-Philippe Huberdeau
+First Commit: 2004-04-10
+SF Role: Developer
+    
+    
+    
+        LRRC
+
+Nickname: lrargerich
+Name: Luis Argerich
+First Commit: 2002-10-08
+SF Role: Admin
+    
+    
+    
+        luciash d&#39; being
+
+Nickname: lsces
+Name: Lester Caine
+SF Role: Developer
+    
+    
+    
+        Luatdo
+
+Nickname: lucamarletta
+Name: Luca Marletta
+SF Role: Developer
+    
+    
+    
+        Lucas Eduardo
+
+Nickname: lucasemanoel
+Name: Lucas Emanoel
+SF Role: Developer
+    
+    
+    
+        Ralf E. Lueders
+
+Nickname: lukian-dev
+Name: Lukian Tabandjov
+SF Role: Developer
+    
+    
+    
+        loxs
+
+Nickname: m_stef
+Name: stef
+First Commit: 2008-07-09
+SF Role: Developer
+    
+    
+    
+        magius
+
+Nickname: makenai
+Name: Pawel Szymczykowski
+SF Role: Developer
+    
+    
+    
+        Ben Palacios
+
+Nickname: manivannans
+First Commit: 2013-10-24
+SF Role: Developer
+    
+    
+    
+        Marc-Etienne M.Léveillé
+
+Nickname: marcius
+First Commit: 2003-11-25
+SF Role: Developer
+    
+    
+    
+        SnowCrash
+
+Nickname: marclaporte
+Name: Marc Laporte
+First Commit: 2003-11-28
+SF Role: Admin
+    
+    
+    
+        mose
+
+Nickname: marcoaasilva
+Name: Marco AurÃ©lio Silva
+First Commit: 2008-06-18
+SF Role: Developer
+    
+    
+    
+        Mariana Tome
+
+Nickname: markajaroski
+Name: Mark A. Jaroski
+SF Role: Developer
+    
+    
+    
+        Marcus Saad
+
+Nickname: marklubin
+Name: Mark Lubin
+SF Role: Developer
+    
+    
+    
+        markusvk
+
+Nickname: marp2901
+Name: Philippe Marcoux
+SF Role: Developer
+    
+    
+    
+        Martin Comeau
+
+Nickname: martinmanyhats
+SF Role: Developer
+    
+    
+    
+        Martin Schröder
+
+Nickname: marylly
+Name: **Mya**
+SF Role: Developer
+    
+    
+    
+        Peter &#34;mash&#34; Morgan
+
+Nickname: massimoi
+Name: Massimo Infunti
+SF Role: Developer
+    
+    
+    
+        mastre
+
+Nickname: mathchartier
+Name: mathieu chartier
+SF Role: Developer
+    
+    
+    
+        Mathieu Rodic
+
+Nickname: mattlangley1
+Name: Matt Langley
+SF Role: Developer
+    
+    
+    
+        Matthew Bickerton
+
+Nickname: mbrackeva
+Name: Mario Brackeva
+First Commit: 2008-06-22
+SF Role: Developer
+    
+    
+    
+        mcfarland
+
+Nickname: mcgucken
+Name: Dr. Elliot McGucken
+SF Role: Developer
+    
+    
+    
+        Mike Churchward
+
+Nickname: melmut
+Name: Yannick Majoros
+First Commit: 2004-02-11
+SF Role: Developer
+    
+    
+    
+        Jesper Juel Merbt
+
+Nickname: mgfeller
+Name: Michael Gfeller
+SF Role: Developer
+    
+    
+    
+        Hausi
+
+Nickname: mhryciuk
+Name: Michal Hryciuk
+SF Role: Developer
+    
+    
+    
+        Michael Davey
+
+Nickname: mickchamp
+Name: william champion
+First Commit: 2014-03-12
+SF Role: Developer
+    
+    
+    
+        Mike Culbertson
+
+Nickname: mikenielsen
+Name: Mike Nielsen
+SF Role: Developer
+    
+    
+    
+        Mike&#39;s Pub
+
+Nickname: mikewalsh
+Name: MW
+SF Role: Developer
+    
+    
+    
+        Robin Millette
+
+Nickname: minger0
+Name: Gergely
+First Commit: 2010-04-30
+SF Role: Developer
+    
+    
+    
+        Mitch Murphy
+
+Nickname: mixolyde
+Name: Brian Williams
+SF Role: Developer
+    
+    
+    
+        Michael Jeanson
+
+Nickname: mlinton
+Name: Michael Linton
+First Commit: 2004-11-26
+SF Role: Developer
+    
+    
+    
+        Michael Lowerison
+
+Nickname: mlpvolt
+First Commit: 2008-08-19
+SF Role: Developer
+    
+    
+    
+        Mauriz
+
+Nickname: monthorin
+Name: LoÄc Monthorin
+SF Role: Developer
+    
+    
+    
+        Markus Bader
+
+Nickname: morgamic
+Name: Michael Morgan
+SF Role: Developer
+    
+    
+    
+        Leif Mortenson
+
+Nickname: mrbuiu
+Name: Renato da Silva Pereira
+SF Role: Developer
+    
+    
+    
+        Martin RJ. Cleaver
+
+Nickname: mroussel
+Name: Maxime Roussel
+First Commit: 2013-05-16
+SF Role: Developer
+    
+    
+    
+        Torsten Fabricius
+
+Nickname: mwexler
+Name: Michael Wexler
+SF Role: Developer
+    
+    
+    
+        Tom A.
+
+Nickname: nagendra016
+Name: Nagendra Koilada
+First Commit: 2009-05-05
+SF Role: Developer
+    
+    
+    
+        Jan B
+
+Nickname: nalsar
+Name: prashant
+SF Role: Developer
+    
+    
+    
+        nanoia
+
+Nickname: natig
+Name: Natalia Golmar
+SF Role: Developer
+    
+    
+    
+        Nathan Waterhouse
+
+Nickname: neidhart
+Name: Dietmar Neidhart
+SF Role: Developer
+    
+    
+    
+        Norbert Huffschmid
+
+Nickname: niclone
+Name: Nicolas Dimitrijevic
+First Commit: 2006-07-24
+SF Role: Developer
+    
+    
+    
+        Niel Hirjee
+
+Nickname: nikchankov
+Name: Nik Chankov
+First Commit: 2006-02-06
+SF Role: Developer
+    
+    
+    
+        Jean Kim
+
+Nickname: nikhar
+Name: Nikhar
+First Commit: 2013-07-09
+SF Role: Developer
+    
+    
+    
+        Norm
+
+Nickname: nkoth
+Name: Nelson
+First Commit: 2007-05-17
+SF Role: Admin
+    
+    
+    
+        Patrice W.
+
+Nickname: notgod
+Name: Brian Nelson
+SF Role: Developer
+    
+    
+    
+        notix
+
+Nickname: ntavares
+Name: Nuno M. C. Tavares
+First Commit: 2007-11-08
+SF Role: Developer
+    
+    
+    
+        Michael Adam
+
+Nickname: oc73
+Name: FreeLikeGNU
+SF Role: Developer
+    
+    
+    
+        Jens Dodenhoff
+
+Nickname: ohertel
+Name: Oliver Hertel
+First Commit: 2003-03-16
+SF Role: Admin
+    
+    
+    
+        pkdille
+
+Nickname: oldelvet
+Name: Richard Mortimer
+SF Role: Developer
+    
+    
+    
+        Oli Kingshott
+
+Nickname: olinuxx
+Name: Olivier HUMBERT
+SF Role: Developer
+    
+    
+    
+        Oliver Scheck
+
+Nickname: omstefanov
+Name: Olaf-Michael Stefanov
+First Commit: 2009-07-04
+SF Role: Developer
+    
+    
+    
+        André Senécal
+
+Nickname: opn-tech
+Name: David Bovill
+SF Role: Developer
+    
+    
+    
+        Danny Staple
+
+Nickname: otalunak
+Name: Ota Lunak
+SF Role: Developer
+    
+    
+    
+        Pablo Ariel Duboue
+
+Nickname: panamaus
+Name: David Carter
+SF Role: Developer
+    
+    
+    
+        Panathos
+
+Nickname: papercrane
+Name: Justin Patrin
+First Commit: 2005-05-18
+SF Role: Developer
+    
+    
+    
+        Damian Parker-Croft
+
+Nickname: pascalstjean
+Name: Pascal St-Jean
+First Commit: 2009-11-05
+SF Role: Developer
+    
+    
+    
+        Patrick Proulx
+
+Nickname: patrickallard
+Name: Patrick Allard
+First Commit: 2009-01-26
+SF Role: Developer
+    
+    
+    
+        Paul Gascou-Vaillancourt
+
+Nickname: pemen
+SF Role: Developer
+    
+    
+    
+        Alex
+
+Nickname: peoman
+Name: Cedric Fontaine
+SF Role: Developer
+    
+    
+    
+        Paul
+
+Nickname: philbaret
+Name: Philippe Baret
+SF Role: Developer
+    
+    
+    
+        Andre Archambault
+
+Nickname: philippeback
+Name: Philippe Back
+First Commit: 2008-09-30
+SF Role: Developer
+    
+    
+    
+        Phil
+
+Nickname: phunkymunky
+SF Role: Developer
+    
+    
+    
+        Giancarlo Pinerolo
+
+Nickname: pistoljitsu
+Name: Pete Thompson
+SF Role: Developer
+    
+    
+    
+        Phil Jollans
+
+Nickname: plillevold
+Name: Peter Lillevold
+SF Role: Developer
+    
+    
+    
+        Stephen Kurkowski
+
+Nickname: pmichelazzo
+Name: Paulino Michelazzo
+First Commit: 2004-03-23
+SF Role: Developer
+    
+    
+    
+        Pablo Moreno García
+
+Nickname: pnimish
+Name: Nimish Pachapurkar
+SF Role: Developer
+    
+    
+    
+        Antoine Polatouche
+
+Nickname: popovich
+Name: Peter Popovich
+First Commit: 2004-06-10
+SF Role: Developer
+    
+    
+    
+        p0r$h
+
+Nickname: ppttrr
+Name: Pete Jalajas
+First Commit: 2012-06-30
+SF Role: Developer
+    
+    
+    
+        Marco Pratesi
+
+Nickname: prezkennedy
+Name: Matthew Kennedy
+SF Role: Developer
+    
+    
+    
+        Peter
+
+Nickname: ptydotcc
+Name: Tom Salter
+SF Role: Developer
+    
+    
+    
+        Aaron Holmes
+
+Nickname: qoumaq
+Name: Martin KosmÃ¡k
+First Commit: 2010-11-19
+SF Role: Developer
+    
+    
+    
+        Erwan
+
+Nickname: rabiddog
+Name: Everard Brown
+First Commit: 2005-09-18
+SF Role: Developer
+    
+    
+    
+        Ramiro Vera
+
+Nickname: raspencer
+Name: Reid Spencer
+SF Role: Developer
+    
+    
+    
+        Matt E. Patterson
+
+Nickname: rbschmidt
+Name: Rodrigo B. Schmidt
+SF Role: Developer
+    
+    
+    
+        Rick Cogley
+
+Nickname: redflo
+Name: Florian Gleixner
+First Commit: 2003-03-04
+SF Role: Admin
+    
+    
+    
+        Rick Sapir
+
+Nickname: reiknir
+Name: Olafur Gunnlaugsson
+First Commit: 2010-04-03
+SF Role: Developer
+    
+    
+    
+        Renoir Boulanger
+
+Nickname: rhwinter
+Name: Roberto H. Winter
+SF Role: Developer
+    
+    
+    
+        Richard Snow
+
+Nickname: richtl
+Name: Richard Tango-Lowy
+SF Role: Developer
+    
+    
+    
+        José María Escartín
+
+Nickname: rischconsulting
+Name: mrisch
+First Commit: 2006-06-24
+SF Role: Developer
+    
+    
+    
+        Ricardo Melo
+
+Nickname: rleibman
+Name: Roberto Leibman
+First Commit: 2005-05-03
+SF Role: Developer
+    
+    
+    
+        rlopezs
+
+Nickname: rlpowell
+Name: Robin Powell
+First Commit: 2003-09-17
+SF Role: Developer
+    
+    
+    
+        Robert Plummer
+
+Nickname: robferguson
+Name: Rob Ferguson
+First Commit: 2008-08-19
+SF Role: Developer
+    
+    
+    
+        Chris Campbell
+
+Nickname: rod3712
+Name: Rodrigo Curvelo
+SF Role: Developer
+    
+    
+    
+        Patrice ALBARET
+
+Nickname: ronsheely
+Name: Ron Sheely
+First Commit: 2012-03-25
+SF Role: Developer
+    
+    
+    
+        Simon Grabher
+
+Nickname: rossta
+Name: Ross Smith II
+First Commit: 2002-12-03
+SF Role: Developer
+    
+    
+    
+        Roy Sinn
+
+Nickname: rpgoldman
+Name: Robert P. Goldman
+SF Role: Developer
+    
+    
+    
+        Robert Rasgorshek
+
+Nickname: rubaiyat
+Name: James Morgan
+SF Role: Developer
+    
+    
+    
+        martin sarsale
+
+Nickname: rv540
+Name: HervÃ© Schoenenberger
+First Commit: 2005-07-20
+SF Role: Developer
+    
+    
+    
+        Ryo ONODERA
+
+Nickname: sabdelma
+SF Role: Developer
+    
+    
+    
+        DEUTSCHER Matthieu
+
+Nickname: sacra
+Name: Paulo Sacramento
+First Commit: 2009-05-21
+SF Role: Developer
+    
+    
+    
+        Sylvain Carle
+
+Nickname: sampaioprimo
+Name: Rodrigo Sampaio Primo
+First Commit: 2005-10-17
+SF Role: Admin
+    
+    
+    
+        Sylvie Greverend
+
+Nickname: sdlee
+Name: Stephen Lee
+SF Role: Developer
+    
+    
+    
+        Stéphane DOH
+
+Nickname: sebpaquet
+Name: Seb
+SF Role: Developer
+    
+    
+    
+        Stéphane Casset
+
+Nickname: sewilco
+Name: Scot Wilcoxon
+First Commit: 2008-09-18
+SF Role: Developer
+    
+    
+    
+        Sofian Benaissa
+
+Nickname: sghane
+Name: sameh
+SF Role: Developer
+    
+    
+    
+        Daniyel Sili
+
+Nickname: shiroitenshi
+Name: Chris White
+SF Role: Developer
+    
+    
+    
+        454abp
+
+Nickname: siegfried1e
+Name: Stephan Champagne
+SF Role: Developer
+    
+    
+    
+        Sikko
+
+Nickname: sil3nc3
+Name: Frank Gesang
+SF Role: Developer
+    
+    
+    
+        Eric Beaurivage
+
+Nickname: siridhar
+Name: Sridhar
+SF Role: Developer
+    
+    
+    
+        Steve C
+
+Nickname: slordjette
+Name: SÃ©bastien Lord-JettÃ©
+First Commit: 2009-04-08
+SF Role: Developer
+    
+    
+    
+        Scott MacVicar
+
+Nickname: smartingarcia
+Name: MartÃ­n GarcÃ­a Sixto Pablo
+SF Role: Developer
+    
+    
+    
+        José Ildefonso Camargo Tolosa
+
+Nickname: sparr
+Name: Clarence Risher
+SF Role: Developer
+    
+    
+    
+        cem gencer
+
+Nickname: spiderr
+Name: Christian Fowler
+SF Role: Developer
+    
+    
+    
+        Rasheed Abdal-Aziz
+
+Nickname: starrrider
+Name: Lee L Bell
+SF Role: Developer
+    
+    
+    
+        Stéphane Thibault
+
+Nickname: stingtao
+Name: sting tao
+SF Role: Developer
+    
+    
+    
+        Marta S.
+
+Nickname: stuartd
+Name: Stuart Donaldson
+SF Role: Developer
+    
+    
+    
+        Sam
+
+Nickname: swayambhu
+Name: Vijay Aswadhati
+SF Role: Developer
+    
+    
+    
+        Wil Huijben
+
+Nickname: sylvain-a
+Name: sylvain_a
+SF Role: Developer
+    
+    
+    
+        S Racine
+
+Nickname: techtonik
+Name: anatoly techtonik
+First Commit: 2004-02-21
+SF Role: Developer
+    
+    
+    
+        teedog
+
+Nickname: telenieko
+Name: TeLeNiEkO
+First Commit: 2004-04-24
+SF Role: Developer
+    
+    
+    
+        Myrkul
+
+Nickname: terris
+Name: Terris Linenbach
+SF Role: Developer
+    
+    
+    
+        Fernando Freire
+
+Nickname: thierrygervais
+Name: Thierry
+First Commit: 2013-07-14
+SF Role: Developer
+    
+    
+    
+        Glenn Henshaw
+
+Nickname: tibistibi
+Name: tibi stibi
+First Commit: 2007-08-06
+SF Role: Developer
+    
+    
+    
+        Manfred Mislik
+
+Nickname: tikii18nbot
+Name: Tiki i18n bot
+First Commit: 2011-06-27
+SF Role: Developer
+    
+    
+    
+        Philippe Gamache
+
+Nickname: timedout_net
+Name: TimeO
+SF Role: Developer
+    
+    
+    
+        tna
+
+Nickname: todd_here
+Name: toddb
+SF Role: Developer
+    
+    
+    
+        Real
+
+Nickname: toggg
+Name: bertrand Gugger
+First Commit: 2005-03-23
+SF Role: Developer
+    
+    
+    
+        Tom Jarvis
+
+Nickname: traivor
+Name: Harold Campbell
+First Commit: 2003-09-09
+SF Role: Developer
+    
+    
+    
+        Trebly
+
+Nickname: trosen
+First Commit: 2013-10-26
+SF Role: Developer
+    
+    
+    
+        Toni
+
+Nickname: ursuleacv
+Name: Ursuleac Valentin
+First Commit: 2013-07-14
+SF Role: Developer
+    
+    
+    
+        uxeric
+
+Nickname: v-woods
+Name: Van Woods
+SF Role: Developer
+    
+    
+    
+        Mickey Mullin
+
+Nickname: vikasrij
+Name: Vikas Rijsinghani
+SF Role: Developer
+    
+    
+    
+        Vincent Guffens
+
+Nickname: vradd
+Name: cnd
+SF Role: Developer
+    
+    
+    
+        Dave Sanders
+
+Nickname: walper
+Name: Wolfgang Alper
+SF Role: Developer
+    
+    
+    
+        wbeaver
+
+Nickname: wesleywillians
+Name: Wesley Willians
+First Commit: 2005-08-20
+SF Role: Developer
+    
+    
+    
+        Wallace Goulart Gaudie Ley
+
+Nickname: whomaj
+Name: Maj
+SF Role: Developer
+    
+    
+    
+        Eric Kelner
+
+Nickname: wings-of-glory
+Name: A. Zargamy
+First Commit: 2008-09-07
+SF Role: Developer
+    
+    
+    
+        Nick Woolley
+
+Nickname: wvdploeg
+Name: W van der Ploeg
+SF Role: Developer
+    
+    
+    
+        xaman
+
+Nickname: xavidp
+Name: Xavier de Pedro
+First Commit: 2005-07-08
+SF Role: Admin
+    
+    
+    
+        abbasmousavi
+
+Nickname: xbtheria
+Name: Xavier BarnabÃ©-ThÃ©riault
+SF Role: Developer
+    
+    
+    
+        XEN
+
+Nickname: xenfasa
+Name: Ben
+First Commit: 2003-11-15
+SF Role: Developer
+    
+    
+    
+        Martin Zwickel
+
+Nickname: yanturgeon
+Name: yturgeon
+SF Role: Developer
+    
+    
+    
+        Youcef Bey
+
+Nickname: yonixxx
+Name: Bernard Sfez
+First Commit: 2008-02-25
+SF Role: Developer
+    
+    
+    
+        YongHa Kim
+
+Nickname: yuzhenxin
+Name: Yu Zhen Xin
+First Commit: 2005-11-21
+SF Role: Developer
+    
+    
+    
+        Zabsv
+
+Nickname: zamboni
+Name: Diego Zamboni
+SF Role: Developer
+    
+    
+    
+        zaufi
+
+Nickname: zcecil
+Name: Cecil Sheng
+First Commit: 2003-12-20
+SF Role: Developer
+    
+    
+    
+        Serg Kravchenko
+
+Nickname: zcopley
+Name: Zach Copley
+SF Role: Developer
+    
+    
+    
+        Ziba
+
+Nickname: zippohontas
+Name: Peter Hoste
+First Commit: 2012-05-18
+SF Role: Developer
+    
+    
+    
+        Eric Harris-Braun
