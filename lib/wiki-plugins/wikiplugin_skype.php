@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,20 +10,15 @@ function wikiplugin_skype_info()
 	return array(
 		'name' => tra('Skype'),
 		'documentation' => 'PluginSkype',
-		'description' => tra('Add a link for calling or chating with a Skype user'),
-		'iconname' => 'skype',
-		'introduced' => 1,
+		'description' => tra('Clickable Skype link'),
 		'prefs' => array( 'wikiplugin_skype' ),
-		'body' => tra('Name or number to call or chat with.')." ".tra("do not forget to check the tools / options/
-			privacy / allow my status to be show on the web"),
+		'body' => tra('Name or number to call or chat with.')." ".tra("do not forget to check the tools / options/ privacy / allow my status to be show on the web"),
 		'params' => array(
 			'action' => array(
 				'required' => false,
 				'name' => tra('Action'),
 				'description' => tra('Set whether to call or chat. Default is chat'),
-				'since' => '1',
 				'default' => 'chat',
-				'filter' => 'word',
 				'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('Call'), 'value' => 'call'), 
@@ -33,10 +28,8 @@ function wikiplugin_skype_info()
 			'showstatus' => array(
 				'required' => false,
 				'name' => tra('Show status'),
-				'description' => tra('Show a status icon or not i.e. if online/offline/etc. Default is to not show status.'),
-				'since' => '7.0',
+				'description' => tra('Show a status icon or not i.e. if online/offline/etc. Default is no.'),
 				'default' => 'n',
-				'filter' => 'alpha',
 				'options' => array(
 					array('text' => tra('yes'), 'value' => 'y'), 
 					array('text' => tra('no'), 'value' => 'n')

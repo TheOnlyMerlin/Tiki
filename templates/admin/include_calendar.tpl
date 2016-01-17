@@ -1,28 +1,26 @@
-<form class="form-horizontal" action="tiki-admin.php?page=calendar" method="post">
+{remarksbox type="tip" title="{tr}Tip{/tr}"}
+	{tr}To add/remove calendars, look for "Calendar" under "Admin" on the application menu, or{/tr} <a class="rbox-link" href="tiki-admin_calendars.php">{tr}Click Here{/tr}</a>.
+{/remarksbox}
+
+<form action="tiki-admin.php?page=calendar" method="post">
 	<input type="hidden" name="ticket" value="{$ticket|escape}">
-	<div class="row">
-		<div class="form-group col-lg-12 clearfix">
-			<a role="link" class="btn btn-link" href="tiki-admin_calendars.php" title="{tr}List{/tr}">
-				{icon name="list"} {tr}Calendars{/tr}
-			</a>
-			<div class="pull-right">
-				<input type="submit" class="btn btn-primary btn-sm" name="calprefs" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}" />
-			</div>
-		</div>
+	<div class="input_submit_container clear" style="text-align: right;">
+		<input type="submit" name="calprefs" value="{tr}Change settings{/tr}" />
 	</div>
-	<fieldset>
+
+	<fieldset class="admin">
 		<legend>{tr}Activate the feature{/tr}</legend>
 		{preference name=feature_calendar visible="always"}
 	</fieldset>
-
-	<fieldset>
+	
+	<fieldset class="admin">
 		<legend>{tr}Plugins{/tr}</legend>
 		{preference name=wikiplugin_calendar}
 		{preference name=wikiplugin_events}
 		{preference name=wikiplugin_mcalendar}
 		{preference name=wikiplugin_addtogooglecal}
 	</fieldset>
-
+	
 	<fieldset>
 		<legend>{tr}General settings{/tr}{help url="Calendar+Admin"}</legend>
 		<div class="adminoptionbox">
@@ -61,21 +59,20 @@
 		{preference name=calendar_timespan}
 		{preference name=feature_cal_manual_time}
 		{preference name=calendar_export}
-		{preference name=calendar_export_item}
 		{preference name=calendar_addtogooglecal}
 		{preference name=calendar_fullcalendar}
 
-		<div class="adminoptionbox">
-			<div class="adminoption">
-				<input type="checkbox" id="feature_jscalendar" name="feature_jscalendar" {if $prefs.feature_jscalendar eq 'y'}checked="checked" {/if}onclick="flip('usejscalendar');" />
-			</div>
-			<div class="adminoptionlabel">
-				<label for="feature_jscalendar">JS Calendar</label>
-				{help url="Js+Calendar"}
-			</div>
+	<div class="adminoptionbox">
+		<div class="adminoption">
+			<input type="checkbox" id="feature_jscalendar" name="feature_jscalendar" {if $prefs.feature_jscalendar eq 'y'}checked="checked" {/if}onclick="flip('usejscalendar');" />
+		</div>
+		<div class="adminoptionlabel">
+			<label for="feature_jscalendar">JS Calendar</label>
+			{help url="Js+Calendar"}
+		</div>
 		</div>
 		<div id="usejscalendar" style="display:{if $prefs.feature_jscalendar eq 'y'}none{else}block{/if}">
-			{icon name='information'} {tr}Year selection is valid when the JS Calendar <strong>is not</strong> enabled{/tr}.
+			{icon _id=information} {tr}Year selection is valid when the JS Calendar <strong>is not</strong> enabled{/tr}.
 			{preference name=calendar_start_year}
 			{preference name=calendar_end_year}
 		</div>
@@ -85,13 +82,9 @@
 		{preference name=calendar_view_tab}
 		{preference type='multicheckbox' name='calendar_view_days'}
 		{preference name=calendar_description_is_html}
-		{preference name=calendar_watch_editor}
 	</fieldset>
-	<div class="row">
-		<div class="form-group col-lg-12 clearfix">
-			<div class="text-center">
-				<input type="submit" class="btn btn-primary btn-sm" name="calprefs" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}" />
-			</div>
-		</div>
+	<div class="input_submit_container clear" style="text-align: center;">
+		<input type="submit" name="calprefs" value="{tr}Change settings{/tr}" />
 	</div>
 </form>
+

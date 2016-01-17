@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -12,16 +12,13 @@ function wikiplugin_myspace_info()
 		'documentation' => 'PluginMySpace',
 		'description' => tra('Display a MySpace Flash mp3 playlist'),
 		'prefs' => array( 'wikiplugin_myspace' ),
-		'iconname' => 'music',
-		'introduced' => 3,
+		'icon' => 'img/icons/myspace.png',
 		'params' => array(
 			'page' => array(
 				'required' => true,
 				'name' => tra('MySpace Page'),
 				'description' => tra('MySpace page name.'),
-				'since' => '3.0',
 				'default' => '',
-				'filter' => 'text',
 			)
 		)
 	);

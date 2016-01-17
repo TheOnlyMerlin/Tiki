@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,29 +10,23 @@ function wikiplugin_poll_info()
 	return array(
 		'name' => tra('Poll'),
 		'documentation' => 'PluginPoll',
-		'description' => tra('Embed a poll'),
+		'description' => tra('Display a poll'),
 		'prefs' => array( 'feature_polls', 'wikiplugin_poll' ),
-		'body' => tra('Title of the poll'),
-		'iconname' => 'thumbs-up',
-		'introduced' => 1,
+		'body' => tra('Title'),
+		'icon' => 'img/icons/thumb_up.png',
 		'tags' => array( 'basic' ),
 		'params' => array(
 			'pollId' => array(
 				'required' => true,
 				'name' => tra('Poll'),
 				'description' => tra('Numeric value representing the poll ID'),
-				'since' => '1',
-				'default' => '',
-				'filter' => 'digits',
-				'profile_reference' => 'poll',
+				'default' => ''
 			),
 			'showtitle' => array(
 				'required' => false,
 				'name' => tra('Show Title'),
 				'description' => tra('Show poll title (shown by default).'),
-				'since' => '5.0',
 				'default' => 'y',
-				'filter' => 'alpha',
 				'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('Yes'), 'value' => 'y'), 
@@ -42,29 +36,16 @@ function wikiplugin_poll_info()
 			'showresult' => array(
 				'required' => false,
 				'name' => tra('Show result'),
-				'description' => tr('Set how results of the poll will be shown (default is %0link%1)', '<code>', '</code>'),
-				'since' => '7.0',
-				'filter' => 'word',
+				'description' => 'link|voted|always',
+				'filter' => 'alpha',
 				'default' => 'link',
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Link'), 'value' => 'link'),
-					array('text' => tra('Voted'), 'value' => 'voted'),
-					array('text' => tra('Always'), 'value' => 'always'),
-				)
 			),
 			'showtotal' => array(
 				'required' => false,
 				'name' => tra('Show total votes'),
-				'description' => tr('Set to No (%0n%1) to not show votes. Default is Yes (%0y%1).', '<code>', '</code>'),
-				'since' => '7.0',
+				'description' => 'y|n',
 				'filter' => 'alpha',
 				'default' => 'y',
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
-					array('text' => tra('No'), 'value' => 'n')
-				)
 			),
 		),
 	);
@@ -72,13 +53,7 @@ function wikiplugin_poll_info()
 
 function wikiplugin_poll($data, $params)
 {
-	global $tiki_p_admin, $prefs, $user;
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
-	$polllib = TikiLib::lib('poll');
-	$smarty = TikiLib::lib('smarty');
-	$trklib = TikiLib::lib('trk');
-
+	global $smarty, $polllib, $trklib, $tikilib, $dbTiki, $userlib, $tiki_p_admin, $prefs, $_REQUEST, $user;
 	$default = array('showtitle' => 'y', 'showresult' => 'link', 'showtotal' => 'y');
 	$params = array_merge($default, $params);
 
@@ -87,7 +62,7 @@ function wikiplugin_poll($data, $params)
 	if (!isset($pollId)) {
 	    return WikiParser_PluginOutput::argumentError(array('pollId'));
 	}
-	$polllib = TikiLib::lib('poll');
+	global $polllib;include_once ('lib/polls/polllib.php');
 
 
     $poll_info = $polllib->get_poll($pollId);

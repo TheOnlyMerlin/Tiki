@@ -2,6 +2,7 @@
 {if isset($validationjs)}{jq}
 $("#editItemForm{{$trackerEditFormId}}").validate({
 	{{$validationjs}},
+	ignore: '.ignore',
 	submitHandler: function(){
 		if( typeof nosubmitItemForm{{$trackerEditFormId}} !== "undefined" && nosubmitItemForm{{$trackerEditFormId}} == true ) {
 			return false;

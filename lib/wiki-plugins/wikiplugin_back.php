@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,11 +10,10 @@ function wikiplugin_back_info()
 	return array(
 		'name' => tra('Back'),
 		'documentation' => 'PluginBack',
-		'description' => tra('Display a link that goes back one page in the browser history'),
+		'description' => tra('Displays a link that goes back one page in the browser history'),
 		'prefs' => array( 'wikiplugin_back' ),
-		'iconname' => 'back',
+		'icon' => 'img/icons/arrow_left.png',
 		'tags' => array( 'basic' ),
-		'introduced' => 3,
 		'params' => array(),
 		);
 }

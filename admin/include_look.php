@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,54 +10,67 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 	header('location: index.php');
 	exit;
 }
-global $prefs;
-$themelib = TikiLib::lib('theme');
-$csslib = TikiLib::lib('css');
 
-//handle case when changing the themes in the Look and Feel settings panel
-$a_theme = $prefs['theme'];
+$a_style = $prefs['site_style'];
 if (isset($_REQUEST['looksetup'])) {
 	ask_ticket('admin-inc-look');
-	if (isset($_REQUEST['theme'])) {
+	if (isset($_REQUEST['style'])) {
 		check_ticket('admin-inc-general');
 
-		if (!isset($_REQUEST['theme_option']) || $_REQUEST['theme_option'] = '') {
-			// theme has no options
-			$_REQUEST['theme_option'] = '';
+		if (!isset($_REQUEST['style_option']) || $_REQUEST['style_option'] == tra('None')) { // style has no options
+			$_REQUEST['style_option'] = '';
 		}
 		check_ticket('admin-inc-general');
 	}
-} else {
-	// just changed theme menu, so refill options
-	if (isset($_REQUEST['theme']) && $_REQUEST['theme'] != '') {
-		$a_theme = $_REQUEST['theme'];
+} else { // just changed theme menu, so refill options
+	if (isset($_REQUEST['style']) && $_REQUEST['style'] != '') {
+		$a_style = $_REQUEST['style'];
 	}
 }
+$styles = $tikilib->list_styles();
+$smarty->assign_by_ref('styles', $styles);
+$smarty->assign('a_style', $a_style);
+$smarty->assign('style_options', $tikilib->list_style_options($a_style));
 
-$themes = $themelib->list_themes();	
-$smarty->assign_by_ref('themes', $themes);
-$theme_options = $themelib->list_theme_options($a_theme);
-$smarty->assign('theme_options', $theme_options);
+/**
+ * @param $stl - style file name (e.g. thenews.css)
+ * @param $opt - optional option file name
+ * @return string path to thumbnail file
+ */
+function get_thumbnail_file($stl, $opt = '') // find thumbnail if there is one
+{
+	global $tikilib;
+	if (!empty($opt) && $opt != tr('None')) {
+		$filename = preg_replace('/\.css$/i', '.png', $opt); // change .css to .png
 
-// get thumbnail if there is one
-$thumbfile = $themelib->get_thumbnail_file($prefs['site_theme'], $prefs['site_theme_option']);
+	} else {
+		$filename = preg_replace('/\.css$/i', '.png', $stl); // change .css to .png
+		$opt = '';
+	}
+	return $tikilib->get_style_path($stl, $opt, $filename);
+}
+
+// find thumbnail if there is one
+$thumbfile = get_thumbnail_file($a_style, $prefs['site_style_option']);
 if (empty($thumbfile)) {
-	$thumbfile = $themelib->get_thumbnail_file($prefs['site_theme']);
+	$thumbfile = get_thumbnail_file($a_style);
 }
 if (empty($thumbfile)) {
 	$thumbfile = 'img/trans.png';
 }
-$smarty->assign('thumbfile', $thumbfile);
+if (!empty($thumbfile)) {
+	$smarty->assign('thumbfile', $thumbfile);
+}
 
-// hash of themes and their options and their thumbnail images
 if ($prefs['feature_jquery'] == 'y') {
-	$js = 'var theme_options = {';
-	foreach ($themes as $theme => $value) {
-		$js.= "\n'$theme':['" . $themelib->get_thumbnail_file($theme, '') . '\',{';
-		$options = $themelib->list_theme_options($theme);
+	// hash of themes and their options and their thumbnail images
+	$js = 'var style_options = {';
+	foreach ($styles as $s) {
+		$js.= "\n'$s':['" . get_thumbnail_file($s, '') . '\',{';
+		$options = $tikilib->list_style_options($s);
 		if ($options) {
-			foreach ($options as $option) {
-				$js.= "'$option':'" . $themelib->get_thumbnail_file($theme, $option) . '\',';
+			foreach ($options as $o) {
+				$js.= "'$o':'" . get_thumbnail_file($s, $o) . '\',';
 			}
 			$js = substr($js, 0, strlen($js) - 1) . '}';
 		} else {
@@ -67,121 +80,57 @@ if ($prefs['feature_jquery'] == 'y') {
 	}
 	$js = substr($js, 0, strlen($js) - 1);
 	$js.= '};';
-
-	//Setup theme layouts array matching themes and theme:options with their respective layouts
-	$js .= 'var theme_layouts = ';
-	foreach ($themes as $theme => $value) {
-		$theme_layouts[$theme] = $csslib->list_user_selectable_layouts($theme);
-		$options = $themelib->list_theme_options($theme);
-		if ($options) {
-			foreach ($options as $option) {
-				$theme_layouts[$theme.':'.$option] = $csslib->list_user_selectable_layouts($theme,$option);
-			}
-		}
-	}
-	//encode $theme_layouts into json to allow js below to fetch layouts based on theme selected by user
-	$theme_layouts_js = json_encode($theme_layouts);
-	$js .= $theme_layouts_js . ";";
-
 	// JS to handle theme/option changes client-side
-	// the var (theme_options) has to be declared in the same block for AJAX call scope
+	// the var (style_options) has to be declared in the same block for AJAX call scope
 	$none = json_encode(tr('None'));
-	$headerlib->add_js(
-<<<JS
+	$headerlib->add_js(<<<JS
 $js
 
 \$(document).ready( function() {
-
-	var setupThemeSelects = function (themeDropDown, optionDropDown, showPreview) {
-		// pick up theme drop-down change
-		themeDropDown.change( function() {
-			var ops = theme_options[themeDropDown.val()];
-			var none = true;
-			var current = optionDropDown.val();
-			optionDropDown.empty().attr('disabled',false)
-					.append(\$('<option/>').attr('value','').text($none));
-			if (themeDropDown.val()) {
-				\$.each(ops[1], function(i, val) {
-					optionDropDown.append(\$('<option/>').attr('value',i).text(i));
-					none = false;
-				});
-			}
-			optionDropDown.val(current);
-			if (!optionDropDown.val()){
-				optionDropDown.val('');
-			}
-
-			if (none) {
-				optionDropDown.attr('disabled',true);
-			}
-			optionDropDown.change();
-			if (jqueryTiki.chosen) {
-				optionDropDown.trigger("chosen:updated");
-			}
-		}).change();
-		optionDropDown.change( function() {
-			if (showPreview !== undefined) {
-				var t = themeDropDown.val();
-				var o = optionDropDown.val();
-				var f = theme_options[t][1][o];
-
-				if ( ! f ) {
-					f = theme_options[t][0];
-				}
-
-				if (f) {
-					\$('#theme_thumb').fadeOut('fast').attr('src', f).fadeIn('fast').animate({'opacity': 1}, 'fast');
-				} else {
-					\$('#theme_thumb').animate({'opacity': 0.3}, 'fast');
-				}
-			}
+	var optionDropDown = \$('select[name=style_option]');
+	var styleDropDown = \$('select[name=style]');
+	// pick up theme drop-down change
+	styleDropDown.change( function() {
+		var ops = style_options[styleDropDown.val()];
+		var none = true;
+		var current = optionDropDown.val();
+		optionDropDown.empty().attr('disabled',false)
+			.append(\$('<option/>').attr('value',$none).text($none));
+		\$.each(ops[1], function(i, val) {
+			optionDropDown.append(\$('<option/>').attr('value',i).text(i.replace(/\.css\$/, '')));
+			none = false;
 		});
-	};
+		optionDropDown.val(current);
+		if (none) {
+			optionDropDown.attr('disabled',true);
+		}
 
-	setupThemeSelects(\$('.tab-content select[name=theme]'), \$('.tab-content select[name=theme_option]'), true);
-	setupThemeSelects(\$('.tab-content select[name=theme_admin]'), \$('.tab-content select[name=theme_option_admin]'));
+		optionDropDown.change();
+	}).change();
+	optionDropDown.change( function() {
+		var t = styleDropDown.val();
+		var o = optionDropDown.val();
+		var f = style_options[t][1][o];
 
-	var setupThemeLayouts = function (themeDropDown, optionDropDown, layoutDropDown) {
-		themeDropDown,optionDropDown.change( function() {
-			var theme_name = themeDropDown.val();
-			if (optionDropDown.val()){
-				theme_name += ":" + optionDropDown.val();
-			}
-			var layouts = theme_layouts[theme_name];
-			var current = layoutDropDown.val();
-			layoutDropDown.empty();
-			if (!theme_name){
-				layoutDropDown.append(\$('<option/>').attr('value','').text('Site layout'));
-				layoutDropDown.attr('disabled',true);
-			} else {
-				layoutDropDown.attr('disabled',false);
-				\$.each(layouts, function(i, val) {
-					layoutDropDown.append(\$('<option/>').attr('value',i).text(val));
-				});
+		if ( ! f ) {
+			f = style_options[t][0];
+		}
 
-				//try setting the option to the previously selected option and if no layout matched, set to 'basic'
-				layoutDropDown.val(current);
-				if (!layoutDropDown.val()){
-					layoutDropDown.val('basic');
-				}
-			}
-			layoutDropDown.change();
-
-		}).change();
-	};
-
-	setupThemeLayouts(\$('.tab-content select[name=theme]'), \$('.tab-content select[name=theme_option]'), \$('.tab-content select[name=site_layout]') );
-	setupThemeLayouts(\$('.tab-content select[name=theme_admin]'), \$('.tab-content select[name=theme_option_admin]'), \$('.tab-content select[name=site_layout_admin]') );
+		if (f) {
+			\$('#style_thumb').fadeOut('fast').attr('src', f).fadeIn('fast').animate({'opacity': 1}, 'fast');
+		} else {
+			\$('#style_thumb').animate({'opacity': 0.3}, 'fast');
+		}
+	});
 });
 JS
 	);
 }
 
-//Theme generator
+/* Theme generator for Tiki 7+ */
 $reload = false;
 if ($prefs['themegenerator_feature'] === 'y') {
-	$headerlib->add_jsfile('lib/jquery_tiki/brosho/tiki_brosho.js');
-	$themegenlib = TikiLib::lib('themegenerator');
+	include_once 'lib/themegenlib.php';
 
 	if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		$reload = true;
@@ -204,4 +153,27 @@ if ($prefs['themegenerator_feature'] === 'y') {
 
 	$themegenlib->setupEditor();
 
+}
+
+if (isset($_REQUEST['looksetup'])) {
+	for ($i = 0, $count_feedback = count($tikifeedback); $i < $count_feedback; $i++) {
+		if (substr($tikifeedback[$i]['name'], 0, 5) == 'style' ||			// if style or style_option
+				$tikifeedback[$i]['name'] === 'themegenerator_theme' ||		// or themegen theme changed
+				$tikifeedback[$i]['name'] === 'feature_jquery_ui_theme') {	// or jquery-ui theme
+			// If the theme has changed, reload the page to use the new theme
+			$reload = true;
+		}
+	}
+}
+
+if ($reload) {
+	$location = 'location: tiki-admin.php?page=look';
+	if ($prefs['feature_tabs'] === 'y') {
+		$t = getCookie('admin_look', 'tabs');
+		if ($t > 1) {
+			$location.= "&cookietab=$t";
+		}
+	}
+	header($location);
+	exit;
 }

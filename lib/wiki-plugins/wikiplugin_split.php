@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,19 +10,17 @@ function wikiplugin_split_info()
 	return array(
 		'name' => tra('Split'),
 		'documentation' => 'PluginSplit',
-		'description' => tra('Arrange content on a page into rows and columns'),
+		'description' => tra('Easily arrange content on a page into rows and columns'),
 		'prefs' => array( 'wikiplugin_split' ),
 		'filter' => 'wikicontent',
-		'iconname' => 'th-large',
-		'introduced' => 1,
+		'icon' => 'img/icons/table.png',
 		'tags' => array( 'basic' ),
 		'params' => array(
 			'joincols' => array(
 				'required' => false,
 				'name' => tra('Join Columns'),
 				'description' => tra('Generate the colspan attribute if columns are missing'),
-				'since' => '1',
-				'filter' => 'alpha',
+				'filter' => 'striptags',
 				'default' => 'y',
 				'options' => array(
 					array('text' => '', 'value' => ''), 
@@ -34,8 +32,7 @@ function wikiplugin_split_info()
 				'required' => false,
 				'name' => tra('Fixed Size'),
 				'description' => tra('Generate the width attribute for the columns'),
-				'since' => '1',
-				'filter' => 'alpha',
+				'filter' => 'striptags',
 				'default' => 'y',
 				'options' => array(
 					array('text' => '', 'value' => ''), 
@@ -46,19 +43,13 @@ function wikiplugin_split_info()
 			'colsize' => array(
 				'required' => false,
 				'name' => tra('Column Sizes'),
-				'description' => tr('Specify all column widths in number of pixels or percent, separating each width
-					by a pipe (%0)', '<code>|</code>'),
-				'since' => '1',
-				'seprator' => '|',
-				'filter' => 'text',
+				'description' => tra('Specify all column widths in number of pixels or percent, separating each width by a pipe (|)'),
 				'default' => '',
 			),
 			'first' => array(
 				'required' => false,
 				'name' => tra('First'),
-				'description' => tra('Cells specified are ordered first left to right across rows (default) or top to
-					bottom down columns'),
-				'since' => '1',
+				'description' => tra('Cells specified are ordered first left to right across rows (default) or top to bottom down columns'),
 				'filter' => 'alpha',
 				'default' => 'line',
 				'options' => array(
@@ -70,10 +61,8 @@ function wikiplugin_split_info()
 			'edit' => array(
 				'required' => false,
 				'name' => tra('Editable'),
-				'description' => tr('Display edit icon for each section. Works when used on a wiki page and the %0
-					parameter is set to %1', '<code>first</code>', '<code>col</code>'),
-				'since' => '1',
-				'filter' => 'alpha',
+				'description' => tra('Display edit icon for each section'),
+				'filter' => 'striptags',
 				'default' => 'n',
 				'options' => array(
 					array('text' => '', 'value' => ''), 
@@ -85,8 +74,6 @@ function wikiplugin_split_info()
 				'required' => false,
 				'name' => tra('Custom Class'),
 				'description' => tra('Add a class to customize the design'),
-				'since' => '3.0',
-				'filter' => 'text',
 				'default' => '',
 			),
 		),
@@ -167,16 +154,16 @@ function wikiplugin_split($data, $params, $pos)
 		}
 		$tdtotaltd=floor($tdtotal/100*100);
 		if ($tdtotaltd == 100) // avoir IE to do to far
-			$class = 'class="table split"';
+			$class = 'class="normalnoborder split"';
 		else
 			$class = 'class="split" width="'.$tdtotaltd.'%"';
 	} elseif ($fixedsize) {
 		$columnSize = floor(100 / $maxcols);
-		$class = 'class="table split"';
+		$class = 'class="normalnoborder split"';
 		$percent = true;	
 	}
 	if (!isset($edit)) $edit = 'n';
-	$result = "<div class='table-responsive'><div><table class='table".($percent ? " normalnoborder" : "").( !empty($customclass) ? " $customclass" : "")."'>";
+	$result = "<table border='0' cellpadding='0' cellspacing='0' class='wikiplugin-split".($percent ? " normalnoborder" : "").( !empty($customclass) ? " $customclass" : "")."'>";
 
 	// Attention: Dont forget to remove leading empty line in section ...
 	//            it should remain from previous '---' line...
@@ -254,7 +241,7 @@ function wikiplugin_split($data, $params, $pos)
 		$result .= '</tr>';
 	}
 	// Close HTML table (no \n at end!)
-	$result .= "</table></div></div>";
+	$result .= "</table>";
 
 	return wikiplugin_split_rollback($result, $hashes);
 }

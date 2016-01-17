@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -14,24 +14,19 @@ function wikiplugin_profile_info()
 		'prefs' => array( 'wikiplugin_profile' ),
 		'validate' => 'all',
 		'inline' => true,
-		'iconname' => 'cog',
-		'introduced' => 3,
+		'icon' => 'img/icons/database_lightning.png',
 		'tags' => array( 'experimental' ),
 		'params' => array(
 			'domain' => array(
 				'required' => false,
 				'name' => tra('Domain'),
-				'description' => tr('Profile repository domain. Default value is %0profiles.tiki.org%1', '<code>', '</code>'),
-				'since' => '3.0',
-				'filter' => 'url',
+				'description' => tra('Profile repository domain. Default value is profiles.tiki.org'),
 				'default' => 'profiles.tiki.org',
 			),
 			'name' => array(
 				'required' => true,
 				'name' => tra('Profile Name'),
 				'description' => tra('Name of the profile to be applied.'),
-				'since' => '3.0',
-				'filter' => 'text',
 				'default' => '',
 			)
 		)
@@ -40,6 +35,9 @@ function wikiplugin_profile_info()
 
 function wikiplugin_profile( $data, $params )
 {
+	require_once 'lib/profilelib/profilelib.php';
+	require_once 'lib/profilelib/installlib.php';
+
 	global $tiki_p_admin;
 
 	if ( $tiki_p_admin != 'y' ) {
@@ -78,7 +76,7 @@ function wikiplugin_profile( $data, $params )
 			return '__' . $e->getMessage() . '__';
 		}
 
-		$smarty = TikiLib::lib('smarty');
+		global $smarty;
 		$smarty->assign('profile_is_installed', $installer->isInstalled($profile));
 		$smarty->assign('profile_key', "{$params['domain']}/{$params['name']}");
 		return '~np~' . $smarty->fetch('wiki-plugins/wikiplugin_profile.tpl') . '~/np~';

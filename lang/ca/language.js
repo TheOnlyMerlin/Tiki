@@ -6,8 +6,7 @@
  */
 
 lang = {
-	"Default" : "Per omissió",
-	"Very Secure" : "Molt Segura",
+	"Very Secure" : "Molt segura",
 	"Secure" : "Segura",
 	"Very Strong" : "Molt forta",
 	"Strong" : "Forta",
@@ -17,6 +16,7 @@ lang = {
 	"Strength" : "Força",
 	"Valid User Name" : "Nom d'usuari vàlid",
 	"Passwords match" : "Les contrasenyes coincideixen",
+	"Passwords don't match" : "Les contrasenyes NO coincideixen",
 	"Valid Email" : "Correu-e vàlid",
 	"Close" : "Tancar",
 	"Submit" : "Enviar",
@@ -25,6 +25,10 @@ lang = {
 	"Match" : "Igual",
 	"Do not match" : "Diferent",
 	"Advanced options" : "Opcions avançades",
+	"URL to open this file with WebDAV" : "URL per a obrir aquest arxiu a través de WebDAV",
+	"To My Location" : "A La Meva Localització",
+	"What address are you looking for?" : "Quina adreça estàs cercant?",
+	"Search Location" : "Cerca una Localització",
 	"Pick a file." : "Escull un arxiu",
 	"Add Field" : "Afegeix un camp",
 	"Edit Field" : "Modifica un camp",
@@ -41,11 +45,6 @@ lang = {
 	"Please enter a page name" : "Si us plau, introdueix un nom de pàgina",
 	"Change Highlighter" : "Canvia el Ressaltador",
 	"Toggle Highlighter" : "Commuta el Ressaltador",
-	"Are you sure you want to unassign this module?" : "N'estàs segur que vols desassignar aquest mòdul?",
-	"Search Location" : "Cerca una adreça",
-	"To My Location" : "Localitza la meva posició",
-	"StreetView is not available at this specific point on the map. Zoom in as needed and make sure to click on a blue line." : "La funció StreetView hi és disponible en aquest punt específic sobre el mapa. Aproxima't amb el zoom el que et calgui i assegura't de fer clic sobre una línia blava.",
-	"Browse Files" : "Obre la llista d'arxius",
+	"Are you sure you want to unassign this module?" : "N'estàs segur que vols desassignar aquest mòdul?"
 	// remember the IE does not support ending comma on last item
-	 "Bogus entry" : "bogus entry"
 };

@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -9,13 +9,12 @@ function wikiplugin_appframe_info()
 {
 	return array(
 		'name' => tra('Application Frame'),
-		'description' => tra('Create a frame in which to assemble custom applications'),
+		'description' => tra('Creates a frame to assemble custom applications in. Components in the frame will be various wiki pages and modules.'),
 		'prefs' => array('wikiplugin_appframe'),
 		'format' => 'html',
-		'documentation' => 'PluginAppFrame',
-		'iconname' => 'merge',
-		'filter' => 'wikicontent',
 		'introduced' => 9,
+		'documentation' => 'PluginAppFrame',
+		'filter' => 'wikicontent',
 		'body' => tr('Application layout'),
 		'params' => array(
 			'min' => array(
@@ -24,22 +23,12 @@ function wikiplugin_appframe_info()
 				'description' => tr('Prevent the frame from becoming any shorter than the specified size.'),
 				'default' => 300,
 				'filter' => 'int',
-				'since' => '9.0',
-			),
-			'max' => array(
-				'required' => false,
-				'name' => tr('Maximal height'),
-				'description' => tr('Prevent the frame from becoming any higher than the specified size.'),
-				'default' => -1,
-				'filter' => 'int',
-				'since' => '10.0',
 			),
 			'hideleft' => array(
 				'requred' => false,
 				'name' => tr('Hide left column'),
 				'description' => tr('Hide the left column when the application frame is in use to provide more space to the application.'),
 				'default' => 'n',
-				'since' => '9.0',
 				'options' => array(
 					array('value' => 'n', 'text' => tr('No')),
 					array('value' => 'y', 'text' => tr('Yes')),
@@ -50,7 +39,6 @@ function wikiplugin_appframe_info()
 				'name' => tr('Hide right column'),
 				'description' => tr('Hide the right column when the application frame is in use to provide more space to the application.'),
 				'default' => 'n',
-				'since' => '9.0',
 				'options' => array(
 					array('value' => 'n', 'text' => tr('No')),
 					array('value' => 'y', 'text' => tr('Yes')),
@@ -61,7 +49,6 @@ function wikiplugin_appframe_info()
 				'name' => tr('Full page'),
 				'description' => tr('Occupy the complete content area of the page.'),
 				'default' => 'n',
-				'since' => '9.0',
 				'options' => array(
 					array('value' => 'n', 'text' => tr('No')),
 					array('value' => 'y', 'text' => tr('Yes')),
@@ -72,7 +59,6 @@ function wikiplugin_appframe_info()
 				'name' => tr('Absolute Position'),
 				'description' => tr('Position the app frame to use absolute position and really use all available space.'),
 				'default' => 'n',
-				'since' => '9.0',
 				'options' => array(
 					array('value' => 'n', 'text' => tr('No')),
 					array('value' => 'y', 'text' => tr('Yes')),
@@ -84,18 +70,6 @@ function wikiplugin_appframe_info()
 				'description' => tr('When using absolute mode, leave some space for the header at the top.'),
 				'default' => 0,
 				'filter' => 'int',
-				'since' => '9.0',
-			),
-			'fullscreen' => array(
-				'required' => false,
-				'name' => tr('Full screen'),
-				'description' => tr('Occupy the complete page.'),
-				'default' => 'n',
-				'since' => '10.0',
-				'options' => array(
-					array('value' => 'n', 'text' => tr('No')),
-					array('value' => 'y', 'text' => tr('Yes')),
-				),
 			),
 		),
 	);
@@ -104,14 +78,9 @@ function wikiplugin_appframe_info()
 function wikiplugin_appframe($data, $params)
 {
 	$minHeight = isset($params['min']) ? (int) $params['min'] : 300;
-	$maxHeight = isset($params['max']) ? (int) $params['max'] : -1;
 	$fullPage = 0;
 	if (isset($params['fullpage']) && $params['fullpage'] == 'y') {
 		$fullPage = 1;
-	}
-	$fullscreen = 0;
-	if (isset($params['fullscreen']) && $params['fullscreen'] == 'y') {
-		$fullscreen = 1;
 	}
 
 	$absolute = intval(isset($params['absolute']) ? $params['absolute'] == 'y' : false);
@@ -161,11 +130,6 @@ $(window).resize(function () {
 			target = min;
 		}
 
-		var max = $maxHeight;
-		if ((max != -1) && (target > max)) {
-			target = max;
-		}
-
 		appframe.height(target);
 	}
 
@@ -192,7 +156,7 @@ $('#appframe .tab').parent().each(function () {
 });
 $('#appframe .accordion').parent().each(function () {
 	$('.accordion', this).wrapAll('<div/>').parent().accordion({
-		heightStyle: "content"
+		autoHeight: false
 	});
 });
 $('#appframe .anchor').wrapAll('<div/>').parent()
@@ -210,24 +174,11 @@ $('#appframe .anchor').each(function () {
 		$('.anchor-content', anchor).toggle('fast');
 		return false;
 	});
-
-	if (location.hash == "#" + $("img", anchor).attr("alt")) {
-		setTimeout( function() { $('.anchor-toggle', anchor).click(); }, 2000);
-	}
 });
 
 if ($fullPage) {
 	$('#role_main').append($('#appframe'));
 	$('#role_main').children().not($('#appframe')).remove();
-}
-
-if ($fullscreen) {
-	$('.header_outer').hide();
-	$('#topbar_modules').hide();
-	$('#footer').hide();
-	$('#error_report').hide();
-	$('.share').hide();
-	$('.tellafriend').hide();
 }
 
 $(window).resize();
@@ -252,8 +203,7 @@ function wikiplugin_appframe_execute($plugin)
 {
 	$name = $plugin->getName();
 	$body = $plugin->getBody();
-	$argumentParger = new WikiParser_PluginArgumentParser();
-	$params = $argumentParger->parse($plugin->getArguments());
+	$params = WikiParser_PluginArgumentParser::parse($plugin->getArguments());
 
 	if (! in_array($name, array('tab', 'column', 'page', 'module', 'cond', 'anchor', 'overlay', 'template', 'hidden', 'mapcontrol'))) {
 		return null;
@@ -334,12 +284,10 @@ function wikiplugin_appframe_module($data, $params, $start)
 		$label = $info['name'];
 	}
 
-	$data = $modlib->execute_module(
-		array(
-			'name' => $moduleName,
-			'params' => array_merge($params->none(), array('nobox' => 'y', 'notitle' => 'y')),
-		)
-	);
+	$data = $modlib->execute_module(array(
+		'name' => $moduleName,
+		'params' => array_merge($params->none(), array('nobox' => 'y', 'notitle' => 'y')),
+	));
 
 	if (! $data) {
 		return null;
@@ -385,7 +333,7 @@ function wikiplugin_appframe_overlay($data, $params, $start)
 	$position = implode(' ', $position);
 
 	return <<<OVERLAY
-<div class="overlay {$params->class->word()}" style="position: absolute; z-index: 999; $position">
+<div class="overlay" style="position: absolute; z-index: 999; $position">
 	$data
 </div>
 OVERLAY;
@@ -406,15 +354,8 @@ function wikiplugin_appframe_template($data, $params, $start)
 	$file = $params->file->url();
 
 	try {
-		$data = array_map(
-			function ($value)
-			{
-				return preg_replace('/\{\{\w+\}\}/', '', $value);
-			},
-			$params->text()
-		);
-
-		$smarty->assign('input', $data);
+		$params->setDefaultFilter('text');
+		$smarty->assign('input', $params->toArray());
 		return $smarty->fetch($file);
 	} catch (SmartyException $e) {
 		return tr('Template file not found: %0', $file);
@@ -447,20 +388,15 @@ function wikiplugin_appframe_mapcontrol($data, $params, $start)
 		$label = tr('Select');
 		break;
 	case 'modify_feature':
-		$control = 'new OpenLayers.Control.ModifyFeature(vlayer, {
-			mode: OpenLayers.Control.ModifyFeature.DRAG | OpenLayers.Control.ModifyFeature.RESHAPE,
-			standalone: true,
-			virtualStyle: drawStyle,
-			vertexRenderIntent: "vertex"
-		}), new OpenLayers.Control.SelectFeature(vlayer)';
+		$control = 'new OpenLayers.Control.ModifyFeature(vlayer, {mode: OpenLayers.Control.ModifyFeature.DRAG | OpenLayers.Control.ModifyFeature.RESHAPE})';
 		$label = tr('Select/Modify');
 		break;
 	case 'draw_polygon':
-		$control = 'new OpenLayers.Control.DrawFeature(vlayer, OpenLayers.Handler.Polygon, {handlerOptions:{style:drawStyle}})';
+		$control = 'new OpenLayers.Control.DrawFeature(vlayer, OpenLayers.Handler.Polygon)';
 		$label = tr('Draw Polygon');
 		break;
 	case 'draw_path':
-		$control = 'new OpenLayers.Control.DrawFeature(vlayer, OpenLayers.Handler.Path, {handlerOptions:{style:drawStyle}})';
+		$control = 'new OpenLayers.Control.DrawFeature(vlayer, OpenLayers.Handler.Path)';
 		$label = tr('Draw Path');
 		break;
 	case 'reset_zoom':
@@ -480,17 +416,16 @@ function wikiplugin_appframe_mapcontrol($data, $params, $start)
 	}
 
 	$smarty = TikiLib::lib('smarty');
-	$smarty->assign(
-		'mapcontrol', array(
-			'id' => 'mapcontrol-' . ++$counter,
-			'control' => $control,
-			'icon' => $icon,
-			'label' => $label,
-			'mode' => $mode,
-			'function' => $function,
-			'navigation' => $params->navigation->int(),
-			'class' => $params->class->text() ? $params->class->text() : 'icon',
-		)
-	);
+	$smarty->assign('mapcontrol', array(
+		'id' => 'mapcontrol-' . ++$counter,
+		'control' => $control,
+		'icon' => $icon,
+		'label' => $label,
+		'mode' => $mode,
+		'function' => $function,
+		'navigation' => $params->navigation->int(),
+		'class' => $params->class->text() ? $params->class->text() : 'icon',
+	));
 	return $smarty->fetch('wiki-plugins/wikiplugin_appframe_mapcontrol.tpl');
 }
+

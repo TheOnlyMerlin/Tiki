@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -14,14 +14,14 @@ class TikiFilter_MapTest extends TikiTestCase
 {
 	function testDirect()
 	{
-		$this->assertTrue(TikiFilter::get('digits') instanceof Zend\Filter\Digits);
-		$this->assertTrue(TikiFilter::get('alpha') instanceof Zend\I18n\Filter\Alpha);
-		$this->assertTrue(TikiFilter::get('alnum') instanceof Zend\I18n\Filter\Alnum);
-		$this->assertTrue(TikiFilter::get('striptags') instanceof Zend\Filter\StripTags);
-		$this->assertTrue(TikiFilter::get('pagename') instanceof Zend\Filter\StripTags);
-		$this->assertTrue(TikiFilter::get('username') instanceof Zend\Filter\StripTags);
-		$this->assertTrue(TikiFilter::get('groupname') instanceof Zend\Filter\StripTags);
-		$this->assertTrue(TikiFilter::get('topicname') instanceof Zend\Filter\StripTags);
+		$this->assertTrue(TikiFilter::get('digits') instanceof Zend_Filter_Digits);
+		$this->assertTrue(TikiFilter::get('alpha') instanceof Zend_Filter_Alpha);
+		$this->assertTrue(TikiFilter::get('alnum') instanceof Zend_Filter_Alnum);
+		$this->assertTrue(TikiFilter::get('striptags') instanceof Zend_Filter_StripTags);
+		$this->assertTrue(TikiFilter::get('pagename') instanceof Zend_Filter_StripTags);
+		$this->assertTrue(TikiFilter::get('username') instanceof Zend_Filter_StripTags);
+		$this->assertTrue(TikiFilter::get('groupname') instanceof Zend_Filter_StripTags);
+		$this->assertTrue(TikiFilter::get('topicname') instanceof Zend_Filter_StripTags);
 		$this->assertTrue(TikiFilter::get('xss') instanceof TikiFilter_PreventXss);
 		$this->assertTrue(TikiFilter::get('word') instanceof TikiFilter_Word);
 		$this->assertTrue(TikiFilter::get('wikicontent') instanceof TikiFilter_RawUnsafe);
@@ -29,7 +29,7 @@ class TikiFilter_MapTest extends TikiTestCase
 
 	function testKnown()
 	{
-		$this->assertTrue(TikiFilter::get(new Zend\I18n\Filter\Alnum) instanceof Zend\I18n\Filter\Alnum);
+		$this->assertTrue(TikiFilter::get(new Zend_Filter_Alnum) instanceof Zend_Filter_Alnum);
 	}
 
 	/**

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -14,14 +14,13 @@ function wikiplugin_fade_info()
 		'prefs' => array('wikiplugin_fade'),
 		'body' => tra('Wiki syntax containing the content that can be hidden or shown.'),
 		'filter' => 'wikicontent',
-		'iconname' => 'wizard',
-		'introduced' => 3,
-		'tags' => array( 'basic' ),
+		'icon' => 'img/icons/wand.png',
+		'tags' => array( 'basic' ),		
 		'params' => array(
 			'label' => array(
 				'required' => true,
 				'name' => tra('Label'),
-				'filter' => 'text',
+				'filter' => 'striptags',
 				'description' => tra('Label for link that shows and hides the content when clicked'),
 				'default' => tra('Unspecified label'),
 				'since' => '3.0',
@@ -43,24 +42,20 @@ function wikiplugin_fade_info()
 				'required' => false,
 				'name' => tra('Show Speed'),
 				'filter' => 'alnum',
-				'description' => tr('Speed of animation in milliseconds when showing content (%0200%1 is fast and
-					%0600%1 is slow. %01000%1 equals 1 second).', '<code>', '</code>'),
+				'description' => tra('Speed of animation in milliseconds when showing content (200 is fast and 600 is slow. 1000 equals 1 second).'),
 				'default' => 400,
 				'since' => '7.0',
-				'accepted' => tr('Integer greater than 0 and less than or equal to 1000, or %0 or %1',
-					'<code>fast</code>', '<code>alow</code>'),
+				'accepted' => tra('Integer greater than 0 and less than or equal to 1000, or \'fast\' or \'slow\''),
 				'advanced' => true,
 			),
 			'hide_speed' => array(
 				'required' => false,
 				'name' => tra('Hide Speed'),
 				'filter' => 'alnum',
-				'description' => tr('Speed of animation in milliseconds when hiding content (%0200%1 is fast and
-					%0600%1 is slow. %01000%1 equals 1 second).', '<code>', '</code>'),
+				'description' => tra('Speed of animation in milliseconds when hiding content (200 is fast and 600 is slow. 1000 equals 1 second).'),
 				'default' => 400,
 				'since' => '7.0',
-				'accepted' => tr('Integer greater than 0 and less than or equal to 1000, or %0 or %1',
-					'<code>fast</code>', '<code>alow</code>'),
+				'accepted' => tra('Integer greater than 0 and less than or equal to 1000, or \'fast\' or \'slow\''),
 				'advanced' => true,
 			),
 		)
@@ -113,7 +108,7 @@ function wikiplugin_fade( $body, $params )
 					);
 					return false;
 				});';
-	$headerlib = TikiLib::lib('header');
+	global $headerlib;
 	$headerlib->add_jq_onready($jq);
 	//wrapping in an extra div makes animation smoother	
 	return '~np~<div>' . "\r\t" . '<span class="' . $span_class . '">' . "\r\t\t" 

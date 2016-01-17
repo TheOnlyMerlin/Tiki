@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,8 +7,8 @@
 
 $section = 'wiki page';
 require_once ('tiki-setup.php');
-$structlib = TikiLib::lib('struct');
-$categlib = TikiLib::lib('categ');
+include_once ('lib/structures/structlib.php');
+include_once ('lib/categories/categlib.php');
 include_once ("lib/ziplib.php");
 $access->check_feature(array('feature_wiki', 'feature_wiki_structure'));
 $access->check_permission('tiki_p_view');
@@ -256,8 +253,7 @@ if (isset($_REQUEST["exact_match"])) {
 }
 if ($prefs['feature_multilingual'] == 'y') {
 	$languages = array();
-	$langLib = TikiLib::lib('language');
-	$languages = $langLib->list_languages(false, 'y');
+	$languages = $tikilib->list_languages(false, 'y');
 	$smarty->assign_by_ref('languages', $languages);
 }
 $channels = $structlib->list_structures($offset, $maxRecords, $sort_mode, $find, $exact_match, $filter);

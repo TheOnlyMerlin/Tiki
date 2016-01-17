@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,35 +10,28 @@ function wikiplugin_lsdir_info()
 	return array(
 		'name' => tra('List Directory'),
 		'documentation' => 'PluginLsDir',
-		'description' => tra('List files in a directory'),
+		'description' => tra('Lists files in a directory'),
 		'prefs' => array( 'wikiplugin_lsdir' ),
 		'validate' => 'all',
-		'iconname' => 'file-archive',
-		'introduced' => 1,
+		'icon' => 'img/icons/folder_find.png',
 		'params' => array(
 			'dir' => array(
 				'required' => true,
 				'name' => tra('Directory'),
 				'description' => tra('Full path to the server-local directory. Default is the document root.'),
-				'since' => '1',
 				'default' => '',
 			),
 			'urlprefix' => array(
 				'required' => false,
 				'name' => tra('URL Prefix'),
-				'description' => tra('Make the file name a link to the file by adding the URL path preceding the file
-					name. Example:') . ' <code>http://yoursite.com/tiki/</code>',
-				'since' => '1',
-				'default' => NULL,
-				'filter' => 'url',
+				'description' => tra('Make the file name a link to the file by adding the URL path preceding the file name. Example: http://yoursite.com/tiki/'),
+				'default' => NULL
 			),
 			'sort' => array(
 				'required' => false,
 				'name' => tra('Sort Order'),
 				'description' => tra('Set the sort order of the file list'),
-				'since' => '1',
 				'default' => 'name',
-				'filter' => 'word',
 				'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('File Name'), 'value' => 'name'), 
@@ -51,18 +44,14 @@ function wikiplugin_lsdir_info()
 			'filter' => array(
 				'required' => false,
 				'name' => tra('Filter'),
-				'description' => tra('Only list files with file names that contain this filter. Example:')
-					. ' <code>.jpg</code>',
-				'since' => '1',
+				'description' => tra('Only list files with filenames that contain this filter. Example: ".jpg"'),
 				'default' => NULL
 			),
 			'limit' => array(
 				'required' => false,
 				'name' => tra('Limit'),
 				'description' => tra('Maximum amount of files to display. Default is no limit.'),
-				'since' => '1',
 				'default' => 0,
-				'filter' => 'digits',
 			),
 		),
 	);

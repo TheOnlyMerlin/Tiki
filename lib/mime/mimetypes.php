@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -150,7 +150,6 @@ $mimetypes = array(
 	"gcf" => "application/x-graphing-calculator",
 	"gcg" => "chemical/x-gcg8-sequence",
 	"gen" => "chemical/x-genbank",
-	"geojson" => "application/json",
 	"gf" => "application/x-tex-gf",
 	"gif" => "image/gif",
 	"gjc" => "chemical/x-gaussian-input",
@@ -158,7 +157,6 @@ $mimetypes = array(
 	"gl" => "video/gl",
 	"gnumeric" => "application/x-gnumeric",
 	"gpt" => "chemical/x-mopac-graph",
-	"gpx" => "application/xml",
 	"gsf" => "application/x-font",
 	"gsm" => "audio/x-gsm",
 	"gtar" => "application/x-gtar",
@@ -200,8 +198,7 @@ $mimetypes = array(
 	"jpeg" => "image/jpeg",
 	"jpe" => "image/jpeg",
 	"jpg" => "image/jpeg",
-	"js" => "application/javascript",
-	"json" => "application/json",
+	"js" => "application/x-javascript",
 	"kar" => "audio/midi",
 	"key" => "application/pgp-keys",
 	"kil" => "application/x-killustrator",
@@ -321,8 +318,8 @@ $mimetypes = array(
 	"pnm" => "image/x-portable-anymap",
 	"pot" => "text/plain",
 	"ppm" => "image/x-portable-pixmap",
-	"pps" => "application/mspowerpoint",
-	"ppt" => "application/mspowerpoint",
+	"pps" => "application/vnd.ms-powerpoint",
+	"ppt" => "application/vnd.ms-powerpoint",
 	"prf" => "application/pics-rules",
 	"prt" => "chemical/x-ncbi-asn1-ascii",
 	"ps" => "application/postscript",
@@ -466,9 +463,9 @@ $mimetypes = array(
 	"xcf" => "application/x-xcf",
 	"xht" => "application/xhtml+xml",
 	"xhtml" => "application/xhtml+xml",
-	"xlb" => "application/msexcel",
-	"xls" => "application/msexcel",
-	"xlt" => "application/msexcel",
+	"xlb" => "application/vnd.ms-excel",
+	"xls" => "application/vnd.ms-excel",
+	"xlt" => "application/vnd.ms-excel",
 	"xml" => "application/xml",
 	"xpi" => "application/x-xpinstall",
 	"xpm" => "image/x-xpixmap",
@@ -490,6 +487,4 @@ $mimetypes = array(
 	"dotx" => "application/vnd.openxmlformats-officedocument.wordprocessingml.template",
 	"xlam" => "application/vnd.ms-excel.addin.macroEnabled.12",
 	"xlsb" => "application/vnd.ms-excel.sheet.binary.macroEnabled.12",
-
-	'vimeo' => 'video/vimeo'
 );

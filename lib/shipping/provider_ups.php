@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -43,17 +43,16 @@ class ShippingProvider_Ups implements ShippingProvider
 
 			$client = TikiLib::lib('tiki')->get_http_client();
 			$client->setUri('https://www.ups.com/ups.app/xml/Rate');
-			$client->setRawBody($auth . $request);
+			$client->setRawData($auth . $request);
 
-			$client->setMethod(Zend\Http\Request::METHOD_POST);
-			$response = $client->send();
+			$response = $client->request('POST');
 			$body = $response->getBody();
 
 			$dom = new DOMDocument;
 			$dom->loadXML($body);
 
 			return $dom;
-		} catch(Zend\Http\Exception\ExceptionInterface $e ) {
+		} catch( Zend_Http_Exception $e ) {
 			return null;
 		}
 	}

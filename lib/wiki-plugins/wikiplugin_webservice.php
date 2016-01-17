@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,20 +10,16 @@ function wikiplugin_webservice_info()
 	return array(
 		'name' => tra('Web Service'),
 		'documentation' => 'PluginWebservice',
-		'description' => tra('Display remote information exposed in JSON or YAML or SOAP XML'),
+		'description' => tra('Display remote information exposed in JSON or YAML.'),
 		'prefs' => array( 'wikiplugin_webservice' ),
-		'body' => tr('Template to apply to the data provided. Template format uses smarty templating engine using
-			double brackets as delimiter. Output must provide wiki syntax. Body can be sent to a parameter instead by
-			using the %0 parameter.', '<code>bodyname</code>'),
+		'body' => tra('Template to apply to the data provided. Template format uses smarty templating engine using double brackets as delimiter. Output must provide wiki syntax. Body can be sent to a parameter instead by using the bodyname parameter.'),
 		'validate' => 'all',
-		'iconname' => 'move',
-		'introduced' => 3,
+		'icon' => 'img/icons/world_go.png',
 		'params' => array(
 			'url' => array(
 				'required' => false,
 				'name' => tra('URL'),
 				'description' => tra('Complete service URL'),
-				'since' => '3.0',
 				'default' => '',
 			),
 			'service' => array(
@@ -31,16 +27,13 @@ function wikiplugin_webservice_info()
 				'safe' => true,
 				'name' => tra('Service Name'),
 				'description' => tra('Registered service name.'),
-				'since' => '3.0',
 				'default' => '',
 			),
 			'template' => array(
 				'required' => false,
 				'safe' => true,
 				'name' => tra('Template Name'),
-				'description' => tra('For use with registered services, name of the template to be used to display the
-					service output. This parameter will be ignored if a body is provided.'),
-				'since' => '3.0',
+				'description' => tra('For use with registered services, name of the template to be used to display the service output. This parameter will be ignored if a body is provided.'),
 				'default' => '',
 			),
 			'bodyname' => array(
@@ -48,20 +41,17 @@ function wikiplugin_webservice_info()
 				'filter' => 'word',
 				'safe' => true,
 				'name' => tra('Body as Parameter'),
-				'description' => tra('Name of the argument to send the body as for services with complex input.
-					Named service required for this to be useful.'),
-				'since' => '3.0',
+				'description' => tra('Name of the argument to send the body as for services with complex input. Named service required for this to be useful.'),
 				'default' => '',
 			),
 			'params' => array(
 				'required' => false,
 				'safe' => true,
 				'name' => tra('Parameters'),
-				'description' => tra('Parameters formatted like a query')
-					. ': <code>param1=value1&amp;param2=value2</code>',
-				'since' => '7.0',
+				'description' => tra('Parameters formatted like a query : param1=value1&amp;param2=value2.'),
 				'default' => '',
 			),
+
 		),
 	);
 }

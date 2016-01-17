@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,33 +10,29 @@ function wikiplugin_exercise_info()
 	return array(
 		'name' => tra('Exercise'),
 		'documentation' => tra('PluginExercise'),
-		'description' => tra('Create an exercise for a user to complete and grade'),
+		'description' => tra('Creates exercises within a wiki page for students to test their new skills. The plugin allows to define inline questions and optional answers to be selected from. A score is given for multiple exercises within a page.'),
 		'prefs' => array('wikiplugin_exercise'),
 		'filter' => 'text',
 		'format' => 'html',
-		'iconname' => 'education',
-		'introduced' => 9,
-		'tags' => array('basic'),
+		'tags' => array('basic'),		
 		'params' => array(
 			'answer' => array(
 				'required' => false,
 				'name' => tr('Answer'),
 				'description' => tr('Used inline to specify the right answer to the question and propose an input field.'),
-				'since' => '9.0',
 				'filter' => 'text',
 			),
 			'incorrect' => array(
 				'required' => false,
 				'name' => tr('Incorrect'),
 				'description' => tr('Alternative answers to provide'),
-				'since' => '9.0',
 				'filter' => 'text',
 			),
 		),
 	);
 }
 
-function wikiplugin_exercise($data, $params)
+function wikiplugin_exercise($data, $params, $offset, $options)
 {
 	static $nextId = 1;
 	$smarty = TikiLib::lib('smarty');
@@ -45,7 +41,7 @@ function wikiplugin_exercise($data, $params)
 	$params = new JitFilter($params);
 	$answer = $params->answer->text();
 
-	if (isset(TikiLib::lib('parser')->option['indexing']) && TikiLib::lib('parser')->option['indexing']) {
+	if (isset($options['indexing']) && $options['indexing']) {
 		return "{$params->answer->text()} {$params->incorrect->text()}";
 	}
 
@@ -204,7 +200,7 @@ JS;
 	return <<<HTML
 <form class="exercise-form" method="get" action="#">
 	<p>$yourScoreIs</p>
-	<input type="submit" class="btn btn-default btn-sm" value="$checkYourScore"/>
+	<input type="submit" value="$checkYourScore"/>
 </form>
 HTML;
 }

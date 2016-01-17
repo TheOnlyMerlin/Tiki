@@ -5,90 +5,79 @@
 {/if}
 {if !empty($filegals_manager)}
 	{assign var=seturl value=$fileId|sefurl:display}
-	{capture name=alink assign=alink}href="#" onclick="window.opener.insertAt('{$filegals_manager}','{$syntax|escape}');checkClose();return false;" title="{tr}Click here to use the file{/tr}" class="tips"{/capture}
+	{capture name=alink assign=alink}href="#" onclick="window.opener.insertAt('{$filegals_manager}','{$syntax|escape}');checkClose();return false;" title="{tr}Click Here to Insert in Wiki Syntax{/tr}" class="tips"{/capture}
 {else}
 	{assign var=alink value=''}
 {/if}
 <table border="0" cellspacing="4" cellpadding="4">
 	<tr>
-		{if $view neq 'page'}
-			{$type = $name|iconify:null:null:null:'filetype'}
-			{if $type eq 'image/png' or $type eq 'image/jpeg'or $type eq 'image/jpg'
-				or $type eq 'image/gif' or $type eq 'image/x-ms-bmp'}
-					{$imagetypes = 'y'}
+		<td style="text-align: center">
+			{if !empty($filegals_manager)}
+				<a {$alink}><img src="{$fileId|sefurl:thumbnail}" /><br /><span class="thumbcaption">{tr}Click Here to Insert in Wiki Syntax{/tr}</span></a>
 			{else}
-				{$imagetypes = 'n'}
+				<img src="{$fileId|sefurl:thumbnail}" />
 			{/if}
-			<td style="text-align: center">
-				{if $imagetypes eq 'y' or $prefs.theme_iconset eq 'legacy'}
-					{if !empty($filegals_manager)}
-						<a {$alink}>
-							<img src="{$fileId|sefurl:thumbnail}"><br>
-							<span class="thumbcaption">
-								{tr}Click here to use the file{/tr}
-							</span>
-						</a>
-					{else}
-						<img src="{$fileId|sefurl:thumbnail}">
-					{/if}
-				{else}
-					{$name|iconify:$type:null:3}
-				{/if}
-			</td>
-			<td>
-				{if !empty($filegals_manager)}
-					<a {$alink}>{$name|escape} ({$size|kbsize})</a>
-				{else}
-					<b>{$name|escape} ({$size|kbsize})</b>
-				{/if}
-				{if $feedback_message != ''}
-					<div class="upload_note">
-						{$feedback_message}
-					</div>
-				{/if}
-		{else}
-			<td>
-		{/if}
+		</td>
+		<td>
+			{if !empty($filegals_manager)}
+				<a {$alink}>{$name|escape} ({$size|kbsize})</a>
+			{else}
+				<b>{$name|escape} ({$size|kbsize})</b>
+			{/if}
+			{if $feedback_message != ''}
+				<div class="upload_note">
+					{$feedback_message}
+				</div>
+			{/if}
 			<div>
-				{button href="#" _onclick="javascript:flip('uploadinfos$fileId');flip('close_uploadinfos$fileId','inline');return false;" _text="{tr}Syntax Tips{/tr}"}
+				{button href="#" _onclick="javascript:flip('uploadinfos$fileId');flip('close_uploadinfos$fileId','inline');return false;" _text="{tr}Additional Info{/tr}"}
 				<span id="close_uploadinfos{$fileId}" style="display:none">
 					{button href="#" _onclick="javascript:flip('uploadinfos$fileId');flip('close_uploadinfos$fileId','inline');return false;" _text="({tr}Hide{/tr})"}
 				</span>
 			</div>
 			<div style="{if $prefs.javascript_enabled eq 'y'}display:none;{/if}" id="uploadinfos{$fileId}">
+				<div style="font-weight:bold; font-style: italic; ">
+					{tr} Syntax tips:{/tr}
+				</div>
+				<span style="line-height: 150%">
+				{tr}Link to file from a Wiki page:{/tr}
+				</span><br/>
 				<table>
 					<tr>
-						<td style="text-align:right">
-							{tr}Link to file from a Wiki page:{/tr}
+						<td width="6px">
 						</td>
-						<td>
-							<code>[{$fileId|sefurl:file}|{$name|escape}]</code>
+						<td class="inline_syntax">
+							[{$fileId|sefurl:file}|{$name|escape}]
 						</td>
 					</tr>
+				</table>
+				<div style="font-weight:bold; font-style: italic; margin-top: 10px">
+					{tr}In addition, for image files:{/tr}
+				</div>
+				<span style="line-height: 150%">
+					{tr}To display full size in a Wiki page:{/tr}</span><br/>
+				<table>
 					<tr>
-						<td colspan="2">
-							<span style="font-weight:bold; font-style: italic">{tr}For image files:{/tr}</span>
+						<td width="6px">
+						</td>
+						<td class="inline_syntax">
+							&#x7b;img fileId={$fileId}}
 						</td>
 					</tr>
-					<tr>
-						<td style="text-align:right">
-							{tr}Display full size:{/tr}
-						</td>
-						<td>
-							<code>&#x7b;img fileId="{$fileId}"}</code>
-						</td>
-					</tr>
-					{if $prefs.feature_shadowbox eq 'y'}
+				</table>
+				{if $prefs.feature_shadowbox eq 'y'}
+					<span style="line-height: 200%">{tr}Display thumbnail that enlarges:{/tr}
+					</span><br/>
+					<table>
 						<tr>
-							<td style="text-align:right">
-								{tr}Display thumbnail that enlarges:{/tr}
+							<td width="6px">
 							</td>
-							<td>
-								<code>&#x7b;img fileId="{$fileId}" thumb="y" rel="box[g]"}</code>
+							<td class="inline_syntax">
+								&#x7b;img fileId={$fileId} thumb=y rel=box[g]}
 							</td>
 						</tr>
-					{/if}
-				</table>
+					</table>
+				{/if}
 			</div>
 		</td>
 	</tr>

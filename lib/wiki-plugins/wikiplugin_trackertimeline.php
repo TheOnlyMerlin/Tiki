@@ -1,6 +1,6 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
@@ -12,83 +12,64 @@ function wikiplugin_trackertimeline_info()
 		'documentation' => 'PluginTrackerTimeline',
 		'description' => tra('Show a timeline view of a tracker'),
 		'prefs' => array( 'wikiplugin_trackertimeline', 'feature_trackers' ),
-		'iconname' => 'history',
-		'introduced' => 3,
+		'icon' => 'img/icons/timeline_marker.png',
 		'format' => 'html',
 		'params' => array(
 			'tracker' => array(
 				'required' => true,
 				'name' => tra('Tracker ID'),
 				'description' => tra('Numeric value representing the tracker ID'),
-				'since' => '3.0',
 				'filter' => 'digits',
 				'default' => '',
-				'profile_reference' => 'tracker',
 			),
 			'title' => array(
 				'required' => true,
 				'name' => tra('Title Field'),
 				'description' => tra('Tracker Field ID containing the item title.'),
-				'since' => '3.0',
 				'filter' => 'digits',
 				'default' => '',
 			),
 			'summary' => array(
 				'required' => true,
 				'name' => tra('Summary Field'),
-				'description' => tra('Tracker Field ID containing the summary of the item. The summary will be displayed
-					on the timeline when the item is focused.'),
-				'since' => '3.0',
+				'description' => tra('Tracker Field ID containing the summary of the item. The summary will be displayed on the timeline when the item is focused.'),
 				'filter' => 'digits',
 				'default' => '',
 			),
 			'start' => array(
 				'required' => true,
 				'name' => tra('Start Date'),
-				'description' => tra('Tracker Field ID containing the element start date. The field must be a
-					datetime/jscalendar field.'),
-				'since' => '3.0',
+				'description' => tra('Tracker Field ID containing the element start date. The field must be a datetime/jscalendar field.'),
 				'filter' => 'digits',
-				'default' => '',
-				'profile_reference' => 'tracker_field',
+				'default' => ''
 			),
 			'end' => array(
 				'required' => true,
 				'name' => tra('End Date'),
-				'description' => tra('Tracker Field ID containing the element end date. The field must be a
-					datetime/jscalendar field.'),
-				'since' => '3.0',
+				'description' => tra('Tracker Field ID containing the element end date. The field must be a datetime/jscalendar field.'),
 				'filter' => 'digits',
-				'default' => '',
-				'profile_reference' => 'tracker_field',
+				'default' => ''
 			),
 			'group' => array(
 				'required' => true,
 				'name' => tra('Element Group'),
-				'description' => tra('Tracker Field ID containing the element\'s group. Elements of a same group are
-					displayed on the same row.'),
-				'since' => '3.0',
+				'description' => tra('Tracker Field ID containing the element\'s group. Elements of a same group are displayed on the same row.'),
 				'filter' => 'digits',
 				'default' => '',
-				'profile_reference' => 'tracker_field',
 			),
 			'lower' => array(
 				'required' => true,
 				'name' => tra('Lower Bound'),
-				'description' => tr('Date from which element should be displayed. Date must be provided in
-					%0YYYY-MM-DD HH:mm:ss%1 format.', '<code>', '</code>'),
-				'since' => '3.0',
-				'filter' => 'datetime',
+				'description' => tra('Date from which element should be displayed. Date must be provided in YYYY-MM-DD HH:mm:ss format.'),
+				'filter' => 'striptags',
 				'default' => '',
 				'accepted' => 'Date in YYYY-MM-DD HH:mm:ss format',
 			),
 			'upper' => array(
 				'required' => true,
 				'name' => tra('Upper Bound'),
-				'description' => tr('Date until which element should be displayed. Date must be provided in
-					%0YYYY-MM-DD HH:mm:ss%1 format.', '<code>', '</code>'),
-				'since' => '3.0',
-				'filter' => 'datetime',
+				'description' => tra('Date until which element should be displayed. Date must be provided in YYYY-MM-DD HH:mm:ss format.'),
+				'filter' => 'striptags',
 				'default' => '',
 				'accepted' => 'Date in YYYY-MM-DD HH:mm:ss format',
 			),
@@ -96,15 +77,14 @@ function wikiplugin_trackertimeline_info()
 				'required' => false,
 				'name' => tra('Primary Scale Unit'),
 				'description' => tra('Unit of time to use for the primary scale (default to hour - * SIMILE only)'),
-				'since' => '3.0',
 				'filter' => 'alpha',
 				'default' => 'hour',
 				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Hour'), 'value' => 'hour'),
-					array('text' => tra('Day'), 'value' => 'day'),
-					array('text' => tra('Week'), 'value' => 'week'),
-					array('text' => tra('Month'), 'value' => 'month'),
+					array('text' => '', 'value' => ''), 
+					array('text' => tra('Hour'), 'value' => 'hour'), 
+					array('text' => tra('Day'), 'value' => 'day'), 
+					array('text' => tra('Week'), 'value' => 'week'), 
+					array('text' => tra('Month'), 'value' => 'month'), 
 					array('text' => tra('Year'), 'value' => 'year'),
 					array('text' => tra('Decade *'), 'value' => 'decade'),
 					array('text' => tra('Century *'), 'value' => 'century'),
@@ -114,15 +94,14 @@ function wikiplugin_trackertimeline_info()
 				'required' => false,
 				'name' => tra('Secondary Scale Unit'),
 				'description' => tra('Unit of time to use for the secondary scale (default to empty - * SIMILE only)'),
-				'since' => '3.0',
 				'filter' => 'alpha',
 				'default' => '',
 				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Hour'), 'value' => 'hour'),
-					array('text' => tra('Day'), 'value' => 'day'),
-					array('text' => tra('Week'), 'value' => 'week'),
-					array('text' => tra('Month'), 'value' => 'month'),
+					array('text' => '', 'value' => ''), 
+					array('text' => tra('Hour'), 'value' => 'hour'), 
+					array('text' => tra('Day'), 'value' => 'day'), 
+					array('text' => tra('Week'), 'value' => 'week'), 
+					array('text' => tra('Month'), 'value' => 'month'), 
 					array('text' => tra('Year'), 'value' => 'year'),
 					array('text' => tra('Decade *'), 'value' => 'decade'),
 					array('text' => tra('Century *'), 'value' => 'century'),
@@ -131,18 +110,14 @@ function wikiplugin_trackertimeline_info()
 			'height' => array(
 				'required' => false,
 				'name' => tra('Timeline height'),
-				'description' => tr('Height of the timeline band as a CSS unit (default: %0 -  - * SIMILE only)',
-					'<code>250p</code>'),
-				'since' => '9.0',
+				'description' => tra('Height of the timeline band as a CSS unit (default: 250px -  - * SIMILE only)'),
 				'filter' => 'text',
 				'default' => '250px',
 			),
 			'band2_height' => array(
 				'required' => false,
 				'name' => tra('Lower band height'),
-				'description' => tr('Height of the lower timeline band as a percentage (default: %0 -  - * SIMILE only)',
-					'<code>250p</code>'),
-				'since' => '9.0',
+				'description' => tra('Height of the lower timeline band as a percentage (default: 30 -  - * SIMILE only)'),
 				'filter' => 'int',
 				'default' => '30',
 			),
@@ -150,7 +125,6 @@ function wikiplugin_trackertimeline_info()
 				'required' => false,
 				'name' => tra('Link Group Name'),
 				'description' => tra('Convert the group name to a link'),
-				'since' => '3.0',
 				'filter' => 'alpha',
 				'default' => '',
 				'options' => array(
@@ -163,16 +137,13 @@ function wikiplugin_trackertimeline_info()
 				'required' => false,
 				'name' => tra('Page Link Field'),
 				'description' => tra('Tracker Field ID containing the page name for item details.'),
-				'since' => '3.0',
 				'filter' => 'digits',
 				'default' => '',
-				'profile_reference' => 'tracker_field',
 			),
 			'simile_timeline' => array(
 				'required' => false,
 				'name' => tra('SIMILE Timeline'),
 				'description' => tra('Use the SIMILE Timeline Widget.'),
-				'since' => '7.0',
 				'filter' => 'alpha',
 				'default' => 'n',
 				'options' => array(
@@ -184,10 +155,8 @@ function wikiplugin_trackertimeline_info()
 				'required' => false,
 				'name' => tra('Image Field'),
 				'description' => tra('Tracker Field ID containing in image.'),
-				'since' => '7.0',
 				'filter' => 'digits',
 				'default' => '',
-				'profile_reference' => 'tracker_field',
 			),
 		)
 	);
@@ -195,9 +164,8 @@ function wikiplugin_trackertimeline_info()
 
 function wikiplugin_trackertimeline( $data, $params )
 {
-	$trklib = TikiLib::lib('trk');
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
+	global $trklib, $smarty, $tikilib;
+	require_once 'lib/trackers/trackerlib.php';
 
 	static $instance = 0;
 	$instance++;
@@ -297,7 +265,7 @@ function wikiplugin_trackertimeline( $data, $params )
 
 	} else {	// SIMILE Timeline Widget setup
 
-		$headerlib = TikiLib::lib('header');
+		global $headerlib;
 
 		// static js moved to lib
 		$headerlib->add_jsfile('lib/simile_tiki/tiki-timeline.js');
@@ -383,14 +351,14 @@ function wp_ttl_sort_cb( $a, $b )
 function wp_ttl_genlayout( $start, $end, $full, $type )
 {
 	switch( $type ) {
-	case 'empty':
+	case 'empty': 
 	case '':
 		return;
-	case 'hour':
+	case 'hour': 
 		$size = 3600;
 		$pos = $start - ( $start + $size ) % $size;
     	break;
-	case 'day':
+	case 'day': 
 		$size = 86400;
 
 		if ( date('H:i:s', $start) == '00:00:00' ) {
@@ -444,15 +412,15 @@ function wp_ttl_genlayout( $start, $end, $full, $type )
 	for ( $i = $pos; $end > $i + $size; $i += $size ) {
 		switch( $type ) {
 			case 'hour': $layout['blocks'][] = date('H:i', $i);
-	     		break;
+     		break;
 			case 'day': $layout['blocks'][] = date('j', $i);
-				break;
+     		break;
 			case 'week': $layout['blocks'][] = date('j', $i);
-     			break;
+     		break;
 			case 'month': $layout['blocks'][] = date('M', $i);
-	     		break;
+     		break;
 			case 'year': $layout['blocks'][] = date('Y', $i);
-				break;
+     		break;
 		}
 
 		switch( $type ) {

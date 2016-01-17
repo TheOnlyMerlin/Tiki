@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -12,9 +12,8 @@ function wikiplugin_footnotearea_info()
 		'documentation' => 'PluginFootnoteArea',
 		'description' => tra('Create automatically numbered footnotes (together with PluginFootnote)'),
 		'prefs' => array('wikiplugin_footnotearea'),
-		'iconname' => 'superscript',
+		'icon' => 'img/icons/text_horizontalrule.png',
 		'format' => 'html',
-		'introduced' => 3,
 		'params' => array(),
 	);
 }
@@ -25,12 +24,8 @@ function wikiplugin_footnotearea($data, $params)
 	$html = '<div class="footnotearea">';
 	$html .= '<hr />';
 
-	foreach ($GLOBALS["footnotesData"] as $number => $data) {
-        $class = "onefootnote";
-        if (isset($GLOBALS["footnotesClass"][$number])){
-            $class .= " ".$GLOBALS["footnotesClass"][$number];
-        }
-		$html .= '<div class="'.$class.'" id="footnote' . $number . '">';
+	foreach ($GLOBALS["footnotesData"] as $data => $number) {
+		$html .= '<div class="onefootnote" id="footnote' . $number . '">';
 		$html .= '<a href="#ref_footnote' . $number . '">'. $number . '.</a> ';
 		$html .= '~/np~' . $data . '~np~';
 		$html .= '</div>';

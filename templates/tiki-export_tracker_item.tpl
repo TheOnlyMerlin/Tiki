@@ -53,13 +53,14 @@
 					{capture name="line"}
 						{trackeroutput field=$field_value item=$item list_mode='csv' showlinks='n'}
 					{/capture}
-					{$delimitorL}{$smarty.capture.line|replace:"\r\n":"$CR"|replace:"\n":"$CR"|replace:"<br>":"$CR"|replace:"$delimitorL":"$delimitorL$delimitorL"|replace:"$delimitorR":"$delimitorR$delimitorR"}{$delimitorR}
+					{$delimitorL}{$smarty.capture.line|replace:"\r\n":"$CR"|replace:"\n":"$CR"|replace:"<br />":"$CR"|replace:"$delimitorL":"$delimitorL$delimitorL"|replace:"$delimitorR":"$delimitorR$delimitorR"}{$delimitorR}
 				{else}
 					{$delimitorL}{$delimitorR}
 				{/if}
 				{if !$smarty.foreach.list.last}{$separator}{/if}
 			{/foreach}
 		{/if}
-	{/strip}{* this empty line below is necessary to make separate rows - but make sure there are no empty lines after the /foreach end tag to avoid empty rows being generated after every 100th row *}
+	{/strip}{* this empty line below is necessary to make separate rows *}
 
 {/foreach}
+

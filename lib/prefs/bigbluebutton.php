@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -16,8 +16,8 @@ function prefs_bigbluebutton_list()
 			'help' => 'BigBlueButton',
 			'tags' => array('basic'),
 			'default' => 'n',
-			'extensions' => array(
-				'dom',
+			'dependencies' => array(
+				'php_libxml',
 			),			
 		),
 		'bigbluebutton_server_location' => array(
@@ -33,7 +33,7 @@ function prefs_bigbluebutton_list()
 		),
 		'bigbluebutton_server_salt' => array(
 			'name' => tra('BigBlueButton server salt'),
-			'description' => tra('A salt key used to generate checksums for the BigBlueButton server to assure that requests are authentic.'),
+			'description' => tra('A salt key used to generate checksums for the BigBlueButton server to know the requests are authentic.'),
 			'keywords' => 'big blue button web conferencing audio video chat screensharing whiteboard',
 			'type' => 'text',
 			'size' => 40,
@@ -43,7 +43,7 @@ function prefs_bigbluebutton_list()
 		),
 		'bigbluebutton_recording_max_duration' => array(
 			'name' => tr('BigBlueButton recording maximum duration'),
-			'description' => tr('A maximum duration for the meetings must be submitted to BigBlueButton to prevent the recordings from being excessively long if a user leaves the conference window open.'),
+			'description' => tr('A maximum duration for the meetings must be provided to BigBlueButton to prevent the recordings to be excessively long if a user leaves the window open too long.'),
 			'shorthint' => tr('minutes'),
 			'keywords' => 'big blue button',
 			'type' => 'text',
@@ -51,14 +51,6 @@ function prefs_bigbluebutton_list()
 			'size' => 6,
 			'default' => 5*60,
 			'tags' => array('basic'),
-		),
-		'bigbluebutton_dynamic_configuration' => array(
-			'name' => tr('BigBlueButton Dynamic Configuration'),
-			'description' => tr('Uses the advanced options of BigBlueButton to configure the XML per room.'),
-			'keywords' => 'big blue button',
-			'type' => 'flag',
-			'default' => 'n',
-			'tags' => array('advanced', 'experimental'),
 		),
 	);
 }

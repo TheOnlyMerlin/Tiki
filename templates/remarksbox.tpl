@@ -1,29 +1,21 @@
-{* $Id$ *}
 {strip}
+{* $Id$ *}
 {* Simple remarks box used by Smarty entity block.remarksbox.php & wikiplugin_remarksbox.php *}
-<div {if $remarksbox_id}id="{$remarksbox_id|escape}"{/if} class="alert {$remarksbox_class|escape} {if $remarksbox_close}alert-dismissable{/if} {if $remarksbox_cookie}hide{/if}">
-	{if $remarksbox_close}
-		<button {if $remarksbox_id}id="triggeralert-{$remarksbox_id|escape}" data-target="{$remarksbox_id|escape}"{/if} type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-	{/if}
-	<h4>
-		{icon name="$remarksbox_icon"}
-		&nbsp;
-		{$remarksbox_title|escape}
-	</h4>
-	{$remarksbox_content}
+<div class="clearfix rbox {$remarksbox_type}">
+{if $remarksbox_close eq 'y' and $remarksbox_type ne 'errors' and $remarksbox_type ne 'confirm'}
+	{icon _id='close' class='rbox-close' onclick='$(this).parent().fadeOut();'}
+{/if}
+{if $remarksbox_title ne ''}
+	<div class="rbox-title">
+{if $remarksbox_icon ne 'none'}
+	{capture name='alt'}{tr}{$remarksbox_type}{/tr}{/capture}
+	{icon _id=$remarksbox_icon alt=$smarty.capture.alt}
+{/if}
+		<span>{$remarksbox_title|escape}</span>
+	</div>
+{/if}
+	<div class="rbox-data{$remarksbox_highlight}"{if !empty($remarksbox_width)} style="width:{$remarksbox_width}"{/if}>
+		{$remarksbox_content}
+	</div>
 </div>
 {/strip}
-
-{if $remarksbox_cookie}
-{jq}
-	if (! getCookie("{{$remarksbox_cookiehash}}")) {
-		$("#{{$remarksbox_id|escape}}").removeClass('hide');
-	}
-
-	$("#triggeralert-{{$remarksbox_id|escape}}").click(function() {
-		var targetalert = $(this).data("target");
-		$("#"+targetalert).addClass('hide');
-		document.cookie="{{$remarksbox_cookiehash}}=dismiss";
-	});
-{/jq}
-{/if}

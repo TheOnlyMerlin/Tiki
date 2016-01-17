@@ -1,15 +1,6 @@
 {* $Id: tiki-sheets.tpl 35450 2011-07-17 19:03:36Z changi67 $ *}
-{* Use css menus as fallback for item dropdown action menu if javascript is not being used *}
-{if $prefs.javascript_enabled !== 'y'}
-	{$js = 'n'}
-	{$libeg = '<li>'}
-	{$liend = '</li>'}
-{else}
-	{$js = 'y'}
-	{$libeg = ''}
-	{$liend = ''}
-{/if}
-<tr>
+
+<tr class="{cycle}">
 	<td class="text">
 		{if $sheet.parentSheetId}
 			<span class="ui-icon ui-icon-grip-dotted-vertical" style="float: left;"></span>
@@ -22,50 +13,40 @@
 	<td>{$sheet.lastModif|tiki_short_date}</td>
 	<td class="username">{$sheet.author|escape}</td>
 	<td class="action">
-		{capture name='sheets_actions'}
-			{strip}
-				{if $chart_enabled eq 'y'}
-					{$libeg}<a class="gallink" href="tiki-graph_sheet.php?sheetId={$sheet.sheetId}">
-						{icon name='chart' _menu_text='y' _menu_icon='y' alt="{tr}Graph{/tr}"}
-					</a>{$liend}
-				{/if}
-				{if $tiki_p_view_sheet_history eq 'y'}
-					{$libeg}<a class="gallink" href="tiki-history_sheets.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;sheetId={$sheet.sheetId}">
-						{icon name='history' _menu_text='y' _menu_icon='y' alt="{tr}History{/tr}"}
-					</a>{$liend}
-				{/if}
-				{$libeg}<a class="gallink tips" title=":{tr}Export{/tr}" href="tiki-export_sheet.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;sheetId={$sheet.sheetId}">
-					{icon name='export' _menu_text='y' _menu_icon='y' alt="{tr}Export{/tr}"}
-				</a>{$liend}
-				{if $sheet.tiki_p_edit_sheet eq 'y'}
-					{$libeg}<a class="gallink tips" title=":{tr}Import{/tr}" href="tiki-import_sheet.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;sheetId={$sheet.sheetId}">
-						{icon name='import' _menu_text='y' _menu_icon='y' alt="{tr}Imort{/tr}"}
-					</a>{$liend}
-				{/if}
-				{if $tiki_p_admin_sheet eq 'y'}
-					{$libeg}{permission_link mode='text' type=sheet id=$sheet.sheetId title=$sheet.title}{$liend}
-				{/if}
-				{if $sheet.tiki_p_edit_sheet eq 'y'}
-					{$libeg}<a class="gallink" href="tiki-sheets.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;edit_mode=1&amp;sheetId={$sheet.sheetId}">
-						{icon name='cog' _menu_text='y' _menu_icon='y' alt="{tr}Configure{/tr}"}
-					</a>{$liend}
-					{$libeg}<a class="gallink" href="tiki-sheets.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;removesheet=y&amp;sheetId={$sheet.sheetId}">
-						{icon name='remove' _menu_text='y' _menu_icon='y' alt="{tr}Delete{/tr}"}
-					</a>{$liend}
-				{/if}
-			{/strip}
-		{/capture}
-		{if $js === 'n'}<ul class="cssmenu_horiz"><li>{/if}
-		<a
-			class="tips"
-			title="{tr}Actions{/tr}" href="#"
-			{if $js === 'y'}{popup delay="0|2000" fullhtml="1" center=true text=$smarty.capture.sheets_actions|escape:"javascript"|escape:"html"}{/if}
-			style="padding:0; margin:0; border:0"
-		>
-			{icon name='settings'}
+		{if $chart_enabled eq 'y'}
+			<a class="gallink" href="tiki-graph_sheet.php?sheetId={$sheet.sheetId}">
+				<img src='img/icons/chart_curve.png' width='16' height='16' alt="{tr}Graph{/tr}" title="{tr}Graph{/tr}" />
+			</a>
+		{/if}
+		{if $tiki_p_view_sheet_history eq 'y'}
+			<a class="gallink" href="tiki-history_sheets.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;sheetId={$sheet.sheetId}">
+				{icon _id='application_form_magnify' alt="{tr}History{/tr}"}
+			</a>
+		{/if}
+		<a class="gallink" href="tiki-export_sheet.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;sheetId={$sheet.sheetId}">
+			{icon _id='disk' alt="{tr}Export{/tr}"}
 		</a>
-		{if $js === 'n'}
-			<ul class="dropdown-menu" role="menu">{$smarty.capture.sheets_actions}</ul></li></ul>
+		{if $sheet.tiki_p_edit_sheet eq 'y'}
+			<a class="gallink" href="tiki-import_sheet.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;sheetId={$sheet.sheetId}">
+				{icon _id='folder_add' alt="{tr}Import{/tr}"}
+			</a>
+		{/if}
+		{if $tiki_p_admin_sheet eq 'y'}
+			<a class="gallink" href="tiki-objectpermissions.php?objectName={$sheet.title|escape:"url"}&amp;objectType=sheet&amp;permType=sheet&amp;objectId={$sheet.sheetId}">
+			{if $sheet.individual eq 'y'}
+				{icon _id='key_active' alt="{tr}Active Perms{/tr}"}
+			{else}
+				{icon _id='key' alt="{tr}Perms{/tr}"}
+			{/if}
+			</a>
+		{/if}
+		{if $sheet.tiki_p_edit_sheet eq 'y'}
+			<a class="gallink" href="tiki-sheets.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;edit_mode=1&amp;sheetId={$sheet.sheetId}">
+				{icon _id='page_edit' alt="{tr}Configure{/tr}"}
+			</a>
+			<a class="gallink" href="tiki-sheets.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;removesheet=y&amp;sheetId={$sheet.sheetId}">
+				{icon _id='cross' alt="{tr}Delete{/tr}"}
+			</a>
 		{/if}
 	</td>
 </tr>

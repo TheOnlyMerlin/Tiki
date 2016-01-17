@@ -5,7 +5,7 @@
 {else}
 <a href="tiki-index.php?page={$page|escape:"url"}" class="wiki">{$page|escape}</a>
 {/if}</h2>
-<br>
+<br />
 {if $likepages|@count ge '2'}
 <ul>
 {section name=back loop=$likepages}
@@ -13,13 +13,13 @@
 <li><a href="tiki-index.php?page={$likepages[back]|escape:"url"}" class="wiki">{$likepages[back]|escape}</a></li>
 {/if}
 {sectionelse}
-{remarksbox type="info" title="{tr}Information{/tr}"}{tr}No pages found{/tr}{/remarksbox}
+{tr}No pages found{/tr}
 {/section}
 </ul>
 {else}
-{remarksbox type="info" title="{tr}Information{/tr}"}{tr}No pages found{/tr}{/remarksbox}
+{tr}No pages found{/tr}
 {/if}
-<br>
+<br />
 
 {include file='tiki-page_bar.tpl'}
 

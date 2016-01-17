@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -30,9 +30,7 @@ function wikiplugin_module_info()
 		'description' => tra('Display a module'),
 		'prefs' => array( 'wikiplugin_module' ),
 		'validate' => 'all',
-		'format' => 'html',
-		'iconname' => 'module',
-		'introduced' => 1,
+		'icon' => 'img/icons/module.png',
 		'extraparams' =>true,
 		'tags' => array( 'basic' ),
 		'params' => array(
@@ -40,39 +38,31 @@ function wikiplugin_module_info()
 				'required' => true,
 				'name' => tra('Module Name'),
 				'description' => tra('Module name as known in Tiki'),
-				'since' => '1',
 				'default' => '',
-				'filter' => 'text',
 				'options' => $modules_options,
 			),
 			'notitle' =>array(
 				'required' => false,
 				'name' => tra('No Title'),
-				'description' => tr('Select Yes (%0y%1) to hide the title (default is to show the title)', '<code>', '</code>'),
-				'since' => '3.0',
+				'description' => tra('Select Yes (y) to hide the title (default is to show the title)'),
 				'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('Yes'), 'value' => 'y'), 
 					array('text' => tra('No'), 'value' => 'n'),
 				),
-				'filter' => 'alpha',
 				'advanced' => true,
 			),
 			'title' => array(
 				'name' => tra('Module Title'),
-				'description' => tr('Title to display at the top of the box, assuming No Title is not set to Yes (%0y%1).',
-					'<code>', '</code>'),
-				'since' => '1',
-				'filter' => 'text',
+				'description' => tra('Title to display at the top of the box, assuming No Title is not set to Yes (y).'),
+				'filter' => 'striptags',
 				'advanced' => true,
 			),
 			'float' => array(
 				'required' => false,
 				'name' => tra('Float'),
 				'description' => tra('Align the module to the left or right on the page allowing other elements to align against it'),
-				'since' => '1',
 				'default' => '',
-				'filter' => 'word',
 				'advanced' => true,
 				'options' => array(
 					array('text' => '', 'value' => ''), 
@@ -84,19 +74,15 @@ function wikiplugin_module_info()
 			'max' => array(
 				'required' => false,
 				'name' => tra('Max'),
-				'description' => tr('Number of rows (default: %010%1)', '<code>', '</code>'),
-				'since' => '1',
+				'description' => tra('Number of rows (default: 10)'),
 				'default' => 10,
-				'filter' => 'digits',
 				'advanced' => true,
 			),
 			'np' => array(
 				'required' => false,
 				'name' => tra('Parse'),
 				'description' => tra('Parse wiki syntax.') . ' ' . tra('Default:') . ' ' . tra('No'),
-				'since' => '1',
 				'default' => '1',
-				'filter' => 'digits',
 				'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('Yes'), 'value' => '0'), 
@@ -107,7 +93,6 @@ function wikiplugin_module_info()
 			'nobox' => array(
 				'name' => tra('No Box'),
 				'description' => 'y|n '.tra('Show only the content with no box surrounding it.'),
-				'since' => '9.0',
 				'section' => 'appearance',
 				'filter' => 'alpha',
 				'advanced' => true,
@@ -121,9 +106,7 @@ function wikiplugin_module_info()
 				'required' => false,
 				'name' => tra('Decoration'),
 				'description' => tra('Show box decorations (default is to show them)'),
-				'since' => '1',
 				'advanced' => true,
-				'filter' => 'digits',
 				'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('Yes'), 'value' => '1'), 
@@ -133,11 +116,8 @@ function wikiplugin_module_info()
 			'flip' => array(
 				'required' => false,
 				'name' => tra('Flip'),
-				'description' => tra('Add ability to show/hide the content of the module (default is the site admin
-					setting for modules)'),
-				'since' => '1',
+				'description' => tra('Add ability to show/hide the content of the module (default is the site admin setting for modules)'),
 				'section' => 'appearance',
-				'filter' => 'digits',
 				'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('Yes'), 'value' => '1'), 
@@ -148,57 +128,43 @@ function wikiplugin_module_info()
 			'bgcolor' => array(
 				'required' => false,
 				'name' => tra('Title Background'),
-				'description' => tr('Override the background color for the title (if the title is shown). The value
-					can be a color name (ex: %0bgcolor="blue"%1) or a hexadecimal value (ex: %0bgcolor="#FFEBCD"%1)',
-					'<code>', '</code>'),
-				'since' => '9.0',
+				'description' => tra('Override the background color for the title (if the title is shown). The value can be a color name (ex: bgcolor=blue) or a hexadecimal value (ex: bgcolor=#FFEBCD)'),
 				'default' => '',
-				'filter' => 'text',
+				'filter' => 'striptags',
 				'advanced' => true,
 			),
 			'module_style' => array(
 				'required' => false,
 				'name' => tra('Module Style'),
-				'description' => tr('Inline CSS for the containing DIV element, e.g. %0max-width:80%%1',
-					'<code>', '</code>'),
-				'since' => '9.0',
-				'filter' => 'text',
-				'accepted' => tra('Valid CSS styling'),
+				'description' => tra('Inline CSS for the containing DIV element, e.g. "max-width:80%"'),
+				'filter' => 'striptags',
 				'default' => '',
 				'advanced' => true,
 			),
 			'style' => array(
 				'name' => tra('Style'),
 				'description' => tra('CSS styling for the module data itself.'),
-				'since' => '9.0',
-				'filter' => 'text',
+				'filter' => 'striptags',
 				'section' => 'appearance',
-				'accepted' => tra('Valid CSS styling'),
 				'advanced' => true,
 			),
 			'topclass' => array(
 				'name' => tra('Containing Class'),
-				'description' => tra('Custom CSS class of div around the module.'),
-				'since' => '9.0',
-				'filter' => 'text',
+				'description' => tra('Custom CSS class around.'),
+				'filter' => 'striptags',
 				'section' => 'appearance',
-				'accepted' => tra('Valid CSS class'),
 				'advanced' => true,
 			),
 			'class' => array(
 				'name' => tra('Class'),
 				'description' => tra('Custom CSS class.'),
-				'since' => '9.0',
 				'section' => 'appearance',
-				'filter' => 'text',
-				'accepted' => tra('Valid CSS class'),
+				'filter' => 'striptags',
 				'advanced' => true,
 			),
 			'category' => array(
 				'name' => tra('Category'),
-				'description' => tra('Module displayed depending on category. Multiple category ids or names can be
-					separated by semi-colons.'),
-				'since' => '9.0',
+				'description' => tra('Module displayed depending on category. Multiple category ids or names can be separated by semi-colons.'),
 				'section' => 'visibility',
 				'separator' => ';',
 				'filter' => 'alnum',
@@ -206,9 +172,7 @@ function wikiplugin_module_info()
 			),
 			'nocategory' => array(
 				'name' => tra('No Category'),
-				'description' => tra('Module hidden depending on category. Multiple category ids or names can be
-					separated by semi-colons. This takes precedence over the category parameter above.'),
-				'since' => '9.0',
+				'description' => tra('Module hidden depending on category. Multiple category ids or names can be separated by semi-colons. This takes precedence over the category parameter above.'),
 				'section' => 'visibility',
 				'separator' => ';',
 				'filter' => 'alnum',
@@ -216,9 +180,7 @@ function wikiplugin_module_info()
 			),
 			'perspective' => array(
 				'name' => tra('Perspective'),
-				'description' => tra('Only display the module if in one of the listed perspective IDs. Semi-colon
-					separated.'),
-				'since' => '9.0',
+				'description' => tra('Only display the module if in one of the listed perspective IDs. Semi-colon separated.'),
 				'separator' => ';',
 				'filter' => 'digits',
 				'section' => 'visibility',
@@ -226,9 +188,7 @@ function wikiplugin_module_info()
 			),
 			'lang' => array(
 				'name' => tra('Language'),
-				'description' => tra('Module only applicable for the specified languages. Languages are defined as two
-					character language codes. Multiple values can be separated by semi-colons.'),
-				'since' => '9.0',
+				'description' => tra('Module only applicable for the specified languages. Languages are defined as two character language codes. Multiple values can be separated by semi-colons.'),
 				'separator' => ';',
 				'filter' => 'lang',
 				'section' => 'visibility',
@@ -236,19 +196,15 @@ function wikiplugin_module_info()
 			),
 			'section' => array(
 				'name' => tra('Section'),
-				'description' => tra('Module only applicable for the specified sections. Multiple values can be
-					separated by semi-colons.'),
-				'since' => '9.0',
+				'description' => tra('Module only applicable for the specified sections. Multiple values can be separated by semi-colons.'),
 				'separator' => ';',
-				'filter' => 'text',
+				'filter' => 'striptags',
 				'section' => 'visibility',
 				'advanced' => true,
 			),
 			'page' => array(
 				'name' => tra('Page Filter'),
-				'description' => tra('Module only applicable on the specified page names. Multiple values can be
-					separated by semi-colons.'),
-				'since' => '9.0',
+				'description' => tra('Module only applicable on the specified page names. Multiple values can be separated by semi-colons.'),
 				'separator' => ';',
 				'filter' => 'pagename',
 				'section' => 'visibility',
@@ -256,9 +212,7 @@ function wikiplugin_module_info()
 			),
 			'nopage' => array(
 				'name' => tra('No Page'),
-				'description' => tra('Module not applicable on the specified page names. Multiple values can be
-					separated by semi-colons.'),
-				'since' => '9.0',
+				'description' => tra('Module not applicable on the specified page names. Multiple values can be separated by semi-colons.'),
 				'separator' => ';',
 				'filter' => 'pagename',
 				'section' => 'visibility',
@@ -266,10 +220,7 @@ function wikiplugin_module_info()
 			),
 			'theme' => array(
 				'name' => tra('Theme'),
-				'description' => tr('Module enabled or disabled depending on the theme file name (e.g.
-					%0thenews.css%1). Specified themes can be either included or excluded. Theme names prefixed by %0!%1
-					are in the exclusion list. Multiple values can be separated by semi-colons.', '<code>', '</code>'),
-				'since' => '9.0',
+				'description' => tra('Module enabled or disabled depending on the theme file name (e.g. "thenews.css"). Specified themes can be either included or excluded. Theme names prefixed by "!" are in the exclusion list. Multiple values can be separated by semi-colons.'),
 				'separator' => ';',
 				'filter' => 'themename',
 				'section' => 'visibility',
@@ -277,19 +228,14 @@ function wikiplugin_module_info()
 			),
 			'creator' => array(
 				'name' => tra('Creator'),
-				'description' => tr('Module only available based on the relationship of the user with the wiki page.
-					Either only creators (%0y%1) or only non-creators (%0n%1) will see the module.', '<code>', '</code>'),
-				'since' => '9.0',
+				'description' => tra('Module only available based on the relationship of the user with the wiki page. Either only creators (y) or only non-creators (n) will see the module.'),
 				'filter' => 'alpha',
 				'section' => 'visibility',
 				'advanced' => true,
 			),
 			'contributor' => array(
 				'name' => tra('Contributor'),
-				'description' => tra('Module only available based on the relationship of the user with the wiki page.
-					Either only contributors (%0y%1) or only non-contributors (%0n%1) will see the module.', '<code>',
-					'</code>'),
-				'since' => '9.0',
+				'description' => tra('Module only available based on the relationship of the user with the wiki page. Either only contributors (y) or only non-contributors (n) will see the module.'),
 				'filter' => 'alpha',
 				'section' => 'visibility',
 				'advanced' => true,
@@ -350,8 +296,8 @@ function wikiplugin_module($data, $params)
 			'name' => $module,
 			'params' => $params,
 			'rows' => $max,
-			'position' => '_wp_',
-			'ord' => $instance,
+			'position' => null,
+			'ord' => null,
 			'cache_time'=> 0,
 		);
 
@@ -359,24 +305,25 @@ function wikiplugin_module($data, $params)
 			$module_reference['module_style'] = $module_style;
 		}
 
-		$modlib = TikiLib::lib('mod');
+		global $modlib; require_once 'lib/modules/modlib.php';
 		$out = $modlib->execute_module($module_reference);
 	}
 
 	if ($out) {
 		if ($float != 'nofloat') {
-			$data = "<div style='float: $float;'>$out</div>";
+			$data = "<div style='float: $float;'>";
 		} else {
-			$data = "<div>$out</div>";
+			$data = "<div>";
+		}	
+		if ($np) {
+  		$data.= "~np~$out~/np~</div>";
+		} else {
+			$data.= "$out</div>";
 		}
 	} else {
-		// Display error message
+        // Display error message
 		$data = "<div class=\"highlight\">" . tra("Sorry, no such module"). "<br /><b>$module</b></div>" . $data;
 	}
 
-	if ($module == 'register') {
-        // module register (maybe others too?) adds ~np~ to plugin output so remove them
-        $data = preg_replace('/~[\/]?np~/ms', '', $data);
-	}
 	return $data;
 }

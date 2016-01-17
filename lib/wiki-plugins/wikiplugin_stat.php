@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -12,15 +12,13 @@ function wikiplugin_stat_info()
 		'documentation' => 'PluginStat',
 		'description' => tra('Show various statistics for an object'),
 		'prefs' => array('wikiplugin_stat'),
-		'iconname' => 'chart',
-		'introduced' => 4,
+		'icon' => 'img/icons/calculator.png',
 		'params' => array(
 			'type' => array(
 				'required' => true,
 				'name' => tra('Object Type'),
-				'description' => tra('Colon-separated list of object type to show stats for.'),
-				'since' => '4.0',
-				'filter' => 'text',
+				'description' => tra('Object type to show stats for. Choices are article, trackeritem or wiki, or a combination of these separated by colons.'),
+				'filter' => 'striptags',
 				'default' => '',
 				'options' => array(
 					array('text' => '', 'value' => ''), 
@@ -45,18 +43,13 @@ function wikiplugin_stat_info()
 				'required' => false,
 				'name' => tra('Parent ID'),
 				'description' => tra('Enter a tracker ID to restrict stats to that tracker (for use with trackeritems only).'),
-				'since' => '4.0',
-				'filter' => 'digits',
-				'profile_reference' => 'tracker',
 			),
 			'lastday' => array(
 				'required' => false,
 				'name' => tra('Last 24 Hours'),
-				'description' => tr('Added and/or viewed in the last 24 hours (only added items shown for tracker
-					items whether %0a%1 (added) or %0v%1 (viewed) or both is set)', '<code>', '</code>'),
-				'since' => '4.0',
-				'filter' => 'text',
-				'accepted' => tra('a or v or both separated by a colon. Example: "a:v" or "v:a"'),
+				'description' => tra('Added and/or viewed in the last 24 hours (only added items shown for tracker items whether a (added) or v (viewed) or both is set)'),
+				'filter' => 'striptags',
+				'accepted' => 'a or v or both separated by a colon. Example: "a:v" or "v:a"',
 				'default' => '',
 				'options' => array(
 					array('text' => '', 'value' => ''), 
@@ -69,11 +62,9 @@ function wikiplugin_stat_info()
 			'day' => array(
 				'required' => false,
 				'name' => tra('Today'),
-				'description' => tr('Added and/or viewed since the beginning of the day (only added items shown for
-					tracker items whether %0a%1 (added) or %0v%1 (viewed) or both is set)', '<code>', '</code>'),
-				'since' => '4.0',
-				'filter' => 'text',
-				'accepted' => tra('a or v or both separated by a colon. Example: "a:v" or "v:a"'),
+				'description' => tra('Added and/or viewed since the beginning of the day (only added items shown for tracker items whether a (added) or v (viewed) or both is set)'),
+				'filter' => 'striptags',
+				'accepted' => 'a or v or both separated by a colon. Example: "a:v" or "v:a"',
 				'default' => '',
 				'options' => array(
 					array('text' => '', 'value' => ''), 
@@ -86,11 +77,9 @@ function wikiplugin_stat_info()
 			'lastweek' => array(
 				'required' => false,
 				'name' => tra('Last 7 Days'),
-				'description' => tr('Added and/or viewed in the last 7 days (only added items shown for tracker items
-					whether %0a%1 (added) or %0v%1 (viewed) or both is set)', '<code>', '</code>'),
-				'since' => '4.0',
-				'filter' => 'text',
-				'accepted' => tra('a or v or both separated by a colon. Example: "a:v" or "v:a"'),
+				'description' => tra('Added and/or viewed in the last 7 days (only added items shown for tracker items whether a (added) or v (viewed) or both is set)'),
+				'filter' => 'striptags',
+				'accepted' => 'a or v or both separated by a colon. Example: "a:v" or "v:a"',
 				'default' => '',
 				'options' => array(
 					array('text' => '', 'value' => ''), 
@@ -103,11 +92,9 @@ function wikiplugin_stat_info()
 			'week' => array(
 				'required' => false,
 				'name' => tra('This Week'),
-				'description' => tr('Added and/or viewed since the beginning of the week (only added items shown for
-					tracker items whether %0a%1 (added) or %0v%1 (viewed) or both is set)', '<code>', '</code>'),
-				'since' => '4.0',
-				'filter' => 'text',
-				'accepted' => tra('a or v or both separated by a colon. Example: "a:v" or "v:a"'),
+				'description' => tra('Added and/or viewed since the beginning of the week (only added items shown for tracker items whether a (added) or v (viewed) or both is set)'),
+				'filter' => 'striptags',
+				'accepted' => 'a or v or both separated by a colon. Example: "a:v" or "v:a"',
 				'default' => '',
 				'options' => array(
 					array('text' => '', 'value' => ''), 
@@ -119,12 +106,10 @@ function wikiplugin_stat_info()
 			),
 			'lastmonth' => array(
 				'required' => false,
-				'name' => tr('Last Month'),
-				'description' => tr('Added and/or viewed last month (only added items shown for tracker items
-					whether %0a%1 (added) or %0v%1 (viewed) or both is set)', '<code>', '</code>'),
-				'since' => '4.0',
-				'filter' => 'text',
-				'accepted' => tra('a or v or both separated by a colon. Example: "a:v" or "v:a"'),
+				'name' => tra('Last Month'),
+				'description' => tra('Added and/or viewed last month (only added items shown for tracker items whether a (added) or v (viewed) or both is set)'),
+				'filter' => 'striptags',
+				'accepted' => 'a or v or both separated by a colon. Example: "a:v" or "v:a"',
 				'default' => '',
 				'options' => array(
 					array('text' => '', 'value' => ''), 
@@ -137,11 +122,9 @@ function wikiplugin_stat_info()
 			'month' => array(
 				'required' => false,
 				'name' => tra('This Month'),
-				'description' => tr('Added and/or viewed since the beginning of the month (only added items shown for
-					tracker items whether %0a%1 (added) or %0v%1 (viewed) or both is set)', '<code>', '</code>'),
-				'since' => '4.0',
-				'filter' => 'text',
-				'accepted' => tra('a or v or both separated by a colon. Example: "a:v" or "v:a"'),
+				'description' => tra('Added and/or viewed since the beginning of the month (only added items shown for tracker items whether a (added) or v (viewed) or both is set)'),
+				'filter' => 'striptags',
+				'accepted' => 'a or v or both separated by a colon. Example: "a:v" or "v:a"',
 				'default' => '',
 				'options' => array(
 					array('text' => '', 'value' => ''), 
@@ -154,11 +137,9 @@ function wikiplugin_stat_info()
 			'lastyear' => array(
 				'required' => false,
 				'name' => tra('Last Year'),
-				'description' => tr('Added and/or viewed in the last 365 days (only added items shown for tracker
-					items whether %0a%1 (added) or %0v%1 (viewed) or both is set)', '<code>', '</code>'),
-				'since' => '4.0',
-				'filter' => 'text',
-				'accepted' => tra('a or v or both separated by a colon. Example: "a:v" or "v:a"'),
+				'description' => tra('Added and/or viewed in the last 365 days (only added items shown for tracker items whether a (added) or v (viewed) or both is set)'),
+				'filter' => 'striptags',
+				'accepted' => 'a or v or both separated by a colon. Example: "a:v" or "v:a"',
 				'default' => '',
 				'options' => array(
 					array('text' => '', 'value' => ''), 
@@ -171,11 +152,9 @@ function wikiplugin_stat_info()
 			'year' => array(
 				'required' => false,
 				'name' => tra('This Year'),
-				'description' => tr('Added and/or viewed since the beginning of the year (only added items shown for
-					tracker items whether %0a%1 (added) or %0v%1 (viewed) or both is set)', '<code>', '</code>'),
-				'since' => '4.0',
-				'filter' => 'text',
-				'accepted' => tra('a or v or both separated by a colon. Example: "a:v" or "v:a"'),
+				'description' => tra('Added and/or viewed since the beginning of the year (only added items shown for tracker items whether a (added) or v (viewed) or both is set)'),
+				'filter' => 'striptags',
+				'accepted' => 'a or v or both separated by a colon. Example: "a:v" or "v:a"',
 				'default' => '',
 				'options' => array(
 					array('text' => '', 'value' => ''), 
@@ -191,8 +170,8 @@ function wikiplugin_stat_info()
 
 function wikiplugin_stat($data, $params) 
 {
-	$smarty = TikiLib::lib('smarty');
-	$statslib = TikiLib::lib('stats');
+	global $smarty;
+	global $statslib; include_once('lib/stats/statslib.php');
 	$stat = array();
 	foreach ($params as $when=>$whats) {
 		if ($when == 'type' || $when == 'parentId') {

@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -21,13 +18,13 @@ class Tiki_ComplexType
 	 * Param 1
 	 * @var string
 	 */
-	public $param1;
+	var $param1;
 
 	/**
 	 * Param 2
 	 * @var string
 	 */
-	public $param2;
+	var $param2;
 }
 
 /**
@@ -64,15 +61,16 @@ class Tiki_WebServices
 	}
 }
 
+require_once 'lib/core/Zend/Soap/Server.php';
+require_once 'lib/core/Zend/Soap/AutoDiscover.php';
+
 if (is_null($_GET['wsdl'])) {
-	$protocol = isset($_SERVER['HTTPS']) ? 'https' : 'http';
-	$server = new Zend\Soap\Server($protocol . '://' . $_SERVER['SERVER_NAME'] . $_SERVER['SCRIPT_NAME'] . '?wsdl');
+	$server = new Zend_Soap_Server($_SERVER['SCRIPT_URI'] . '?wsdl');
 	$server->setClass('Tiki_WebServices');
 	$server->handle();
 
 } else {
-	$wsdl = new Zend\Soap\AutoDiscover();
-	$wsdl->setUri($_SERVER['SCRIPT_NAME']);
+	$wsdl = new Zend_Soap_AutoDiscover();
 	$wsdl->setClass('Tiki_WebServices');
 	$wsdl->handle();
 }

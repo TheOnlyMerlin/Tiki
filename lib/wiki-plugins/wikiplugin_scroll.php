@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -13,34 +13,30 @@ function wikiplugin_scroll_info()
 		'description' => tra('Show animated text that scrolls up or down'),
 		'prefs' => array('wikiplugin_scroll'),
 		'body' => tra('text'),
-		'iconname' => 'sort-down',
-		'introduced' => 5,
+		'icon' => 'img/icons/script.png',
 		'tags' => array( 'basic' ),
 		'params' => array(
 			'width' => array(
 				'required' => true,
 				'name' => tra('Width'),
-				'description' => tr('Width in pixels. Example: %0.', '<code>600px</code>'),
-				'since' => '5.0',
-				'accepted' => tra('Number of pixels followed by "px".'),
-				'filter' => 'text',
+				'description' => tra('Width in pixels. Example: 600px.'),
+				'accepted' => tra('Number of pixels followed by "px". Example: 600px.'),
+				'filter' => 'striptags',
 				'default' => '',
 			),
 			'height' => array(
 				'required' => true,
 				'name' => tra('Height'),
-				'description' => tr('Height in pixels. Example: %0.', '<code>450px</code>'),
-				'since' => '5.0',
-				'accepted' => tra('Number of pixels followed by "px".'),
-				'filter' => 'text',
+				'description' => tra('Height in pixels. Example: 450px'),
+				'accepted' => tra('Number of pixels followed by "px". Example: 450px.'),
+				'filter' => 'striptags',
 				'default' => '',
 			),
 			'speed' => array(
 				'required' => false,
 				'name' => tra('Speed'),
-				'description' => tr('Scroll speed in number of seconds (default is %0)', '<code>8</code>'),
-				'since' => '5.0',
-				'filter' => 'digits',
+				'description' => tra('Scroll speed in number of seconds (default is 8 seconds)'),
+				'filter' => 'int',
 				'default' => 8,
 			),
 		)

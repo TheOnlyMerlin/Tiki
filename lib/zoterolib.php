@@ -1,30 +1,19 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-/**
- *
- */
 class ZoteroLib extends TikiDb_Bridge
 {
-    /**
-     * @return bool
-     */
-    function is_authorized()
+	function is_authorized()
 	{
 		$oauthlib = TikiLib::lib('oauth');
 		return $oauthlib->is_authorized('zotero');
 	}
 
-    /**
-     * @param $tag
-     * @param int $limit
-     * @return array|bool
-     */
-    function get_references($tag, $limit = 25)
+	function get_references($tag, $limit = 25)
 	{
 		global $prefs;
 
@@ -44,15 +33,15 @@ class ZoteroLib extends TikiDb_Bridge
 
 		$oauthlib = TikiLib::lib('oauth');
 		$response = $oauthlib->do_request(
-			'zotero',
-			array(
-				'url' => "https://api.zotero.org/groups/{$prefs['zotero_group_id']}$subset/items",
-				'get' => $arguments,
-			)
+						'zotero',
+						array(
+							'url' => "https://api.zotero.org/groups/{$prefs['zotero_group_id']}$subset/items",
+							'get' => $arguments,
+						)
 		);
 
 		if ($response && $response->isSuccessful()) {
-			$feed = Zend\Feed\Reader\Reader::importString($response->getBody());
+			$feed = Zend_Feed_Reader::importString($response->getBody());
 
 			$data = array();
 			foreach ($feed as $entry) {
@@ -60,7 +49,7 @@ class ZoteroLib extends TikiDb_Bridge
 					'key' => basename($entry->getLink()),
 					'url' => $entry->getLink(),
 					'title' => $entry->getTitle(),
-					'content' => $entry->getDescription(),
+					'content' => $entry->getContent(),
 				);
 			}
 
@@ -70,11 +59,7 @@ class ZoteroLib extends TikiDb_Bridge
 		return false;
 	}
 
-    /**
-     * @param $tag
-     * @return bool|mixed
-     */
-    function get_first_entry($tag)
+	function get_first_entry($tag)
 	{
 		if ($references = $this->get_references($tag, 1)) {
 			return reset($references);
@@ -83,11 +68,7 @@ class ZoteroLib extends TikiDb_Bridge
 		return false;
 	}
 
-    /**
-     * @param $itemId
-     * @return array|bool
-     */
-    function get_entry($itemId)
+	function get_entry($itemId)
 	{
 		global $prefs;
 
@@ -101,24 +82,24 @@ class ZoteroLib extends TikiDb_Bridge
 
 		$oauthlib = TikiLib::lib('oauth');
 		$response = $oauthlib->do_request(
-			'zotero',
-			array(
-				'url' => "https://api.zotero.org/groups/{$prefs['zotero_group_id']}/items/" . urlencode($itemId),
-				'get' => $arguments,
-			)
+						'zotero',
+						array(
+							'url' => "https://api.zotero.org/groups/{$prefs['zotero_group_id']}/items/" . urlencode($itemId),
+							'get' => $arguments,
+						)
 		);
 
 		if ($response->isSuccessful()) {
 			$entry = $response->getBody();
 			$entry = str_replace('<entry ', '<feed xmlns="http://www.w3.org/2005/Atom"><entry ', $entry) . '</feed>';
-			$feed = Zend\Feed\Reader\Reader::importString($entry);
+			$feed = Zend_Feed_Reader::importString($entry);
 
 			foreach ($feed as $entry) {
 				return array(
 					'key' => basename($entry->getLink()),
 					'url' => $entry->getLink(),
 					'title' => $entry->getTitle(),
-					'content' => $entry->getDescription(),
+					'content' => $entry->getContent(),
 				);
 			}
 		}
@@ -126,11 +107,7 @@ class ZoteroLib extends TikiDb_Bridge
 		return false;
 	}
 
-    /**
-     * @param $tag
-     * @return bool
-     */
-    function get_formatted_references($tag)
+	function get_formatted_references($tag)
 	{
 		global $prefs;
 
@@ -151,11 +128,11 @@ class ZoteroLib extends TikiDb_Bridge
 
 		$oauthlib = TikiLib::lib('oauth');
 		$response = $oauthlib->do_request(
-			'zotero',
-			array(
-				'url' => "https://api.zotero.org/groups/{$prefs['zotero_group_id']}$subset/items",
-				'get' => $arguments,
-			)
+						'zotero',
+						array(
+							'url' => "https://api.zotero.org/groups/{$prefs['zotero_group_id']}$subset/items",
+							'get' => $arguments,
+						)
 		);
 
 		if ($response->isSuccessful()) {

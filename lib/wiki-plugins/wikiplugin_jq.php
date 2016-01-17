@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,40 +10,30 @@ function wikiplugin_jq_info()
 	return array(
 		'name' => tra('jQuery'),
 		'documentation' => 'PluginJQ',
-		'description' => tra('Add jQuery JavaScript code'),
+		'description' => tra('Add JavaScript code'),
 		'prefs' => array( 'wikiplugin_jq' ),
 		'body' => tra('JavaScript code'),
 		'validate' => 'all',
 		'filter' => 'none',
-		'iconname' => 'code',
-		'introduced' => 3,
+		'icon' => 'img/icons/script_code_red.png',
 		'params' => array(
 			'notonready' => array(
 				'required' => false,
 				'name' => tra('Not On Ready'),
 				'description' => tra('Do not execute on document ready (execute inline)'),
-				'since' => '3.0',
 			),
 			'nojquery' => array(
 				'required' => false,
 				'name' => tra('No JavaScript'),
 				'description' => tra('Optional markup for when JavaScript is off'),
-				'since' => '3.0',
-			),
-			'lang' => array(
-				'required' => false,
-				'name' => tra('Language'),
-				'description' => tra('Language to apply JQuery to'),
-				'since' => '13.0',
-			),
+			)
 		)
 	);
 }
 	
 function wikiplugin_jq($data, $params)
 {
-	global $prefs;
-	$headerlib = TikiLib::lib('header');
+	global $headerlib, $prefs;
 	extract($params, EXTR_SKIP);
 	
 	$nojquery = isset($nojquery) ? $nojquery : tr('<!-- jq plugin inactive: JavaScript off -->');
@@ -51,10 +41,6 @@ function wikiplugin_jq($data, $params)
 		return $nojquery;
 	}
 	$notonready = isset($notonready) ? $notonready : false;
-
-	if (!empty($lang) && $lang != $prefs['language']) {
-		return;
-	}
 
 	// Need to manually decode greater than and less than (not sure if we want to decode all HTML entities
 	$data = str_replace('&lt;', '<', $data);

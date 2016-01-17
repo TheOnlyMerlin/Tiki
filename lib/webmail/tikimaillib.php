@@ -1,273 +1,198 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
-//
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
+// 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-/**
- * set some default params (mainly utf8 as tiki is utf8) + use the mailCharset pref from a user
+/** 
+ * Extension htmlMimeMail
+ * set some default params (mainly utf8 as titi is utf8) + use the mailCharset pref from a user
  */
-$access = TikiLib::lib('access');
+global $access;
 $access->check_script($_SERVER["SCRIPT_NAME"], basename(__FILE__));
+include_once("lib/webmail/htmlMimeMail.php");
 
-class TikiMail
+class TikiMail extends HtmlMimeMail
 {
-	/**
-	 * @var \Zend\Mail\Message
-	 */
-	private $mail;
+	var $charset;
 
-	/**
-	 * @param null $user	to username
-	 * @param null $from	from email
-	 */
+	/* $user = user you send the mail
+		 $from = email you send from*/
 	function __construct($user = null, $from=null)
 	{
-		require_once 'lib/mail/maillib.php';
+		global $prefs, $tikilib;
 
-		$userlib = TikiLib::lib('user');
-
-		$to = '';
-		if (!empty($user)) {
-			if ($userlib->user_exists($user)) {
-				$to = $userlib->get_user_email($user);
+		parent::htmlMimeMail();
+		$this->charset = !$user ? $prefs['default_mail_charset'] : $tikilib->get_user_preference($user, 'mailCharset', 'utf-8');
+		$this->setTextCharset($this->charset);
+		$this->setHtmlCharset($this->charset);
+		$this->setHeadCharset($this->charset);
+		if (isset($prefs['mail_crlf'])) {
+			$this->setCrlf($prefs['mail_crlf'] == "LF"? "\n": "\r\n");
+		}
+		if ($prefs['zend_mail_handler'] == 'smtp') {
+			if ($prefs['zend_mail_smtp_auth'] == 'login') {
+				$this->setSMTPParams(
+								$prefs['zend_mail_smtp_server'], 
+								$prefs['zend_mail_smtp_port'], 
+								$prefs['zend_mail_smtp_helo'], 
+								true, 
+								$prefs['zend_mail_smtp_user'], 
+								$prefs['zend_mail_smtp_pass'], 
+								$prefs['zend_mail_smtp_security']
+				);
 			} else {
-				trigger_error('User not found');
-				return;
+				$this->setSMTPParams(
+								$prefs['zend_mail_smtp_server'], 
+								$prefs['zend_mail_smtp_port'], 
+								$prefs['zend_mail_smtp_helo'], 
+								false, 
+								null, 
+								null,
+								$prefs['zend_mail_smtp_security']
+				);
 			}
 		}
-
-		if (! empty($from)) {
-			$this->mail = tiki_get_basic_mail();
-			try {
-				$this->mail->setFrom($from);
-				$this->mail->setSender($from);
-			} catch (Exception $e) {
-				// was already set, then do nothing
-			}
-		} else {
-			$this->mail = tiki_get_admin_mail();
+		if (empty($from)) {
+			$from = $prefs['sender_email'];
 		}
-		if (! empty($to)) {
-			$this->mail->addTo($to);
+		$this->setFrom($from);
+		if (!@ini_get('safe_mode')) {
+			$this->setReturnPath($from); // in safe-mode, return-path must then be configured at the server level
 		}
+		$this->setHeader("Return-Path", $from); // just in case, mainly will not work as usually the server rewrites the envelop
+		$this->setHeader("Reply-To", $from);
 	}
 
 	function setUser($user)
 	{
+		global $tikilib, $prefs;
+		$this->charset = $tikilib->get_user_preference($user, 'mailCharset', $prefs['default_mail_charset']);
+		$this->setTextCharset($this->charset);
+		$this->setHtmlCharset($this->charset);
+		$this->setHeadCharset($this->charset);
 	}
 
-	function setFrom($email, $name = null)
+	function _encodeHeader($input, $charset = 'ISO-8859-1')
 	{
-		$this->mail->setFrom($email, $name);
-	}
-
-	function setReplyTo($email, $name = null)
-	{
-		$this->mail->setReplyTo($email, $name);
+		// todo perhaps chunk_split
+		if (preg_match('/[\x80-\xFF]/', $input)) {
+			$input = preg_replace('/([\x80-\xFF =])/e', '"=" . strtoupper(dechex(ord("\1")))', $input);
+			return '=?' . $charset . '?Q?' . $input . '?=';
+		}
+		else
+			return $input;
 	}
 
 	function setSubject($subject)
 	{
-		$this->mail->setSubject($subject);
+		if ($this->charset != "utf-8")
+			parent::setSubject(encodeString($this->encodeNonInCharset($subject, false), $this->charset));
+		else
+			parent::setSubject($subject);
 	}
 
 	function setHtml($html, $text = null, $images_dir = null)
 	{
-		$body = $this->mail->getBody();
-		if ( !($body instanceof \Zend\Mime\Message) && !empty($body)){
-			$this->convertBodyToMime($body);
-			$body = $this->mail->getBody();
+		if ($this->charset != "utf-8") {
+			parent::setHtml(
+							encodeString($this->encodeNonInCharset($html, true), $this->charset), 
+							encodeString($this->encodeNonInCharset($text, false), $this->charset), 
+							$images_dir
+			);
+		} else {
+			parent::setHtml($html, $text, $images_dir);
 		}
-
-		if (! $body instanceof Zend\Mime\Message){
-			$body = new Zend\Mime\Message();
-		}
-
-		$partHtmlFound = false;
-		$partTextFound = false;
-
-		$parts = $body->getParts();
-		foreach($parts as $part){
-			/* @var $part Zend\Mime\Part */
-			if ($part->getType() == Zend\Mime\Mime::TYPE_HTML){
-				$partHtmlFound = true;
-				$part->setContent($html);
-			}
-			if ($part->getType() == Zend\Mime\Mime::TYPE_TEXT){
-				$partTextFound = true;
-				if ($text){
-					$part->setContent($text);
-				}
-			}
-		}
-
-		if (!$partHtmlFound){
-			$htmlPart = new Zend\Mime\Part($html);
-			$htmlPart->setType(Zend\Mime\Mime::TYPE_HTML);
-			$parts[] = $htmlPart;
-		}
-
-		if (!$partTextFound && $text){
-			$textPart = new Zend\Mime\Part($text);
-			$textPart->setType(Zend\Mime\Mime::TYPE_TEXT);
-			$parts[] = $textPart;
-		}
-
-		$body->setParts($parts);
-		$this->mail->setBody($body);
 	}
 
 	function setText($text = '')
 	{
-		$body = $this->mail->getBody();
-		if ( $body instanceof \Zend\Mime\Message ){
-			$parts = $body->getParts();
-			$textPartFound = false;
-			foreach($parts as $part){
-				/* @var $part Zend\Mime\Part */
-				if ($part->getType() == Zend\Mime\Mime::TYPE_TEXT){
-					$part->setContent($text);
-					$textPartFound = true;
-					break;
-				}
-			}
-			if (!$textPartFound){
-				$part = new Zend\Mime\Part($text);
-				$part->setType(Zend\Mime\Mime::TYPE_TEXT);
-				$parts[] = $part;
-			}
-			$body->setParts($parts);
-		} else {
-			$this->mail->setBody($text);
+		global $prefs;
+		if (!empty($prefs['email_footer'])) {
+			$text .= CRLF . $prefs['email_footer'];
 		}
+		if ($this->charset != "utf-8")
+			parent::setText(encodeString($this->encodeNonInCharset($text, false), $this->charset));
+		else
+			parent::setText($text);
 	}
 
-	function setCc($address)
+	/** 
+	 * encode non existing charater is final charset
+	 */
+	function encodeNonInCharset($string, $toHtml=true)
 	{
-		foreach ((array) $address as $cc) {
-			$this->mail->addCc($cc);
-		}
-	}
+		if ($this->charset == 'iso-8859-1') {
+			$bad = array('€','‚', 'ƒ','„', '…', '†', '‡', 'ˆ', '‰', 'Š',
+					'‹', 'Œ', '‘', '’', '“', '”', '•', '–', '—', '˜', '™',
+					'š', '›', 'œ', 'ÿ');
+			$html = array('&euro;', '&sbquo;', '&fnof;', '&bdquo;', '&hellip;', '&dagger;', '&Dagger;', '&circ;', '&permil;', '&Scaron;', 
+					'&lsaquo;', '&OElig;', '&lsquo;', '&rsquo;', '&ldquo;', '&rdquo;', '&bull;', '&ndash;', '&mdash;', '&tilde;', '&trade;',
+					'&scaron;', '&rsaquo;', '&oelig;', '&Yuml;');
+			$text = array('euros', ',', 'f', ',,', '...', 'T','T', '^', '0/00', 'S',
+					'<', 'OE', '\'', '\'', '"', '"', '.', '-', '-', '~', '(TM)',
+					's', '>', 'oe', 'y');
 
-	function setBcc($address)
-	{
-		foreach ((array) $address as $bcc) {
-			$this->mail->addBcc($bcc);
-		}
-	}
-
-	function setHeader($name, $value)
-	{
-		if ($name === 'Message-ID') {
-			$this->mail->getHeaders()->addHeader(Zend\Mail\Header\MessageId::fromString('Message-ID: ' . trim($value, "<>")));
-		} else {
-			$this->mail->getHeaders()->addHeaderLine($name, $value);
-		}
+			return str_replace($bad, $toHtml? $html: $text, $string);
+		} else
+			return $string;
 	}
 
 	function send($recipients, $type = 'mail')
 	{
-		global $tikilib, $prefs;
-		$logslib = TikiLib::lib('logs');
-
-		$this->mail->getHeaders()->removeHeader('to');
-		foreach ((array) $recipients as $to) {
-			$this->mail->addTo($to);
+		global $prefs;
+		global $logslib; include_once ('lib/logs/logslib.php');
+		if ($prefs['zend_mail_handler'] == 'smtp') {
+			$type = 'smtp';
 		}
-
-        if ($prefs['zend_mail_handler'] == 'smtp' && $prefs['zend_mail_queue'] == 'y') {
-            $query = "INSERT INTO `tiki_mail_queue` (message) VALUES (?)";
-		    $bindvars = array(serialize($this->mail));
-			$tikilib->query($query, $bindvars, -1, 0);
-            $title = 'mail';
-        } else {
-    		try {
-					tiki_send_email($this->mail);
-
-    			$title = 'mail';
-    		} catch (Zend\Mail\Exception\ExceptionInterface $e) {
-    			$title = 'mail error';
-    		}
-
-    		if ($title == 'mail error' || $prefs['log_mail'] == 'y') {
-    			foreach ($recipients as $u) {
-    				$logslib->add_log($title, $u . '/' . $this->mail->getSubject());
-    			}
-    		}
-        }
-		return $title == 'mail';
-	}
-
-	protected function convertBodyToMime($text)
-	{
-		$textPart = new Zend\Mime\Part($text);
-		$textPart->setType(Zend\Mime\Mime::TYPE_TEXT);
-		$newBody = new Zend\Mime\Message();
-		$newBody->addPart($textPart);
-		$this->mail->setBody($newBody);
-	}
-
-	function addAttachment($data, $filename, $mimetype)
-	{
-		$body = $this->mail->getBody();
-		if (! ($body instanceof \Zend\Mime\Message) ){
-			$this->convertBodyToMime($body);
-			$body = $this->mail->getBody();
-		}
-
-		$attachment = new Zend\Mime\Part($data);
-		$attachment->setFileName($filename);
-		$attachment->setType($mimetype);
-		$attachment->setEncoding(Zend\Mime\Mime::ENCODING_BASE64);
-		$attachment->setDisposition(Zend\Mime\Mime::DISPOSITION_INLINE);
-		$body->addPart($attachment);
-	}
-
-	/**
-	 *	scramble an email with a method
-	 *
-	 * @param string $email email address to be scrambled
-	 * @param string $method unicode or y: each character is replaced with the unicode value
-	 *                       strtr: mr@tw.org -> mr AT tw DOT org
-	 *                       x: mr@tw.org -> mr@xxxxxx
-	 *
-	 * @return string scrambled email
-	 */
-	static function scrambleEmail($email, $method='unicode')
-	{
-		switch ($method) {
-		case 'strtr':
-			$trans = array(	"@" => tra("(AT)"),
-							"." => tra("(DOT)")
-			);
-			return strtr($email, $trans);
-		case 'x' :
-			$encoded = $email;
-			for ($i = strpos($email, "@") + 1, $istrlen_email = strlen($email); $i < $istrlen_email; $i++) {
-				if ($encoded[$i]  != ".") $encoded[$i] = 'x';
+		$result = parent::send($recipients, $type);
+		$title = $result?'mail': 'mail error';
+		if (!$result || $prefs['log_mail'] == 'y')
+			foreach ($recipients as $u) {
+				$logslib->add_log($title, $u . '/' . $this->headers['Subject']);
 			}
-			return $encoded;
-		case 'unicode':
-		case 'y':// for previous compatibility
-			$encoded = '';
-			for ($i = 0, $istrlen_email = strlen($email); $i < $istrlen_email; $i++) {
-				$encoded .= '&#' . ord($email[$i]). ';';
-			}
-			return $encoded;
-		case 'n':
-		default:
-			return $email;
-		}
+		return $result;
 	}
+}	
 
+/**
+ * encode a string
+ * @param string $string : the string in utf-8
+ * @param $charset: iso8859-1 or utf-8
+ */
+function encodeString($string, $charset="utf-8")
+{
+	if ($string == null)
+		return null;
+	else if ($charset == "iso-8859-1")
+		return utf8_decode($string);
+	/* add other charsets */
+
+	else
+		return $string;
 }
+
+function decode_subject_utf8($string)
+{
+	if (preg_match('/=\?.*\?.*\?=/', $string) === false)
+		return $string;
+	$string = explode('?', $string);
+	$str = strtolower($string[2]) == 'q' ?quoted_printable_decode($string[3]):base64_decode($string[3]);
+	if (strtolower($string[1]) == "iso-8859-1")
+		return utf8_encode($str);
+	else if (strtolower($string[1]) == "utf-8")
+		return $str;
+	else if (function_exists('mb_convert_encoding'))
+		return mb_convert_encoding($str, "utf-8", $string[1]);
+	else
+		return $str;
+} 
 
 /**
  * Format text, sender and date for a plain text email reply
  * - Split into 75 char long lines prepended with >
- *
+ * 
  * @param $text		email text to be quoted
  * @param $from		email from name/address to be quoted
  * @param $date		date of mail to be quoted
@@ -291,7 +216,7 @@ function format_email_reply(&$text, $from, $date)
  * Attempt to close any unclosed HTML tags
  * Needs to work with what's inside the BODY
  * originally from http://snipplr.com/view/3618/close-tags-in-a-htmlsnippet/
- *
+ * 
  * @param $html			html input
  * @return string		corrected html out
  */

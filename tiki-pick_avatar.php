@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,8 +7,8 @@
 
 $section = 'mytiki';
 require_once ('tiki-setup.php');
-$userprefslib = TikiLib::lib('userprefs');
-$imagegallib = TikiLib::lib('imagegal');
+include_once ('lib/userprefs/userprefslib.php');
+include_once ('lib/imagegals/imagegallib.php');
 $access->check_feature('feature_userPreferences');
 $access->check_user($user);
 $auto_query_args = array('view_user');
@@ -36,17 +33,57 @@ $smarty->assign('userwatch', $userwatch);
 // Upload avatar is processed here
 if (isset($_FILES['userfile1']) && is_uploaded_file($_FILES['userfile1']['tmp_name'])) {
 	check_ticket('pick-avatar');
+	$type = $_FILES['userfile1']['type'];
+	$size = $_FILES['userfile1']['size'];
 	$name = $_FILES['userfile1']['name'];
-
-	$avatarlib = TikiLib::lib('avatar');
-	$avatarlib->set_avatar_from_url($_FILES['userfile1']['tmp_name'], $userwatch, $name);
-
-	/* redirect to prevent re-submit on page reload */
-	if ($tiki_p_admin == 'y' && $user !== $userwatch) {
-		header('Location: tiki-pick_avatar.php?view_user=' . $userwatch);
-	} else {
-		header('Location: tiki-pick_avatar.php');
+	$fp = fopen($_FILES['userfile1']['tmp_name'], "rb");
+	$data = fread($fp, filesize($_FILES['userfile1']['tmp_name']));
+	fclose($fp);
+	
+	// Get image parameters
+	list($iwidth, $iheight, $itype, $iattr) = getimagesize($_FILES['userfile1']['tmp_name']);	
+	$itype = image_type_to_mime_type($itype);
+	// Store full-size file gallery image if that is required
+	if ($prefs["user_store_file_gallery_picture"] == 'y') {
+		$fgImageId = $userprefslib->set_file_gallery_image($userwatch, $name, $size, $itype, $data);
 	}
+	// Store small avatar
+	if (($iwidth == 45 and $iheight <= 45) || ($iwidth <= 45 and $iheight == 45)) {
+		$userprefslib->set_user_avatar($userwatch, 'u', '', $name, $size, $itype, $data);
+	} else {
+		if (function_exists("ImageCreateFromString") && (!strstr($type, "gif"))) {
+			$img = imagecreatefromstring($data);
+			$size_x = imagesx($img);
+			$size_y = imagesy($img);
+			if ($size_x > $size_y) $tscale = ((int)$size_x / 45);
+			else $tscale = ((int)$size_y / 45);
+			$tw = ((int)($size_x / $tscale));
+			$ty = ((int)($size_y / $tscale));
+			if ($tw > $size_x) $tw = $size_x;
+			if ($ty > $size_y) $ty = $size_y;
+			if (chkgd2()) {
+				$t = imagecreatetruecolor($tw, $ty);
+				imagecopyresampled($t, $img, 0, 0, 0, 0, $tw, $ty, $size_x, $size_y);
+			} else {
+				$t = imagecreate($tw, $ty);
+				$imagegallib->ImageCopyResampleBicubic($t, $img, 0, 0, 0, 0, $tw, $ty, $size_x, $size_y);
+			}
+			// CHECK IF THIS TEMP IS WRITEABLE OR CHANGE THE PATH TO A WRITEABLE DIRECTORY
+			$tmpfname = tempnam($prefs['tmpDir'], "TMPIMG");
+			imagejpeg($t, $tmpfname);
+			// Now read the information
+			$fp = fopen($tmpfname, "rb");
+			$t_data = fread($fp, filesize($tmpfname));
+			fclose($fp);
+			unlink($tmpfname);
+			$t_type = 'image/jpeg';
+			$userprefslib->set_user_avatar($userwatch, 'u', '', $name, $size, $t_type, $t_data);
+		} else {
+			$userprefslib->set_user_avatar($userwatch, 'u', '', $name, $size, $type, $data);
+		}
+	}
+	/* redirect to prevent re-submit on page reload */
+	header('Location: tiki-pick_avatar.php');
 	exit;
 }
 

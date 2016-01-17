@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,34 +10,30 @@ function wikiplugin_fancylist_info()
 	return array(
 		'name' => tra('Fancy List'),
 		'documentation' => 'PluginFancyList',
-		'description' => tra('Create a formatted numbered list'),
+		'description' => tra('Create a fancy-looking list'),
 		'prefs' => array('wikiplugin_fancylist'),
 		'body' => tra('One item per line starting with anything followed by ")".'),
-		'iconname' => 'list',
-		'introduced' => 3,
-		'tags' => array( 'basic' ),
+		'icon' => 'img/icons/text_list_bullets.png',
+		'tags' => array( 'basic' ),		
 		'params' => array(
-			'div' => array(
-				'required' => false,
+		 	'div' => array(
+			 	'required' => false,
 				'name' => tra('Use Div'),
 				'description' => tra('Use the HTML tag div instead of the HTML tag for lists (ol)'),
-				'since' => '3.0',
 				'default' => '',
-				'filter' => 'digits',
 				'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('Yes'), 'value' => 1), 
 					array('text' => tra('No'), 'value' => 0)
 				),
 			),
-			'class' => array(
-				'required' => false,
+		 	'class' => array(
+			 	'required' => false,
 				'name' => tra('Class'),
 				'description' => tra('CSS class for the fancylist'),
-				'since' => '3.0',
 				'default' => '',
-				'filter' => 'text',
 			),
+																		 
 		),
 	);
 }
@@ -64,13 +60,13 @@ function wikiplugin_fancylist($data, $params)
 			$result .= '<div><span class='.count.'>'.$count.'</span><p>' . $part . '</p></div>';
 			$count++;
 		} else {
-			$result .= '<li><p>' . $part . '</p></li>';
+			$result .= '<li><p>' . $part . '</p></li>';				
 		}
 	}
 	if (isset($div)) {
 		$result .= '</div>';
 	} else {
-		$result .= '</ol>';
+	 	$result .= '</ol>';
 	}
 	return $result;
 }

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -13,74 +13,61 @@ function wikiplugin_trackerstat_info()
 		'description' => tra('Display statistics about a tracker.'),
 		'prefs' => array( 'feature_trackers', 'wikiplugin_trackerstat' ),
 		'body' => tra('Title'),
-		'iconname' => 'chart',
-		'introduced' => 2,
+		'icon' => 'img/icons/calculator.png',
 		'params' => array(
 			'trackerId' => array(
 				'required' => true,
 				'name' => tra('Tracker ID'),
 				'description' => tra('Numeric value representing the tracker ID'),
-				'since' => '2.0',
 				'filter' => 'digits',
 				'default' => '',
-				'profile_reference' => 'tracker',
 			),
 			'fields' => array(
 				'required' => true,
 				'name' => tra('Fields'),
-				'description' => tra('Colon-separated list of field IDs to be displayed. Example:')
-					. ' <code>2:4:5</code>',
-				'since' => '2.0',
-				'default' => '',
-				'separator' => ':',
-				'profile_reference' => 'tracker_field',
+				'description' => tra('Colon-separated list of field IDs to be displayed. Example: 2:4:5'),
+				'default' => ''
 			),
             'show_count' => array(
                 'required' => false,
                 'name' => tra('Show Count'),
                 'description' => tra('Choose whether to show the count of votes each option received (shown by default)'),
-	            'since' => '10.3',
                 'filter' => 'alpha',
                 'default' => 'y',
                 'options' => array(
                     array('text' => '', 'value' => ''),
                     array('text' => tra('Yes'), 'value' => 'y'),
-                    array('text' => tra('No'), 'value' => 'n'),
-                ),
+                    array('text' => tra('No'), 'value' => 'n')
+                )
             ),
 			'show_percent' => array(
 				'required' => false,
 				'name' => tra('Show Percentage'),
-				'description' => tra('Choose whether to show the percentage of the vote each option received (not shown
-					by default)'),
-				'since' => '2.0',
+				'description' => tra('Choose whether to show the percentage of the vote each option received (not shown by default)'),
 				'filter' => 'alpha',
 				'default' => 'n',
 				'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n'),
-				),
+					array('text' => tra('No'), 'value' => 'n')
+				)
 			),
 			'show_bar' => array(
 				'required' => false,
 				'name' => tra('Show Bar'),
-				'description' => tra('Choose whether to show a bar representing the number of votes each option received
-					(not shown by default)'),
-				'since' => '2.0',
+				'description' => tra('Choose whether to show a bar representing the number of votes each option received (not shown by default)'),
 				'filter' => 'alpha',
 				'default' => 'n',
 				'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n'),
-				),
+					array('text' => tra('No'), 'value' => 'n')
+				)
 			),
 			'status' => array(
 				'required' => false,
 				'name' => tra('Status Filter'),
 				'description' => tra('Only show items matching certain status filters'),
-				'since' => '2.0',
 				'filter' => 'alpha',
 				'default' => 'o',
 				'options' => array(
@@ -91,31 +78,28 @@ function wikiplugin_trackerstat_info()
 					array('text' => tra('Open & Pending'), 'value' => 'op'), 
 					array('text' => tra('Open & Closed'), 'value' => 'oc'), 
 					array('text' => tra('Pending & Closed'), 'value' => 'pc'), 
-					array('text' => tra('Open, Pending & Closed'), 'value' => 'opc'),
-				),
+					array('text' => tra('Open, Pending & Closed'), 'value' => 'opc')
+				)
 			),
 			'show_link' => array(
 				'required' => false,
 				'name' => tra('Show Link'),
-				'description' => tra('Add a link to the tracker'),
-				'since' => '3.0',
+				'description' => tra('Show link to tiki-view_tracker'),
 				'filter' => 'alpha',
 				'default' => 'n',
 				'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('Yes'), 'value' => 'y'), 
-					array('text' => tra('No'), 'value' => 'n'),
-				),
+					array('text' => tra('No'), 'value' => 'n')
+				)
 			),
 			'show_lastmodif' => array(
 				'required' => false,
 				'name' => tra('Last Modification Date'),
-				'description' => tr('Show last modification date of a tracker. Set to Yes (%0) to use site setting for
-					the short date format or use PHP\'s format (www.php.net/strftime). Example:',
-					'<code>y</code>', '<code>%A %d of %B, %Y</code>'),
-				'since' => '5.0',
+				'description' => tra('Show last modification date of a tracker. Set to y to use site setting or use PHP\s format (www.php.net/strftime).'),
 				'filter' => 'text',
 				'default' => '',
+				'accepted' => tra('y to use the site setting for short date format. Otherwise, use PHP format (www.php.net/strftime), Example: "%A %d of %B, %Y"')
 			)
 		)
 	);
@@ -123,10 +107,8 @@ function wikiplugin_trackerstat_info()
 
 function wikiplugin_trackerstat($data, $params)
 {
-	global $prefs, $tiki_p_admin_trackers;
-	$trklib = TikiLib::lib('trk');
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
+	global $smarty, $prefs, $tiki_p_admin_trackers, $trklib, $tikilib;
+	include_once('lib/trackers/trackerlib.php');
 	extract($params, EXTR_SKIP);
 
 	if ($prefs['feature_trackers'] != 'y' || !isset($trackerId) || !($tracker_info = $trklib->get_tracker($trackerId))) {
@@ -190,7 +172,7 @@ function wikiplugin_trackerstat($data, $params)
 		}
 	}
 	if (!empty($fields)) {
-		$listFields = $fields;
+		$listFields = explode(':', $fields);
 	} else {
 		foreach ($allFields['data'] as $f) {
 			$listFields[] = $f['fieldId'];
@@ -219,7 +201,7 @@ function wikiplugin_trackerstat($data, $params)
 			continue;
 		}
 		if ($allFields['data'][$i]['type'] == 'e') {
-			$categlib = TikiLib::lib('categ');
+			global $categlib; include_once('lib/categories/categlib.php');
 			$parent = (int) $allFields['data'][$i]['options']; // FIXME: Lazy access to the first option. Only works when a field only has its first option set.
 			if ($parent > 0) {
 				$filter = array('identifier'=>$parent, 'type'=>'children');

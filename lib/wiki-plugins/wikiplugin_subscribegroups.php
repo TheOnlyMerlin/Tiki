@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -12,23 +12,18 @@ function wikiplugin_subscribegroups_info()
 		'documentation' => 'PluginSubscribeGroups',
 		'description' => tra('Allow users to subscribe to a list of groups'),
 		'prefs' => array( 'wikiplugin_subscribegroups' ),
-		'iconname' => 'group',
-		'introduced' => 2,
+		'icon' => 'img/icons/group_add.png',
 		'params' => array(
 			'subscribe' => array(
 				'required' => false,
 				'name' => tra('Subscribe'),
-				'description' => tr('Text shown in the dropdown box. Default: %0Subscribe to a group%1', '<code>',
-					'</code>'),
-				'since' => '2.0',
+				'description' => tra('Text shown in the dropdown box. Default: "Subscribe to a group"'),
 				'default' => '',
 			),
 			'showsubscribe' => array(
 				'required' => false, 
 				'name' => tra('Show Subscribe Box'),
-				'description' => tra('Show the subscribe box (shown by default). Will not show if there are no other
-					groups the user may register for.'),
-				'since' => '4.0',
+				'description' => tra('Show the subscribe box (shown by default). Will not show if there are no other groups the user may register for.'),
 				'filter' => 'alpha',
 				'default' => 'y',
 				'options' => array(
@@ -40,21 +35,18 @@ function wikiplugin_subscribegroups_info()
 			'subscribestyle' => array(
 				'required' => false,
 				'name' => tra('Subscribe Box Style'),
-				'description' => tra('Style to show the subscribe box.'),
-				'since' => '8.0',
+				'description' => tra('Style to show the subscribe box, either dropdown or table.'),
 				'filter' => 'alpha',
 				'default' => 'dropdown',
 				'options' => array(
-					array('text' => tra('Dropdown'), 'value' => 'dropdown'),
+					array('text' => tra('Drop Down'), 'value' => 'dropdown'),
 					array('text' => tra('Table'), 'value' => 'table'),
 				)
 			),
 			'showdefault' => array(
 				'required' => false, 
 				'name' => tra('Show Default'),
-				'description' => tra('Shows which group is the user\'s default group (if any) and allows the user to
-					change his or her default group.'),
-				'since' => '4.0',
+				'description' => tra('Shows which group is the user\'s default group (if any) and allows the user to change his default group.'),
 				'filter' => 'alpha',
 				'default' => 'n',
 				'options' => array(
@@ -67,7 +59,6 @@ function wikiplugin_subscribegroups_info()
 				'required' => false, 
 				'name' => tra('Group Description'),
 				'description' => tra('Show the description of the group (not shown by default)'),
-				'since' => '4.0',
 				'filter' => 'alpha',
 				'default' => 'n',
 				'options' => array(
@@ -80,59 +71,48 @@ function wikiplugin_subscribegroups_info()
 				'required' => false,
 				'name' => tra('Groups'),
 				'description' => tra('Colon separated list of groups. By default the list of groups available to the user.'),
-				'since' => '2.0',
 				'default' => '',
 			),
 			'including' => array(
 				'required' => false,
 				'name' => tra('Including Group'),
 				'description' => tra('Only list groups that include the group being specified here'),
-				'since' => '4.0',
 				'default' => '',
 			),
 			'defaulturl' => array(
 				'required' => false,
 				'name' => tra('Default URL'),
 				'description' => tra('Page user will be directed to after clicking on icon to change default group'),
-				'since' => '4.0',
 				'default' => '',
 			),
 			'leadergroupname' => array(
 				'required' => false,
 				'name' => tra('Leader Group Name'),
-				'description' => tr('Name of group for leaders of the group, where %0 will be substituted by
-					the group name', '<code>groupName</code>'),
-				'since' => '8.0',
+				'description' => tra('Name of group for leaders of the group, where "groupName" will be substituted by the group name'),
 				'default' => '',
 			),
 			'pendinggroupname' => array(
 				'required' => false,
 				'name' => tra('Pending Users Group Name'),
-				'description' => tr('Name of group for users that are waiting for approval to enter the group, where
-					%0 will be substituted by the group name', '<code>groupName</code>'),
-				'since' => '8.0',
+				'description' => tra('Name of group for users that are waiting for approval to enter the group, where "groupName" will be substituted by the group name'),
 				'default' => '',
 			),
 			'managementpagename' => array(
 				'required' => false,
 				'name' => tra('Group Management Page Name'),
-				'description' => tr('Name of wiki page for group management by leaders, where %0 will be
-					substituted by the group name', '<code>groupName</code>'),
-				'since' => '8.0',
+				'description' => tra('Name of wiki page for group management by leaders, where "groupName" will be substituted by the group name'),
 				'default' => '',
 			), 
 			'hidelink_including' => array(
 				'required' => false,
 				'name' => tra('Hide link for groups including'),
 				'description' => tra('Hide link to group home page for groups that include the group being specified here'),
-				'since' => '8.0',
 				'default' => '',
 			),
 			'alwaysallowleave' => array(
 				'required' => false,
 				'name' => tra('Always allow leaving group'),
-				'description' => tra('Always allow leaving group even if the group settings do not allow user choice.'),
-				'since' => '8.0',
+				'description' => tra('Always allow leaving group even if userChoice for group is set to n'),
 				'default' => 'n',
 				'filter' => 'alpha',
 				'options' => array(
@@ -147,9 +127,7 @@ function wikiplugin_subscribegroups_info()
 
 function wikiplugin_subscribegroups($data, $params)
 {
-	global $tiki_p_subscribe_groups, $user;
-	$userlib = TikiLib::lib('user');
-	$smarty = TikiLib::lib('smarty');
+	global $tiki_p_subscribe_groups, $userlib, $user, $smarty;
 	if ($tiki_p_subscribe_groups != 'y' || empty($user)) {
 		return tra('You do not have permission to subscribe to groups.');
 	}

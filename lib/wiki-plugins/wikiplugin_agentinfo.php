@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -12,8 +12,7 @@ function wikiplugin_agentinfo_info()
 		'documentation' => 'PluginAgentinfo',
 		'description' => tra('Show user\'s browser and server information'),
 		'prefs' => array('wikiplugin_agentinfo'),
-		'introduced' => 1,
-		'iconname' => 'computer',
+		'icon' => 'img/icons/computer.png',
 		'params' => array(
 			'info' => array(
 				'required' => false,
@@ -21,7 +20,6 @@ function wikiplugin_agentinfo_info()
 				'description' => tra('Display\'s the visitor\'s IP address (IP or default), browser information (BROWSER), or server software (SVRSW).'),
 				'default' => 'IP',
 				'filter' => 'alpha',
-				'since' => '1',
 				'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('IP address'), 'value' => 'IP'), 

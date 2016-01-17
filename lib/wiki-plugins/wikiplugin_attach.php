@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,151 +10,115 @@ function wikiplugin_attach_info()
 	return array(
 		'name' => tra('Attachment'),
 		'documentation' => 'PluginAttach',
-		'description' => tra('Display an attachment or a list of them'),
+		'description' => tra('Displays an attachment or a list of them'),
 		'prefs' => array( 'feature_wiki_attachments', 'wikiplugin_attach' ),
 		'body' => tra("Comment"),
-		'iconname' => 'attach',
-		'introduced' => 1,
+		'icon' => 'img/icons/attach.png',
 		'params' => array(
 			'name' => array(
 				'required' => false,
 				'name' => tra('Name'),
-				'description' => tra('File name of the attached file to link to. Either name, file, id or num can be
-					used to identify a single attachment'),
-				'since' => '1',
-				'filter' => 'text',
-				'default' => '',
+				'description' => tra('File name of the attached file to link to. Either name, file, id or num can be used to identify a single attachment'),
+				'default' => ''
 			),
 			'file' =>array(
 				'required' => false,
 				'name' => tra('File'),
 				'description' => tra('Same as name'),
-				'since' => '1',
-				'filter' => 'text',
-				'default' => '',
+				'default' => ''
 			),
 			'page' => array(
 				'required' => false,
 				'name' => tra('Page'),
-				'description' => tra('Name of the wiki page the file is attached to. If left empty when the plugin is
-					used on a wiki page, this defaults to that wiki page.'),
-				'since' => '1',
-				'filter' => 'pagename',
-				'default' => '',
-				'profile_reference' => 'wiki_page',
+				'description' => tra('Name of the wiki page the file is attached to. If left empty when the plugin is used on a wiki page, this defaults to that wiki page.'),
+				'default' => ''
 			),
 			'showdesc' => array(
 				'required' => false,
 				'name' => tra('Show Description'),
 				'description' => tra('Shows the description as the link text instead of the file name (not used by default)'),
-				'since' => '1',
-				'filter' => 'digits',
 				'default' => 0,
 				'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('Yes'), 'value' => 1), 
-					array('text' => tra('No'), 'value' => 0),
+					array('text' => tra('No'), 'value' => 0)
 				),
 			),
 			'bullets' => array(
 				'required' => false,
 				'name' => tra('Bullets'),
 				'description' => tra('Makes the list of attachments a bulleted list (not set by default)'),
-				'since' => '1',
-				'filter' => 'digits',
 				'default' => 0,
 				'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('Yes'), 'value' => 1), 
-					array('text' => tra('No'), 'value' => 0),
+					array('text' => tra('No'), 'value' => 0)
 				),
 			),
 			'image' =>array(
 				'required' => false,
 				'name' => tra('Image'),
-				'description' => tr('Indicates that this file is an image, and should be displayed inline using the
-					%0 tag (not set by default)', '<code>img</code>'),
-				'since' => '1',
-				'filter' => 'digits',
+				'description' => tra('Indicates that this file is an image, and should be displayed inline using the img tag (not set by default)'),
 				'default' => 0,
 				'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('Yes'), 'value' => 1), 
-					array('text' => tra('No'), 'value' => 0),
+					array('text' => tra('No'), 'value' => 0)
 				),
 			),
 			'inline' =>array(
 				'required' => false,
 				'name' => tra('Custom Label'),
-				'description' => tr('Makes the text between the %0 tags the link text instead of the file name
-					or description. Only the first attachment will be listed.', '<code>{ATTACH}</code>'),
-				'since' => '1',
-				'filter' => 'digits',
+				'description' => tra('Makes the text between the {ATTACH} tags the link text instead of the file name or description. Only the first attachment will be listed.'),
 				'default' => 0,
 				'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('Yes'), 'value' => 1), 
-					array('text' => tra('No'), 'value' => 0),
+					array('text' => tra('No'), 'value' => 0)
 				),
 			),
 			'all' => array(
 				'required' => false,
 				'name' => tra('All'),
-				'description' => tr('Lists links to all attachments for the entire tiki site together with pages they
-					are attached to when set to %0 (Yes)', '<code>1</code>'),
-				'since' => '1',
-				'filter' => 'digits',
+				'description' => tra('Lists links to all attachments for the entire tiki site together with pages they are attached to when set to 1 (Yes)'),
 				'default' => 0,
 				'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('Yes'), 'value' => 1), 
-					array('text' => tra('No'), 'value' => 0),
+					array('text' => tra('No'), 'value' => 0)
 				),
 			),
 			'num' => array(
 				'required' => false,
 				'name' => tra('Order Number'),
-				'description' => tra('Identifies the attachment to link to by the order of the attachment in the list
-					of attachments to a page instead of by file name or ID. Either name, file, id or num can be used to
-					identify a single attachment.'),
-				'since' => '1',
-				'default' => '',
+				'description' => tra('Identifies the attachment to link to by the order of the attachment in the list of attachments to a page instead of by file name or ID. Either name, file, id or num can be used to identify a single attachment.'),
+				'default' => ''
 			),
 			'id' => array(
 				'required' => false,
 				'name' => tra('ID'),
-				'description' => tra('Identifies the attachment to link to by id number instead of by file name or order
-					number. Either name, file, id or num can be used to identify a single attachment.'),
-				'since' => '1',
-				'accepted' => tra('Attachment name, file, id or num'),
-				'filter' => 'text',
+				'description' => tra('Identifies the attachment to link to by id number instead of by file name or order number. Either name, file, id or num can be used to identify a single attachment.'),
 			),
 			'dls' => array(
 				'required' => false,
 				'name' => tra('Downloads'),
-				'description' => tr('The alt text that pops up on mouseover will include the number of downloads of the
-					attachment at the end when set to %0 (Yes)', '<code>1</code>'),
-				'since' => '1',
-				'filter' => 'digits',
+				'description' => tra('The alt text that pops up on mouseover will include the number of downloads of the attachment at the end when set to 1 (Yes)'),
 				'default' => 0,
 				'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('Yes'), 'value' => 1), 
-					array('text' => tra('No'), 'value' => 0),
+					array('text' => tra('No'), 'value' => 0)
 				),
 			),
 			'icon' =>array(
 				'required' => false,
 				'name' => tra('File Type Icon'),
-				'description' => tr('A file type icon is displayed in front of the attachment link when this is set to
-					%0 (Yes)', '<code>1</code>'),
-				'since' => '1',
-				'filter' => 'digits',
+				'description' => tra('A file type icon is displayed in front of the attachment link when this is set to 1'),
 				'default' => 0,
 				'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('Yes'), 'value' => 1), 
-					array('text' => tra('No'), 'value' => 0),
+					array('text' => tra('No'), 'value' => 0)
 				),
 			),
 
@@ -166,10 +130,9 @@ function wikiplugin_attach($data, $params)
 {
 	global $atts;
 	global $mimeextensions;
+	global $wikilib; include_once('lib/wiki/wikilib.php');
+	global $tikilib;
 	global $user, $section, $section_class;
-
-	$wikilib = TikiLib::lib('wiki');
-	$tikilib = TikiLib::lib('tiki');
 
 	extract($params, EXTR_SKIP);
 
@@ -182,7 +145,7 @@ function wikiplugin_attach($data, $params)
 
 		// See if we're being called from a tracker page.
 		if ( $section == 'trackers' ) {
-			$trklib = TikiLib::lib('trk');
+			global $trklib; include_once('lib/trackers/trackerlib.php');
 			$atts_item_name = $_REQUEST["itemId"];
 			$tracker_info = $trklib->get_tracker($atts_item_name);
 			$tracker_info = array_merge($tracker_info, $trklib->get_tracker_options($atts_item_name));
@@ -295,11 +258,21 @@ function wikiplugin_attach($data, $params)
 			}
 
 			$link.= '">';
+
 			if (isset($icon)) {
-				$smarty = TikiLib::lib('smarty');
-				$smarty->loadPlugin('smarty_modifier_iconify');
-				$iconhtml = smarty_modifier_iconify($atts['data'][$n]['filename']);
-				$link .= $iconhtml . '&nbsp';
+				if (!isset($mimeextensions)) {
+					require("lib/mime/mimeextensions.php");
+				}
+				$ext = $atts['data'][$n]['filetype'];
+				if (isset($mimeextensions["$ext"]) and (is_file("img/icons/mime/".$mimeextensions["$ext"].".png"))) {
+					$link.= '<img src="img/icons/mime/'.$mimeextensions["$ext"].'.png" />&nbsp;';
+				} else {
+					$string = strtolower(substr($atts['data'][$n]['filename'], strlen($atts['data'][$n]['filename'])-3));
+					if (is_file("img/icons/mime/".$string.".png"))
+						$link.= '<img src="img/icons/mime/'.$string.'.png" />&nbsp;';
+					else
+						$link.= '<img src="img/icons/mime/default.png" />&nbsp;';
+				}
 			}
 
 			if (!empty($showdesc) && !empty($atts['data'][$n]['comment'])) {

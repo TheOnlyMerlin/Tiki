@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -12,32 +12,28 @@ function wikiplugin_bliptv_info()
 	return array(
 		'name' => tra('Bliptv'),
 		'documentation' => 'PluginBlipTV',
-		'description' => tra('Embed a Blip.tv video'),
+		'description' => tra('Display a Blip.tv video'),
 		'prefs' => array( 'wikiplugin_bliptv' ),
-		'iconname' => 'tv',
-		'introduced' => 6.1,
+		'icon' => 'img/icons/bliptv.png',
 		'params' => array(
 			'url' => array(
 				'required' => true,
 				'name' => tra('URL'),
-				'description' => tr('Blip.tv embed URL. Example: %0', '<code>http://blip.tv/play/AYGd_GAC</code>'),
-				'since' => '6.1',
+				'description' => tra('Blip.tv embed URL. Example: http://blip.tv/play/AYGd_GAC'),
 				'filter' => 'url',
 				'default' => '',
 			),
 			'width' => array(
 				'required' => false,
 				'name' => tra('Width'),
-				'description' => tra('Width in pixels'),
-				'since' => '6.1',
+				'description' => tra('Width in pixels (default is 425'),
 				'filter' => 'digits',
 				'default' => 425,
 			),
 			'height' => array(
 				'required' => false,
 				'name' => tra('Height'),
-				'description' => tra('Height in pixels'),
-				'since' => '6.1',
+				'description' => tra('Height in pixels (default is 350)'),
 				'filter' => 'digits',
 				'default' => 350,
 			),

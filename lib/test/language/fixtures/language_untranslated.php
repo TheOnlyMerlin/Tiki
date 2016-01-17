@@ -1,5 +1,5 @@
 <?php // -*- coding:utf-8 -*-
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -90,7 +90,7 @@ $lang=Array(
 "Approved Status" => "Aprovado",
 // "Queued" => "Queued",
 // "The file is already locked by %s" => "The file is already locked by %s",
-// "Warning: The file is used in" => "Warning: The file is used in",
+// "WARNING: The file is used in" => "WARNING: The file is used in",
 // "You do not have permission to edit this file" => "You do not have permission to edit this file",
 // ### end of untranslated words
 // ###

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -23,14 +23,14 @@ class Language_FileType_PhpTest extends TikiTestCase
 		$strings = array(
 			'Features',
 			'Enable/disable Tiki features here, but configure them elsewhere',
-			"Show user\'s real name instead of log-in name in the autocomplete selector in trackers",
+			"Show user\'s real name instead of login in autocomplete selector in trackers feature",
 			'General preferences and settings',
 		);
 		
 		$expectedResult = array(
 			'Features',
 			'Enable/disable Tiki features here, but configure them elsewhere',
-			"Show user's real name instead of log-in name in the autocomplete selector in trackers",
+			"Show user's real name instead of login in autocomplete selector in trackers feature",
 			'General preferences and settings',
 		);
 

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,7 +11,7 @@
  * Letter key: ~t~
  *
  */
-class Tracker_Field_Text extends Tracker_Field_Abstract implements Tracker_Field_Synchronizable, Tracker_Field_Exportable, Tracker_Field_Filterable
+class Tracker_Field_Text extends Tracker_Field_Abstract implements Tracker_Field_Synchronizable
 {
 	public static function getTypes()
 	{
@@ -26,39 +26,33 @@ class Tracker_Field_Text extends Tracker_Field_Abstract implements Tracker_Field
 				'params' => array(
 					'samerow' => array(
 						'name' => tr('Same Row'),
-						'description' => tr('Display the field name and input on the same row.'),
-						'deprecated' => false,
+						'description' => tr('Display the next field on the same row.'),
+						'deprecated' => true,
 						'filter' => 'int',
-						'default' => 1,
 						'options' => array(
 							0 => tr('No'),
 							1 => tr('Yes'),
 						),
-						'legacy_index' => 0,
 					),
 					'size' => array(
 						'name' => tr('Display Size'),
-						'description' => tr('Visible size of the field, in characters.'),
+						'description' => tr('Visible size of the field in characters.'),
 						'filter' => 'int',
-						'legacy_index' => 1,
 					),
 					'prepend' => array(
 						'name' => tr('Prepend'),
 						'description' => tr('Text to prepend when displaying the value.'),
 						'filter' => 'text',
-						'legacy_index' => 2,
 					),
 					'append' => array(
 						'name' => tr('Append'),
-						'description' => tr('Text to append when displaying the value.'),
+						'description' => tr('Text to prepend when displaying the value.'),
 						'filter' => 'text',
-						'legacy_index' => 3,
 					),
 					'max' => array(
 						'name' => tra('Maximum Length'),
 						'description' => tra('Maximum amount of characters to store.'),
 						'filter' => 'int',
-						'legacy_index' => 4,
 					),
 					'autocomplete' => array(
 						'name' => tra('Autocomplete'),
@@ -68,7 +62,6 @@ class Tracker_Field_Text extends Tracker_Field_Abstract implements Tracker_Field
 							'n' => tr('No'),
 							'y' => tr('Yes'),
 						),
-						'legacy_index' => 5,
 					),
 					'exact' => array(
 						'name' => tr('Index exact value'),
@@ -78,7 +71,6 @@ class Tracker_Field_Text extends Tracker_Field_Abstract implements Tracker_Field
 							'n' => tr('No'),
 							'y' => tr('Yes'),
 						),
-						'legacy_index' => 6,
 					),
 				),
 			),
@@ -103,12 +95,12 @@ class Tracker_Field_Text extends Tracker_Field_Abstract implements Tracker_Field
 		$post = '';
 
 		if ($this->getConfiguration('type') == 't') {
-			if ($this->getOption('prepend')) {
-				$pre = '<span class="formunit">' . $this->getOption('prepend') . '</span>';
+			if ($this->getOption(2)) {
+				$pre = '<span class="formunit">' . $this->getOption(2) . '</span>';
 			}
 
-			if ($this->getOption('append')) {
-				$post = '<span class="formunit">' . $this->getOption('append') . '</span>';
+			if ($this->getOption(3)) {
+				$post = '<span class="formunit">' . $this->getOption(3) . '</span>';
 			}
 		}
 
@@ -126,56 +118,48 @@ class Tracker_Field_Text extends Tracker_Field_Abstract implements Tracker_Field
 
 	protected function processMultilingual($requestData, $id_string) 
 	{
-		global $prefs, $jitRequest;
+		global $prefs;
 		$language = $prefs['language'];
 		$multilingual = $this->getConfiguration('isMultilingual') == 'y';
 
-		if (!isset($requestData[$id_string])) { // although we're using jitRequest test for $requestData here as it gets unset once processed
+		if (!isset($requestData[$id_string])) {
 			$value = $this->getValue();
 			if ($multilingual) {
-				$newValue = @json_decode($value, true);
+				$requestData[$id_string] = @json_decode($value, true);
 
-				if ($newValue !== false && ! is_null($newValue)) {
-					$value = $newValue;
+				if ($requestData[$id_string] === false) {
+					$requestData[$id_string] = $value;
 				}
+			} else {
+				$requestData[$id_string] = $value;
 			}
-		} else {
-			$value = $jitRequest->$id_string->wikicontent();
 		}
+		
+		$data['raw'] = $requestData[$id_string];
 
-		if (is_array($value)) {
-			$thisVal = $value[$language];
+		if (is_array($data['raw'])) {
+			$thisVal = $data['raw'][$language];
 		} else {
-			$thisVal = $value;
+			$thisVal = $data['raw'];
 		}
 
 		$data = array(
-			'value' => $value,
+			'value' => $data['raw'],
 			'pvalue' => trim($this->attemptParse($thisVal), "\n"),
 			'lingualvalue' => array(),
 			'lingualpvalue' => array(),
 		);
 
 		if ($multilingual) {
-			// When multilingual is turned on after data exists, this may well be a string
-			// rather than an array. Assume it's empty, $thisVal will replace all values.
-			if (! is_array($value)) {
-				$value = array();
-			}
 			foreach ($prefs['available_languages'] as $num => $lang) { // TODO add a limit on number of langs - 40+ makes this blow up
-				if (!isset($value[$lang])) {
-					$value[$lang] = $thisVal;
+				if (!isset($data['raw'][$lang])) {
+					$data['raw'][$lang] = $thisVal;
 				}
 
-				$data['lingualvalue'][$num] = array(
-					'id' => str_replace(array('[', ']'), array('_', ''), $this->getInsertId()) . '_' . $lang,
-					'lang' => $lang,
-					'value' => $value[$lang],
-				);
-				$data['lingualpvalue'][$num] = array(
-					'lang' => $lang,
-					'value' => $this->attemptParse($value[$lang]),
-				);
+				$data['lingualvalue'][$num]['lang'] = $lang;
+				$data['lingualvalue'][$num]['value'] = $requestData[$id_string][$lang];
+				$data['lingualpvalue'][$num]['lang'] = $lang;
+				$data['lingualpvalue'][$num]['value'] = $this->attemptParse($requestData[$id_string][$lang]);
 			}
 		}
 
@@ -233,19 +217,14 @@ class Tracker_Field_Text extends Tracker_Field_Abstract implements Tracker_Field
 		return $info;
 	}
 
-	function getDocumentPart(Search_Type_Factory_Interface $typeFactory)
+	function getDocumentPart($baseKey, Search_Type_Factory_Interface $typeFactory)
 	{
 		$value = $this->getValue();
 		$fieldType = $this->getIndexableType();
-		$baseKey = $this->getBaseKey();
 
 		if ($this->getConfiguration('isMultilingual') == 'y') {
-			if (!empty($value)) {
-				$decoded = json_decode($value, true);
-				$value = implode("\n", $decoded);
-			} else {
-				$decoded = array();
-			}
+			$decoded = json_decode($value, true);
+			$value = implode("\n", $decoded);
 
 			$data = array($baseKey => $typeFactory->$fieldType($value));
 			foreach ($decoded as $lang => $content) {
@@ -266,10 +245,9 @@ class Tracker_Field_Text extends Tracker_Field_Abstract implements Tracker_Field
 		}
 	}
 
-	function getProvidedFields()
+	function getProvidedFields($baseKey)
 	{
 		global $prefs;
-		$baseKey = $this->getBaseKey();
 
 		$data = array($baseKey);
 
@@ -284,10 +262,9 @@ class Tracker_Field_Text extends Tracker_Field_Abstract implements Tracker_Field
 		return $data;
 	}
 
-	function getGlobalFields()
+	function getGlobalFields($baseKey)
 	{
 		global $prefs;
-		$baseKey = $this->getBaseKey();
 
 		$data = array($baseKey => true);
 
@@ -303,211 +280,6 @@ class Tracker_Field_Text extends Tracker_Field_Abstract implements Tracker_Field
 	protected function getIndexableType()
 	{
 		return 'sortable';
-	}
-
-	function isValid($ins_fields_data)
-	{
-		$value = $this->getValue();
-
-		$validation = $this->getConfiguration('validation');
-		$param = $this->getConfiguration('validationParam');
-		$message = $this->getConfiguration('validationMessage');
-
-		if (! $validation) {
-			return true;
-		}
-
-		$validators = TikiLib::lib('validators');
-		$validators->setInput($value);
-		$ret = $validators->validateInput($validation, $param);
-		return $ret;
-	}
-
-	function getTabularSchema()
-	{
-		global $prefs;
-		$schema = new Tracker\Tabular\Schema($this->getTrackerDefinition());
-		$permName = $this->getConfiguration('permName');
-		$baseKey = $this->getBaseKey();
-		$name = $this->getConfiguration('name');
-
-		$renderLink = function ($lang) {
-			return function ($value, $extra) use ($lang) {
-				$smarty = TikiLib::lib('smarty');
-				$smarty->loadPlugin('smarty_function_object_link');
-
-				if (isset($extra['text'])) {
-					$value = $extra['text'];
-				} elseif ($lang && isset($value[$lang])) {
-					$value = $lang;
-				}
-
-				if ($value) {
-					return smarty_function_object_link([
-						'type' => 'trackeritem',
-						'id' => $extra['itemId'],
-						'title' => $value,
-					], $smarty);
-				} else {
-					return '';
-				}
-			};
-		};
-
-		if ('y' !== $this->getConfiguration('isMultilingual', 'n')) {
-			$schema->addNew($permName, 'default')
-				->setLabel($name)
-				->setRenderTransform(function ($value) {
-					return $value;
-				})
-				->setParseIntoTransform(function (& $info, $value) use ($permName) {
-					$info['fields'][$permName] = $value;
-				})
-				;
-			$schema->addNew($permName, 'link')
-				->setLabel($name)
-				->setPlainReplacement('default')
-				->addQuerySource('itemId', 'object_id')
-				->addIncompatibility($permName, 'default')
-				->setRenderTransform($renderLink(null))
-				;
-		} else {
-			$lang = $prefs['language'];
-			$schema->addNew($permName, 'current')
-				->setLabel(tr('%0 (%1)', $name, $lang))
-				->setReadOnly(true)
-				->addQuerySource('text', "{$baseKey}_{$lang}")
-				->setRenderTransform(function ($value, $extra) use ($lang) {
-					if (isset($extra['text'])) {
-						return $extra['text'];
-					} elseif ($lang && isset($value[$lang])) {
-						return $value[$lang];
-					}
-				})
-				;
-			$schema->addNew($permName, "link-current")
-				->setLabel($name)
-				->setReadOnly(true)
-				->setPlainReplacement($lang)
-				->addQuerySource('itemId', 'object_id')
-				->addQuerySource('text', "{$baseKey}_{$lang}")
-				->setRenderTransform($renderLink($lang))
-				;
-
-			foreach ($prefs['available_languages'] as $lang) {
-				$schema->addNew($permName, $lang)
-					->setLabel(tr('%0 (%1)', $name, $lang))
-					->addQuerySource('text', "{$baseKey}_{$lang}")
-					->setRenderTransform(function ($value, $extra) use ($lang) {
-						if (isset($extra['text'])) {
-							return $extra['text'];
-						} elseif ($lang && isset($value[$lang])) {
-							return $value[$lang];
-						}
-					})
-					->setParseIntoTransform(function (& $info, $value) use ($permName, $lang) {
-						$info['fields'][$permName][$lang] = $value;
-					})
-					;
-				$schema->addNew($permName, "link-$lang")
-					->setLabel($name)
-					->setPlainReplacement($lang)
-					->addQuerySource('itemId', 'object_id')
-					->addQuerySource('text', "{$baseKey}_{$lang}")
-					->addIncompatibility($permName, 'default')
-					->addIncompatibility($permName, $lang)
-					->setRenderTransform($renderLink($lang))
-					;
-			}
-		}
-
-		return $schema;
-	}
-
-	function getFilterCollection()
-	{
-		global $prefs;
-
-		$filters = new Tracker\Filter\Collection($this->getTrackerDefinition());
-		$permName = $this->getConfiguration('permName');
-		$name = $this->getConfiguration('name');
-		$baseKey = $this->getBaseKey();
-
-		$generateFulltext = function ($field) {
-			return function ($control, Search_Query $query) use ($field) {
-				$value = $control->getValue();
-
-				if ($value) {
-					$query->filterContent($value, $field);
-				}
-			};
-		};
-
-		if ('y' !== $this->getConfiguration('isMultilingual', 'n')) {
-			$filters->addNew($permName, 'fulltext')
-				->setLabel($name)
-				->setHelp(tr('Full-text search of the content of the field.'))
-				->setControl(new Tracker\Filter\Control\TextField("tf_{$permName}_ft"))
-				->setApplyCondition($generateFulltext($baseKey))
-				;
-
-			$filters->addNew($permName, 'initial')
-				->setLabel($name)
-				->setHelp(tr('Search for a value prefix.'))
-				->setControl(new Tracker\Filter\Control\TextField("tf_{$permName}_init"))
-				->setApplyCondition(function ($control, Search_Query $query) use ($baseKey) {
-					$value = $control->getValue();
-
-					if ($value) {
-						$query->filterInitial($value, $baseKey);
-					}
-				})
-				;
-			if ('y' === $this->getOption('exact', 'n')) {
-				$filters->addNew($permName, 'exact')
-					->setLabel($name)
-					->setHelp(tr('Search for a precise value.'))
-					->setControl(new Tracker\Filter\Control\TextField("tf_{$permName}_em"))
-					->setApplyCondition(function ($control, Search_Query $query) use ($baseKey) {
-						$value = $control->getValue();
-
-						if ($value) {
-							$query->filterIdentifier($value, $baseKey . '_exact');
-						}
-					})
-					;
-			}
-		} else {
-			$language = $prefs['language'];
-			$filters->addNew($permName, "fulltext-current")
-				->setLabel($name)
-				->setHelp(tr('Full-text search in the current language.'))
-				->setControl(new Tracker\Filter\Control\TextField("tf_{$permName}_current_ft"))
-				->setApplyCondition($generateFulltext("{$baseKey}_{$language}"))
-				;
-
-			$fields = [];
-			foreach ($prefs['available_languages'] as $lang) {
-				$field = "{$baseKey}_{$lang}";
-				$fields[] = $field;
-
-				$filters->addNew($permName, "fulltext-$lang")
-					->setLabel(tr('%0 (%1)', $name, $lang))
-					->setHelp(tr('Full-text search in a specific language (%0).', $lang))
-					->setControl(new Tracker\Filter\Control\TextField("tf_{$permName}_{$lang}_ft"))
-					->setApplyCondition($generateFulltext($field))
-					;
-			}
-
-			$filters->addNew($permName, "fulltext")
-				->setLabel(tr('%0 (any language)', $name))
-				->setHelp(tr('Full-text search in any language.'))
-				->setControl(new Tracker\Filter\Control\TextField("tf_{$permName}_ft"))
-				->setApplyCondition($generateFulltext(implode(',', $fields)))
-				;
-		}
-
-		return $filters;
 	}
 }
 

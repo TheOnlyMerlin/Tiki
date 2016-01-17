@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -13,14 +13,12 @@ function wikiplugin_snarf_info()
 		'description' => tra('Display the contents of another web page'),
 		'prefs' => array( 'wikiplugin_snarf' ),
 		'validate' => 'all',
-		'iconname' => 'copy',
-		'introduced' => 1,
+		'icon' => 'img/icons/page_copy.png',
 		'params' => array(
 			'url' => array(
 				'required' => true,
 				'name' => tra('URL'),
 				'description' => tra('Full URL to the page to include.'),
-				'since' => '1',
 				'filter' => 'url',
 				'default' => '',
 			),
@@ -28,45 +26,39 @@ function wikiplugin_snarf_info()
 				'required' => false,
 				'name' => tra('Regular Expression Pattern'),
 				'description' => tra('PCRE-compliant regular expression pattern to find the parts you want changed'),
-				'since' => '1',
 				'default' => '',
-				'filter' => 'text'
+				'filter' => 'striptags'
 			),
 			'regexres' => array(
 				'required' => false,
 				'name' => tra('Regular Expression Replacement'),
 				'description' => tra('PCRE-compliant regular expression replacement syntax showing what the content should be changed to'),
-				'since' => '1',
 				'default' => '',
-				'filter' => 'text'
+				'filter' => 'striptags'
 			),
 			'wrap' => array(
 				'required' => false,
 				'name' => tra('Word Wrap'),
 				'description' => tra('Enable/disable word wrapping of snippets of code (enabled by default)'),
 				'default' => 1,
-				'since' => '3.0',
-				'filter' => 'digits',
 				'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('Yes'), 'value' => 1), 
 					array('text' => tra('No'), 'value' => 0)
 				),
+				'filter' => 'int',
 			),
 			'colors' => array(
 				'required' => false,
 				'name' => tra('Colors'),
-				'description' => tra('Syntax highlighting to use for code snippets (Plugin Code is used for this)'),
-				'since' => '3.0',
+				'description' => tra('Syntax highlighting to use for code snippets. Available: php, html, sql, javascript, css, java, c, doxygen, delphi, ...'),
 				'default' => NULL,
-				'filter' => 'text'
+				'filter' => 'striptags'
 			),
 			'ln' => array(
 				'required' => false,
 				'name' => tra('Line Numbers'),
-				'description' => tr('Set to Yes (%0) to add line numbers to code snippets (not shown by default)',
-					'<code>1</code>'),
-				'since' => '3.0',
+				'description' => tra('Set to 1 (Yes) to add line numbers to code snippets (not shown by default)'),
 				'default' => NULL,
 				'options' => array(
 					array('text' => '', 'value' => ''), 
@@ -79,7 +71,6 @@ function wikiplugin_snarf_info()
 				'required' => false,
 				'name' => tra('Wiki Syntax'),
 				'description' => tra('Parse wiki syntax within the code snippet (not parsed by default).'),
-				'since' => '3.0',
 				'default' => 0,
 				'options' => array(
 					array('text' => '', 'value' => ''), 
@@ -92,7 +83,6 @@ function wikiplugin_snarf_info()
 				'required' => false,
 				'name' => tra('Right to Left'),
 				'description' => tra('Switch the text display from left to right to right to left'),
-				'since' => '3.0',
 				'default' => NULL,
 				'options' => array(
 					array('text' => '', 'value' => ''), 
@@ -104,9 +94,7 @@ function wikiplugin_snarf_info()
 			'ishtml' => array(
 				'required' => false,
 				'name' => tra('HTML Content'),
-				'description' => tr('Set to Yes (%0) to display the content as is instead of escaping HTML special
-					characters (not set by default).', '<code>1</code>'),
-				'since' => '3.0',
+				'description' => tra('Set to 1 (Yes) to display the content as is instead of escaping HTML special chars (not set by default).'),
 				'default' => NULL,
 				'options' => array(
 					array('text' => '', 'value' => ''), 
@@ -118,9 +106,7 @@ function wikiplugin_snarf_info()
 			'cache' => array(
 				'required' => false,
 				'name' => tra('Cache Url'),
-				'description' => tr('Cache time in minutes. Default is to use site preference, Set to %0 for no cache.',
-					'<code>0</code>'),
-				'since' => '5.0',
+				'description' => tra('Cache time in minutes. Default is to use site preference, Set to 0 for no cache.'),
 				'default' => '',
 				'filter' => 'int'
 			),
@@ -128,9 +114,8 @@ function wikiplugin_snarf_info()
 				'required' => false,
 				'name' => tra('Label'),
 				'description' => tra('Text to click on to fetch the url via ajax'),
-				'since' => '6.0',
 				'default' => '',
-				'filter' => 'text'
+				'filter' => 'striptags'
 			),
 		),
 	);
@@ -138,15 +123,14 @@ function wikiplugin_snarf_info()
 
 function wikiplugin_snarf($data, $params)
 {
-    global $prefs;
+    global $tikilib, $prefs, $smarty;
 	static $url=''; static $snarf; static $isFresh = true;
 	static $iSnarf = 0;
 	++$iSnarf;
 	if (empty($params['url'])) {
 		return '';
 	}
-	$smarty = TikiLib::lib('smarty');
-	$tikilib = TikiLib::lib('tiki');
+	
 	if (!empty($params['ajax'])) {
 		$params['iSnarf'] = $iSnarf;
 		$params['href'] = '';
@@ -206,6 +190,7 @@ function wikiplugin_snarf($data, $params)
 	$ret = wikiplugin_code($snarf, $code_defaults);
 
 	if (!$isFresh && empty($params['link'])) {
+		global $smarty;
 		include_once('lib/smarty_tiki/block.self_link.php');
 		$icon = '<div style="text-align:right">'.smarty_block_self_link(array('_icon' => 'arrow_refresh', 'snarf_refresh'=>$params['url']), '', $smarty).'</div>';
 		$ret = $icon.$ret;

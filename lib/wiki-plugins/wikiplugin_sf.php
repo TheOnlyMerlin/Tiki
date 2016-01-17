@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -15,14 +15,12 @@ function wikiplugin_sf_info()
 		'description' => tra('Creates a link to SourceForge tracker items'),
 		'prefs' => array( 'wikiplugin_sf' ),
 		'body' => tra('text'),
-		'iconname' => 'link',
-		'introduced' => 1,
+		'icon' => 'img/icons/world_link.png',
 		'params' => array(
 			'groupid' => array(
 				'required' => true,
 				'name' => tra('Group ID'),
 				'description' => tra('SourceForge project ID (shows as group_id in the URL of a tracker item'),
-				'since' => '1',
 				'filter' => 'digits',
 				'default' => '',
 			),
@@ -30,25 +28,20 @@ function wikiplugin_sf_info()
 				'required' => true,
 				'name' => tra('Tracker ID'),
 				'description' => tra('SourceForge tracker ID (shows as atid in the URL of a tracker item'),
-				'since' => '1',
 				'filter' => 'digits',
 				'default' => '',
-				'profile_reference' => 'tracker',
 			),
 			'itemid' => array(
 				'required' => true,
 				'name' => tra('Item ID'),
 				'description' => tra('SourceForge item ID (shows as aid in the URL of a tracker item'),
-				'since' => '1',
 				'filter' => 'digits',
 				'default' => '',
-				'profile_reference' => 'tracker_item',
 			),
 			'title' => array(
 				'required' => false,
 				'name' => tra('Link title'),
-				'description' => tra('First part of link tooltip identifying the type of tracker item (bug, feature
-					request, patch or support request).'),
+				'description' => tra('First part of link tooltip identifying the type of tracker item (bug, feature request, patch or support request).'),
 				'filter' => 'alpha',
 				'default' => 'Item',
 				'since' => 7.0,

@@ -20,20 +20,12 @@
 			&nbsp;
 		{/if}
 	{else}
-		{if empty($field.options_array[1]) and empty($field.options_array[2])}
-			{if empty($field.options_array[3])}
-				{$field.value|escape}
-			{else}
-				{$field.value|number_format|escape}
-			{/if}
-		{else}
-			{$field.value|number_format:$field.options_array[1]:$field.options_array[2]:$field.options_array[3]|escape}
-		{/if}
+		{$field.value}
 	{/if}
 {elseif $tiki_p_admin eq 'y'}
 	<form class="labelColumns" method="post" action="tiki-admin.php">
 		{preference name=tracker_field_computed}
-		<input type="submit" class="btn btn-default btn-sm" value="{tr}Enable{/tr}">
+		<input type="submit" value="{tr}Enable{/tr}"/>
 	</form>
 {else}
 	{tr}Administrator intervention required.{/tr}

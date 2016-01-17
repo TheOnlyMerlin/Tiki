@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,16 +10,14 @@ function wikiplugin_topfriends_info()
 	return array(
 		'name' => tra('Top Friends'),
 		'documentation' => 'PluginTopFriends',
-		'description' => tra('List top-scoring users'),
+		'description' => tra('List top-scoring users.'),
 		'prefs' => array( 'feature_friends', 'wikiplugin_topfriends' ),
-		'iconname' => 'star',
-		'introduced' => 2,
+		'icon' => 'img/icons/star.png',
 		'params' => array(
 			'limit' => array(
 				'required' => false,
 				'name' => tra('Limit'),
 				'description' => tra('Maximum result count.'),
-				'since' => '2.0',
 				'filter' => 'digits',
 				'default' => 5,
 			),
@@ -27,8 +25,6 @@ function wikiplugin_topfriends_info()
 				'required' => false,
 				'name' => tra('Public'),
 				'description' => tra('Set whether public or not.'),
-				'since' => '2.0',
-				'filter' => 'alpha',
 				'default' => '',
 				'options' => array(
 					array('text' => '', 'value' => ''), 
@@ -42,10 +38,25 @@ function wikiplugin_topfriends_info()
 
 function wikiplugin_topfriends($data, $params)
 {
-	// TODO : Re-implement
-	$smarty = TikiLib::lib('smarty');
-	$empty = array();
-	$smarty->assign_by_ref('listusers', $empty);
+	global $smarty, $prefs, $tiki_p_list_users, $tikilib;
+	
+	/* Check we can be called */
+	if ($prefs['feature_friends'] != 'y') {
+		return ' ';  
+	}
+	extract($params, EXTR_SKIP);
+
+	if (!(isset($limit) && $limit <> '')) {
+		$limit = 5;
+	}
+
+	if ((isset($public) && $public != 'y') && ($tiki_p_list_users != 'y')) {
+		// Access denied
+		return ' ';
+	}
+
+	$listusers = $tikilib->list_users(0, $limit, 'score_desc', '', false);
+	$smarty->assign_by_ref('listusers', $listusers["data"]);
 
 	return $smarty->fetch('plugins/plugin-topfriends.tpl');
 }

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -39,7 +39,6 @@ class Services_Language_TranslationController
 		}
 
 		return array(
-			'title' => tr('Manage translations'),
 			'type' => $type,
 			'source' => $object,
 			'filters' => $this->getSearchFilters($type, $object),
@@ -68,7 +67,7 @@ class Services_Language_TranslationController
 		}
 
 		if (! $this->canAttach($type, $source) || ! $this->canAttach($type, $target)) {
-			throw new Services_Exception(tr('You do not have permission to attach the selected translations'), 403);
+			throw new Services_Exception(tr('Not allowed to attach the selected translations'), 403);
 		}
 
 		$succeeded = $this->utilities->insertTranslation($type, $source, $target);
@@ -104,12 +103,11 @@ class Services_Language_TranslationController
 		}
 
 		if (! $this->canDetach($type, $source) || ! $this->canDetach($type, $target)) {
-			throw new Services_Exception(tr('You do not have permission to detach the selected translations'), 403);
+			throw new Services_Exception(tr('Not allowed to detach the selected translations'), 403);
 		}
 
 		if (! $confirmed) {
 			return array(
-				'title' => tr('Manage translations'),
 				'type' => $type,
 				'source' => $source,
 				'target' => $target,
@@ -141,8 +139,7 @@ class Services_Language_TranslationController
 	private function getSearchFilters($type, $object)
 	{
 		$translations = $this->utilities->getTranslations($type, $object);
-		$langLib = TikiLib::lib('language');
-		$languages = $langLib->get_language_map();
+		$languages = TikiLib::get_language_map();
 
 		foreach ($translations as $trans) {
 			unset($languages[$trans['lang']]);

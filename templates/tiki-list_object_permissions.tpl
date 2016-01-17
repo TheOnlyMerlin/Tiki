@@ -1,226 +1,157 @@
 {title}{tr}Object Permissions List{/tr}{/title}
 
-<div class="t_navbar">
-	{button href="tiki-objectpermissions.php" class="btn btn-default" _icon_name="permission" _text="{tr}Manage permissions{/tr}"}
+<div class="navbar">
+{button href="tiki-objectpermissions.php" _text="{tr}Manage Permissions{/tr}"}
 </div>
 
 {if !empty($feedbacks)}
 	{remarksbox type="note" title="{tr}Feedback{/tr}"}
 		{foreach from=$feedbacks item=feedback name=feedback}
-			{if !$smarty.foreach.feedback.first}<br>{/if}
+			{if !$smarty.foreach.feedback.first}<br />{/if}
 			{$feedback|escape}
 		{/foreach}
 	{/remarksbox}
 {/if}
-<br>
-{if $all_groups|@count >= 5}
-	{$size = 6}
-{else}
-	{$size = $all_groups|@count +1}
-{/if}
-<form method="post">
-	<div class="clearfix forb-group">
-		<legend>{tr}Group Filter{/tr}</legend>
-		<fieldset>
-			<div class="col-lg-6">
-				<select class='form-control' multiple="multiple" id="filterGroup" name="filterGroup[]" size="{$size}">
-					<option value=""{if empty($filterGroup)}selected="selected"{/if}></option>
-					{foreach from=$all_groups item=gr}
-						<option value="{$gr|escape}" {if in_array($gr, $filterGroup)}selected="selected"{/if}>{$gr|escape}</option>
-					{/foreach}
-				</select>
-			</div>
-			<div>
-				<input type="submit" class="btn btn-default" name="filter" value="{tr}Filter{/tr}">
-			</div>
-		</fieldset>
-	</div>
-</form>
-<br>
-<legend>{tr}Object Permissions{/tr}</legend>
-<ul class="nav nav-tabs" id="allperms">
-	{foreach $res as $type => $content}
-		<li>
-			<a href="#{$type|strip:'_'}" data-toggle="tab">{$type|ucwords}</a>
-		</li>
-	{/foreach}
-</ul>
-<div class="tab-content">
-	<br>
-	{foreach $res as $type => $content}
-		<div id="{$type|strip:'_'}" class="tab-pane">
-			<ul class="nav nav-tabs" id="allperms">
-				<li class="active"><a href="#{$type|strip:'_'}-global" data-toggle="tab">{tr}Global permissions{/tr} ({$content.default|@count})</a></li>
-				<li><a href="#{$type|strip:'_'}-object" data-toggle="tab">{tr}Object permissions{/tr} ({$content.objects|@count})</a></li>
-				<li><a href="#{$type|strip:'_'}-category" data-toggle="tab">{tr}Category permissions{/tr} ({$content.category|@count})</a></li>
-			</ul>
-			{* global permissions *}
-			<div class="tab-content">
-					<div id="{$type|strip:'_'}-global" class="tab-pane active">
-						{if count($content.default)}
-							<form id="{$type|strip:'_'}-global" method="post">
-								{foreach from=$filterGroup item=f}
-									<input type="hidden" name="filterGroup[]" value="{$f|escape}">
-								{/foreach}
-								<div class="table-responsive">
-									<table class="table table-striped table-hover">
-										<tr>
-											<th class="checkbox-cell">{select_all checkbox_names='groupPerm[]'}</th>
-											<th>{tr}Group{/tr}</th>
-											<th>{tr}Permission{/tr}</th>
-										</tr>
 
-										{foreach from=$content.default item=default}
-											<tr>
-												<td class="checkbox-cell"><input type="checkbox" name="groupPerm[]" value='{$default|json_encode|escape}'></td>
-												<td class="text">{$default.group|escape}</td>
-												<td class="text">{$default.perm|escape}</td>
-											</tr>
-										{/foreach}
-									</table>
-								</div>
-								<legend>{tr}Perform action with selected permissions:{/tr}</legend>
-								<div class="form-group">
-									<label for="delete" class="col-lg-4 control-label">
-										{tr}Delete{/tr}
-									</label>
-									<div class="col-lg-2">
-										<button class="btn btn-default" name="delete" value="delete">
-											{tr}OK{/tr}
-										</button>
-									</div>
-									<div class="col-lg-6"></div><br>
-								</div>
-								<div class="form-group">
-									<label for="duplicate" class="col-lg-4 control-label">
-										{tr}Assign to this group{/tr}
-									</label>
-									<div class="col-lg-4">
-										<div class="input-group">
-											<input type="text" name="toGroup" class="form-control">
-										<span class="input-group-btn">
-											<button class="btn btn-default" name="duplicate" value="duplicate">
-												{tr}OK{/tr}
-											</button>
-										</span>
-										</div>
-									</div>
-								</div>
-							</form>
-						{else}<br>
-							{remarksbox title="{tr}Only default global permissions are being used.{/tr}"}{/remarksbox}
+<form method="post">
+	<div class="clearfix">
+	<div style="float:left;"><label for="filterGroup">{tr}Group Filter{/tr}</label></div>
+	<div style="float:left;">
+		<select multiple="multiple" id="filterGroup" name="filterGroup[]">
+			<option value=""{if empty($filterGroup)}selected="selected"{/if}></option>
+			{foreach from=$all_groups item=gr}
+				<option value="{$gr|escape}" {if in_array($gr, $filterGroup)}selected="selected"{/if}>{$gr|escape}</option>
+				{/foreach}
+		</select>
+	  </div>
+	  <div style="float:left;"><input type="submit" name="filter" value="{tr}Filter{/tr}" /></div>
+	  </div>
+</form>
+
+{tabset name='tabs_list_object_permissions'}
+	{foreach from=$res key=type item=content}
+		{tab name="{tr}$type{/tr}"}
+
+			<!-- ul>
+				<li><a href="#tabs-1">{tr}global permissions{/tr}</a></li>
+				<li><a href="#tabs-2">{tr}object permissions{/tr} ({$content.objects|@count})</a></li>
+				<li><a href="#tabs-3">{tr}category permissions{/tr} ({$content.category|@count})</a></li>
+			</ul-->
+
+			{tabset}
+				{capture assign=tablabel}{tr}Global Permissions{/tr} ({$content.default|@count}){/capture}
+				{tab name=$tablabel}
+					<div class="tabs-1">
+					<form method="post">
+					{foreach from=$filterGroup item=f}<input type="hidden" name="filterGroup[]" value="{$f|escape}" />{/foreach}
+					<table class="normal">
+					<tr>
+						<th class="checkbox">{select_all checkbox_names='groupPerm[]'}</th>
+						<th>{tr}Group{/tr}</th>
+						<th>{tr}Permission{/tr}</th>
+					</tr>
+					{cycle values="even,odd" print=false}
+					{foreach from=$content.default item=default}
+						<tr class="{cycle}">
+							<td class="checkbox"><input type="checkbox" name="groupPerm[]" value='{$default|json_encode|escape}' /></td>
+							<td class="text">{$default.group|escape}</td>
+							<td class="text">{$default.perm|escape}</td>
+						</tr>
+					{/foreach}
+					</table>
+					{if count($content.default)}
+						<div style="float:left">{tr}Perform action with checked:{/tr}</div>
+						<div style="float:left">
+						{icon _id='cross' _tag='input_image' _confirm="{tr}Delete the selected permissions?{/tr}" name='delsel' alt="{tr}Delete the selected permissions{/tr}"}
+							 <br />						
+							 <input type="text" name="toGroup" /><input type="submit" name="dupsel" value="{tr}Duplicate the selected permissions on this group{/tr}" />
+	  					</div>
+					{/if}
+					</form>
+					</div>
+				{/tab}
+				{capture assign=tablabel}{tr}Object Permissions{/tr} ({$content.objects|@count}){/capture}
+				{tab name=$tablabel}
+					<div class="tabs-2">
+					{remarksbox}{tr}If an object is not listed in this section nor in the Category Permissions section, then only the global permissions apply to it.{/tr}{/remarksbox}
+					<form method="post">
+					{foreach from=$filterGroup item=f}<input type="hidden" name="filterGroup[]" value="{$f|escape}" />{/foreach}
+					<table class="normal">
+					<tr>
+						<th class="checkbox">{select_all checkbox_names='objectPerm[]'}</th>
+						<th>{tr}Object{/tr}</th>
+						<th>{tr}Group{/tr}</th>
+						<th>{tr}Permission{/tr}</th>
+						<th>{tr}Reason{/tr}</th>
+					</tr>
+					{foreach from=$content.objects item=object}
+						{if !empty($object.special)}
+							{foreach from=$object.special item=special}
+								<tr class="{cycle}">
+									<td class="checkbox"><input type="checkbox" name="objectPerm[]" value='{$special|json_encode|escape}' /></td>
+									<td class="text">{$special.objectName|escape}</td>
+									<td class="text">{$special.group|escape}</td>
+									<td class="text">{$special.perm|escape}</td>
+									<td class="text">
+										{if !empty($special.objectId)}
+											<a href="tiki-objectpermissions.php?objectId={$special.objectId}&amp;objectType={$special.objectType}&amp;objectName={$special.objectName|escape}">{$special.reason|escape}</a>
+										{else}
+											{$special.reason|escape}
+										{/if}
+										{if !empty($special.detail)}({$special.detail|escape}){/if}
+									</td>
+								</tr>
+							{/foreach}
 						{/if}
-					</div><br>
-				{* object permissions *}
-				<div id="{$type|strip:'_'}-object" class="tab-pane">
+					{/foreach}
+					</table>
 					{if count($content.objects)}
-						<form method="post">
-							{foreach from=$filterGroup item=f}<input type="hidden" name="filterGroup[]" value="{$f|escape}">{/foreach}
-							<div class="table-responsive">
-								<table class="table table-striped table-hover">
-									<tr>
-										<th class="checkbox-cell">{select_all checkbox_names='objectPerm[]'}</th>
-										<th>{tr}Object{/tr}</th>
-										<th>{tr}Group{/tr}</th>
-										<th>{tr}Permission{/tr}</th>
-										<th>{tr}Reason{/tr}</th>
-									</tr>
-									{foreach from=$content.objects item=object}
-										{if !empty($object.special)}
-											{foreach from=$object.special item=special}
-												<tr>
-													<td class="checkbox-cell"><input type="checkbox" name="objectPerm[]" value='{$special|json_encode|escape}'></td>
-													<td class="text">{$special.objectName|escape}</td>
-													<td class="text">{$special.group|escape}</td>
-													<td class="text">{$special.perm|escape}</td>
-													<td class="text">
-														{if !empty($special.objectId)}
-															{* I doubt this link worked in the past, permType was not specified *}
-															{permission_link mode=link type=$special.objectType id=$special.objectId title=$special.objectName label=$special.reason}
-														{else}
-															{$special.reason|escape}
-														{/if}
-														{if !empty($special.detail)}({$special.detail|escape}){/if}
-													</td>
-												</tr>
-											{/foreach}
-										{/if}
-									{/foreach}
-								</table>
-							</div>
-							<legend>{tr}Perform action with selected permissions:{/tr}</legend>
-							<div class="form-group">
-								<label for="delete" class="col-lg-4 control-label">
-									{tr}Delete{/tr}
-								</label>
-								<div class="col-lg-2">
-									<button class="btn btn-default" name="delete" value="delete">
-										{tr}OK{/tr}
-									</button>
-								</div>
-								<div class="col-lg-6"></div><br>
-							</div>
-							<div class="form-group">
-								<label for="duplicate" class="col-lg-4 control-label">
-									{tr}Assign to this group{/tr}
-								</label>
-								<div class="col-lg-4">
-									<div class="input-group">
-										<input type="text" name="toGroup" class="form-control">
-										<span class="input-group-btn">
-											<button class="btn btn-default" name="duplicate" value="duplicate">
-												{tr}OK{/tr}
-											</button>
-										</span>
-									</div>
-								</div>
-							</div>
-						</form>
-					{else}<br>
-						{remarksbox title="{tr}No object permissions apply.{/tr}"}{/remarksbox}
+						<div style="float:left">{tr}Perform action with checked:{/tr}</div>
+						<div style="float:left">
+							 {icon _id='cross' _tag='input_image' _confirm="{tr}Delete the selected permissions?{/tr}" name='delsel' alt="{tr}Delete the selected permissions{/tr}" style='vertical-align: middle;'}
+							 <br />						
+							 <input type="text" name="toGroup" /><input type="submit" name="dupsel" value="{tr}Duplicate the selected permissions on this group{/tr}" />
+						</div>
 					{/if}
-				</div>
-				{* category permissions *}
-				<div id="{$type|strip:'_'}-category" class="tab-pane">
-					{if count($content.category)}
-						<form method="post">
-							<div class="table-responsive">
-								<table class="table table-striped table-hover">
-									<tr>
-										<th>{tr}Object{/tr}</th>
-										<th>{tr}Group{/tr}</th>
-										<th>{tr}Permission{/tr}</th>
-										<th>{tr}Reason{/tr}</th>
-									</tr>
-									{foreach from=$content.category item=object}
-										{if !empty($object.category)}
-											{foreach from=$object.category item=special}
-												<tr>
-													<td class="text">{if isset($object.objectName)}{$object.objectName|escape}{else}{$object.objectId|escape}{/if}</td>
-													<td class="text">{$special.group|escape}</td>
-													<td class="text">{$special.perm|escape}</td>
-													<td class="text">
-														{if !empty($special.objectId)}
-															{* I doubt this link worked in the past, permType was not specified *}
-															{permission_link mode=icon type=$special.objectType id=$special.objectId title=$special.objectName}
-															{tr}{$special.reason|escape}:{/tr} {$special.objectName|escape}
-														{else}
-															{$special.reason|escape}: {$special.objectName}
-														{/if}
-														{if !empty($special.detail)}({$special.detail|escape}){/if}
-													</td>
-												</tr>
-											{/foreach}
+					</form>
+					</div>
+				{/tab}
+				{capture assign=tablabel}{tr}Category Permissions{/tr} ({$content.category|@count}){/capture}
+				{tab name=$tablabel}
+					<div class="tabs-3">
+					{remarksbox}{tr}If an object is not listed in this section nor in the Object Permissions section, then only the global permissions apply to it.{/tr}{/remarksbox}
+					<form method="post">
+					<table class="normal">
+					<tr>
+						<th>{tr}Object{/tr}</th>
+						<th>{tr}Group{/tr}</th>
+						<th>{tr}Permission{/tr}</th>
+						<th>{tr}Reason{/tr}</th>
+					</tr>
+					{foreach from=$content.category item=object}
+						{if !empty($object.category)}
+							{foreach from=$object.category item=special}
+								<tr class="{cycle}">
+									<td class="text">{if isset($object.objectName)}{$object.objectName|escape}{else}{$object.objectId|escape}{/if}</td>
+									<td class="text">{$special.group|escape}</td>
+									<td class="text">{$special.perm|escape}</td>
+									<td class="text">
+										{if !empty($special.objectId)}
+											<a href="tiki-objectpermissions.php?objectId={$special.objectId}&amp;objectType={$special.objectType}&amp;objectName={$special.objectName|escape:url}">{tr}{$special.reason|escape}:{/tr} {$special.objectName|escape}</a>
+										{else}
+											{$special.reason|escape}: {$special.objectName}
 										{/if}
-									{/foreach}
-								</table>
-							</div>
-						</form>
-					{else}<br>
-						{remarksbox title="{tr}No category permissions apply.{/tr}"}{/remarksbox}
-					{/if}
-				</div>
-			</div>
-		</div>
+										{if !empty($special.detail)}({$special.detail|escape}){/if}
+									</td>
+								</tr>
+							{/foreach}
+						{/if}
+					{/foreach}
+					</table>
+					</form>
+					</div>
+				{/tab}
+			{/tabset}
+		{/tab}
 	{/foreach}
-</div>
+{/tabset}

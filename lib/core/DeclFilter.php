@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,7 +10,7 @@
  * Declarative filters are to be defined prior to filtering. Various rules can
  * be defined in sequence. The first filter that applies will be used.
  */
-class DeclFilter implements \Zend\Filter\FilterInterface
+class DeclFilter implements Zend_Filter_Interface
 {
 	private $rules = array();
 
@@ -19,8 +19,7 @@ class DeclFilter implements \Zend\Filter\FilterInterface
 	 *
 	 * @var array The configuration array
 	 * @var array The list of filtering rules that are disallowed
-     * @return \DeclFilter
-     * @see DeclFilter_ConfigureTest Unit tests contain samples of expected input
+	 * @see DeclFilter_ConfigureTest Unit tests contain samples of expected input
 	 */
 	public static function fromConfiguration(array $configuration, array $reject = array())
 	{
@@ -37,11 +36,11 @@ class DeclFilter implements \Zend\Filter\FilterInterface
 						) {
 						$filter->$real($argument);
 					} else {
-						trigger_error('Disallowed filtering rule: ' . $method, E_USER_WARNING);
+						trigger_error('Disallowed filtering rule: ' . $method, E_USER_ERROR);
 					}
 				}
 			} else {
-				trigger_error('Invalid input configuration structure', E_USER_WARNING);
+				trigger_error('Invalid input configuration structure', E_USER_ERROR);
 			}
 		}
 

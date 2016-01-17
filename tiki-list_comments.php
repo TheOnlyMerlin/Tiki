@@ -1,19 +1,16 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 require_once ('tiki-setup.php');
-
+include_once ('lib/comments/commentslib.php');
 $auto_query_args = array('types_section', 'types', 'show_types', 'sort_mode', 'offset', 'find', 'findfilter_approved');
 
 if (isset($_REQUEST['blogId'])) {
-	$bloglib = TikiLib::lib('blog');
+	require_once('lib/blogs/bloglib.php');
 	$blogId = $_REQUEST['blogId'];
 	$access->check_feature('feature_blogs');
 	$bloglib->check_blog_exists($blogId);
@@ -28,7 +25,7 @@ if (isset($_REQUEST['blogId'])) {
 	$access->check_permission('tiki_p_admin_comments');
 }
 
-$commentslib = TikiLib::lib('comments');
+$commentslib = new Comments($dbTiki);
 $title = tra('Comments');
 $sections_keys = array('objectType' => 'commentsFeature', 'itemObjectType' => 'itemCommentsFeature');
 
@@ -92,53 +89,56 @@ $smarty->assign_by_ref('more_info_headers', $more_info_headers);
 if (isset($_REQUEST['checked'])) {
 	check_ticket('list_comments');
 	$checked = is_array($_REQUEST['checked']) ? $_REQUEST['checked'] : array($_REQUEST['checked']);
-	if (isset($_REQUEST['action'])) {
-		// Delete comment(s)
-		if ($_REQUEST['action'] === 'remove') {
-			$access->check_authenticity(tra('Delete comments'));
-			foreach ($checked as $id) {
-				$commentslib->remove_comment($id);
-			}
+	// Delete comment(s)
+	if (isset($_REQUEST['remove']) || isset($_REQUEST['remove_x'])) {
+		$access->check_authenticity(tra('Delete comments'));
+		foreach ($checked as $id) {
+			$commentslib->remove_comment($id);
 		}
-		// Ban IP adresses of multiple spammers
-		if ($_REQUEST['action'] === 'ban') {
-			ask_ticket('admin-banning');
-			$mass_ban_ip = implode('|', $checked);
-			header('Location: tiki-admin_banning.php?mass_ban_ip=' . $mass_ban_ip);
-			exit;
+	}
+
+	// Ban IP adresses of multiple spammers
+	if ( isset($_REQUEST['ban_x']) ) {
+		ask_ticket('admin-banning');
+		$mass_ban_ip = implode('|', $checked);
+		header('Location: tiki-admin_banning.php?mass_ban_ip=' . $mass_ban_ip);
+		exit;
+	}
+	// Ban IP adresses of multiple spammers and remove comments
+	if ( isset($_REQUEST['ban_remove_x'])) {
+		ask_ticket('admin-banning');
+		$mass_ban_ip = implode('|', $checked);
+		header('Location: tiki-admin_banning.php?mass_remove=y&mass_ban_ip=' . $mass_ban_ip);
+		exit;
+	}
+
+	// Approve comment(s)
+	if ($prefs['feature_comments_moderation'] == 'y' && isset($_REQUEST['approve_x']) ) {
+		foreach ($checked as $id) {
+			$commentslib->approve_comment($id, 'y');
 		}
-		// Ban IP adresses of multiple spammers and remove comments
-		if ($_REQUEST['action'] === 'ban_remove') {
-			ask_ticket('admin-banning');
-			$mass_ban_ip = implode('|', $checked);
-			header('Location: tiki-admin_banning.php?mass_remove=y&mass_ban_ip=' . $mass_ban_ip);
-			exit;
+	}
+
+	// Reject comment(s)
+	if ($prefs['feature_comments_moderation'] == 'y' && isset($_REQUEST['reject_x'])) {
+		foreach ($checked as $id) {
+			$commentslib->approve_comment($id, 'r');
+			$rejected[$id] = true;
 		}
-		// Approve comment(s)
-		if ($prefs['feature_comments_moderation'] == 'y' && $_REQUEST['action'] === 'approve') {
-			foreach ($checked as $id) {
-				$commentslib->approve_comment($id, 'y');
-			}
+		$smarty->assign_by_ref('rejected', $rejected);
+	}
+
+	// Archive comment(s)
+	if ($prefs['comments_archive'] == 'y' && isset($_REQUEST['archive_x']) ) {
+		foreach ($checked as $id) {
+			$commentslib->archive_thread($id);
 		}
-		// Reject comment(s)
-		if ($prefs['feature_comments_moderation'] == 'y' && $_REQUEST['action'] === 'reject') {
-			foreach ($checked as $id) {
-				$commentslib->approve_comment($id, 'r');
-				$rejected[$id] = true;
-			}
-			$smarty->assign_by_ref('rejected', $rejected);
-		}
-		// Archive comment(s)
-		if ($prefs['comments_archive'] == 'y' && $_REQUEST['action'] === 'archive') {
-			foreach ($checked as $id) {
-				$commentslib->archive_thread($id);
-			}
-		}
-		// Unarchive comment(s)
-		if ($prefs['comments_archive'] == 'y' && $_REQUEST['action'] === 'unarchive') {
-			foreach ($checked as $id) {
-				$commentslib->unarchive_thread($id);
-			}
+	}
+
+	// Unarchive comment(s)
+	if ($prefs['comments_archive'] == 'y' && isset($_REQUEST['unarchive_x']) ) {
+		foreach ($checked as $id) {
+			$commentslib->unarchive_thread($id);
 		}
 	}
 

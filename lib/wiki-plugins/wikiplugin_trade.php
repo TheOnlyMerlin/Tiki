@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -12,18 +12,16 @@ function wikiplugin_trade_info()
 	return array(
 		'name' => tra('Trade'),
 		'documentation' => 'PluginTrade',
-		'description' => tra('Send payments between members using cclite'),
+		'description' => tra('Send or receive payments from one member to another. (for cclite only so far, experimental)'),
 		'validate' => 'all',
 		'prefs' => array( 'wikiplugin_trade', 'payment_feature' ),
-		'iconname' => 'money',
-		'introduced' => 6,
+		'icon' => 'img/icons/money.png',
 		'tags' => array( 'experimental' ),
 		'params' => array(
 			'price' => array(
 				'required' => true,
 				'name' => tra('Price'),
 				'description' => tr('Currency depends on the selected registry.'),
-				'since' => '6.0',
 				'filter' => 'text',
 				'default' => '',
 			),
@@ -31,7 +29,6 @@ function wikiplugin_trade_info()
 				'required' => false,
 				'name' => tra('Registry'),
 				'description' => tr('Registry to trade in. Default: site preference (or first in list when more than one)'),
-				'since' => '6.0',
 				'filter' => 'text',
 				'default' => '',
 			),
@@ -39,25 +36,20 @@ function wikiplugin_trade_info()
 				'required' => false,
 				'name' => tra('Currency'),
 				'description' => tr('Currency to trade in. Default: Cclite currency preference for registry set above'),
-				'since' => '6.0',
 				'filter' => 'text',
 				'default' => '',
 			),
 			'other_user' => array(
 				'required' => false,
 				'name' => tra('Other User'),
-				'description' => tra('Name of the user to receive or send the payment.') . ' '
-					. tra('Leave empty to display an input box.'),
-				'since' => '6.0',
+				'description' => tra('Name of the user to recieve or send the payment.') . ' ' . tra('Leave empty to display an input box.'),
 				'filter' => 'username',
 				'default' => '',
 			),
 			'wanted' => array(
 				'required' => false,
 				'name' => tra('Mode'),
-				'description' => tr('Offered or wanted item.') . ' ' . tr('Default') . ':' . tr('%0Offered%1', '<code>',
-						'</code>'),
-				'since' => '6.0',
+				'description' => tr('Offered or wanted item.') . ' ' . tr('Default') . ':' . tra('Offered'),
 				'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('Offered'), 'value' => 'n'), 
@@ -69,21 +61,15 @@ function wikiplugin_trade_info()
 			'action' => array(
 				'required' => false,
 				'name' => tra('Button Label'),
-				'description' => tr('Default') . ':' . tr('%0Continue%1', '<code>', '</code>'),
-				'since' => '6.0',
+				'description' => tr('Default') . ':' . tra('Continue'),
 				'filter' => 'text',
 				'default' => tra('Continue'),
 			),
 			'inputtitle' => array(
 				'required' => false,
 				'name' => tra('Input Title'),
-				'description' => tra('Title of the input form.').' '. tr('Use %0 for the amount, %1 for currency,
-					 %2 for your user name, %3 for the other user.', '<code>%0</code>', '<code>%1</code>',
-					'<code>%2</code>', '<code>%3</code>').' '
-					.tra('Supports wiki syntax') . '<br />'. tr('Default') . ':'
-					. tra('"Payment of %0 %1 from user %2 to %3" for offered items, "Request payment of %0 %1 to user
-					%2 from %3" for wanted'),
-				'since' => '6.0',
+				'description' => tra('Title of the input form.').' '. tra('Use %0 for the amount, %1 for currency, %2 for your user name, %3 for the other user.').' '.tra('Supports wiki syntax') . '<br />'.
+									tr('Default') . ':' . tra('"Payment of %0 %1 from user %2 to %3" for offered items, "Request payment of %0 %1 to user %2 from %3" for wanted'),
 				'filter' => 'text',
 				'default' => '',
 			),
@@ -93,12 +79,9 @@ function wikiplugin_trade_info()
 
 function wikiplugin_trade( $data, $params, $offset )
 {
-	global $prefs, $user;
-	$userlib = TikiLib::lib('user');
-	$smarty = TikiLib::lib('smarty');
-	$headerlib = TikiLib::lib('header');
-	$paymentlib = TikiLib::lib('payment');
+	global $smarty, $userlib, $prefs, $user, $headerlib;
 	global $cclitelib; require_once 'lib/payment/cclitelib.php';
+	global $paymentlib; require_once 'lib/payment/paymentlib.php';
 	static $iPluginTrade = 0;
 
 	$default = array( 'inputtitle'=>'', 'wanted' => 'n', 'action' => tra('Continue'), 'registry' => '', 'currency' => '' );

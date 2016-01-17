@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -12,40 +12,31 @@ function wikiplugin_jabber_info()
 		'documentation' => 'PluginJabber',
 		'description' => tra('Chat using Jabber'),
 		'prefs' => array( 'wikiplugin_jabber' ),
-		'iconname' => 'comments',
-		'introduced' => 1,
+		'icon' => 'img/icons/comments.png',
 		'params' => array(
 			'height' => array(
 				'required' => false,
 				'name' => tra('Height'),
 				'description' => tra('Applet height in pixels'),
-				'since' => '1',
 				'default' => 200,
-				'filter' => 'digits',
 			),
 			'width' => array(
 				'required' => false,
 				'name' => tra('Width'),
 				'description' => tra('Applet width in pixels'),
-				'since' => '1',
 				'default' => 200,
-				'filter' => 'digits',
 			),
 			'xmlhostname' => array(
 				'required' => false,
 				'name' => tra('XML Host Name'),
-				'description' => tr('Web site where XML is hosted. Default is %0jabber.org%1', '<code>', '<code>'),
-				'since' => '1',
+				'description' => tra('Web site where XML is hosted. Default is jabber.org'),
 				'default' => 'jabber.org',
-				'filter' => 'url',
 			),
 			'defaultColor' => array(
 				'required' => false,
 				'name' => tra('Default Color'),
-				'description' => tr('Set default color. Default is %0255,255,255%1', '<code>', '<code>'),
-				'since' => '1',
+				'description' => tra('Set default color. Default is 255,255,255'),
 				'default' => '255,255,255',
-				'filter' => 'text',
 			),
 		),
 	);
@@ -53,7 +44,7 @@ function wikiplugin_jabber_info()
 
 function wikiplugin_jabber($data,$params)
 {
-  $userlib = TikiLib::lib('user');
+  global $userlib;
   global $user;
   extract($params, EXTR_SKIP);
 

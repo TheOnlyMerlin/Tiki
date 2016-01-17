@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -12,17 +12,14 @@ function wikiplugin_versions_info()
 		'documentation' => 'PluginVersions',
 		'description' => tra('Create tabs for showing alternate versions of content'),
 		'prefs' => array( 'wikiplugin_versions' ),
-		'body' => tra('Block of text separated by ---(version x)--- markers. Text before the first marker is used by
-			default.'),
-		'iconname' => 'copy',
-		'introduced' => 1,
-		'tags' => array( 'basic' ),
+		'body' => tra('Block of text separated by ---(version x)--- markers. Text before the first marker is used by default.'),
+		'icon' => 'img/icons/tab_edit.png',
+		'tags' => array( 'basic' ),	
 		'params' => array(
 			'nav' => array(
 				'required' => false,
 				'name' => tra('Navigation'),
-				'description' => tra('Display a navigation box that allows users to select a specific version to display.'),
-				'since' => '1',
+				'description' => tra('Displays a navigation box that allows users to select a specific version to display.'),
 				'default' => 'n',
 				'filter' => 'alpha',
 				'options' => array(
@@ -34,9 +31,7 @@ function wikiplugin_versions_info()
 			'title' => array(
 				'required' => false,
 				'name' => tra('Title'),
-				'description' => tr('Display the current version name as the title. No title shows when %0nav="y"%1;
-					otherwise shows by default.', '<code>', '</code>'),
-				'since' => '1',
+				'description' => tra('Display the current version name as the title. No title shows when nav=>y; otherwise shows by default.'),
 				'default' => 'y',
 				'filter' => 'alpha',
 				'parent' => array('name' => 'nav', 'value' => 'n'),
@@ -49,9 +44,7 @@ function wikiplugin_versions_info()
 			'default' => array(
 				'required' => false,
 				'name' => tra('Default Label'),
-				'description' => tra('Specifies version label to show when displaying the page for the first time.
-					Default label is \'Default\''),
-				'since' => '1',
+				'description' => tra('Specifies version label to show when displaying the page for the first time. Default label is \'Default\''),
 				'default' => tra('Default'),
 			),
 		),

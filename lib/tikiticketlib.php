@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -29,18 +29,17 @@ function ask_ticket($area)
 // Deprecated in favor of key_check($area)
 function check_ticket($area)
 {
-	if (!isset($_SESSION['antisurf'])) {
+	if (!isset($_SESSION['antisurf']))
 		$_SESSION['antisurf'] = '';
-	}
+
 	if ($_SESSION['antisurf'] != $area) {
-		global $prefs;
+		global $smarty, $prefs;
 		$_SESSION['antisurf'] = $area;
 		if ($prefs['feature_ticketlib'] == 'y') {
-			$smarty = TikiLib::lib('smarty');
 			$smarty->assign('post', $_POST);
 			$smarty->assign('query', $_SERVER['QUERY_STRING']);
 			$smarty->assign('self', $_SERVER['PHP_SELF']);
-			$smarty->assign('msg', tra('Possible cross-site request forgery (CSRF, or "sea surfing") detected. Operation blocked.'));
+			$smarty->assign('msg', tra('Sea Surfing (CSRF) detected. Operation blocked.'));
 			$smarty->display('error_ticket.tpl');
 			die;
 		}
@@ -78,7 +77,7 @@ function key_get($area = null, $confirmation_text = '', $confirmaction = '',  $r
 			$smarty->display('tiki.tpl');
 			die();
 		} else {
-			return ['ticket' => $ticket];
+			return array('ticket' => $ticket);
 		}
 	}
 }
@@ -100,7 +99,7 @@ function key_check($area = null, $returnHtml = true)
 		}
 		if ($returnHtml) {
 			$smarty = TikiLib::lib('smarty');
-			$smarty->assign('msg', tra('Possible cross-site request forgery (CSRF, or "sea surfing") detected. Operation blocked.'));
+			$smarty->assign('msg', tra('Sea Surfing (CSRF) detected. Operation blocked.'));
 			$smarty->display('error.tpl');
 			exit();
 		} else {

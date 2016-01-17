@@ -21,9 +21,7 @@
 		{/if}
 	</table>
 {else}
-	<ul class="all_languages">
-		{foreach item=body from=$content}
-			<li>{$body}</li>
-		{/foreach}
-	</ul>
+	{foreach item=body from=$content}
+		{$body}
+	{/foreach}
 {/if}

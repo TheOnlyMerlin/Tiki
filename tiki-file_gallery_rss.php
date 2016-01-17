@@ -1,15 +1,13 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 require_once ('tiki-setup.php');
-$rsslib = TikiLib::lib('rss');
+require_once ('lib/tikilib.php');
+require_once ('lib/rss/rsslib.php');
 
 if ($prefs['feed_file_gallery'] != 'y') {
         $errmsg=tra("rss feed disabled");
@@ -49,7 +47,7 @@ if ($output["data"]=="EMPTY") {
 		$desc .= $tmp['description'];
 	} else {
 		$title = (!empty($prefs['feed_file_galleries_title'])) ? $prefs['feed_file_galleries_title'] : tra("Tiki RSS feed for file galleries");
-		$desc = (!empty($prefs['feed_file_galleries_desc'])) ? $prefs['feed_file_galleries_desc'] : tra("Latest files uploaded to the file galleries.");
+		$desc = (!empty($prefs['feed_file_galleries_desc'])) ? $prefs['feed_file_galleries_desc'] : tra("Last files uploaded to the file galleries.");
 	}
 	$descId = "description";
 	$dateId = "lastModif";

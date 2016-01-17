@@ -1,8 +1,5 @@
 <?php
-/**
- * @package tikiwiki
- */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2012 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -22,21 +19,13 @@ $timeout_inc = 1000;
 $lasttimeout = (int)$_REQUEST['lasttimeout'];
 if ($lasttimeout < $timeout_min) $lasttimeout = $timeout_min;
 $chans = explode(',', $_REQUEST['chans']);
-/**
- * @param $channel
- * @return string
- */
-function escapechannel($channel)
+function escapechannel($channel) 
 {
 	$channel = preg_replace('/[^a-zA-Z0-9\-\_]/i', '', $channel);
 	$channel = substr($channel, 0, 30);
 	return '#' . $channel;
 }
-
-/**
- * @param $chans
- */
-function initchannelssession($chans)
+function initchannelssession($chans) 
 {
 	$_SESSION['minichat_channels'] = array();
 	foreach ($chans as $chan) {
@@ -110,30 +99,8 @@ foreach ($chans as $chan) {
 				$lastid = $row['id'];
 				echo "minichat_updatelastid('$channel', $lastid);\n";
 			}
-            # if timestamp corresponds to previous days than current, show date with display_order according to the global preference
-            # daytmes = day from the time stamp of the message; daytnow = current day;
-            $daytmes = date("d/m/y", $row['ts']);
-            $daytnow = date("d/m/y");
-            if ($daytmes == $daytnow) {
-                $t = date("H:i", $row['ts']);
-            } else {
-                if ($prefs['display_field_order'] == 'DMY') {
-                    $t = date("d/m/y H:i", $row['ts']);
-                } elseif ($prefs['display_field_order'] == 'DYM') {
-                    $t = date("d/y/m H:i", $row['ts']);
-                } elseif ($prefs['display_field_order'] == 'MDY') {
-                    $t = date("m/d/y H:i", $row['ts']);
-                } elseif ($prefs['display_field_order'] == 'MYD') {
-                    $t = date("m/y/d H:i", $row['ts']);
-                } elseif ($prefs['display_field_order'] == 'YDM') {
-                    $t = date("y/d/m H:i", $row['ts']);
-                } elseif ($prefs['display_field_order'] == 'YMD') {
-                    $t = date("y/m/d H:i", $row['ts']);
-                } else {
-                    $t = date("H:i", $row['ts']);
-                }
-            }
-            $msgtotal = "<span class='minichat_ts'>[$t]</span><span class='minichat_nick'>&lt;" . ($row['nick'] === null ? '' : $row['nick']) . "&gt;</span><span class='minichat_msg'>" . htmlentities($row['msg'], ENT_QUOTES, 'UTF-8') . "</span><br>" . $msgtotal;
+			$t = date("H:i", $row['ts']);
+			$msgtotal = "<span class='minichat_ts'>[$t]</span><span class='minichat_nick'>&lt;" . ($row['nick'] === null ? '' : $row['nick']) . "&gt;</span><span class='minichat_msg'>" . htmlentities($row['msg'], ENT_QUOTES, 'UTF-8') . "</span><br>" . $msgtotal;
 		}
 		$msgtotal = str_replace(":-D", "<img border='0' src='img/smiles/icon_biggrin.gif' width='15' height='15'>", $msgtotal);
 		$msgtotal = str_replace(":D", "<img border='0' src='img/smiles/icon_biggrin.gif' width='15' height='15'>", $msgtotal);
