@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -23,24 +23,17 @@ function prefs_sitelogo_list()
 			'tags' => array('basic'),
 		),
 		'sitelogo_title' => array(
-			'name' => tra('Logo title (on mouseover)'),
+			'name' => tra('Logo title (on mouse over)'),
 			'type' => 'text',
 			'size' => '50',
 			'default' => 'Tiki powered site',
 			'tags' => array('basic'),
 		),
 		'sitelogo_alt' => array(
-			'name' => tra('HTML "alt" tag description (for text browsers, screen readers, etc.)'),
+			'name' => tra('Alt. description (e.g. for text browsers)'),
 			'type' => 'text',
 			'size' => '50',
 			'default' => 'Site Logo',
-			'tags' => array('basic'),
-		),
-		'sitelogo_icon' => array(
-			'name' => tra('Site icon'),
-			'hint' => tra('Recommended image height: 32 pixel'),
-			'type' => 'text',
-			'default' => 'img/tiki/tikilogo_icon.png',
 			'tags' => array('basic'),
 		),
 	);	

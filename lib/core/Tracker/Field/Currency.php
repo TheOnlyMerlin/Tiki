@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,14 +11,14 @@
  * Letter key: ~b~
  *
  */
-class Tracker_Field_Currency extends Tracker_Field_Abstract implements Tracker_Field_Synchronizable, Tracker_Field_Exportable
+class Tracker_Field_Currency extends Tracker_Field_Abstract implements Tracker_Field_Synchronizable
 {
 	public static function getTypes()
 	{
 		return array(
 			'b' => array(
 				'name' => tr('Currency Field'),
-				'description' => tr('Provides a one-line field for numeric input only. Prepended or appended values may be alphanumeric.'),
+				'description' => tr('Provides a one-line field for numeric input only. Prepend or append values may be alphanumeric.'),
 				'help' => 'Currency Amount Tracker Field',
 				'prefs' => array('trackerfield_currency'),
 				'tags' => array('basic'),
@@ -38,14 +38,14 @@ class Tracker_Field_Currency extends Tracker_Field_Abstract implements Tracker_F
 					),
 					'size' => array(
 						'name' => tr('Display Size'),
-						'description' => tr('Visible size of the field, in characters. Does not affect the numeric length.'),
+						'description' => tr('Visible size of the field in characters. Does not affect the numeric length.'),
 						'filter' => 'int',
 						'default' => 7,
 						'legacy_index' => 1,
 					),
 					'prepend' => array(
 						'name' => tr('Prepend'),
-						'description' => tr('Text to be displayed in front of the currency amount.'),
+						'description' => tr('Text to be displayed prior to the currency amount.'),
 						'filter' => 'text',
 						'default' => '',
 						'legacy_index' => 2,
@@ -133,24 +133,5 @@ class Tracker_Field_Currency extends Tracker_Field_Abstract implements Tracker_F
 	{
 		return $info;
 	}
-
-	function getTabularSchema()
-	{
-		$schema = new Tracker\Tabular\Schema($this->getTrackerDefinition());
-
-		$permName = $this->getConfiguration('permName');
-		$schema->addNew($permName, 'default')
-			->setLabel($this->getConfiguration('name'))
-			->setRenderTransform(function ($value) {
-				return $value;
-			})
-			->setParseIntoTransform(function (& $info, $value) use ($permName) {
-				$info['fields'][$permName] = $value;
-			})
-			;
-
-		return $schema;
-	}
-
 }
 

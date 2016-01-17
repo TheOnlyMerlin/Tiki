@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -51,15 +51,9 @@ class Search_Action_EmailAction implements Search_Action_Action
 			$subject = $this->parse($data->subject->text());
 
 			$mail->setSubject(strip_tags($subject));
+			$mail->setBodyHtml($content);
 
-			$bodyPart = new \Zend\Mime\Message();
-			$bodyMessage = new \Zend\Mime\Part($content);
-			$bodyMessage->type = \Zend\Mime\Mime::TYPE_HTML;
-			$bodyPart->setParts(array($bodyMessage));
-
-			$mail->setBody($bodyPart);
-
-			tiki_send_email($mail);
+			$mail->send();
 
 			return true;
 		} catch (Exception $e) {

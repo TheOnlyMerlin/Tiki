@@ -9,3 +9,4 @@
 
 {tr}Body:{/tr}
 {$mail_body}
+            

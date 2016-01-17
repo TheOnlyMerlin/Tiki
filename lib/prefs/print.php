@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,7 +10,7 @@ function prefs_print_list()
 	return array(
 		'print_pdf_from_url' => array(
 			'name' => tra('PDF from URL'),
-			'description' => tra('Using external tools, generate PDF documents from URLs.'),
+			'description' => tra('Using extenal tools, generate PDF document from web URLs.'),
 			'type' => 'list',
 			'options' => array(
 				'none' => tra('Disabled'),
@@ -22,10 +22,9 @@ function prefs_print_list()
 		),
 		'print_pdf_webservice_url' => array(
 			'name' => tra('Webservice URL'),
-			'description' => tra('URL to a service that takes a URL as the query string and returns a PDF document.'),
+			'description' => tra('URL to a service taking a URL as the query string and returns a PDF document.'),
 			'type' => 'text',
 			'size' => 50,
-			'dependencies' => array('auth_token_access'),
 			'default' => '',
 		),
 		'print_pdf_webkit_path' => array(
@@ -34,7 +33,6 @@ function prefs_print_list()
 			'type' => 'text',
 			'size' => 50,
 			'help' => 'wkhtmltopdf',
-			'dependencies' => array('auth_token_access'),
 			'default' => '',
 		),
 		'print_pdf_weasyprint_path' => array(

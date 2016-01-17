@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -19,9 +19,9 @@ class Tiki_Profile_Transport_File implements Tiki_Profile_Transport_Interface
 		$fullpath = $this->path . '/' . $pageName . '.wiki';
 		if (file_exists($fullpath)) {
 			return file_get_contents($fullpath);
-		} else {
-			return ''; // assume empty if file not found to prevent unexpected errors
 		}
+
+		return null;
 	}
 
 	function getPageParsed($pageName)
@@ -30,8 +30,6 @@ class Tiki_Profile_Transport_File implements Tiki_Profile_Transport_Interface
 
 		if ($content) {
 			return TikiLib::lib('parser')->parse_data($content);
-		} else {
-			return ''; // assume empty if file not found to prevent unexpected errors
 		}
 	}
 }

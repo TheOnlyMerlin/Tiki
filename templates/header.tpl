@@ -10,7 +10,7 @@
 <meta name="generator" content="Tiki Wiki CMS Groupware - http://tiki.org">
 
 {* --- Canonical URL --- *}
-{include file="canonical.tpl"}
+{include file="canonical.tpl"}	
 
 {if !empty($forum_info.name) & $prefs.metatag_threadtitle eq 'y'}
 	<meta name="keywords" content="{tr}Forum{/tr} {$forum_info.name|escape} {$thread_info.title|escape} {if $prefs.feature_freetags eq 'y'}{foreach from=$freetags.data item=taginfo}{$taginfo.tag|escape} {/foreach}{/if}">
@@ -27,12 +27,12 @@
 	<meta name="description" content="Blog listing">
 	{elseif empty($postId)}
 	<meta name="description" content="{$blog_data.title|escape}">
-	{else}
+	{else} 
 	<meta name="description" content="{$post_info.title|escape} - {$blog_data.title|escape}">
 	{/if}
-{elseif $prefs.metatag_pagedesc eq 'y' and not empty($description)}
+{elseif $prefs.metatag_pagedesc eq 'y' and $description ne ''}
 	<meta name="description" content="{$description|escape}">
-{elseif $prefs.metatag_description ne '' or empty($description)}
+{elseif $prefs.metatag_description ne '' or (isset($description) and $description eq '')}
 	<meta name="description" content="{$prefs.metatag_description|escape}">
 {/if}
 {if $prefs.metatag_geoposition neq ''}
@@ -45,13 +45,13 @@
 	<meta name="geo.placename" content="{$prefs.metatag_geoplacename|escape}">
 {/if}
 {if (isset($prefs.metatag_robots) and $prefs.metatag_robots neq '') and (!isset($metatag_robots) or $metatag_robots eq '')}
-	<meta name="robots" content="{$prefs.metatag_robots|escape}">
+        <meta name="robots" content="{$prefs.metatag_robots|escape}">
 {/if}
 {if (!isset($prefs.metatag_robots) or $prefs.metatag_robots eq '') and (isset($metatag_robots) and $metatag_robots neq '')}
-	<meta name="robots" content="{$metatag_robots|escape}">
+        <meta name="robots" content="{$metatag_robots|escape}">
 {/if}
 {if (isset($prefs.metatag_robots) and $prefs.metatag_robots neq '') and (isset($metatag_robots) and $metatag_robots neq '')}
-	<meta name="robots" content="{$prefs.metatag_robots|escape}, {$metatag_robots|escape}">
+        <meta name="robots" content="{$prefs.metatag_robots|escape}, {$metatag_robots|escape}">
 {/if}
 {if $prefs.metatag_revisitafter neq ''}
 	<meta name="revisit-after" content="{$prefs.metatag_revisitafter|escape}">
@@ -75,8 +75,8 @@
 	{if isset($structure) and $structure eq 'y'} {* get the alias name if item is a wiki page and it is in a structure *}
 		{section loop=$structure_path name=ix}
 		{assign var="aliasname" value={$structure_path[ix].page_alias}}
-		{/section}
-	{/if}
+		{/section} 	
+	{/if}	
 	{if !empty($page_description_title)}
 		{$page_description_title}
 	{else}
@@ -85,7 +85,7 @@
 		{elseif !empty($title) and !is_array($title)}
 			{$title|escape}
 		{elseif !empty($aliasname)}
-			{$aliasname|escape}
+			{$aliasname|escape}			
 		{elseif !empty($page)}
 			{$page|escape}
 		{elseif !empty($description)}{$description|escape}
@@ -152,8 +152,8 @@
 {if $prefs.feature_trackers eq 'y' and $prefs.feed_tracker eq 'y'}
 	{foreach from=$rsslist_trackers item="tracker"}
 		<link rel="alternate" type="application/rss+xml"
-			title='{$prefs.feed_tracker_title|cat:" - "|cat:$tracker.name|escape|default:"{tr}RSS Tracker{/tr}"}'
-			href="tiki-tracker_rss.php?ver={$prefs.feed_default_version|escape:'url'}&trackerId={$tracker.trackerId}">
+			  title='{$prefs.feed_tracker_title|cat:" - "|cat:$tracker.name|escape|default:"{tr}RSS Tracker{/tr}"}'
+			  href="tiki-tracker_rss.php?ver={$prefs.feed_default_version|escape:'url'}&trackerId={$tracker.trackerId}">
 	{/foreach}
 {/if}
 
@@ -170,7 +170,7 @@
 {/if}
 
 <!--[if lt IE 9]>{* according to http://remysharp.com/2009/01/07/html5-enabling-script/ *}
-	<script src="vendor/afarkas/html5shiv/dist/html5shiv.min.js" type="text/javascript"></script>
+	<script src="vendor/aFarkas/html5shiv/dist/html5shiv.js" type="text/javascript"></script>
 <![endif]-->
 
 {if $headerlib}		{$headerlib->output_headers()}{/if}

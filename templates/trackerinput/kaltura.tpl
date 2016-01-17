@@ -20,14 +20,13 @@
 {jq}
 $('.add-kaltura-media').click(function () {
 	var link = this;
-	$("#bootstrap-modal").hide();
+
 	$(this).serviceDialog({
 		title: $(link).text(),
 		width: 710,
 		height: 450,
 		hideButtons: true,
 		success: function (data) {
-			$("#bootstrap-modal").show();
 			$.each(data.entries, function (k, entry) {
 				var hidden = $('<input type="hidden">')
 					.attr('name', $(link).data('target-name'))
@@ -39,9 +38,6 @@ $('.add-kaltura-media').click(function () {
 			$(link).parent().append($('<span class="highlight"/>')
 				.text('+' + $(this).parent().find('input').size()));
 
-		},
-		close: function () {
-			$("#bootstrap-modal").show();
 		}
 	});
 	return false;

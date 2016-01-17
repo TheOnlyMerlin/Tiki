@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -43,7 +43,7 @@ class Tracker_Field_GroupSelector extends Tracker_Field_Abstract
 					),
 					'assign' => array(
 						'name' => tr('Assign to the group'),
-						'description' => tr('For no auto-assigned field, the user (user selector if it exists, or user) will be assigned to the group and it will be his or her default group. The group must have the user choice setting activated.'),
+						'description' => tr('For no autoaassigned field, the user (user selector if exsits or user) will be assigned to the group and it will be his default group. The group must have the user choice setting on.'),
 						'filter' => 'int',
 						'options' => array(
 							0 => tr('None'),

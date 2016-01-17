@@ -2,10 +2,10 @@
 {title help="Image+Galleries" admpage="gal"}{tr}Galleries{/tr}{/title}
 {if $tiki_p_create_galleries eq 'y'}
 	{if $edit_mode ne 'y' or $galleryId ne 0}
-		<div class="t_navbar">
-			{button href="?edit_mode=1&amp;galleryId=0" class="btn btn-default" _icon_name="create" _text="{tr}Create New Gallery{/tr}"}
+		<div class="navbar">
+			{button href="?edit_mode=1&amp;galleryId=0" _text="{tr}Create New Gallery{/tr}"}
 			{if $galleryId ne 0}
-				{button href="tiki-browse_gallery.php?galleryId=$galleryId" class="btn btn-default" _icon_name="view" _text="{tr}Browse Gallery{/tr}"}
+				{button href="tiki-browse_gallery.php?galleryId=$galleryId" _text="{tr}Browse Gallery{/tr}"}
 			{/if}
 		</div>
 	{/if}
@@ -17,20 +17,20 @@
 			<h2>{tr}Edit this gallery:{/tr} {$name}</h2>
 		{/if}
 		{if $category_needed eq 'y'}
-			{remarksbox type='Warning' title="{tr}Warning{/tr}"}
-				<div class="highlight"><em class='mandatory_note'>{tr}A category is mandatory{/tr}</em></div>
-			{/remarksbox}
+		  {remarksbox type='Warning' title="{tr}Warning{/tr}"}
+			  <div class="highlight"><em class='mandatory_note'>{tr}A category is mandatory{/tr}</em></div>
+		  {/remarksbox}
 		{/if}
 
 		<div{* style="text-align: center"*}>
 			{if $individual eq 'y'}
-				{permission_link mode=link type="image gallery" permType="image galleries" id=$galleryId title=$name label="{tr}There are individual permissions set for this gallery{/tr}"}
+				<a class="gallink" href="tiki-objectpermissions.php?objectName={$name|escape:"url"}&amp;objectType=image+gallery&amp;permType=image+galleries&amp;objectId={$galleryId}">{tr}There are individual permissions set for this gallery{/tr}</a>
 			{/if}
-			<form action="tiki-galleries.php" method="post" id="gal-edit-form" class="form-horizontal">
+			<form action="tiki-galleries.php" method="post" id="gal-edit-form">
 				<input type="hidden" name="galleryId" value="{$galleryId|escape}">
 				<table class="formcolor">
 					<tr><td>{tr}Name:{/tr}</td><td><input type="text" name="name" value="{$name|escape}"></td></tr>
-					<tr><td>{tr}Description:{/tr}</td><td><textarea rows="20" cols="80" name="description" id="gal-desc">{$description|escape}</textarea></td></tr>
+					<tr><td>{tr}Description:{/tr}</td><td><textarea   rows="20" cols="80" name="description" id="gal-desc">{$description|escape}</textarea></td></tr>
 					{if $tiki_p_admin_galleries eq 'y'}
 						<tr><td>{tr}Gallery is visible to non-admin users?{/tr}</td><td><input type="checkbox" name="visible" {if $visible eq 'y'}checked="checked"{/if}></td></tr>
 						{* If a user can create a gallery, but doesn't have tiki_p_admin_galleries the new gallery needs to be visible. *}
@@ -122,13 +122,13 @@
 						<tr>
 							<td>{tr}Available scales:{/tr}</td>
 							<td>
-								{tr}Global default{/tr} {$prefs.scaleSizeGalleries}x{$prefs.scaleSizeGalleries} ({tr}Bounding box{/tr})
+								{tr}Global default{/tr} {$prefs.scaleSizeGalleries}x{$prefs.scaleSizeGalleries} ({tr}Bounding box{/tr}) 
 								<input type="radio" name="defaultscale" value="{$prefs.scaleSizeGalleries}" {if $defaultscale==$prefs.scaleSizeGalleries}checked="checked"{/if}>
 								{tr}default scale{/tr}<br>
-								{section name=scales loop=$scaleinfo}
+								{section  name=scales loop=$scaleinfo}
 									{if $scaleinfo[scales].scale ne $prefs.scaleSizeGalleries}
 										{tr}Remove:{/tr}<input type="checkbox" name="removescale_{$scaleinfo[scales].scale|escape}">
-										{$scaleinfo[scales].scale}x{$scaleinfo[scales].scale} ({tr}Bounding box{/tr})
+										{$scaleinfo[scales].scale}x{$scaleinfo[scales].scale} ({tr}Bounding box{/tr}) 
 										<input type="radio" name="defaultscale" value="{$scaleinfo[scales].scale}" {if $defaultscale==$scaleinfo[scales].scale}checked="checked"{/if}>
 										{tr}default scale{/tr}<br>
 									{/if}
@@ -144,7 +144,7 @@
 					{include file='categorize.tpl'}
 					{include file='freetag.tpl'}
 					<tr><td>{tr}Other users can upload images to this gallery:{/tr}</td><td><input type="checkbox" name="public" {if $public eq 'y'}checked="checked"{/if}></td></tr>
-					<tr><td>&nbsp;</td><td><input type="submit" class="btn btn-default btn-sm" value="{tr}Save{/tr}" name="edit"></td></tr>
+					<tr><td>&nbsp;</td><td><input type="submit" class="btn btn-default" value="{tr}Save{/tr}" name="edit"></td></tr>
 				</table>
 			</form>
 		</div>
@@ -159,46 +159,30 @@
 	{/if}
 {/if}
 {if $tiki_p_create_galleries eq 'y' && $galleryId ne 0}
-	<div class="t_navbar"><a href="tiki-galleries.php?edit_mode=1&amp;galleryId=0" class="btn btn-default">{tr}Create New Gallery{/tr}</a></div>
+	<div class="navbar"><a href="tiki-galleries.php?edit_mode=1&amp;galleryId=0">{tr}Create New Gallery{/tr}</a></div>
 {/if}
 <h2>{tr}Available Galleries{/tr}</h2>
 <div align="center">
 	{if $galleries or ($find ne '')}
 		{include file='find.tpl'}
-		<div class="form-group">
+		<div>
 			<form action="tiki-galleries.php" method="get">
-				<div class="input-group col-sm-4">
-					<select name="filter" class="form-control">
-						<option value="">{tr}Choose a filter{/tr}</option>
-						<option value="topgal"{if $filter eq 'topgal'} selected="selected"{/if}>{tr}Top{/tr}</option>
-						<option value="parentgal"{if $filter eq 'parentgal'} selected="selected"{/if}>{tr}Parent gallery{/tr}</option>
-						{*foreach key=fid item=field from=$listfields}
-							{if $field.isSearchable eq 'y' and $field.type ne 'f' and $field.type ne 'j' and $field.type ne 'i'}
-								<option value="{$fid}"{if $fid eq $filterfield} selected="selected"{/if}>{$field.name|truncate:65:"..."}</option>
-							{/if}
-						{/foreach*}
-					</select>
-					<span class="input-group-btn">
-					<input type="submit" class="btn btn-default" value="{tr}Filter{/tr}">
-					</span>
-				</div>
+				<select name="filter">
+					<option value="">{tr}Choose a filter{/tr}</option>
+					<option value="topgal"{if $filter eq 'topgal'} selected="selected"{/if}>{tr}Top{/tr}</option>
+					<option value="parentgal"{if $filter eq 'parentgal'} selected="selected"{/if}>{tr}Parent gallery{/tr}</option>
+					{*foreach key=fid item=field from=$listfields}
+						{if $field.isSearchable eq 'y' and $field.type ne 'f' and $field.type ne 'j' and $field.type ne 'i'}
+							<option value="{$fid}"{if $fid eq $filterfield} selected="selected"{/if}>{$field.name|truncate:65:"..."}</option>
+						{/if}
+					{/foreach*}
+				</select>
+				<input type="submit" class="btn btn-default" value="{tr}Filter{/tr}">
 			</form>
 		</div>
 	{/if}
-
-	{* Use css menus as fallback for item dropdown action menu if javascript is not being used *}
-	{if $prefs.javascript_enabled !== 'y'}
-		{$js = 'n'}
-		{$libeg = '<li>'}
-		{$liend = '</li>'}
-	{else}
-		{$js = 'y'}
-		{$libeg = ''}
-		{$liend = ''}
-	{/if}
-
-	<div class="{if $js === 'y'}table-responsive{/if}"> {*the table-responsive class cuts off dropdown menus *}
-	<table class="table table-hover table-striped">
+	<br  />
+	<table class="table normal">
 		<tr>
 			{if $prefs.gal_list_name eq 'y'}
 				<th><a href="tiki-galleries.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'name_desc'}name_asc{else}name_desc{/if}">{tr}Name{/tr}</a></th>
@@ -240,13 +224,13 @@
 					<a href="tiki-galleries.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'hits_desc'}hits_asc{else}hits_desc{/if}">{tr}Visits{/tr}</a>
 				</th>
 			{/if}
-			<th></th>
+			<th>{tr}Actions{/tr}</th>
 		</tr>
-
+		{cycle values="odd,even" print=false}
 		{section name=changes loop=$galleries}
 			{if ($filter eq 'topgal' and $galleries[changes].parentgallery eq -1) or ($filter eq 'parentgal' and $galleries[changes].parentgal eq 'y') or ($filter eq '')}
 				{if $galleries[changes].visible eq 'y' or $tiki_p_admin_galleries eq 'y'}
-					<tr>
+					<tr class="{cycle}">
 						{if $prefs.gal_list_name eq 'y'}
 							<td><a class="galname" href="{$galleries[changes].galleryId|sefurl:gallery}">{$galleries[changes].name}</a></td>
 						{/if}
@@ -271,64 +255,41 @@
 							<td>{$galleries[changes].user|userlink}</td>
 						{/if}
 						{if $prefs.gal_list_imgs eq 'y'}
-							<td style="text-align:right"><span class="badge">{$galleries[changes].images}</span></td>
+							<td style="text-align:right;">{$galleries[changes].images}</td>
 						{/if}
 						{if $prefs.gal_list_visits eq 'y'}
-							<td style="text-align:right;"><span class="badge">{$galleries[changes].hits}</span></td>
+							<td style="text-align:right;">{$galleries[changes].hits}</td>
 						{/if}
 						<td nowrap="nowrap">
-							{capture name=gallery_actions}
-								{strip}
-									{if $tiki_p_admin eq 'y' or $galleries[changes].perms.tiki_p_view_image_gallery eq 'y'}
-										{$libeg}<a href="tiki-list_gallery.php?galleryId={$galleries[changes].galleryId}">
-											{icon name='list' _menu_text='y' _menu_icon='y' alt="{tr}List{/tr}"}
-										</a>{$liend}
-									{/if}
-									{if ($tiki_p_admin eq 'y') or ($galleries[changes].perms.tiki_p_assign_perm_image_gallery eq 'y' )}
-										{$libeg}{permission_link mode=text type="image gallery" permType="image galleries" id=$galleries[changes].galleryId title=$galleries[changes].name}{$liend}
-									{/if}
-									{if $tiki_p_admin_galleries eq 'y' or ($user and $galleries[changes].user eq $user)}
-										{if $tiki_p_admin eq 'y' or $galleries[changes].perms.tiki_p_create_galleries eq 'y'}
-											{$libeg}<a href="tiki-galleries.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;edit_mode=1&amp;galleryId={$galleries[changes].galleryId}">
-												{icon name='edit' _menu_text='y' _menu_icon='y' alt="{tr}Edit{/tr}"}
-											</a>{$liend}
+							{if $tiki_p_admin eq 'y' or $galleries[changes].perms.tiki_p_view_image_gallery eq 'y'}
+								<a class="gallink" href="tiki-list_gallery.php?galleryId={$galleries[changes].galleryId}">{icon _id='table' alt="{tr}List{/tr}"}</a>
+							{/if}
+							{if $tiki_p_admin_galleries eq 'y' or ($user and $galleries[changes].user eq $user)}
+								{if $tiki_p_admin eq 'y' or $galleries[changes].perms.tiki_p_create_galleries eq 'y'}
+									<a class="gallink" title="{tr}Edit{/tr}" href="tiki-galleries.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;edit_mode=1&amp;galleryId={$galleries[changes].galleryId}">{icon _id='page_edit'}</a>
+								{/if}
+							{/if}
+							{if $galleries[changes].perms.tiki_p_upload_images eq 'y'}
+								{if $tiki_p_admin eq 'y' or $galleries[changes].perms.tiki_p_upload_images eq 'y'}
+									{if $tiki_p_admin_galleries eq 'y' or ($user and $galleries[changes].user eq $user) or $galleries[changes].public eq 'y'}
+										<a class="gallink" href="tiki-upload_image.php?galleryId={$galleries[changes].galleryId}">{icon _id='upload'}</a>
+										{if ($galleries[changes].geographic eq 'y')}
+											<a class="gallink" href="tiki-galleries.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;make_map=1&amp;galleryId={$galleries[changes].galleryId}">{icon _id='wrench' alt="{tr}Make Map{/tr}"}</a>
 										{/if}
 									{/if}
-									{if $galleries[changes].perms.tiki_p_upload_images eq 'y'}
-										{if $tiki_p_admin eq 'y' or $galleries[changes].perms.tiki_p_upload_images eq 'y'}
-											{if $tiki_p_admin_galleries eq 'y' or ($user and $galleries[changes].user eq $user) or $galleries[changes].public eq 'y'}
-												{$libeg}<a href="tiki-upload_image.php?galleryId={$galleries[changes].galleryId}">
-													{icon name='export' _menu_text='y' _menu_icon='y' alt="{tr}Upload{/tr}"}
-												</a>{$liend}
-												{if ($galleries[changes].geographic eq 'y')}
-													{$libeg}<a href="tiki-galleries.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;make_map=1&amp;galleryId={$galleries[changes].galleryId}">
-														{icon name='wrench' alt="{tr}Make map{/tr}" _menu_text='y' _menu_icon='y' }
-													</a>{$liend}
-												{/if}
-											{/if}
-										{/if}
-									{/if}
-									{if $tiki_p_admin_galleries eq 'y' or ($user and $galleries[changes].user eq $user)}
-										{if ($tiki_p_admin eq 'y') or ($galleries[changes].perms.has_special_perms eq 'n') or ($galleries[changes].perms.tiki_p_create_galleries eq 'y' )}
-											{$libeg}<a href="tiki-galleries.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;removegal={$galleries[changes].galleryId}">
-												{icon name='remove' _menu_text='y' _menu_icon='y' alt="{tr}Delete{/tr}"}
-											</a>{$liend}
-										{/if}
-									{/if}
-								{/strip}
-							{/capture}
-							{if $js === 'n'}<ul class="cssmenu_horiz"><li>{/if}
-							<a
-								class="tips"
-								title="{tr}Actions{/tr}"
-								href="#"
-								{if $js === 'y'}{popup delay="0|2000" fullhtml="1" center=true text=$smarty.capture.gallery_actions|escape:"javascript"|escape:"html"}{/if}
-								style="padding:0; margin:0; border:0"
-							>
-								{icon name='wrench'}
-							</a>
-							{if $js === 'n'}
-								<ul class="dropdown-menu" role="menu">{$smarty.capture.gallery_actions}</ul></li></ul>
+								{/if}
+							{/if}
+							{if ($tiki_p_admin eq 'y') or  ($galleries[changes].perms.tiki_p_assign_perm_image_gallery eq 'y' )}
+								{if $galleries[changes].perms.has_special_perm eq 'y'}
+									<a class="gallink" href="tiki-objectpermissions.php?objectName={$galleries[changes].name|escape:"url"}&amp;objectType=image+gallery&amp;permType=image+galleries&amp;objectId={$galleries[changes].galleryId}">{icon _id='key_active' alt="{tr}Active Perms{/tr}"}</a>
+								{else}
+									<a class="gallink" href="tiki-objectpermissions.php?objectName={$galleries[changes].name|escape:"url"}&amp;objectType=image+gallery&amp;permType=image+galleries&amp;objectId={$galleries[changes].galleryId}">{icon _id='key' alt="{tr}Perms{/tr}"}</a>
+								{/if}
+							{/if}
+							{if $tiki_p_admin_galleries eq 'y' or ($user and $galleries[changes].user eq $user)}
+								{if ($tiki_p_admin eq 'y') or ($galleries[changes].perms.has_special_perms eq 'n') or ($galleries[changes].perms.tiki_p_create_galleries eq 'y' )}
+									&nbsp;&nbsp;<a class="gallink" title="{tr}Delete{/tr}" href="tiki-galleries.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;removegal={$galleries[changes].galleryId}">{icon _id='cross' alt="{tr}Delete{/tr}"}</a>
+								{/if}
 							{/if}
 						</td>
 					</tr>
@@ -338,7 +299,6 @@
 			{norecords _colspan=9}
 		{/section}
 	</table>
-	</div>
 	{if $prefs.feature_maps eq 'y'}{$map_error}{/if}
 	{pagination_links cant=$cant step=$maxRecords offset=$offset}{/pagination_links}
 </div>

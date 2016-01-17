@@ -9,7 +9,7 @@
 			{foreach from=$edit_features.hiddenInput key=f item=v}
 				<input id="{$f|escape}" type="hidden" name="forced~{$f|escape}" value="{$v|escape}"/>
 			{/foreach}
-			<input type="submit" class="btn btn-default btn-sm" name="create" value="{tr}Create{/tr}"/>
+			<input type="submit" class="btn btn-default" name="create" value="{tr}Create{/tr}"/>
 		</div>
 	</form>
 	{jq}
@@ -63,7 +63,7 @@
 			vlayer.events.on({
 				featureadded: function (event) {
 					var format = new OpenLayers.Format.GeoJSON;
-
+					
 					if (! event.feature.attributes.itemId && event.feature.attributes.intent !== 'marker') {
 						if (activeFeature) {
 							vlayer.removeFeatures([activeFeature]);

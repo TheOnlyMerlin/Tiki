@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -570,17 +570,12 @@ class ImageGalsLib extends TikiLib
 			$result = $this->query($query, array((int)$id));
 		}
 
-		$query = "select `user` from `tiki_images` where `imageId`=?";
-		$owner = $this->getOne($query, array((int)$id));
-
-		TikiLib::events()->trigger('tiki.image.view',
-			array(
-				'type' => 'image',
-				'object' => $id,
-				'user' => $user,
-				'owner' => $owner,
-			)
-		);
+		if ($prefs['feature_score'] == 'y') {
+			$this->score_event($user, 'igallery_see_img', $id);
+			$query = "select `user` from `tiki_images` where `imageId`=?";
+			$owner = $this->getOne($query, array((int)$id));
+			$this->score_event($owner, 'igallery_img_seen', "$user:$id");
+		}
 
 		return true;
 	}
@@ -599,17 +594,12 @@ class ImageGalsLib extends TikiLib
 			$result = $this->query($query, array((int) $id));
 		}
 
-		$query = "select `user` from `tiki_galleries` where `galleryId`=?";
-		$owner = $this->getOne($query, array((int)$id));
-
-		TikiLib::events()->trigger('tiki.imagegallery.view',
-			array(
-				'type' => 'imagegallery',
-				'object' => $id,
-				'user' => $user,
-				'owner' => $owner,
-			)
-		);
+		if ($prefs['feature_score'] == 'y') {
+			$this->score_event($user, 'igallery_see', $id);
+			$query = "select `user` from `tiki_galleries` where `galleryId`=?";
+			$owner = $this->getOne($query, array((int)$id));
+			$this->score_event($owner, 'igallery_seen', "$user:$id");
+		}
 
 		return true;
 	}
@@ -1039,16 +1029,12 @@ class ImageGalsLib extends TikiLib
 		$query = "update `tiki_galleries` set `lastModif`=? where `galleryId`=?";
 		$result = $this->query($query, array((int)$this->now, (int)$galleryId));
 
-		TikiLib::events()->trigger('tiki.image.create',
-			array(
-				'type' => 'image',
-				'object' => $id,
-				'user' => $user,
-			)
-		);
+		if ($prefs['feature_score'] == 'y') {
+			$this->score_event($user, 'igallery_new_img');
+		}
 
 		if ($prefs['feature_actionlog'] == 'y') {
-			$logslib = TikiLib::lib('logs');
+			global $logslib; include_once('lib/logs/logslib.php');
 			$logslib->add_action('Uploaded', $galleryId, 'image gallery', 'imageId=' . $imageId);
 		}
 
@@ -1072,7 +1058,7 @@ class ImageGalsLib extends TikiLib
 	 */
 	function notify($imageId, $galleryId, $name, $filename, $description, $galleryName, $action, $user)
 	{
-		global $prefs;
+		global $prefs, $smarty, $tikilib;
 		if ($prefs['feature_user_watches'] == 'y') {
 			$event = 'image_gallery_changed';
 			$nots = $this->get_event_watches($event, $galleryId);
@@ -1082,7 +1068,6 @@ class ImageGalsLib extends TikiLib
 				$reportsManager->addToCache($nots, array("event"=>$event, "imageId"=>$imageId, "imageName"=>$name, "fileName"=>$filename, "galleryId"=>$galleryId, "galleryName"=>$galleryName, "action"=>$action, "user"=>$user));
 			}
 
-			$smarty = TikiLib::lib('smarty');
 			include_once('lib/notifications/notificationemaillib.php');
 			$smarty->assign_by_ref('galleryId', $galleryId);
 			$smarty->assign_by_ref('galleryName', $galleryName);
@@ -1160,15 +1145,6 @@ class ImageGalsLib extends TikiLib
 		$result = $this->query($query, array((int)$id));
 		$this->remove_object('image', $id);
 		$this->notify($imageInfo['imageId'], $imageInfo['galleryId'], $imageInfo['name'], $imageInfo['filename'], $imageInfo['description'], isset($gal_info['name'])?$gal_info['name']: '', 'remove image', $user);
-
-		TikiLib::events()->trigger('tiki.image.delete',
-			array(
-				'type' => 'image',
-				'object' => $id,
-				'user' => $user,
-			)
-		);
-
 		return true;
 	}
 
@@ -1624,8 +1600,7 @@ class ImageGalsLib extends TikiLib
 		$cant = $this->getOne($query_cant, $bindvars);
 		$ret = array();
 
-		global $prefs, $user, $tiki_p_admin;
-		$userlib = TikiLib::lib('user');
+		global $prefs, $userlib, $user, $tiki_p_admin;
 		while ($res = $result->fetchRow()) {
 			$res['perms'] = $this->get_perm_object($res['galleryId'], 'image gallery', $res, false);
 			if ($res['perms']['tiki_p_view_image_gallery'] == 'y') {
@@ -2235,13 +2210,9 @@ class ImageGalsLib extends TikiLib
 			$result = $this->query($query, $bindvars);
 			$galleryId = $this->getOne("select max(`galleryId`) from `tiki_galleries` where `name`=? and `created`=?", array($name, (int) $this->now));
 
-			TikiLib::events()->trigger('tiki.imagegallery.create',
-				array(
-					'type' => 'imagegallery',
-					'object' => $id,
-					'user' => $user,
-				)
-			);
+			if ($prefs['feature_score'] == 'y') {
+				$this->score_event($user, 'igallery_new');
+			}
 		}
 
 		require_once('lib/search/refresh-functions.php');
@@ -2337,15 +2308,6 @@ class ImageGalsLib extends TikiLib
 		$result = $this->query($query, array((int) $id));
 		$this->remove_gallery_scale($id);
 		$this->remove_object('image gallery', $id);
-
-		TikiLib::events()->trigger('tiki.imagegallery.delete',
-			array(
-				'type' => 'imagegallery',
-				'object' => $id,
-				'user' => $user,
-			)
-		);
-
 		return true;
 	}
 
@@ -2749,3 +2711,5 @@ class ImageGalsLib extends TikiLib
 		}
 	}
 }
+global $imagegallib;
+$imagegallib = new ImageGalsLib;

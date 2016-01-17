@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -25,11 +25,6 @@ $inputConfiguration = array(
 			'dbinfo' => 'alpha',
 			'email_test_cc' => 'digits',
 //			'email_test_to' => '',  //validated later
-			'use_proxy' => 'alpha',
-			'proxy_host' => 'striptags',
-			'proxy_port' => 'digits',
-			'proxy_user' => 'striptags',
-			'proxy_pass' => 'striptags',
 			'error_reporting_adminonly' => 'alpha',
 			'error_reporting_level' => 'int',
 			'feature_switch_ssl_mode' => 'alpha',
@@ -67,24 +62,10 @@ $inputConfiguration = array(
 		)
 	)
 );
-
-$errors = '';
-
-
-try {
-
-	$inputFilter = DeclFilter::fromConfiguration($inputConfiguration);
-	$_GET = $inputFilter->filter($_GET);
-	$_POST = $inputFilter->filter($_POST);
-	$_REQUEST = array_merge($_GET, $_POST);
-
-} catch (Exception $e) {
-
-	$errors .= '<strong>' . $e->getMessage() . '</strong><br>
-Check <a href="tiki-check.php">tiki-check.php</a> to ensure your system is ready for Tiki or refer to <a href="https://doc.tiki.org/Requirements">https://doc.tiki.org/Requirements</a> for more information.
-	';
-	error_and_exit();
-}
+$inputFilter = DeclFilter::fromConfiguration($inputConfiguration);
+$_GET = $inputFilter->filter($_GET);
+$_POST = $inputFilter->filter($_POST);
+$_REQUEST = array_merge($_GET, $_POST);
 
 require_once('tiki-filter-base.php');
 
@@ -95,7 +76,6 @@ $prefs['smarty_notice_reporting'] = 'n';
 $prefs['smarty_compilation'] = 'always';
 $prefs['smarty_security'] = 'y';
 require_once 'lib/init/initlib.php';
-require_once 'lib/tikilib.php';
 set_error_handler("tiki_error_handling", error_reporting());
 require_once ( 'lib/init/smarty.php');
 require_once ('installer/installlib.php');
@@ -140,7 +120,7 @@ if (empty($_POST['install_step'])) {
 	$install_step = $_POST['install_step'];
 
 	if ($install_step == 3) {	// clear caches after system requirements page
-		$cachelib = TikiLib::lib('cache');
+		global $cachelib; include 'lib/cache/cachelib.php';
 		$cachelib->empty_cache();
 	}
 }
@@ -210,8 +190,6 @@ function write_local_php($dbb_tiki, $host_tiki, $user_tiki, $pass_tiki, $dbs_tik
 		if ( ! empty( $client_charset ) ) {
 			$filetowrite .= "\$client_charset='$client_charset';\n";
 		}
-		$filetowrite .= "// \$dbfail_url = '';\n";
-		$filetowrite .= "// \$noroute_url = './';\n";
 		$filetowrite .= "// If you experience text encoding issues after updating (e.g. apostrophes etc showing up as strange characters) \n";
 		$filetowrite .= "// \$client_charset='latin1';\n";
 		$filetowrite .= "// \$client_charset='utf8';\n";
@@ -244,6 +222,7 @@ function create_dirs($domain='')
 		'temp/cache',
 		'templates_c',
 		'templates',
+		'styles',
 		'whelp');
 
 	$ret = "";
@@ -597,7 +576,7 @@ function initTikiDB( &$api, &$driver, $host, $user, $pass, $dbname, $client_char
 	if (isset($dbTiki)) {
 		TikiDb::set($dbTiki);
 	}
-
+	
 	return $dbcon;
 }
 
@@ -705,7 +684,6 @@ $_SESSION["install-logged-$multi"] = 'y';
 
 // Init smarty
 global $tikidomain;
-$smarty = TikiLib::lib('smarty');
 $smarty->assign('mid', 'tiki-install.tpl');
 $smarty->assign('virt', isset($virt) ? $virt : null);
 $smarty->assign('multi', isset($multi) ? $multi : null);
@@ -729,6 +707,8 @@ $dbservers = array();
 if (function_exists('mysqli_connect'))	$dbservers['mysqli'] = tra('MySQL Improved (mysqli)');
 if (function_exists('mysql_connect'))	$dbservers['mysql'] = tra('MySQL classic (mysql)');
 $smarty->assignByRef('dbservers', $dbservers);
+
+$errors = '';
 
 check_session_save_path();
 
@@ -759,11 +739,10 @@ if (!defined('ADODB_CASE_ASSOC')) { // typo in adodb's driver for sybase? // so 
 	define('ADODB_CASE_ASSOC', 2);
 }
 
-require_once('lib/tikilib.php');
+include('lib/tikilib.php');
 
 // Get list of available languages
-$langLib = TikiLib::lib('language');
-$languages = $langLib->list_languages(false, null, true);
+$languages = TikiLib::list_languages(false, null, true);
 $smarty->assignByRef("languages", $languages);
 
 $logslib = TikiLib::lib('logs');
@@ -961,8 +940,10 @@ if (
 		$install_type = 'scratch';
 		require_once 'lib/tikilib.php';
 		$tikilib = new TikiLib;
-		$userlib = TikiLib::lib('user');
-		$tikidate = TikiLib::lib('tikidate');
+		require_once 'lib/userslib.php';
+		$userlib = new UsersLib;
+		require_once 'lib/tikidate.php';
+		$tikidate = new TikiDate();
 	}
 
 	if (isset($_POST['update'])) {
@@ -979,54 +960,10 @@ if (
 	//   - there is already an existing .htaccess (that is not necessarily the one that comes from Tiki),
 	//   - the copy does not work (e.g. due to filesystem permissions)
 	//
+	// TODO: Perform up-to-date check as in the SEFURL admin panel
 	// TODO: Equivalent for IIS
-
-
-	if ($install_step == '6' || $install_step == '7') {
-		if (strpos($_SERVER['SERVER_SOFTWARE'], 'Apache') !== false) {
-			if (!file_exists('.htaccess')) {
-				if (!isset($_REQUEST['htaccess_process'])) {
-
-					$htaccess_options = array('auto' => tra('Automatic'));
-					if (function_exists('symlink')) {
-						$htaccess_options['symlink'] = tra('Make a symlink');
-					}
-					if (function_exists('copy')) {
-						$htaccess_options['copy'] = tra('Make a copy');
-					}
-					$htaccess_options[''] = tra('Do nothing');
-					$smarty->assign('htaccess_options', $htaccess_options);
-				} else {
-
-					$htaccess_feedback = '';
-
-					if ($_REQUEST['htaccess_process'] === 'auto') {
-
-						if (function_exists('symlink') && symlink('_htaccess', '.htaccess')) {
-							$htaccess_feedback = tra('symlink created');
-						} else {
-							copy('_htaccess', '.htaccess');
-							$htaccess_feedback = tra('copy created');
-						}
-
-					} else if ($_REQUEST['htaccess_process'] === 'symlink') {
-						@symlink('_htaccess', '.htaccess');
-						$htaccess_feedback = tra('symlink created');
-					} else if ($_REQUEST['htaccess_process'] === 'copy') {
-						@copy('_htaccess', '.htaccess');
-						$htaccess_feedback = tra('copy created');
-					}
-					if (file_exists('.htaccess')) {
-						$smarty->assign('htaccess_feedback', $htaccess_feedback);
-					} else {
-						$smarty->assign('htaccess_error', 'y');
-					}
-				}
-
-			} else {
-				// TODO: Perform up-to-date check as in the SEFURL admin panel
-			}
-		}
+	if ( strpos($_SERVER['SERVER_SOFTWARE'], 'Apache') !== false && !file_exists('.htaccess') && function_exists('symlink') && !@symlink('_htaccess', '.htaccess') && ! @copy('_htaccess', '.htaccess')) {
+		$smarty->assign('htaccess_error', 'y');
 	}
 }
 
@@ -1043,8 +980,7 @@ if ($install_step == '8') {
 		touch('db/'.$tikidomainslash.'lock');
 	}
 
-	$userlib = TikiLib::lib('user');
-	$cachelib = TikiLib::lib('cache');
+	global $userlib, $cachelib;
 	if (session_id()) {
 		session_destroy();
 	}
@@ -1053,15 +989,11 @@ if ($install_step == '8') {
 	if ($install_type == 'scratch') {
 		initialize_prefs(true);
 		TikiLib::lib('unifiedsearch')->rebuild();
-		$u = 'tiki-change_password.php?user=admin&oldpass=admin&newuser=y';
+		$u = 'tiki-change_password.php?user=admin&oldpass=admin';
 	} else {
 		$u = '';
 	}
-	if (empty($_REQUEST['multi'])) {
-		$userlib->user_logout($user, false, $u);	// logs out then redirects to home page or $u
-	} else {
-		$access->redirect('http://' . $_REQUEST['multi'] . $tikiroot . $u);		// send to the selected multitiki
-	}
+	$userlib->user_logout($user, false, $u);	// logs out then redirects to home page or $u
 	exit;
 }
 
@@ -1089,7 +1021,7 @@ if ($install_step == '2') {
 			}
 
 			// check email address format
-			$validator = new Zend\Validator\EmailAddress();
+			$validator = new Zend_Validate_EmailAddress();
 			if (!$validator->isValid($email_test_to)) {
 				$smarty->assign('email_test_err', tra('Email address not valid, test mail not sent'));
 				$email_test_ready = false;
@@ -1174,7 +1106,6 @@ if ( isset($_POST['general_settings']) && $_POST['general_settings'] == 'y' ) {
 		"DELETE FROM `tiki_preferences` WHERE `name` IN " .
 		"('browsertitle', 'sender_email', 'https_login', 'https_port', ".
 		"'feature_switch_ssl_mode', 'feature_show_stay_in_ssl_mode', 'language',".
-		"'use_proxy', 'proxy_host', 'proxy_port', 'proxy_user', 'proxy_pass',".
 		"'error_reporting_level', 'error_reporting_adminonly', 'smarty_notice_reporting', 'log_tpl')"
 	);
 
@@ -1184,12 +1115,6 @@ if ( isset($_POST['general_settings']) && $_POST['general_settings'] == 'y' ) {
 		. " ('https_login', ?),"
 		. " ('https_port', ?),"
 		. " ('error_reporting_level', ?),"
-		. " ('use_proxy', '" . (isset($_POST['use_proxy'])
-			&& $_POST['use_proxy'] == 'on' ? 'y' : 'n') . "'),"
-		. " ('proxy_host', '". $_POST['proxy_host'] . "'),"
-		. " ('proxy_port', '". $_POST['proxy_port'] . "'),"
-		. " ('proxy_user', '". $_POST['proxy_user'] . "'),"
-		. " ('proxy_pass', '". $_POST['proxy_pass'] . "'),"
 		. " ('error_reporting_adminonly', '" . (isset($_POST['error_reporting_adminonly'])
 			&& $_POST['error_reporting_adminonly'] == 'on' ? 'y' : 'n') . "'),"
 		. " ('smarty_notice_reporting', '" . (isset($_POST['smarty_notice_reporting'])
@@ -1218,10 +1143,9 @@ if ( isset($_POST['general_settings']) && $_POST['general_settings'] == 'y' ) {
 }
 
 
-$headerlib = TikiLib::lib('header');
+include_once "lib/headerlib.php";
 $headerlib->add_js("var tiki_cookie_jar=new Array();");
-$headerlib->add_cssfile('vendor/twitter/bootstrap/dist/css/bootstrap.css');
-$headerlib->add_cssfile('vendor/fortawesome/font-awesome/css/font-awesome.min.css');
+$headerlib->add_cssfile('styles/fivealive.css');
 $headerlib->add_jsfile('lib/tiki-js.js');
 $headerlib->add_jsfile_dependancy("vendor/jquery/jquery-min/jquery-$headerlib->jquery_version.min.js");
 $headerlib->add_jsfile('lib/jquery_tiki/tiki-jquery.js');
@@ -1248,7 +1172,6 @@ jqueryTiki.effect_tabs_speed = 400;
 ';
 $headerlib->add_js($js, 100);
 
-$iconset = TikiLib::lib('iconset')->getIconsetForTheme('default', '');
 
 $smarty->assignByRef('headerlib', $headerlib);
 

@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -82,8 +82,6 @@ if ($isvalid) {
 			$smarty->assign('userlogin', $_REQUEST['user']);
 			if ($prefs['login_is_email'] === 'y') {
 				$smarty->assign('email', $_REQUEST['user']);
-			} else {
-				$smarty->assign('email', $info['email']);
 			}
 			$smarty->assign('mid', 'tiki-change_password.tpl');
 			$smarty->display("tiki.tpl");
@@ -117,7 +115,6 @@ if ($isvalid) {
 	else if ($error == ACCOUNT_DISABLED) $error = tra("Account requires administrator approval");
 	else if ($error == USER_AMBIGOUS) $error = tra("You must use the right case for your user name");
 	else if ($error == USER_PREVIOUSLY_VALIDATED) $error = tra('You have already validated your account. Please log in.');
-	else if ($error == EMAIL_AMBIGUOUS) $error = tra("There is more than one user account with this email. Please contact the administrator.");
 	else $error = tra('Invalid username or password');
 	$smarty->assign('errortype', 'no_redirect_login');
 	$smarty->assign('msg', $error);

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -12,50 +12,32 @@ function wikiplugin_sql_info()
 		'documentation' => 'PluginSQL',
 		'description' => tra('Query a MySQL database and display the results'),
 		'prefs' => array( 'wikiplugin_sql' ),
-		'body' => tr('The SQL query goes in the body. Example: ') . '<code>SELECT column1, column2 FROM table</code>',
+		'body' => tra('The SQL query goes in the body. Example: SELECT column1, column2 FROM table'),
 		'validate' => 'all',
-		'iconname' => 'database',
-		'introduced' => 1,
+		'icon' => 'img/icons/database_table.png',
 		'params' => array(
 			'db' => array(
 				'required' => true,
 				'name' => tra('DSN Name'),
-				'description' => tr('DSN name of the database being queried. The DSN name needs to first be defined at
-					%0', '<code>tiki-admin_dsn.php</code>'),
-				'since' => '1',
+				'description' => tra('DSN name of the database being queried. The DSN name needs to first be defined at tiki-admin_dsn.php'),
 				'default' => ''
 			),
 			'raw' => array(
 				'required' => false,
 				'name' => tra('Raw return'),
-				'description' => tra('Return with table formatting (default) or raw data with no table formatting'),
-				'since' => '11.0',
-				'default' => '0',
-				'filter' => 'digits',
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Normal'), 'value' => '0'),
-					array('text' => tra('Raw'), 'value' => '1')
-				)
+				'description' => tra('Return raw data with no table formatting (0=normal, 1=raw)'),
+				'default' => '0'
 			),
 			'delim' => array(
 				'required' => false,
 				'name' => tra('Delim'),
-				'description' => tr('The delimiter to be used between data elements (sets %0)', '<code>raw=1</code>'),
-				'since' => '11.0',
+				'description' => tra('The delimiter to be used between data elements (sets raw=1) ')
 			),
 			'wikiparse' => array(
 				'required' => false,
 				'name' => tra('Wiki Parse'),
-				'description' => tr('Turn wiki parsing of select results on and off (default is on)'),
-				'since' => '11.0',
-				'default' => '1',
-				'filter' => 'digits',
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Off'), 'value' => '0'),
-					array('text' => tra('On'), 'value' => '1')
-				)
+				'description' => tra('Turn wiki parsing of select results on and off (0=off, 1=on)'),
+				'default' => '1'
 			)
 		)
 	);

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -69,8 +69,7 @@ class groupAlertLib extends TikiLib
      */
     function Notify ( $ListUserToAlert,$URI )
 	{
-		$userlib = TikiLib::lib('user');
-		$tikilib = TikiLib::lib('tiki');
+		global $tikilib,$userlib ;
 		if (!is_array($ListUserToAlert)) {
 			return;
 		}
@@ -83,10 +82,12 @@ class groupAlertLib extends TikiLib
 			if ( ! empty($email) ) {
 				include_once ('lib/webmail/tikimaillib.php');
 				$mail = new TikiMail();
-				$mail->setText(tra("You are alerted by the server "). $project . "\n" . tra("You can check the modifications at: ") .$URL);
+				$mail->setText(tra("You are alerted by the server "). $project . "\n" . tra("You can check the modifications at : ") .$URL);
 				$mail->setSubject(tra("You are alerted of a change on ").$project);
 				$mail->send(array($email));
 			}
 		}
 	}
 }
+global $groupalertlib;
+$groupalertlib = new groupAlertLib;

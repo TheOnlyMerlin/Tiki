@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -13,8 +13,7 @@ function wikiplugin_map_info()
 		'documentation' => 'PluginMap',
 		'description' => tra('Display a map'),
 		'prefs' => array( 'wikiplugin_map', 'feature_search' ),
-		'iconname' => 'map',
-		'introduced' => 1,
+		'icon' => 'img/icons/map.png',
 		'tags' => array( 'basic' ),
 		'filter' => 'wikicontent',
 		'body' => tr('Instructions to load content'),
@@ -22,20 +21,15 @@ function wikiplugin_map_info()
 			'scope' => array(
 				'required' => false,
 				'name' => tra('Scope'),
-				'description' => tr('Display the geolocated items represented in the page (%0all%1, %0center%1, or
-					%0custom%1 as a CSS selector). Default: %0center%1', '<code>', '</code>'),
-				'since' => '8.0',
-				'filter' => 'text',
+				'description' => tr('Display the geolocated items represented in the page (all, center, or custom as a CSS selector). Default: center'),
+				'filter' => 'striptags',
 				'default' => 'center',
 			),
 			'controls' => array(
 				'required' => false,
 				'name' => tra('Controls'),
-				'description' => tr('Comma-separated list of map controls will be displayed on the map and around it'),
-				'since' => '9.0',
+				'description' => tr('Allows to specify which map controls will be displayed on the map and around it (controls, layers, search_location, levels, current_location, scale, streetview, navigation, coordinates, overview)'),
 				'filter' => 'word',
-				'accepted' => 'controls, layers, search_location, levels, current_location, scale, streetview,
-					navigation, coordinates, overview',
 				'separator' => ',',
 				'default' => wp_map_default_controls(),
 			),
@@ -43,33 +37,27 @@ function wikiplugin_map_info()
 				'required' => false,
 				'name' => tra('Width'),
 				'description' => tra('Width of the map in pixels'),
-				'since' => '1',
-				'filter' => 'digits',
+				'filter' => 'int',
 			),
 			'height' => array(
 				'required' => false,
 				'name' => tra('Height'),
 				'description' => tra('Height of the map in pixels'),
-				'since' => '1',
-				'filter' => 'digits',
+				'filter' => 'int',
 			),
 			'center' => array(
 				'requied' => false,
 				'name' => tra('Center'),
-				'description' => tr('Format: %0x,y,zoom%1 where %0x%1 is the longitude, and %0y%1 is the latitude.
-					%0zoom%1 is between %00%1 (view Earth) and %019%1.', '<code>', '</code>'),
-				'since' => '9.0',
+				'description' => tr('Format: x,y,zoom where x is the longitude, and y is the latitude. Zoom is between 0 (view Earth) and 19.'),
 				'filter' => 'text',
 			),
 			'popupstyle' => array(
 				'required' => false,
-				'name' => tr('Popup Style'),
+				'name' => tr('Popup style'),
 				'description' => tr('Alter the way the information is displayed when objects are loaded on the map.'),
-				'since' => '10.0',
-				'filter' => 'word',
+				'filter' => 'alpha',
 				'default' => 'bubble',
 				'options' => array(
-					array('text' => '', 'value' => ''),
 					array('text' => tr('Bubble'), 'value' => 'bubble'),
 					array('text' => tr('Dialog'), 'value' => 'dialog'),
 				),
@@ -78,7 +66,6 @@ function wikiplugin_map_info()
 				'required' => false,
 				'name' => tra('MapServer File'),
 				'description' => tra('MapServer file identifier. Only fill this in if you are using MapServer.'),
-				'since' => '1',
 				'filter' => 'url',
 				'advanced' => true,
 			),
@@ -86,7 +73,6 @@ function wikiplugin_map_info()
 				'required' => false,
 				'name' => tra('Extents'),
 				'description' => tra('Extents'),
-				'since' => '1',
 				'filter' => 'text',
 				'advanced' => true,
 			),
@@ -94,22 +80,15 @@ function wikiplugin_map_info()
 				'required' => false,
 				'name' => tra('Size'),
 				'description' => tra('Size of the map'),
-				'since' => '1',
-				'filter' => 'digits',
+				'filter' => 'int',
 				'advanced' => true,
 			),
 			'tooltips' => array(
 				'required' => false,
 				'name' => tra('Tooltips'),
-				'description' => tra('Show item name in a tooltip on hover'),
-				'since' => '12.1',
+				'description' => tra('Show item name in a tooltip on hover (n/y).'),
 				'default' => 'n',
 				'filter' => 'alpha',
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
-					array('text' => tra('No'), 'value' => 'n')
-				),
 				'advanced' => true,
 			),
 		),
@@ -202,7 +181,7 @@ function wp_map_getscope($params)
 
 	switch ($scope) {
 		case 'center':
-			return '#col1 .geolocated';
+			return '#tiki-center .geolocated';
 		case 'all':
 			return '.geolocated';
 		default:
@@ -340,8 +319,7 @@ function wp_map_plugin_searchlayer($body, $args)
 	$escapedSuffix = smarty_modifier_escape($suffix);
 	return <<<OUT
 <form method="post" action="tiki-searchindex.php" class="search-box onload" style="display: none" data-result-refresh="$refresh" data-result-layer="$escapedLayer" data-result-suffix="$escapedSuffix" data-load-delay="$load_delay"{$popup_config}>
-	<p>$maxRecords$sort_mode$fieldList$filters<input type="submit" class="btn btn-default btn-sm" /></p>
-
+	<p>$maxRecords$sort_mode$fieldList$filters<input type="submit"/></p>
 </form>
 OUT;
 }

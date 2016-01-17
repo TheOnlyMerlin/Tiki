@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -165,19 +165,6 @@ abstract class Search_Index_BaseTest extends PHPUnit_Framework_TestCase
 		$this->assertResultCount(0, 'filterInitial', 'Ham');
 		$this->assertResultCount(0, 'filterInitial', 'HomePagd');
 		$this->assertResultCount(0, 'filterInitial', 'Home Page');
-	}
-
-	function testNotMatchInitial()
-	{
-		$this->assertResultCount(0, 'filterNotInitial', 'a description for', 'description');
-		$this->assertResultCount(1, 'filterNotInitial', 'a description in', 'description');
-
-		$this->assertResultCount(0, 'filterNotInitial', 'HomePage');
-		$this->assertResultCount(0, 'filterNotInitial', 'Home');
-		$this->assertResultCount(1, 'filterNotInitial', 'Fuzzy');
-		$this->assertResultCount(1, 'filterNotInitial', 'Ham');
-		$this->assertResultCount(1, 'filterNotInitial', 'HomePagd');
-		$this->assertResultCount(1, 'filterNotInitial', 'Home Page');
 	}
 
 	function testFilterRelations()

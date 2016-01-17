@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -22,7 +22,7 @@ class DeclFilter_ConfigureTest extends TikiTestCase
 			array('staticKeyFiltersForArrays' => array(
 				'foo' => 'digits',
 			)),
-			array('catchAllFilter' => new Zend\Filter\StringToUpper),
+			array('catchAllFilter' => new Zend_Filter_StringToUpper),
 		);
 
 		$filter = DeclFilter::fromConfiguration($configuration);
@@ -53,7 +53,7 @@ class DeclFilter_ConfigureTest extends TikiTestCase
 	function testDisallowed()
 	{
 		$configuration = array(
-			array('catchAllFilter' => new Zend\Filter\StringToUpper),
+			array('catchAllFilter' => new Zend_Filter_StringToUpper),
 		);
 
 		$filter = DeclFilter::fromConfiguration($configuration, array('catchAllFilter'));
@@ -75,7 +75,7 @@ class DeclFilter_ConfigureTest extends TikiTestCase
 	{
 		$configuration = array(
 			array('staticKeyUnset' => array('hello', 'world')),
-			array('catchAllFilter' => new Zend\Filter\StringToUpper),
+			array('catchAllFilter' => new Zend_Filter_StringToUpper),
 		);
 
 		$filter = DeclFilter::fromConfiguration($configuration);

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -9,18 +9,16 @@ function wikiplugin_addreference_info()
 {
 	return array(
 		'name' => tra('Add Reference'),
-		'description' => tra('Add a bibliography reference'),
+		'description' => tra('Add bibliography references to wiki pages.'),
 		'format' => 'html',
-		'introduced' => 10,
 		'prefs' => array('wikiplugin_addreference','feature_references'),
-		'iconname' => 'pencil',
+		'icon' => 'img/icons/text_signature.png',
 		'params' => array(
 			'biblio_code' => array(
 				'required' => true,
 				'name' => tra('Biblio Code'),
 				'description' => tra('The code to be added as reference.'),
 				'default' => '',
-				'since' => '10.0',
 			),
 		),
 	);
@@ -32,7 +30,7 @@ function wikiplugin_addreference($data,$params)
 
 	if ($prefs['wikiplugin_addreference'] == 'y') {
 
-		$referenceslib = TikiLib::lib('references');
+		include_once ("lib/references/referenceslib.php");
 
 		if (! isset($GLOBALS['referencesData'])) {
 			$GLOBALS['referencesData'] = array();

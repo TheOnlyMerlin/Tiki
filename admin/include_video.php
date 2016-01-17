@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -28,15 +28,6 @@ if ($prefs['feature_kaltura'] === 'y') {
 		// TODO make way to override this for certain sites...
 		if ($kcwDefault != $prefs['kaltura_kcwUIConf']) {
 			$tikilib->set_preference('kaltura_kcwUIConf', $kcwDefault);
-		}
-		if (empty($prefs['kaltura_kdpUIConf'])) {	// player pref empty
-			$playerList = $kalturaadminlib->getPlayersUiConfs();
-			if ($playerList) {
-				$tikilib->set_preference('kaltura_kdpUIConf', $playerList[0]['id']);
-			}
-		}
-		if (empty($prefs['kaltura_kdpEditUIConf'])) {    // edit mode player pref empty
-			$tikilib->set_preference('kaltura_kdpEditUIConf', $prefs['kaltura_kdpUIConf']);
 		}
 	} else {
 		$kcwText = "<div class='adminoptionbox error'>Unable to retrieve configuration from Kaltura. Please reload page after setting up the Kaltura Partner Settings section</div>";

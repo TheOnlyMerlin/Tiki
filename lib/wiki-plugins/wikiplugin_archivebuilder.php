@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,17 +10,15 @@ function wikiplugin_archivebuilder_info()
 	return array(
 		'name' => tra('Archive Builder'),
 		'documentation' => 'PluginArchiveBuilder',
-		'description' => tra('Define an archive that can be downloaded'),
+		'description' => tra('Build a zip archive that can be downloaded'),
 		'prefs' => array( 'wikiplugin_archivebuilder' ),
 		'body' => tra('Description of the archive content. Multiple handlers are available for content types. One per line. Ex: page-as-pdf:some-folder/foo.pdf:HomePage , tracker-attachments:target-folder/:3435'),
-		'iconname' => 'file-archive',
-		'introduced' => 5,
+		'icon' => 'img/icons/mime/zip.png',
 		'params' => array(
 			'name' => array(
 				'name' => tra('Archive Name'),
 				'description' => tra('Upon download, the name of the file that will be provided.'),
 				'required' => true,
-				'since' => '5.0',
 				'default' => ''
 			),
 		),
@@ -83,7 +81,7 @@ function wikiplugin_archivebuilder( $data, $params )
 		$label = tra('Download archive');
 		return <<<FORM
 <form method="post" action="">
-	<input type="submit" class="btn btn-default btn-sm" name="$archive" value="$label" />
+	<input type="submit" name="$archive" value="$label" />
 </form>
 FORM;
 	}

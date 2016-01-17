@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -14,16 +14,13 @@ function wikiplugin_transclude_info()
 		'prefs' => array('wikiplugin_transclude', 'feature_wiki'),
 		'extraparams' => true,
 		'defaultfilter' => 'text',
-		'iconname' => 'copy',
-		'introduced' => 6,
+		'icon' => 'img/icons/page_copy.png',
 		'params' => array(
 			'page' => array(
 				'required' => true,
 				'name' => tra('Page Name'),
 				'description' => tra('Name of the wiki page to use as a template for the values.'),
-				'since' => '6.0',
 				'default' => '',
-				'filter' => 'pagename',
 				'profile_reference' => 'wiki_page',
 			),
 		),

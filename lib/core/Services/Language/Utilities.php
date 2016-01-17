@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -32,12 +32,12 @@ class Services_Language_Utilities
 	function getTranslations($type, $object)
 	{
 		$multilinguallib = TikiLib::lib('multilingual');
-		$langLib = TikiLib::lib('language');
+		$tikilib = TikiLib::lib('tiki');
 
 		$objId = $this->toInternalId($type, $object);
 
 		$translations = $multilinguallib->getTrads($type, $objId);
-		$languages = $langLib->get_language_map();
+		$languages = $tikilib->get_language_map();
 
 		foreach ($translations as & $trans) {
 			$trans['objId'] = $this->toExternalId($type, $trans['objId']);
@@ -77,7 +77,7 @@ class Services_Language_Utilities
 		}
 
 		if (! $lang) {
-			throw new Services_Exception(tr('The object has no language indicated and cannot be translated'), 400);
+			throw new Services_Exception(tr('Object has no language and cannot be translated'), 400);
 		}
 
 		return $lang;

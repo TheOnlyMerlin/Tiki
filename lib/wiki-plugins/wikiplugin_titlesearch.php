@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -12,51 +12,39 @@ function wikiplugin_titlesearch_info()
 	return array(
 		'name' => tra('Title Search'),
 		'documentation' => 'PluginTitleSearch',
-		'description' => tra('Search page titles'),
+		'description' => tra('Search pages by title'),
 		'prefs' => array( 'feature_wiki', 'wikiplugin_titlesearch' ),
-		'iconname' => 'search',
-		'introduced' => 1,
+		'icon' => 'img/icons/page_find.png',
 		'params' => array(
 			'search' => array(
 				'required' => true,
 				'name' => tra('Search Criteria'),
 				'description' => tra('Portion of a page name.'),
-				'since' => '1',
-				'filter' => 'text',
 				'default' => '',
 			),
 			'info' => array(
 				'required' => false,
 				'name' => tra('Information'),
 				'description' => tra('Also show page hits or user'),
-				'since' => '1',
 				'default' => '',
-				'filter' => 'alpha',
-				'separator' => '|',
 				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Hits'), 'value' => 'hits'),
-					array('text' => tra('User'), 'value' => 'user'),
-					array('text' => tra('Hits and user'), 'value' => 'hits|user'),
-					array('text' => tra('User and hits'), 'value' => 'user|hits')
+					array('text' => '', 'value' => ''), 
+					array('text' => tra('Hits'), 'value' => 'hits'), 
+					array('text' => tra('User'), 'value' => 'user')
 				)
 			),
 			'exclude' => array(
 				'required' => false,
 				'name' => tra('Exclude'),
 				'description' => tra('Pipe-separated list of page names to exclude from results.'),
-				'since' => '1',
 				'default' => '',
-				'filter' => 'text',
 				'separator' => '|',
 				'profile_reference' => 'wiki_page',
 			),
 			'noheader' => array(
 				'required' => false,
 				'name' => tra('No Header'),
-				'description' => tr('Set to Yes (%0) to have no header for the search results.', '<code>1</code>'),
-				'since' => '1',
-				'filter' => 'digits',
+				'description' => tra('Set to 1 (Yes) to have no header for the search results.'),
 				'default' => 0,
 				'options' => array(
 					array('text' => '', 'value' => ''), 
@@ -93,10 +81,10 @@ class WikiPluginTitleSearch extends PluginsLib
 	}
 	function run ($data, $params)
 	{
-		$wikilib = TikiLib::lib('wiki');
-		$tikilib = TikiLib::lib('tiki');
+		global $wikilib; include_once('lib/wiki/wikilib.php');
+		global $tikilib;
 		$aInfoPreset = array_keys($this->aInfoPresetNames);
-		$exclude = !empty($params['exclude']) ? $params['exclude'] : '';
+		$exclude = $params['exclude'];
 		$params = $this->getParams($params, true);
 		extract($params, EXTR_SKIP);
 		if (!$search) {
@@ -131,11 +119,9 @@ class WikiPluginTitleSearch extends PluginsLib
 		$sOutput = "";
 		$aPages = $tikilib->list_pages(0, -1, 'pageName_desc', $search, null, false);
 		foreach ($aPages["data"] as $idPage => $aPage) {
-			if (!empty($exclude)) {
-				if (in_array($aPage["pageName"], $exclude)) {
-					unset($aPages["data"][$idPage]);
-					$aPages["cant"]--;
-				}
+			if (in_array($aPage["pageName"], $exclude)) {
+				unset($aPages["data"][$idPage]);
+				$aPages["cant"]--;
 			}
 		}
 		//

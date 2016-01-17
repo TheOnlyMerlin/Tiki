@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -70,8 +70,7 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 
 function smarty_function_treetable($params, $smarty)
 {
-	global $tree_table_id, $prefs;
-	$headerlib = TikiLib::lib('header');
+	global $headerlib, $tree_table_id, $prefs;
 
 	extract($params);
 
@@ -174,7 +173,7 @@ function smarty_function_treetable($params, $smarty)
 		$_sortColumn = $_groupColumn;
 	}
 
-	$class = empty($class) ? 'table table-striped' : $class;	// treetable
+	$class = empty($class) ? 'treetable' : $class;	// treetable
 
 /*
 	if ($prefs['feature_jquery_tablesorter'] == 'y' && strpos($class, 'sortable') === false) {
@@ -197,28 +196,20 @@ function smarty_function_treetable($params, $smarty)
 
 	if ($_openall == 'y') {
 		$smarty->loadPlugin('smarty_function_icon');
-		$html .= '&nbsp;<label id="' . $id . '_openall" style="cursor:pointer">'
-			. smarty_function_icon(
-				array(
-					'name' => 'file-archive',
-				),
-				$smarty
-			)
-			. smarty_function_icon(
-				array(
-					'name' => 'file-archive-open',
-					'istyle' => 'display:none'
-				),
-				$smarty
-			)
-			. ' ' . tra('Toggle sections') . '</label>';
+		$html .= '&nbsp;<label id="' . $id . '_openall">' . smarty_function_icon(
+			array(
+				'_id' => 'folder',
+				'title' => tra('Toggle sections')
+			),
+			$smarty
+		) . ' ' . tra('Toggle sections') . '</label>';
 
 		$headerlib->add_jq_onready(
 			'
 $("#'.$id.'_openall").click( function () {
-	$this = $(this).tikiModal(" ");
-	var visible = $(this).find(".icon:visible")
-	if ($(visible).hasClass("icon-file-archive-open")) {
+	$this = $(this).modal(" ");
+	var img = $("img:first", this)[0];
+	if (img.src.indexOf("ofolder.png") > -1) {
 
 		$(".expanded .indenter", "#'.$id.'").eachAsync({
 			delay: 20,
@@ -227,11 +218,10 @@ $("#'.$id.'_openall").click( function () {
 				$(this).click();
 			},
 			end: function ()  {
-				$this.tikiModal();
+				$this.modal();
 			}
 		});
-		$(this).find(".icon-file-archive-open").hide();
-		$(this).find(".icon-file-archive").show();
+		img.src = img.src.replace("ofolder", "folder");
 	} else {
 		$(".collapsed .indenter", "#'.$id.'").eachAsync({
 			delay: 20,
@@ -240,11 +230,10 @@ $("#'.$id.'_openall").click( function () {
 				$(this).click();
 			},
 			end: function ()  {
-				$this.tikiModal();
+				$this.modal();
 			}
 		});
-		$(this).find(".icon-file-archive").hide();
-		$(this).find(".icon-file-archive-open").show();
+		img.src = img.src.replace("folder", "ofolder");
 	}
 	return false;
 });'

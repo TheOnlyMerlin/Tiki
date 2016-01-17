@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -114,6 +114,11 @@ class Tiki_Profile_Object
 	public function replaceReferences( &$data, $suppliedUserData = false ) // {{{
 	{
 		$this->profile->replaceReferences($data, $suppliedUserData);
+	} // }}}
+
+	public function refreshExternals() // {{{
+	{
+		$this->profile->refreshYaml();
 	} // }}}
 
 	private function traverseForReferences( $value ) // {{{

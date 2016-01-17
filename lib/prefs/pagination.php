@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -15,8 +15,8 @@ function prefs_pagination_list()
 			'default' => 'y',
 		),
 		'pagination_fastmove_links' => array(
-			'name' => tra('Display "fast-forward" links'),
-            'description' => tra('Display "fast-forward" links (to advance 10 percent of the total number of pages) '),
+			'name' => tra('Display fast move links'),
+            'description' => tra('Display fast move links (by 10 percent of the total number of pages) '),
 			'type' => 'flag',
 			'default' => 'y',
 		),

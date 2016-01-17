@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -21,7 +21,7 @@ function prefs_wiki_list($partial = false)
 		}
 	}
 
-	$prefslib = TikiLib::lib('prefs');
+	global $prefslib;
 	$advanced_columns = $prefslib->getExtraSortColumns();
 
 	$wiki_sort_columns = array_merge(
@@ -51,8 +51,8 @@ function prefs_wiki_list($partial = false)
 	return array(
 		'wiki_page_regex' => array(
 			'name' => tra('Wiki link format'),
-			'description' => tra('Level of special characters acceptable in wiki links for page names. For example: ((Page &eacute;&agrave;&icirc;))'),
-			'hint' => tra('"Strict" includes only basic characters such as a-z and 0-9. A site that uses accented or special characters in page names should not use "strict".'),
+			'description' => tra('What level of special characters are accepted as wiki links for page names. Ex.: ((Page &eacute;&agrave;&icirc;))'),
+			'hint' => tra('Strict will only be basic characters like a-z and 0-9. If you have accented or special characters in page names, you should not use strict.'),
 			'type' => 'list',
 			'options' => array(
 				'complete' => tra('Complete'),
@@ -60,19 +60,6 @@ function prefs_wiki_list($partial = false)
 				'strict' => tra('Strict'),
 			),
 			'default' => 'complete',
-		),
-		'wiki_url_scheme' => array(
-			'name' => tr('Wiki URL Scheme'),
-			'description' => tr('Alter the SEFURL pattern for page names.'),
-			'hint' => tr('Use the "View" action to regenerate your URLs after changing this setting.'),
-			'type' => 'list',
-			'default' => 'urlencode',
-			'options' => TikiLib::lib('slugmanager')->getOptions(),
-			'view' => $partial ? '' : TikiLib::lib('service')->getUrl([
-				'controller' => 'wiki',
-				'action' => 'regenerate_slugs',
-			]),
-			'keywords' => 'slug manager',
 		),
 		'wiki_show_version' => array(
 			'name' => tra('Display page version'),
@@ -98,7 +85,7 @@ function prefs_wiki_list($partial = false)
 			'description' => tra('Changes the list format used to display the authors of the page.'),
 			'type' => 'list',
 			'options' => array(
-				'classic' => tra('Creator and Author'),
+				'classic' => tra('Creator & Author'),
 				'business' => tra('Business style'),
 				'collaborative' => tra('Collaborative style'),
 				'lastmodif' => tra('Page last modified on'),
@@ -137,7 +124,7 @@ function prefs_wiki_list($partial = false)
 		),
 		'wiki_topline_position' => array(
 			'name' => tra('Wiki top line location'),
-			'description' => tra('Page description, icons, backlinks....'),
+			'description' => tra('Page description, icons, backlinks, ...'),
 			'type' => 'list',
 			'options' => array(
 				'top' => tra('Top'),
@@ -150,7 +137,7 @@ function prefs_wiki_list($partial = false)
 		'wiki_cache' => array(
 			'name' => tra('Cache wiki pages (global)'),
 			'description' => tra('Enable page cache globally for wiki pages.'),
-			'warning' => tra("Wiki cache reduces server load but can cause some empty pages and other issues when using wiki plugins. Use only if necessary; it may be better to use an individual wiki cache for only the pages that require it."),
+			'warning' => tra("Wiki cache reduces server load but can cause some empty pages and other issues when using wiki plugins. Use only if you really need it, and it's perhaps better to use Individual wiki cache on only the pages that require it."),
 			'type' => 'list',
 			'options' => array(
 				0 => tra('no cache'),
@@ -185,7 +172,7 @@ function prefs_wiki_list($partial = false)
 		),
 		'wiki_edit_plugin' => array(
 			'name' => tra('Enable edit plugin icons'),
-			'description' => tra('Enables editing a plugin, via a popup form, without needing to edit the whole page.'),
+			'description' => tra('Permits editing of a plugin, via a popup form, without needing to edit the whole page.'),
 			'type' => 'flag',
 			'hint' => tra('Requires JavaScript'),
 			'default' => 'y',
@@ -199,7 +186,7 @@ function prefs_wiki_list($partial = false)
 		),
 		'wiki_ranking_reload_probability' => array(
 			'name' => tra('Page ranking reload probability'),
-			'description' => tra('Calculation of page rankings is a resource-intensive task that cannot be performed at every page load. It will be calculated at random page loads based on a dice roll. This option indicates the number of faces on the dice. Larger numbers lead to reduced resource use, but less-accurate ranking.'),
+			'description' => tra('Calculation of page rankings is an expensive task that cannot be performed at every page load. It will be calculated at random page loads based on a dice roll. This option indicates the amount of faces on the dice. Larger numbers lead to less load, but less accurate ranking.'),
 			'type' => 'text',
 			'size' => 7,
 			'filter' => 'digits',
@@ -217,14 +204,6 @@ function prefs_wiki_list($partial = false)
 			'type' => 'flag',
 			'default' => 'y',
 			'tags' => array('basic'),
-		),
-		'wiki_plugindiv_approvable' => array(
-			'name' => tra('DIV plugin accepts unsafe parameters such as "style"'),
-			'description' => tra('If set, more parameters are available but modifying them will require approval. If unset, DIV plugin is safe and never requires approval.'),
-			'hint' => tra('If changed, you need to clear caches.'),
-			'type' => 'flag',
-			'default' => 'n',
-			'tags' => array('advanced'),
 		),
 		'wiki_dynvar_style' => array(
 			'name' => tra('Dynamic variables'),
@@ -282,12 +261,12 @@ function prefs_wiki_list($partial = false)
 			'default' => 'n',
 		),
 		'wiki_comments_displayed_default' => array(
-			'name' => tra('Display comment list by default'),
+			'name' => tra('Display by default'),
 			'type' => 'flag',
 			'default' => 'n',
 		),
 		'wiki_comments_form_displayed_default' => array(
-			'name' => tra('Display Post new comment form by default'),
+			'name' => tra('Display comments form by default'),
 			'type' => 'flag',
 			'default' => 'n',
 		),
@@ -313,6 +292,8 @@ function prefs_wiki_list($partial = false)
 			'name' => tra('Wiki rating options'),
 			'description' => tra('List of options available for the rating of wiki comments.'),
 			'type' => 'text',
+			'separator' => ',',
+			'filter' => 'int',
 			'default' => "0,1,2,3,4,5",
 		),
 		'wiki_uses_slides' => array(
@@ -323,7 +304,7 @@ function prefs_wiki_list($partial = false)
 			'tags' => array('basic'),
 		),
 		'wiki_creator_admin' => array(
-			'name' => tra('Page creators are administrators of their pages'),
+			'name' => tra('Page creators are admin of their pages'),
 			'type' => 'flag',
 			'default' => 'n',
 		),
@@ -344,7 +325,7 @@ function prefs_wiki_list($partial = false)
 			),
 		),
 		'wiki_watch_editor' => array(
-			'name' => tra('Enable watch events when you are the editor'),
+			'name' => tra('Enable watch events when I am the editor'),
 			'type' => 'flag',
 			'default' => 'n',
 			'dependencies' => array(
@@ -407,7 +388,7 @@ function prefs_wiki_list($partial = false)
 			'default' => 'y',
 		),
 		'wiki_list_comment_len' => array(
-			'name' => tra('Edit comment length'),
+			'name' => tra('Edit Comment length'),
 			'type' => 'text',
 			'size' => '3',
 			'default' => '200',
@@ -477,7 +458,7 @@ function prefs_wiki_list($partial = false)
 			'name' => tra('Default sort order'),
 			'type' => 'list',
 			'options' => $wiki_sort_columns,
-			'default' => 'lastmodif',
+			'default' => 'pageName',
 		),
 		'wiki_list_sortdirection' => array(
 			'name' => tra('Sort Direction'),
@@ -486,7 +467,7 @@ function prefs_wiki_list($partial = false)
 				'desc' => tra('Descending'),
 				'asc' => tra('Ascending'),
 			),
-			'default' => 'desc',
+			'default' => 'asc',
 		),
 		'wiki_list_rating' => array(
 			'name' => tra('Rating'),
@@ -581,7 +562,7 @@ function prefs_wiki_list($partial = false)
 			'default' => '250',
 		),
 		'wiki_3d_feed_animation_interval' => array(
-			'name' => tra('Feed animation interval (miliseconds)'),
+			'name' => tra('Feed animation interval (milisecs)'),
 			'type' => 'text',
 			'size' => '3',
 			'filter' => 'digits',
@@ -602,11 +583,13 @@ function prefs_wiki_list($partial = false)
 		'wiki_3d_eletrostatic_constant' => array(
 			'name' => tra('Electrostatic constant'),
 			'type' => 'text',
+			'type' => 'text',
 			'size' => '5',
 			'default' => '1000f',
 		),
 		'wiki_3d_node_mass' => array(
 			'name' => tra('Node mass'),
+			'type' => 'text',
 			'type' => 'text',
 			'size' => '3',
 			'filter' => 'digits',
@@ -615,19 +598,10 @@ function prefs_wiki_list($partial = false)
 		'wiki_3d_node_charge' => array(
 			'name' => tra('Node charge'),
 			'type' => 'text',
+			'type' => 'text',
 			'size' => '3',
 			'filter' => 'digits',
 			'default' => '1',
-		),
-		'wiki_discuss_visibility' => array(
-			'name' => tra('Visibility of discussion'),
-			'description' => tra('Just a button among others (default), or special section'),
-			'type' => 'list',
-			'options' => array(
-				'button' => tra('In the buttons row (default)'),
-				'above' => tra('Special section above buttons bar'),
-			),
-			'default' => 'button',
 		),
 		'wiki_forum_id' => array(
 			'name' => tra('Forum for discussion'),
@@ -637,7 +611,7 @@ function prefs_wiki_list($partial = false)
 		),
 		'wiki_keywords' => array(
 			'name' => tra('Keywords'),
-			'description' => tra('Allow management of keywords on a per-page basis.'),
+			'description' => tra('Allow to manage keywords on a per-page basis.'),
 			'type' => 'flag',
 			'default' => 'n',
 		),
@@ -649,19 +623,19 @@ function prefs_wiki_list($partial = false)
 			'default' => 'n',
 		),
 		'wiki_mandatory_edit_summary' => array(
-			'name' => tra('Mandatory wiki page edit summary'),
-			'description' => tra('Reject save attempts that do not include an edit summary describing the changes made.'),
+			'name' => tra('Mandatory edit summary on wiki pages'),
+			'description' => tra('Reject save attempts not providing an edit summary to describe the changes made.'),
 			'type' => 'flag',
 			'default' => 'n',
 		),
 		'wiki_freetags_edit_position' => array(
-			'name' => tra('Position of tags selection'),
-			'description' => tra('To place tags selection more prominently than in the properties tab.'),
+			'name' => tra('Choose position of freetags selection'),
+			'description' => tra('If you wish to place freetags selection more prominently than in the properties tab.'),
 			'type' => 'list',
 			'options' => array(
 				'properties' => tra('Properties tab'),
 				'edit' => tra('Edit tab'),
-				'freetagstab' => tra('Tags tab'),
+				'freetagstab' => tra('Freetags tab'),
 			),
 			'default' => 'properties',
 		),
@@ -678,7 +652,7 @@ function prefs_wiki_list($partial = false)
 		),
 		'wiki_backlinks_name_len' => array(
 			'name' => tra('Name length'),
-			'description' => tra('Maximum length (in characters) to display before truncating backlink page names. Use "0" for no truncating.'),
+			'description' => tra('Maximum length (characters) to display/truncate for backlink page names. Use "0" for no truncation.'),
 			'type' => 'text',
 			'size' => '3',
 			'filter' => 'digits',
@@ -695,11 +669,13 @@ function prefs_wiki_list($partial = false)
 			'name' => tra('Wiki rating options'),
 			'description' => tra('List of options available for the rating of wiki pages.'),
 			'type' => 'text',
+			'separator' => ',',
+			'filter' => 'int',
 			'default' => "0,1,2,3,4,5",
 		),
 		'wiki_pagealias_tokens' => array(
 			'name' => tra('Semantic link types to use as page alias markers'),
-			'description' => tra('Comma-separated list of semantic links to identify a page as an alias of another'),
+			'description' => tra('Comma separated list of semantic links to use to identify a page as an alias to another'),
 			'type' => 'text',
 			'dependencies' => array('feature_wiki_pagealias'),
 			'default' => 'alias',
@@ -717,27 +693,27 @@ function prefs_wiki_list($partial = false)
 			'default' => '',
 		),
 		'wiki_pagination' => array(
-			'name' => tr('Wiki page pagination'),
-			'description' => tr('Enables the sectioning of a wiki page\'s content into two or more paginated pages.'),
+			'name' => tr('Wiki Pagination'),
+			'description' => tr('Allows to separate a wiki page into a paginated page using a separator.'),
 			'type' => 'flag',
 			'default' => 'n',
 		),
 		'wiki_page_separator' => array(
 			'name' => tr('Wiki page separator'),
-			'description' => tr('Separator to use in the content of a wiki page to divide the content into multiple pages.'),
+			'description' => tr('Separator used within the content of a wiki page to split the content.'),
 			'type' => 'text',
 			'default' => '...page...',
 		),
 		'wiki_auto_toc' => array(
 			'name' => tr('Wiki auto-toc'),
-			'description' => tr('Automatic table of contents generation for wiki pages. The generated table of contents will display as a fixed-position aside next to the page contents.'),
+			'description' => tr('Automatic Table of Contents generation for wiki pages. It will automatically generate 2 Table Of Contents: one in the wiki page and one floating when scrolling down the page. Enable fast(!) header navigation.'),
 			'type' => 'flag',
 			'help' => 'Auto TOC',
 			'default' => 'n',
 		),
 		'wiki_inline_auto_toc' => array(
 			'name' => tr('Add inline auto-toc'),
-			'description' => tr('Automatically add an inline table of contents for wiki pages. This setting can be toggled per page, in the page properties'),
+			'description' => tr('Automatically add an inline Table of Contents for wiki pages. This setting can be toogled per page, in the page properties'),
 			'type' => 'flag',
 			'default' => 'y',
 			'dependencies' => array(
@@ -745,8 +721,8 @@ function prefs_wiki_list($partial = false)
 			),
 		),
 		'wiki_inline_toc_pos' => array(
-			'name' => tr('Inline table of contents position'),
-			'description' => tr('Position for inline table of contents. One of top, left, right (right is the default)'),
+			'name' => tr('Inline toc position'),
+			'description' => tr('Position for inline Table of Contents. One of top, left, right (right = default)'),
 			'type' => 'text',
 			'default' => 'right',
 			'dependencies' => array(

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -33,11 +33,11 @@ class ModLib extends TikiLib
 
 	public $cssfiles  = array(
 		'calendar_new'	=> array (
-			'csspath'	=> 'themes/base_files/feature_css/calendar.css',
+			'csspath'	=> 'css/calendar.css',
 			'rank'		=> 20,
 		),
 		'action_calendar'	=> array (
-			'csspath'	=> 'themes/base_files/feature_css/calendar.css',
+			'csspath'	=> 'css/calendar.css',
 			'rank'		=> 20,
 		),
 	);
@@ -62,31 +62,17 @@ class ModLib extends TikiLib
      */
     function replace_user_module($name, $title, $data, $parse=NULL)
 	{
-        global $prefs;
-
 		if ((!empty($name)) && (!empty($data))) {
 			$query = "delete from `tiki_user_modules` where `name`=?";
 			$result = $this->query($query, array($name), -1, -1, false);
 			$query = "insert into `tiki_user_modules`(`name`,`title`,`data`, `parse`) values(?,?,?,?)";
 
-            //BEGIN wikiLingo integration
-            if ($prefs['feature_wikilingo'] == 'y') {
-                $this->query("DELETE FROM `tiki_output` WHERE `objectType` = ? AND `entityId` = ?", array("userModule", $name));
-
-                switch (strtolower($parse))
-                {
-                    case 'wikilingo':
-                        $this->query("INSERT INTO `tiki_output` (`objectType`, `entityId`, `version`) VALUES  (?, ?, ?)", array("userModule", $name, 1));
-                        $parse = 'y';
-                }
-            }
-            //END wikiLingo integration
 			$result = $this->query($query, array($name,$title,$data,$parse));
 
-			$cachelib = TikiLib::lib('cache');
+			global $cachelib; require_once("lib/cache/cachelib.php");
 			$cachelib->invalidate("user_modules_$name");
 
-			$wikilib = TikiLib::lib('wiki');
+			require_once("lib/wiki/wikilib.php");
 			$converter = new convertToTiki9();
 			$converter->saveObjectStatus($name, 'tiki_user_modules', 'new9.0+');
 
@@ -125,7 +111,6 @@ class ModLib extends TikiLib
 			$this->query($query, array($name, $position, (int)$order, $params));
 			$query = "insert into `tiki_modules`(`name`,`title`,`position`,`ord`,`cache_time`,`rows`,`groups`,`params`,`type`) values(?,?,?,?,?,?,?,?,?)";
 			$result = $this->query($query, array($name,$title,$position,(int) $order,(int) $cache_time,(int) $rows,$groups,$params,$type));
-			$moduleId = $this->lastInsertId(); //to return the recently created module
 			if ($type == "D" || $type == "P") {
 				$query = 'select `moduleId` from `tiki_modules` where `name`=? and `title`=? and `position`=? and `ord`=? and `cache_time`=? and `rows`=? and `groups`=? and `params`=? and `type`=?';
 				$moduleId = $this->getOne($query, array($name,$title,$position,(int) $order,(int) $cache_time,(int) $rows,$groups,$params,$type));
@@ -135,7 +120,7 @@ class ModLib extends TikiLib
 			$usermoduleslib = TikiLib::lib('usermodules');
 			$usermoduleslib->add_module_users($moduleId, $name, $title, $position, $order, $cache_time, $rows, $groups, $params, $type);
 		}
-		return $moduleId;
+		return true;
 	}
 
 	/* Returns the requested module assignation. A module assignation is represented by an array similar to a tiki_modules record. The groups field is unserialized in the module_groups key, a spaces-separated list of groups. */
@@ -308,7 +293,7 @@ class ModLib extends TikiLib
 		$query = " delete from `tiki_user_modules` where `name`=?";
 		$result = $this->query($query, array($name));
 
-		$cachelib = TikiLib::lib('cache');
+		global $cachelib; require_once("lib/cache/cachelib.php");
 		$cachelib->invalidate('user_modules');
 
 		return true;
@@ -458,13 +443,6 @@ class ModLib extends TikiLib
 		$module_params['module_position'] = $module['position'];
 		$module_params['module_ord'] = $module['ord'];
 
-		if ($module['name'] == 'addon' && !empty($module_params['otherparams'])) {
-			parse_str($module_params['otherparams'], $other_params);
-			if (is_array($other_params)) {
-				$module_params = $module_params + $other_params;
-			}
-		}
-
 		if ( $prefs['user_flip_modules'] === 'n' ) {
 			$module_params['flip'] = 'n';
 		}
@@ -484,14 +462,14 @@ class ModLib extends TikiLib
      */
     function filter_active_module( $module )
 	{
-		global $section, $page, $prefs, $user;
-		$tikilib = TikiLib::lib('tiki');
+		global $section, $page, $prefs, $user, $tikilib;
+
 		// Validate preferences
 		$module_info = $this->get_module_info($module['name']);
 		$params = $module['params'];
 
 		if ( $prefs['feature_perspective'] == 'y' ) {
-			$perspectivelib = TikiLib::lib('perspective');
+			global $perspectivelib; require_once 'lib/perspectivelib.php';
 			$persp = $perspectivelib->get_current_perspective($prefs);
 			if (empty($persp)) {
 				$persp = 0;
@@ -783,6 +761,9 @@ class ModLib extends TikiLib
 
 		$cachelib = TikiLib::lib('cache');
 		$cacheKey = 'module.' . $moduleName . $prefs['language'];
+		if ($prefs['mobile_feature'] === 'y') {
+			$cacheKey .=  $prefs['mobile_mode'];
+		}
 		$info = $cachelib->getSerialized($cacheKey, 'module');
 
 		if ($info) {
@@ -848,7 +829,7 @@ class ModLib extends TikiLib
 				),
 				'category' => array(
 					'name' => tra('Category'),
-					'description' => tra('Module displayed depending on category. Separate multiple category IDs or names by semi-colons.'),
+					'description' => tra('Module displayed depending on category. Multiple category ids or names can be separated by semi-colons.'),
 					'section' => 'visibility',
 					'separator' => ';',
 					'filter' => 'alnum',
@@ -856,7 +837,7 @@ class ModLib extends TikiLib
 				),
 				'nocategory' => array(
 					'name' => tra('No Category'),
-					'description' => tra('Module is hidden depending on category. Separate multiple category IDs or names by semi-colons. This takes precedence over the category parameter above.'),
+					'description' => tra('Module hidden depending on category. Multiple category ids or names can be separated by semi-colons. This takes precedence over the category parameter above.'),
 					'section' => 'visibility',
 					'separator' => ';',
 					'filter' => 'alnum',
@@ -864,13 +845,13 @@ class ModLib extends TikiLib
 				),
 				'subtree' => array(
 					'name' => tra('Category subtrees'),
-					'description' => tra('Consider child categories of the categories listed in "category" and "no category" to be part of those categories. (0 or 1)'),
+					'description' => tra('Consider children categories of the categories listed in category and no category to be part of those categories. (0 or 1)'),
 					'section' => 'visibility',
 					'filter' => 'int',
 				),
 				'perspective' => array(
 					'name' => tra('Perspective'),
-					'description' => tra('Module is displayed only in the listed perspective ID(s). Separate multiple perspective IDs by semi-colons.'),
+					'description' => tra('Only display the module if in one of the listed perspective IDs. Semi-colon separated.'),
 					'separator' => ';',
 					'filter' => 'digits',
 					'section' => 'visibility',
@@ -878,21 +859,21 @@ class ModLib extends TikiLib
 				),
 				'lang' => array(
 					'name' => tra('Language'),
-					'description' => tra('Module is displayed only when the specified language(s) in use. Designate languages by two-character language codes. Separate multiple languages by semi-colons.'),
+					'description' => tra('Module only applicable for the specified languages. Languages are defined as two character language codes. Multiple values can be separated by semi-colons.'),
 					'separator' => ';',
 					'filter' => 'lang',
 					'section' => 'visibility',
 				),
 				'section' => array(
 					'name' => tra('Section'),
-					'description' => tra('Module is displayed only in the specified sections. Separate multiple sections by semi-colons. Choose from: blogs; calendar; categories; cms (for "articles"); contacts; directory; faqs; featured_links; file_galleries; forums; galleries (for "image galleries"); gmaps; html_pages; maps; mytiki; newsletters; poll; quizzes; surveys; trackers; user_messages; webmail; wiki page'),
+					'description' => tra('Module only applicable for the specified sections. Multiple values can be separated by semi-colons. Choose values from: blogs; calendar; categories; cms (for "articles"); contacts; directory; faqs; featured_links; file_galleries; forums; galleries (for "image galleries"); gmaps; html_pages; maps; mytiki; newsletters; poll; quizzes; surveys; trackers; user_messages; webmail; wiki page'),
 					'separator' => ';',
 					'filter' => 'striptags',
 					'section' => 'visibility',
 				),
 				'page' => array(
 					'name' => tra('Page Filter'),
-					'description' => tra('Module is displayed only on the specified page(s). Separate multiple page names by semi-colons.'),
+					'description' => tra('Module only applicable on the specified page names. Multiple values can be separated by semi-colons.'),
 					'separator' => ';',
 					'filter' => 'pagename',
 					'section' => 'visibility',
@@ -900,7 +881,7 @@ class ModLib extends TikiLib
 				),
 				'nopage' => array(
 					'name' => tra('No Page'),
-					'description' => tra('Module is not displayed on the specified page(s). Separate multiple page names by semi-colons.'),
+					'description' => tra('Module not applicable on the specified page names. Multiple values can be separated by semi-colons.'),
 					'separator' => ';',
 					'filter' => 'pagename',
 					'section' => 'visibility',
@@ -908,7 +889,7 @@ class ModLib extends TikiLib
 				),
 				'theme' => array(
 					'name' => tra('Theme'),
-					'description' => tra('Module is displayed or not displayed depending on the theme. (Enter the theme\'s file name, for example, "thenews.css".) Prefix the theme name with "!" for the module to not display. Separate multiple theme names by semi-colons.'),
+					'description' => tra('Module enabled or disabled depending on the theme file name (e.g. "thenews.css"). Specified themes can be either included or excluded. Theme names prefixed by "!" are in the exclusion list. Multiple values can be separated by semi-colons.'),
 					'separator' => ';',
 					'filter' => 'themename',
 					'section' => 'visibility',
@@ -927,13 +908,13 @@ class ModLib extends TikiLib
 				),
 				'flip' => array(
 					'name' => tra('Flip'),
-					'description' => tra('Users can open and close the module.'),
+					'description' => tra('Users can shade module.'),
 					'filter' => 'alpha',
 					'section' => 'appearance',
 				),
 				'style' => array(
 					'name' => tra('Style'),
-					'description' => tra('CSS style for positioning the module, etc.'),
+					'description' => tra('CSS styling for positioning the module.'),
 					'section' => 'appearance',
 				),
 				'class' => array(
@@ -943,7 +924,7 @@ class ModLib extends TikiLib
 				),
 				'topclass' => array(
 					'name' => tra('Containing Class'),
-					'description' => tra('Custom CSS class of div around the module.'),
+					'description' => tra('Custom CSS class around.'),
 					'section' => 'appearance',
 				),
 			)
@@ -952,7 +933,7 @@ class ModLib extends TikiLib
 		if ($prefs['cookie_consent_feature'] === 'y') {
 			$info['params']['cookie_consent'] = array(
 				'name' => tra('Cookie Consent'),
-				'description' => 'n|y '.tra('Show only if consent to accept cookies has been granted.'),
+				'description' => 'n|y '.tra('Show only if consent for cookies has been granted.'),
 				'filter' => 'alpha',
 				'section' => 'visibility',
 			);
@@ -1012,9 +993,7 @@ class ModLib extends TikiLib
      */
     function execute_module( $mod_reference )
 	{
-		global $user, $prefs, $tiki_p_admin;
-		$smarty = TikiLib::lib('smarty');
-		$tikilib = TikiLib::lib('tiki');
+		global $smarty, $tikilib, $user, $prefs, $tiki_p_admin;
 
 		try {
 			$defaults = array(
@@ -1173,8 +1152,8 @@ class ModLib extends TikiLib
      */
     function get_user_module_content( $name, $module_params )
 	{
-		$smarty = TikiLib::lib('smarty');
-		$tikilib = TikiLib::lib('tiki');
+		global $tikilib, $smarty;
+
 		$smarty->assign('module_type', 'module');
 		$info = $this->get_user_module($name);
 		if (!empty($info)) {
@@ -1183,8 +1162,10 @@ class ModLib extends TikiLib
 				$smarty->assign('module_type', 'cssmenu');
 			}
 
-            $info = $this->parse($info);
-
+			if (isset($info['parse']) && $info['parse'] == 'y') {
+				$info['data'] = $tikilib->parse_data($info['data'], array('is_html' => true, 'suppress_icons' => true));
+				$info['title'] = $tikilib->parse_data($info['title'], array('noparseplugins' => true, 'is_html' => true));
+			}
 			// re-assign module_params for the custom module in case a module plugin is used inside it
 			$smarty->assign_by_ref('module_params', $module_params);
 			$smarty->assign('user_title', tra($info['title']));
@@ -1194,37 +1175,6 @@ class ModLib extends TikiLib
 			return $smarty->fetch('modules/user_module.tpl');
 		}
 	}
-
-    function parse($info)
-    {
-        global $prefs, $headerlib;
-		$tikilib = TikiLib::lib('tiki');
-        //allow for wikiLingo parsing, will only return 'y' if turned on AND enabled for this particular module
-        if (isset($info['wikiLingo']) && $info['wikiLingo'] == 'y' && $prefs['feature_wikilingo'] == 'y') {
-	        //TODO: correct the paths for scripts and output them to the header
-	        $scripts = new WikiLingo\Utilities\Scripts();
-	        $parser = new WikiLingo\Parser($scripts);
-	        $info['data'] = $parser->parse($info['data']);
-	        $info['title'] = $parser->parse($info['title']);
-
-	        /* output css from wikiLingo in a literal so smarty doesn't throw up.
-	         * NOTE: this is not added to headerlib because it has already passed the opportunity to get more css
-	         */
-	        $info['data'] = '{literal}' . $scripts->renderCss() . '{/literal}' . $info['data'];
-
-	        //output js to headerlib, because js is at bottom and has not yet been output
-	        foreach ( $scripts->scriptLocations as $scriptLocation ) {
-		        $headerlib->add_jsfile($scriptLocation);
-	        }
-	        $headerlib->add_js(implode($scripts->scripts));
-
-        } else if (isset($info['parse']) && $info['parse'] == 'y') {
-            $info['data'] = $tikilib->parse_data($info['data'], array('is_html' => true, 'suppress_icons' => true));
-            $info['title'] = $tikilib->parse_data($info['title'], array('noparseplugins' => true, 'is_html' => true));
-        }
-
-        return $info;
-    }
 
     /**
      * @param $mod_reference
@@ -1261,7 +1211,7 @@ class ModLib extends TikiLib
      */
     function require_cache_build( $mod_reference, $cachefile )
 	{
-		$tikilib = TikiLib::lib('tiki');
+		global $tikilib;
 		return ! file_exists($cachefile)
 			|| ( $tikilib->now - filemtime($cachefile) ) >= $mod_reference['cache_time'];
 	}
@@ -1424,18 +1374,7 @@ class ModLib extends TikiLib
      */
     function get_user_module($name)
 	{
-        global $prefs;
-
-		$info = $this->table('tiki_user_modules')
-            ->fetchFullRow(array('name' => $name));
-
-        if ($prefs['feature_wikilingo'] == 'y') {
-            if ($this->getOne('SELECT 1 FROM `tiki_output` WHERE `objectType` = ? AND `entityId` = ?', array('userModule', $name)) != null) {
-                $info['wikiLingo'] = 'y';
-            }
-        }
-
-        return $info;
+		return $this->table('tiki_user_modules')->fetchFullRow(array('name' => $name));
 	}
 
 	/**
@@ -1541,3 +1480,5 @@ function zone_is_empty($zoneName)
 	return true;
 }
 
+global $modlib;
+$modlib = new ModLib;

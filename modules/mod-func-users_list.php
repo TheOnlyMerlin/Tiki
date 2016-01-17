@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -49,8 +49,8 @@ function module_users_list_info()
 				'default' => 'n'
 			),
 			'avatar' => array(
-				'name' => tra('Profile picture'),
-				'description' => tra('Show the user profile picture.') . ' ' . tra('Possible values:') . ' ' . tra('y|n'),
+				'name' => tra('Avatar'),
+				'description' => tra('Show the user avatar.') . ' ' . tra('Possible values:') . ' ' . tra('y|n'),
 				'filter' => 'word',
 				'required' => false,
 				'default' => 'n'
@@ -115,10 +115,7 @@ function module_users_list_info()
  */
 function module_users_list($module_params)
 {
-	global $prefs;
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
+	global $userlib, $tikilib, $prefs, $smarty;
 	
 	if (isset($module_params['params']['group'])) {
 		$group = array($module_params['params']['group']);
@@ -137,11 +134,11 @@ function module_users_list($module_params)
 
 	$users = $userlib->get_users(0, -1, $sort_mode, '',!empty($module_params['initial'])? $module_params['initial']:'', isset($module_params['groups'])?true: false, $group);
 	if (isset($_REQUEST["realName"]) && ($prefs['auth_ldap_nameattr'] == '' || $prefs['auth_method'] != 'ldap')) {
-		$tikilib->set_user_preference($userwatch, 'realName', $_REQUEST["realName"]);
-		if ( $prefs['user_show_realnames'] == 'y' ) {
-			$cachelib = TikiLib::lib('cache');
-			$cachelib->invalidate('userlink.'.$user.'0');
-		}
+	 $tikilib->set_user_preference($userwatch, 'realName', $_REQUEST["realName"]);
+	 if ( $prefs['user_show_realnames'] == 'y' ) {
+	   global $cachelib;
+	   $cachelib->invalidate('userlink.'.$user.'0');
+	 }
 	}
 
 	for ($i = 0; $i < $users['cant']; ++$i) {

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -50,58 +50,13 @@ class Search_ContentSource_UserSource implements Search_ContentSource_Interface
 
 		$loc = $this->geo->build_location_string($detail['preferences']);
 
-		$country = '';
-		if (isset($detail['preferences']['country'])) {
-			$country = $detail['preferences']['country'];
-		}
-		$gender = '';
-		if (isset($detail['preferences']['gender'])) {
-			$gender = $detail['preferences']['gender'];
-		}
-		$homePage = '';
-		if (isset($detail['preferences']['homePage'])) {
-			$homePage = $detail['preferences']['homePage'];
-		}
-		$realName = '';
-		if (isset($detail['preferences']['realName'])) {
-			$realName = $detail['preferences']['realName'];
-		}
-		if ($prefs['allowmsg_is_optional'] == 'y' && isset($detail['preferences']['allowMsgs'])) {
-			$allowMsgs = $detail['preferences']['allowMsgs'];
-		}else{
-			$allowMsgs = 'y';
-		}
-		if (isset($detail['preferences']['user_style'])) {
-			$user_style = $detail['preferences']['user_style'];
-		} else {
-			$user_style = isset($prefs['site_style']) ? $prefs['site_style'] : "" ;
-		}
-
-		$user_language = $this->tiki->get_language($objectId);
-		$langLib = TikiLib::lib('language');
-		$user_language_text = $langLib->format_language_list(array($user_language));
-
-		$userPage = $prefs['feature_wiki_userpage_prefix'] . $objectId;
-		if (! $this->tiki->page_exists($userPage)){
-			$userPage = "";
-		}
-
-
 		$data = array(
 			'title' => $typeFactory->sortable($name),
 			'wiki_content' => $typeFactory->wikitext($content),
-			'user_country' => $typeFactory->sortable($country),
-			'user_gender' => $typeFactory->sortable($gender),
-			'user_homepage' => $typeFactory->sortable($homePage),
-			'user_realName' => $typeFactory->sortable($realName),
-			'user_allowmsgs' => $typeFactory->sortable($allowMsgs),
-			'user_language' => $typeFactory->multivalue($user_language),
-			'user_style' => $typeFactory->sortable($user_style),
-			'user_page' => $typeFactory->sortable($userPage),
+			'user_country' => $typeFactory->sortable($detail['preferences']['country']),
 			'geo_located' => $typeFactory->identifier(empty($loc) ? 'n' : 'y'),
 			'geo_location' => $typeFactory->identifier($loc),
 			'searchable' => $typeFactory->identifier($this->userIsIndexed($detail) ? 'y' : 'n'),
-			'groups' => $typeFactory->multivalue($detail['groups']),
 			'_extra_groups' => array('Registered'), // Add all registered to allowed groups
 		);
 

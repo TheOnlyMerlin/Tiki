@@ -3,7 +3,7 @@
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+// $Id: wikiplugin_xmlupdate.php 56878 2015-12-03 01:28:43Z lindonb $
 
 function wikiplugin_xmlupdate_info()
 {

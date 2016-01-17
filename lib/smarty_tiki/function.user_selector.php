@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -26,10 +26,8 @@
  */
 function smarty_function_user_selector($params, $smarty)
 {
-	global $prefs, $user, $tiki_p_admin;
-	$tikilib = TikiLib::lib('tiki');
-	$headerlib = TikiLib::lib('header');
-	$userlib = TikiLib::lib('user');
+	global $prefs, $user, $userlib, $headerlib, $tikilib, $tiki_p_admin;
+	require_once 'lib/userslib.php';
 	$smarty->loadPlugin('smarty_modifier_username');
 	
 	static $iUserSelector = 0;
@@ -49,9 +47,7 @@ function smarty_function_user_selector($params, $smarty)
 			'user_selector_threshold' => $prefs['user_selector_threshold'],
 			'allowNone' => 'n',
 			'realnames' => 'y',
-			'class' => '',
 	);
-	
 	$params = array_merge($defaults, $params);
 	if (isset($params['size'])) {
 		$sz = ' size="' . $params['size'] . '"';
@@ -64,10 +60,6 @@ function smarty_function_user_selector($params, $smarty)
 		$ed = '';
 	}
 	
-	if(isset($params['class'])) {
-		$class = ' class="'. $params['class'] . '"';
-	}
-
 	$groupNames = array();
 	if (is_array($params['groupIds'])) {
 		foreach ($params['groupIds'] as $k => $groupId) {
@@ -112,7 +104,7 @@ function smarty_function_user_selector($params, $smarty)
 	$ret = '';
 	
 	if ($prefs['feature_jquery_autocomplete'] == 'y' && ($ucant > $prefs['user_selector_threshold'] or $ucant > $params['user_selector_threshold'])) {
-		$ret .= '<input id="' . $params['id'] . '" type="text" name="' . $params['name'] . '" value="' . htmlspecialchars($params['user']) . '"' . $sz . $ed . ' style="'.$params['style'].'"'.$class.' />';
+		$ret .= '<input id="' . $params['id'] . '" type="text" name="' . $params['name'] . '" value="' . htmlspecialchars($params['user']) . '"' . $sz . $ed . ' style="'.$params['style'].'" />';
 		if (($params['contact'] == 'true')) {
 			$mode = ('usersandcontacts');
 		} else if ($prefs['user_show_realnames'] === 'y' && $params['realnames'] === 'y') {
@@ -128,7 +120,7 @@ function smarty_function_user_selector($params, $smarty)
 				$users[] = $usr['login'];
 			}
 		}
-		$ret .= '<select name="' . $params['name'] . '" id="' . $params['id'] . '"' . $sz . $ed . ' style="'.$params['style'].'" class="form-control">';
+		$ret .= '<select name="' . $params['name'] . '" id="' . $params['id'] . '"' . $sz . $ed . ' style="'.$params['style'].'">';
 		if ($params['allowNone'] === 'y') {
 			$ret .= '<option value=""' . (empty($params['user']) ? ' selected="selected"' : '') . ' >' . tra('None') .'</option>';
 		}

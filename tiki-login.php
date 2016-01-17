@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -38,7 +38,7 @@ if (isset($_REQUEST['cas']) && $_REQUEST['cas'] == 'y' && $prefs['auth_method'] 
 $smarty->assign('errortype', 'login'); // to avoid any redirection to the login box if error
 // Alert user if cookies are switched off
 if (ini_get('session.use_cookies') == 1 && !isset($_COOKIE[ session_name() ]) && $prefs['session_silent'] != 'y') {
-	$smarty->assign('msg', tra('Cookies must be enabled to log in to this site'));
+	$smarty->assign('msg', tra('You have to enable cookies to be able to login to this site'));
 	$smarty->display('error.tpl');
 	exit;
 }
@@ -84,7 +84,7 @@ if (isset($_REQUEST['su'])) {
 		if ($userlib->user_exists($_REQUEST['username'])) {
 			$loginlib->switchUser($_REQUEST['username']);
 		}
-		
+
 		$access->redirect($_SESSION['loginfrom']);
 	}
 }
@@ -161,10 +161,9 @@ if (isset($_REQUEST['intertiki']) and in_array($_REQUEST['intertiki'], array_key
 				$userlib->set_user_fields($user_details['info']);
 				$user = $requestedUser;
 				if ($prefs['feature_userPreferences'] == 'y' && $prefs['feature_intertiki_import_preferences'] == 'y') {
-					$userprefslib = TikiLib::lib('userprefs');
-					if (!empty($avatarData)) {
-						$userprefslib->set_user_avatar($user, 'u', '', $user_details['info']['avatarName'], $user_details['info']['avatarSize'], $user_details['info']['avatarFileType'], $avatarData, false);
-					}
+					global $userprefslib;
+					include_once ('lib/userprefs/userprefslib.php');
+					$userprefslib->set_user_avatar($user, 'u', '', $user_details['avatarName'], $user_details['avatarSize'], $user_details['avatarFileType'], $avatarData);
 					$userlib->set_user_preferences($user, $user_details['preferences']);
 				}
 				if ($prefs['feature_intertiki_import_groups'] == 'y') {
@@ -265,6 +264,7 @@ if ($isvalid) {
 			if (strpos($url, 'page='. $homePageUrl) !== false) {
 				$url = str_replace('page='. $homePageUrl, '', $url);
 			} else if (strpos($url, $homePageUrl) !== false) {
+				$url = str_replace($homePageUrl, '', $url);
 				// Strip away the page name from the URL
 				$parts = parse_url($url);
 				$url = '';
@@ -292,7 +292,7 @@ if ($isvalid) {
 			$url = ${$_REQUEST['page']};
 		} else {
 			if (!empty($_REQUEST['url'])) {
-				$cachelib = TikiLib::lib('cache');
+				global $cachelib; include_once('lib/cache/cachelib.php');
 				preg_match('/(.*)\?cache=(.*)/', $_REQUEST['url'], $matches);
 				if (!empty($matches[2]) && $cdata = $cachelib->getCached($matches[2], 'edit')) {
 					if (!empty($matches[1])) {
@@ -329,7 +329,7 @@ if ($isvalid) {
 					}
 				}
 				// Go to the group page instead of the referer url if we are in one of those cases :
-				//   - pref 'Go to the group homepage only if logging in from the default homepage' (limitedGoGroupHome) is disabled,
+				//   - pref 'Go to group homepage only if login from default homepage' (limitedGoGroupHome) is disabled,
 				//   - referer url (e.g. http://example.com/tiki/tiki-index.php?page=Homepage ) is the homepage (tikiIndex),
 				//   - referer url complete path ( e.g. /tiki/tiki-index.php?page=Homepage ) is the homepage,
 				//   - referer url relative path ( e.g. tiki-index.php?page=Homepage ) is the homepage
@@ -378,7 +378,7 @@ if ($isvalid) {
 	$smarty->assign('module_params', $module_params);
 	if ($error == PASSWORD_INCORRECT && ($prefs['unsuccessful_logins'] >= 0 || $prefs['unsuccessful_logins_invalid'] >= 0)) {
 		$nb_bad_logins = $userlib->unsuccessful_logins($requestedUser);
-		$nb_bad_logins++ ; 
+		$nb_bad_logins++ ;
 		$userlib->set_unsuccessful_logins($requestedUser, $nb_bad_logins);
 		if ($prefs['unsuccessful_logins_invalid'] > 0 && ($nb_bad_logins >= $prefs['unsuccessful_logins_invalid'])) {
 			$info = $userlib->get_user_info($requestedUser);
@@ -442,7 +442,7 @@ if ($isvalid) {
 			$error = tra('You did not validate your account.');
 			$extraButton = array('href'=>'tiki-send_mail.php?user='. urlencode($_REQUEST['user']), 'text'=>tra('Resend'), 'comment'=>tra('You should have received an email. Check your mailbox and your spam box. Otherwise click on the button to resend the email'));
         		break;
- 
+
 		case USER_AMBIGOUS:
 			$error = tra('You must use the right case for your user name.');
         		break;
@@ -454,10 +454,6 @@ if ($isvalid) {
 		case USER_ALREADY_LOGGED:
 			$error = tra('You are already logged in.');
         		break;
-
-		case EMAIL_AMBIGUOUS:
-			$error = tra("There is more than one user account with this email. Please contact the administrator.");
-			break;
 
 		default:
 			$error = tra('Invalid username or password');
@@ -471,14 +467,8 @@ if ($isvalid) {
 	exit;
 }
 
-if ( isset($user) ) {
-	TikiLib::events()->trigger('tiki.user.login',
-		array(
-			'type' => 'user',
-			'object' => $user,
-			'user' => $user,
-		)
-	);
+if ( isset($user) and $prefs['feature_score'] == 'y' ) {
+	$tikilib->score_event($user, 'login');
 }
 // RFC 2616 defines that the 'Location' HTTP headerconsists of an absolute URI
 if ( !preg_match('/^https?\:/i', $url) ) {

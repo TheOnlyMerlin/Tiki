@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -17,7 +17,7 @@ require_once ('tiki-setup.php');
  */
 function setDisplayMenu($name)
 {
-	$smarty = TikiLib::lib('smarty');
+	global $smarty;
 	if ( getCookie($name, 'menu', isset($_COOKIE['menu']) ? null : 'o') == 'o' ) {
 		$smarty->assign('mnu_'.$name, 'display:block;');
 		$smarty->assign('icn_'.$name, 'o');
@@ -52,7 +52,7 @@ setDisplayMenu('shtmenu');
 setDisplayMenu('prjmenu');
 // end from lib/setup/menus.php
 
-$statslib = TikiLib::lib('stats');
+include_once ('lib/stats/statslib.php');
 include_once ('lib/map/map_query.php');
 if (!function_exists('ms_newMapObj')) {
 	$msg = tra("You must first setup MapServer");
@@ -105,7 +105,7 @@ if (!is_file($map_path . $mapfile) || preg_match("/(\/\.)/", $map_path . $mapfil
  */
 function userErrorHandler($errno, $errmsg, $filename, $linenum, $vars)
 {
-	$smarty = TikiLib::lib('smarty');
+	global $smarty;
 	global $style_base;
 	global $map_path;
 	global $mapfile;
@@ -137,8 +137,7 @@ function userErrorHandler($errno, $errmsg, $filename, $linenum, $vars)
 	$msg.= "<pre/><br />";
 	if ($tiki_p_map_edit == 'y') {
 		$msg.= '<a class="link" href="tiki-map_edit.php?mapfile=' . $mapfile . '&mode=editing">';
-		$smarty->loadPlugin('smarty_function_icon');
-		$msg.= smarty_function_icon(['name' => 'settings', 'iclass' => 'tips', 'ititle' => ':' . tra('Edit')], $smarty);
+		$msg.= '<img src="img/icons/wrench.png" alt="' . tra("edit") . '" title="' . tra("edit") . '" width="16" height="16" />';
 		$msg.= '</a>';
 	}
 	$smarty->assign('msg', $msg);

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -33,30 +33,24 @@ function wikiplugin_font_info()
 		'name' => tra('FONT'),
 		'format' => 'wiki',
 		'documentation' => 'PluginFont',
-		'description' => tra('Format the font type and size of text'),
+		'description' => tra('Experimental: Font family and font size.'),
 		'prefs' => array('wikiplugin_font'),
+		'params' => array(),
 		'body' => tra('Content'),
-		'tags' => array( 'basic' ),
-		'iconname' => 'font',
-		'introduced' => 8,
+		'tags' => array( 'experimental' ),		
 		'params' => array(
 			'family' => array(
 				'required' => false,
 				'name' => tra('Font Family'),
 				'default' => '',
 				'description' => tra('Select the font family to display the content.'),
-				'since' => '8.0',
-				'filter' => 'text',
 				'options' => wikiplugin_font_getfontoptions(),
 			),
 			'size' => array(
 				'required' => false,
 				'name' => tra('Font Size'),
-				'since' => '8.0',
 				'default' => '',
-				'filter' => 'digits',
-				'description' => tr('Define the size of the font in pixels (enter %0 to get a font of 12px)',
-					'<code>12</code>'), // 'px' is compatible with the CKE UI
+				'description' => tra('Define the size of the font in pixels (enter \'12\' to get a font of 12px)'), // 'px' is compatible with the CKE UI
 			),
 		),
 	);	

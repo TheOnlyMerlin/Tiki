@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -219,7 +219,7 @@ function smarty_function_html_select_date($params, $smarty)
 			$month_values[$i] = strftime($month_value_format, mktime(0, 0, 0, $i, 1, 2000));
 		}
 
-		$month_result .= '<select class="form-control date" name=';
+		$month_result .= '<select name=';
 		if (null !== $field_array) {
 			$month_result .= '"' . $field_array . '[' . $prefix . 'Month]"';
 		} else {
@@ -260,7 +260,7 @@ function smarty_function_html_select_date($params, $smarty)
 			$day_values[] = sprintf($day_value_format, $i);
 		}
 
-		$day_result .= '<select class="form-control date" name=';
+		$day_result .= '<select name=';
 		if (null !== $field_array) {
 			$day_result .= '"' . $field_array . '[' . $prefix . 'Day]"';
 		} else {
@@ -316,7 +316,7 @@ function smarty_function_html_select_date($params, $smarty)
 				array_unshift($years, $year_empty);
 				array_unshift($yearvals, '');
 			}
-			$year_result .= '<select class="form-control date" name="' . $year_name . '"';
+			$year_result .= '<select name="' . $year_name . '"';
 			if (null !== $year_size) {
 				$year_result .= ' size="' . $year_size . '"';
 			}

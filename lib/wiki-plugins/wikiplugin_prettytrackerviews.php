@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,20 +11,16 @@ function wikiplugin_prettytrackerviews_info()
 	return array(
 		'name' => tra('Pretty Tracker View Tracking'),
 		'documentation' => tra('PluginPrettyTrackerViews'),
-		'description' => tra('Store tiki.tracker.pretty.views attribute for a trackeritem'),
+		'description' => tra('Stores tiki.tracker.pretty.views attribute for trackeritem'),
 		'prefs' => array('wikiplugin_prettytrackerviews', 'feature_trackers'),
 		'defaultfilter' => 'text',
 		'tags' => array( 'experimental' ),
-		'iconname' => 'trackers',
-		'introduced' => 7,
 		'params' => array (
 			'record' => array (
 				'required' => false,
 				'name' => tra('Record'),
-				'description' => tr('Set to %0y%1 to record view each time this is loaded', '<code>', '</code>'),
-				'since' => '7.0',
+				'description' => tra('set to y to record view each time this is loaded'),
 				'default' => 'n',
-				'filter' => 'alpha',
 				'options' => array(
 					array('text' => '', 'value' => ''),
 					array('text' => tra('Yes'), 'value' => 'y'),
@@ -34,9 +30,8 @@ function wikiplugin_prettytrackerviews_info()
 			'show' => array (
 				'required' => false,
 				'name' => tra('Show'),
-				'description' => tr('Set to %0n%1 to hide showing of attribute', '<code>', '</code>'),
+				'description' => tra('set to n to hide showing of attribute'),
 				'default' => 'y',
-				'filter' => 'alpha',
 				'options' => array(
 					array('text' => '', 'value' => ''),
 					array('text' => tra('Yes'), 'value' => 'y'),
@@ -47,9 +42,7 @@ function wikiplugin_prettytrackerviews_info()
 				'required' => true,
 				'name' => tra('Item ID'),
 				'description' => tra('Set to ID of tracker item'),
-				'since' => '7.0',
 				'default' => '',
-				'filter' => 'digits',
 				'profile_reference' => 'tracker_item',
 			),
 		),
@@ -58,7 +51,7 @@ function wikiplugin_prettytrackerviews_info()
 
 function wikiplugin_prettytrackerviews( $data, $params )
 {
-	$attributelib = TikiLib::lib('attribute');
+	global $attributelib; require_once 'lib/attributes/attributelib.php';
 	if (empty($params['itemId']) && !is_int($params['itemId'])) {
 		return '';
 	}

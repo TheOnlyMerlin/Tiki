@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -9,18 +9,18 @@ function prefs_unified_list()
 {
 	return array(
 		'unified_engine' => array(
-			'name' => tra('Unified search engine'),
+			'name' => tra('Unified Search Engine'),
 			'description' => tra('Search engine used to index the content of your Tiki. Some engines are more suitable for larger sites, but require additional software on the server.'),
 			'type' => 'list',
 			'options' => array(
-				'lucene' => tra('Lucene (PHP implementation)'),
-				'mysql' => tra('MySQL full-text search'),
+				'lucene' => tra('Lucene (PHP Implementation)'),
+				'mysql' => tra('MySQL Full Text Search'),
 				'elastic' => tra('ElasticSearch'),
 			),
 			'default' => 'mysql',
 		),
 		'unified_lucene_location' => array(
-			'name' => tra('Lucene index location'),
+			'name' => tra('Lucene Index Location'),
 			'description' => tra('Path to the location of the Lucene search index. The index must be on a local filesystem with enough space to contain the volume of the database.'),
 			'type' => 'text',
 			'size' => 35,
@@ -33,7 +33,7 @@ function prefs_unified_list()
 			'default' => 'n',
 		),
 		'unified_lucene_max_result' => array(
-			'name' => tra('Lucene maximum results'),
+			'name' => tra('Lucene Maximum Results'),
 			'description' => tra('Maximum amount of results to expose. Results further than these will need a more refined query to be reached.'),
 			'type' => 'text',
 			'filter' => 'int',
@@ -41,7 +41,7 @@ function prefs_unified_list()
 			'size' => 6,
 		),
 		'unified_lucene_max_resultset_limit' => array(
-			'name' => tra('Lucene maximum result-set limit'),
+			'name' => tra('Lucene Maximum Result Set Limit'),
 			'hint' => tra('Maximum size of result set to consider. Default 1000, 0 = unlimited.'),
 			'description' => tra('This is used when calculating result scores and sort order which can lead to out of memory errors on large data sets. The default of 1000 is safe with the PHP memory_limit set to 128M'),
 			'type' => 'text',
@@ -50,7 +50,7 @@ function prefs_unified_list()
 			'size' => 6,
 		),
 		'unified_lucene_terms_limit' => array(
-			'name' => tra('Lucene terms per query limit'),
+			'name' => tra('Lucene Terms Per Query Limit'),
 			'description' => tra('Maximum number of terms to be generated. Try increasing this value if you get errors saying "Terms per query limit is reached" espescially with wildcard, range and fuzzy searches.'),
 			'type' => 'text',
 			'filter' => 'int',
@@ -58,7 +58,7 @@ function prefs_unified_list()
 			'size' => 6,
 		),
 		'unified_lucene_max_buffered_docs' => array(
-			'name' => tra('Lucene maximum number of buffered documents'),
+			'name' => tra('Lucene Max Buffered Documents'),
 			'description' => tra('Number of documents required before the buffered in-memory documents are written into a new segment.'),
 			'hint' => tra(''),
 			'type' => 'text',
@@ -67,29 +67,29 @@ function prefs_unified_list()
 			'size' => 6,
 		),
 		'unified_lucene_max_merge_docs' => array(
-			'name' => tra('Lucene maximum number of merge documents'),
-			'description' => tra('Largest number of documents merged by addDocument(). Small values (for example, less than 10,000) are best for interactive indexing, as this limits the length of pauses while indexing to a few seconds. Larger values are best for batched indexing and speedier searches.'),
-			'hint' => tra('Small values (for example, less than 10,000) are best for interactive indexing. Use 0 for the Lucene default, which is practically infinite.'),
+			'name' => tra('Lucene Max Merge Documents'),
+			'description' => tra('Largest number of documents ever merged by addDocument(). Small values (e.g., less than 10,000) are best for interactive indexing, as this limits the length of pauses while indexing to a few seconds. Larger values are best for batched indexing and speedier searches.'),
+			'hint' => tra('Small values (e.g., less than 10,000) are best for interactive indexing. Use 0 for the Lucene default, which is practically infinite.'),
 			'type' => 'text',
 			'filter' => 'int',
 			'default' => 0,
 			'size' => 8,
 		),
 		'unified_lucene_default_operator' => array(
-			'name' => tra('Default Boolean Operator'),
+			'name' => tra('Lucene Default Boolean Operator'),
 			'description' => tra('Use OR (default) or AND as the default search operator.'),
 			'type' => 'list',
 			'filter' => 'int',
-			'default' => ZendSearch\Lucene\Search\QueryParser::B_OR,
+			'default' => Zend_Search_Lucene_Search_QueryParser::B_OR,
 			'options' => array(
-				0 => tra('OR'),
-				1 => tra('AND'),
+				Zend_Search_Lucene_Search_QueryParser::B_OR => tra('OR'),
+				Zend_Search_Lucene_Search_QueryParser::B_AND => tra('AND'),
 			),
 		),
 		'unified_lucene_merge_factor' => array(
-			'name' => tra('Lucene merge factor'),
+			'name' => tra('Lucene Merge Factor'),
 			'description' => tra('How often segment indices are merged by addDocument(). With smaller values, less RAM is used while indexing, and searches on unoptimized indices are faster, but indexing speed is slower. With larger values, more RAM is used during indexing, and while searches on unoptimized indices are slower, indexing is faster. Thus larger values (> 10) are best for batch index creation, and smaller values (< 10) for indices that are interactively maintained.'),
-			'hint' => tra('Large values (greater than 10) are best for batch index creation, and smaller values (less than 10) for indices that are interactively maintained.'),
+			'hint' => tra('Large values (> 10) are best for batch index creation, and smaller values (< 10) for indices that are interactively maintained.'),
 			'type' => 'text',
 			'filter' => 'int',
 			'default' => 10,
@@ -102,7 +102,7 @@ function prefs_unified_list()
 			'default' => 'y',
 		),
 		'unified_field_weight' => array(
-			'name' => tra('Field weights'),
+			'name' => tra('Field Weights'),
 			'description' => tra('Allows the field weights to be set that apply when ranking the pages for search listing. The weight only applies when the field is in the query. To nullify the value of a field, use an insignificant amount, not 0, which may lead to unexpected behaviors, such as stripping results.'),
 			'hint' => tra('One field per line, field_name__:__5.3'),
 			'type' => 'textarea',
@@ -136,8 +136,8 @@ function prefs_unified_list()
 			'tags' => array('advanced'),
 		),
 		'unified_forum_deepindexing' => array(
-			'name' => tra('Index forum replies together with initial post'),
-			'description' => tra('If enabled, forum replies will be indexed together with the initial post as a single document instead of being indexed separately'),
+			'name' => tra('Index forum replies together with root post'),
+			'description' => tra('If enabled, forum replies will be indexed together with the root post as a single document instead of being separately indexed'),
 			'type' => 'flag',
 			'default' => 'y',
 		),
@@ -150,23 +150,23 @@ function prefs_unified_list()
 		),
 		'unified_trackerfield_keys' => array(
 			'name' => tra('Format to use for tracker field keys'),
-			'description' => tra('Choose between field IDs and permanent names for the tracker indexing'),
+			'description' => tra('Choose between field ids and permanent names for the tracker indexing'),
 			'type' => 'list',
 			'default' => 'permName',
 			'options' => array(
-				'permName' =>tr('Permanent name'),
-				'fieldId' => tr('Field ID (backward compatibility mode with Tiki 7 and 8)'),
+				'permName' =>tr('Permanent Name'),
+				'fieldId' => tr('Field ID (Backward compatibility mode with Tiki 7 and 8)'),
 			),
 		),
 		'unified_parse_results' => array(
 			'name' => tra('Parse the results'),
-			'description' => tra('Parse the results. May impact performance'),
+			'description' => tra('Parse the results. May impact the performance'),
 			'type' => 'flag',
 			'default' => 'n',
 		),
 		'unified_excluded_categories' => array(
 			'name' => tra('Excluded categories'),
-			'description' => tra('List of category IDs to exclude from the search index.'),
+			'description' => tra('List of category ids to exclude from the search index.'),
 			'type' => 'text',
 			'separator' => ',',
 			'default' => array(),
@@ -188,7 +188,7 @@ function prefs_unified_list()
 		),
 		'unified_included_plugins' => array(
 			'name' => tra('Except included plugins'),
-			'description' => tra('List of plugin names that are required to be included while indexing, when excluding all.'),
+			'description' => tra('List of plugin names to force include while indexing, when excluding all.'),
 			'type' => 'text',
 			'filter' => 'word',
 			'separator' => ',',
@@ -206,7 +206,7 @@ function prefs_unified_list()
 			'size' => 40,
 		),
 		'unified_elastic_index_prefix' => array(
-			'name' => tra('ElasticSearch index prefix'),
+			'name' => tra('ElasticSearch Index Prefix'),
 			'description' => tra('Prefix used for all indexes for this installation in ElasticSearch.'),
 			'type' => 'text',
 			'filter' => 'word',
@@ -214,7 +214,7 @@ function prefs_unified_list()
 			'size' => 10,
 		),
 		'unified_elastic_index_current' => array(
-			'name' => tra('ElasticSearch current index'),
+			'name' => tra('ElasticSearch Current Index'),
 			'description' => tra('A new index is created upon rebuild and the old one is then destroyed. This setting allows you to see the currently active one.'),
 			'hint' => tra('Do not change this value unless you know what you are doing.'),
 			'type' => 'text',
@@ -222,16 +222,8 @@ function prefs_unified_list()
 			'size' => '20',
 			'default' => '',
 		),
-		'unified_elastic_camel_case' => array(
-			'name' => tr('Tokenize CamelCase words'),
-			'description' => tr('Consider the components of camel-case words as separate tokens, allowing them to be searched individually.'),
-			'warning' => tr('Conflicts with Tokenize Version Numbers.'),
-			'hint' => tr('ElasticSearch only'),
-			'type' => 'flag',
-			'default' => 'n',
-		),
 		'unified_mysql_index_current' => array(
-			'name' => tra('MySQL full-text search current index'),
+			'name' => tra('MySQL Full Text Search Current Index'),
 			'description' => tra('A new index is created upon rebuild and the old one is then destroyed. This setting allows you to see the currently active one.'),
 			'hint' => tra('Do not change this value unless you know what you are doing.'),
 			'type' => 'text',
@@ -249,25 +241,8 @@ function prefs_unified_list()
 			'filter' => 'word',
 		),
 		'unified_add_to_categ_search' => array(
-			'name' => tra('Use unified search in category admin'),
+			'name' => tra('Use Unified Search in Category Admin'),
 			'description' => tra('Use unfied search to find objects to add to categories. Limits types of objects available to those included in the unified index.'),
-			'type' => 'flag',
-			'default' => 'n',
-			'dependencies' => array(
-				'feature_search',
-			),
-		),
-		'unified_stopwords' => array(
-			'name' => tr('Stop Word List'),
-			'description' => tr('Words excluded from the search index as they can be too frequent and cause noise.'),
-			'type' => 'text',
-			'default' => ["a", "an", "and", "are", "as", "at", "be", "but", "by", "for", "if", "in", "into", "is", "it", "no", "not", "of", "on", "or", "s", "such", "t", "that", "the", "their", "then", "there", "these", "they", "this", "to", "was", "will", "with"],
-			'separator' => ',',
-			'hint' => tr('MySQL full-text search has its own list of stop words configured in the server.'),
-		),
-		'unified_trim_sorted_search' => array(
-			'name' => tra('Automatically Trim ElasticSearch results on Date-Sorted Query'),
-			'description' => tra('Automatically trim Elastic Search results in unified search if the query is sorted by modification or creation date.'),
 			'type' => 'flag',
 			'default' => 'n',
 			'dependencies' => array(

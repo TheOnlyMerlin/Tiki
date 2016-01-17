@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,30 +10,26 @@ function wikiplugin_countdown_info()
 	return array(
 		'name' => tra('Countdown'),
 		'documentation' => 'PluginCountdown',
-		'description' => tra('Display the time until or after a date and time'),
+		'description' => tra('Display a countdown to a specified date.'),
 		'prefs' => array('wikiplugin_countdown'),
-		'iconname' => 'history',
+		'icon' => 'img/icons/clock.png',
 		'body' => tra('Text to append to the countdown.'),
 		'tags' => array( 'basic' ),
-		'introduced' => 1,
 		'params' => array(
 			'enddate' => array(
 				'required' => true,
 				'name' => tra('End Date'),
 				'description' => tra('Target date and time. Multiple formats accepted.'),
-				'since' => '1',
-				'filter' => 'date',
 				'default' => '',
 			),
 			'show' => array(
 				'required' => false,
 				'name' => tra('Items to Show'),
-				'description' => tr(
-					'Select: %0y%1=years, %0o%1=months, %0d%1=days, %0h%1=hours, %0m%1=minutes, %0s%1=seconds.
-					Enter multiple values as: %0yodhms%1. Must be in the order of descending length, and a time unit should not be skipped.
-					If blank, the time is shown down to the hour if not zero.', '<code>', '</code>'
+				'description' => tra(
+					'Select: y=years, o=months, d=days, h=hours, m=minutes, s=seconds.
+					Enter multiple values as: yodhms. Must be in the order of descending length, and a time unit should not be skipped.
+					If blank, the time is shown down to the hour if not zero.'
 				),
-				'since' => '4.2',
 				'filter' => 'alpha',
 				'default' => '',
 				'options' => array(
@@ -64,12 +60,10 @@ function wikiplugin_countdown_info()
 			'caldays' => array(
 				'required' => false,
 				'name' => tra('Calendar Days'),
-				'description' => tr(
-					'Will use calendar day difference when set to Yes (%0y%1) and time units are not shown.
-					Result is that tomorrow, for example, is always shown as a one day away even if less than 24 hours
-					from now. No (%0n%1) is the default.', '<code>', '</code>'
+				'description' => tra(
+					'Will use calendar day difference when set to Yes (y) and time units are not shown.
+					Result is that tomorrow, for example, is always shown as a one day away even if less than 24 hours from now. No (n) is the default.'
 				),
-				'since' => '9.0',
 				'filter' => 'alpha',
 				'default' => 'n',
 				'options' => array(
@@ -81,12 +75,10 @@ function wikiplugin_countdown_info()
 			'since' => array(
 				'required' => false,
 				'name' => tra('Handle Past Events'),
-				'description' => tr(
-					'If Yes (%0y%1), will display amount of time since the event (default).
-					If No (%0n%1) and if there is body text, will display "is over" or custom text set in text parameter
-					after body text.', '<code>', '</code>'
+				'description' => tra(
+					'If Yes (y), will display amount of time since the event (default).
+					If No (n) and if there is body text, will display "is over" or custom text set in text parameter after body text.'
 				),
-				'since' => '4.2',
 				'filter' => 'alpha',
 				'default' => '',
 				'options' => array(
@@ -98,29 +90,27 @@ function wikiplugin_countdown_info()
 			'text' => array(
 				'required' => false,
 				'name' => tra('Text'),
-				'description' => tr(
+				'description' => tra(
 					'Text that will show with the countdown and body text.
-					Set to %0default%1 or leave empty to show "xxx days until/since [body text]", except that if
-					 the since parameter is set to No (%0n%1), "[body text] is over" will show after the end date has passed.
+					Set to "default" or leave empty to show "xxx days until/since [body text]", except that if
+					 the since parameter is set to No (n), "[body text] is over" will show after the end date has passed.
 					Also, if no time is shown because of the time units being displayed (for example, only years are shown and it\'s
 					less than a year before/after the end date) then "[body text] will happen in less than a year/happened in the last year" will show.
-					Or set pipe-separated custom text as follows: %0before date|before date by less than shortest time unit shown|after date
-					|after date by less than shortest time unit shown|after date and since set to No (n)%1.
-					Set to %0silent%1 for no text.', '<code>', '</code>'
+					Or set pipe-separated custom text as follows: before date|before date by less than shortest time unit shown|after date
+					|after date by less than shortest time unit shown|after date and since set to No (n).
+					Set to silent for no text.'
 				),
 				'accepted' => tra('default, silent, custom: before event|after event|after event when time not shown'),
-				'since' => '9.0',
 				'filter' => 'text',
 				'default' => '',
 			),
 			'thousands' => array(
 				'required' => false,
 				'name' => tra('Thousands Separator'),
-				'description' => tr(
+				'description' => tra(
 					'Set the thousands separator for results of 1,000 or more.
-					Choices are comma (%0c%1), decimal (%0d%1), space (%0s%1), or leave blank for no separator.', '<code>', '</code>'
+					Choices are comma (c), decimal (d), space (s), or leave blank for no separator.'
 				),
-				'since' => '9.0',
 				'filter' => 'alpha',
 				'default' => '',
 				'options' => array(

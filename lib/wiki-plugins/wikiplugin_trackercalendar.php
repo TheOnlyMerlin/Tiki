@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -9,55 +9,46 @@ function wikiplugin_trackercalendar_info()
 {
 	return array(
 		'name' => tr('Tracker Calendar'),
-		'description' => tr('Create and display a calendar using tracker data'),
+		'description' => tr('Uses full calendar to render the content of a tracker.'),
 		'prefs' => array('wikiplugin_trackercalendar', 'calendar_fullcalendar'),
 		'format' => 'html',
-		'iconname' => 'calendar',
-		'introduced' => 10,
 		'params' => array(
 			'trackerId' => array(
 				'name' => tr('Tracker ID'),
 				'description' => tr('Tracker to search from'),
-				'since' => '10.0',
 				'required' => false,
 				'default' => 0,
 				'filter' => 'int',
 				'profile_reference' => 'tracker',
 			),
 			'begin' => array(
-				'name' => tr('Begin Date Field'),
-				'description' => tr('Permanent name of the field to use for event beginning'),
-				'since' => '10.0',
+				'name' => tr('Begin date field'),
+				'description' => tr('Permanent name of the field to use for event begining'),
 				'required' => true,
 				'filter' => 'word',
 			),
 			'end' => array(
-				'name' => tr('End Date Field'),
+				'name' => tr('End date field'),
 				'description' => tr('Permanent name of the field to use for event ending'),
-				'since' => '10.0',
 				'required' => true,
 				'filter' => 'word',
 			),
 			'resource' => array(
-				'name' => tr('Resource Descriptor Field'),
+				'name' => tr('Resource descriptor field'),
 				'description' => tr('Permanent name of the field to use as the resource indicator'),
-				'since' => '10.0',
 				'required' => false,
 				'filter' => 'word',
 			),
 			'coloring' => array(
-				'name' => tr('Coloring Discriminator Field'),
+				'name' => tr('Coloring discriminator field'),
 				'description' => tr('Permanent name of the field to use to segment the information into color schemes.'),
-				'since' => '10.0',
 				'required' => false,
 				'filter' => 'word',
 			),
 			'external' => array(
 				'required' => false,
 				'name' => tra('External Link'),
-				'description' => tra('Follow external link when event item is clicked. Useful for supporting links to
-					pretty tracker supported pages.'),
-				'since' => '12.4',
+				'description' => tra('Follow external link when event item is clicked. Useful for supporting links to pretty tracker supported pages.'),
 				'filter' => 'alpha',
 				'default' => 'n',
 				'options' => array(
@@ -70,7 +61,6 @@ function wikiplugin_trackercalendar_info()
 				'required' => false,
 				'name' => tra('URL'),
 				'description' => tra('Complete URL, internal or external.'),
-				'since' => '12.4',
 				'filter' => 'url',
 				'default' => '',
 				'parent' => array('name' => 'external', 'value' => 'y'),
@@ -78,9 +68,7 @@ function wikiplugin_trackercalendar_info()
 			'trkitemid' => array(
 				'required' => false,
 				'name' => tra('Tracker Item Id'),
-				'description' => tr('If Yes (%0y%1) the item id will be passed as %0itemId%1, which can be used
-					by Tracker plugins. Will be passed as %0itemid%1 if No (%0n%1)', '<code>', '</code>'),
-				'since' => '12.4',
+				'description' => tra('If "yes" the item id will be passed as "itemId" meaningful to Tracker plugins. Will be passed as "itemid" if "no"'),
 				'filter' => 'alpha',
 				'default' => 'n',
 				'options' => array(
@@ -93,9 +81,7 @@ function wikiplugin_trackercalendar_info()
 			'addAllFields' => array(
 				'required' => false,
 				'name' => tra('Add All Fields'),
-				'description' => tr('If Yes (%0y%1)  all fields in the tracker will be added to the URL, not just the
-					itemId', '<code>', '</code>'),
-				'since' => '12.4',
+				'description' => tra('If "yes" all fields in the tracker will be added to the URL, not just the itemId'),
 				'filter' => 'alpha',
 				'default' => 'y',
 				'options' => array(
@@ -108,9 +94,7 @@ function wikiplugin_trackercalendar_info()
 			'useSessionStorage' => array(
 				'required' => false,
 				'name' => tra('Use Session Storage'),
-				'description' => tr('If Yes (%0y%1) copy all the field values into window.sessionStorage so it can be
-					accessed via JavaScript.', '<code>', '</code>'),
-				'since' => '12.4',
+				'description' => tra('If "yes" copy all the field values into window.sessionStorage so it can be accessed via JavaScript.'),
 				'filter' => 'alpha',
 				'default' => 'y',
 				'options' => array(
@@ -124,7 +108,6 @@ function wikiplugin_trackercalendar_info()
 				'required' => false,
 				'name' => tra('Agenda by Months'),
 				'description' => tra('Display the option to change the view to agenda by months'),
-				'since' => '12.1',
 				'filter' => 'alpha',
 				'default' => 'y',
 				'options' => array(
@@ -137,7 +120,6 @@ function wikiplugin_trackercalendar_info()
 				'required' => false,
 				'name' => tra('Agenda by Weeks'),
 				'description' => tra('Display the option to change the view to agenda by weeks'),
-				'since' => '12.1',
 				'filter' => 'alpha',
 				'default' => 'y',
 				'options' => array(
@@ -150,7 +132,6 @@ function wikiplugin_trackercalendar_info()
 				'required' => false,
 				'name' => tra('Agenda by Days'),
 				'description' => tra('Display the option to change the view to agenda by days'),
-				'since' => '12.1',
 				'filter' => 'alpha',
 				'default' => 'y',
 				'options' => array(
@@ -163,7 +144,6 @@ function wikiplugin_trackercalendar_info()
 				'required' => false,
 				'name' => tra('Resources by Months'),
 				'description' => tra('Display the option to change the view to resources by months'),
-				'since' => '12.1',
 				'filter' => 'alpha',
 				'default' => 'y',
 				'options' => array(
@@ -176,7 +156,6 @@ function wikiplugin_trackercalendar_info()
 				'required' => false,
 				'name' => tra('Resources by Weeks'),
 				'description' => tra('Display the option to change the view to resources by weeks'),
-				'since' => '12.1',
 				'filter' => 'alpha',
 				'default' => 'y',
 				'options' => array(
@@ -189,7 +168,6 @@ function wikiplugin_trackercalendar_info()
 				'required' => false,
 				'name' => tra('Resources by Days'),
 				'description' => tra('Display the option to change the view to resources by days'),
-				'since' => '12.1',
 				'filter' => 'alpha',
 				'default' => 'y',
 				'options' => array(
@@ -202,7 +180,6 @@ function wikiplugin_trackercalendar_info()
 				'required' => false,
 				'name' => tra('Default View'),
 				'description' => tra('Choose the default view for the Tracker Calendar'),
-				'since' => '12.1',
 				'filter' => 'alpha',
 				'default' => 'month',
 				'options' => array(
@@ -219,16 +196,13 @@ function wikiplugin_trackercalendar_info()
 				'required' => false,
 				'name' => tra('Default Year'),
 				'description' => tra('Choose the default year (yyyy) to use for the display'),
-				'since' => '12.1',
 				'default' => 0,
 				'filter' => 'int',
 			),			
 			'dMonth' => array(
 				'required' => false,
 				'name' => tra('Default Month'),
-				'description' => tra('Choose the default month (mm, as numeric value) to use for the display. Numeric
-					values here are 1-based, meaning January=1, February=2, etc'),
-				'since' => '12.1',
+				'description' => tra('Choose the default month (mm, as numeric value) to use for the display. Numeric values here are 1-based, meaning January=1, February=2, etc'),
 				'default' => 0,
 				'filter' => 'int',
 			),
@@ -236,17 +210,13 @@ function wikiplugin_trackercalendar_info()
 				'required' => false,
 				'name' => tra('Default Day'),
 				'description' => tra('Choose the default day (dd) to use for the display'),
-				'since' => '12.1',
 				'default' => 0,
 				'filter' => 'int',
 			),
 			'fDayofWeek' => array(
 				'required' => false,
 				'name' => tra('First day of the Week'),
-				'description' => tr('Choose the day that each week begins with, for the tracker calendar display.
-					The value must be a number that represents the day of the week: Sunday=0, Monday=1, Tuesday=2,
-					etc. Default: %0 (Sunday)', '<code>0</code>'),
-				'since' => '12.1',
+				'description' => tra('Choose the day that each week begins with, for the tracker calendar display. The value must be a number that represents the day of the week: Sunday=0, Monday=1, Tuesday=2, etc. Default: 0 (Sunday)'),
 				'default' => 0,
 				'filter' => 'int',
 			),
@@ -271,7 +241,7 @@ function wikiplugin_trackercalendar($data, $params)
 	static $id = 0;
 	$headerlib = TikiLib::lib('header');
 	$headerlib->add_cssfile('vendor_extra/fullcalendar-resourceviews/fullcalendar/fullcalendar.css');
-	$headerlib->add_jsfile('vendor_extra/fullcalendar-resourceviews/fullcalendar/fullcalendar.min.js', true);
+	$headerlib->add_jsfile('vendor_extra/fullcalendar-resourceviews/fullcalendar/fullcalendar.min.js');
 
 	$jit = new JitFilter($params);
 	$definition = Tracker_Definition::get($jit->trackerId->int());

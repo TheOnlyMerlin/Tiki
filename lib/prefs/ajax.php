@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,7 +11,7 @@ function prefs_ajax_list()
 	return array(
 		'ajax_autosave' => array(
 			'name' => tra('Ajax auto-save'),
-			'description' => tra('Saves your edits as you write, enabling work to be recovered after an "interruption". Also enables a "live" preview and is required for WYSIWYG plugin processing.'),
+			'description' => tra('Saves your edits as you go along enabling you to recover your work after an "interruption". Also enables "Live" preview and is required for wysiwyg plugin processing.'),
 			'help' => 'Lost+Edit+Protection',
 			'type' => 'flag',
 			'dependencies' => array(
@@ -23,7 +23,7 @@ function prefs_ajax_list()
 		
 		'ajax_inline_edit' => array(
 			'name' => tr('Inline editing'),
-			'description' => tr('Enable inline editing of certain values. Currently limited to tracker item fields.'),
+			'description' => tr('Allow in-line editing of certain values. Currently limited to tracker item fields.'),
 			'type' => 'flag',
 			'default' => 'n',
 		),

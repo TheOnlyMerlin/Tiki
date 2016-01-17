@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -17,7 +17,7 @@ class Services_Connect_Server
 			throw new Services_Exception(tr('Connect Feature disabled'), 403);
 		}
 		if ($prefs['connect_server_mode'] !== 'y') {
-			throw new Services_Exception(tr('Connect server mode disabled'), 403);
+			throw new Services_Exception(tr('Connect Server Mode disabled'), 403);
 		}
 		$this->connectlib = TikiLib::lib('connect_server');
 	}
@@ -39,7 +39,7 @@ class Services_Connect_Server
 
 		// send back confirm message
 		$rdata['status'] = $status;
-		$rdata['message'] = tr('Please confirm that you want to participate in Tiki Connect') . "\n" . $captcha;
+		$rdata['message'] = tr('Please confirm you want to participate in Tiki Connect') . "\n" . $captcha;
 		$rdata['guid'] = $guid;
 		
 		//$rdata['debug']['capkey'] = $capkey;
@@ -52,7 +52,7 @@ class Services_Connect_Server
 		$rdata = array();
 
 
-		$connectData = $input->connect_data->xss();
+		$connectData = $input->connect_data->filter();
 
 		if (!empty($connectData)) {
 			$caplib = $this->getCaptcha();
@@ -77,12 +77,12 @@ class Services_Connect_Server
 
 				} else {
 					$rdata['status'] = 'error';
-					$rdata['message'] = tra('There was a problem at the server (Tiki Connect is still experimental).');
+					$rdata['message'] = tra('Something went wrong on the server. Tiki Connect is still experimental.');
 				}
 			} else {
 				$this->connectlib->removeGuid($connectData['guid'], true);
 				$status = 'error';
-				$message = tra('CAPTCHA code problem.') . "\n" . $caplib->getErrors();
+				$message = tra('Captcha code problem.') . "\n" . $caplib->getErrors();
 				$this->connectlib->recordConnection($status, $connectData['guid'], $message, true);
 				$rdata['status'] = $status;
 				$rdata['message'] = $message;
@@ -98,7 +98,7 @@ class Services_Connect_Server
 	{
 		$rdata = array();
 
-		$connectData = $input->connect_data->xss();
+		$connectData = $input->connect_data->filter();
 		if (!empty($connectData)) {
 
 			$guid = $connectData['guid'];
@@ -114,7 +114,7 @@ class Services_Connect_Server
 				);
 			} else {	// guid not recorded here
 				$status = 'error';
-				$message = tra('Your Tiki site is not registered here yet. Please try again.');
+				$message = tra('Your Tiki is not registered here yet, please try again.');
 				$this->connectlib->recordConnection($status, $guid, $message, true);
 				$rdata = array(
 					'status' => $status,
@@ -129,7 +129,7 @@ class Services_Connect_Server
 	function action_cancel($input) 
 	{
 
-		$connectData = $input->connect_data->xss();
+		$connectData = $input->connect_data->filter();
 		$guid = $connectData['guid'];
 		$isPending = $this->connectlib->isPendingGuid($guid);
 		
@@ -141,7 +141,7 @@ class Services_Connect_Server
 	
 	private function getCaptcha()
 	{
-		$captchalib = TikiLib::lib('captcha');
+		require_once('lib/captcha/captchalib.php');
 		$caplib = new Captcha('dumb');
 		$caplib->captcha->setKeepSession(true)->setUseNumbers(false)->setWordlen(5);
 		return $caplib;

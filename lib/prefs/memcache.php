@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -37,7 +37,7 @@ function prefs_memcache_list()
 		),
 		'memcache_prefix' => array(
 			'name' => tra('Memcache key prefix'),
-			'description' => tra('When the memcache cluster is used by multiple applications, using unique prefixes for each of them helps avoid conflicts.'),
+			'description' => tra('When the memcache cluster is used by multiple applications, using unique prefixes for each of them helps avoiding conflicts.'),
 			'filter' => 'word',
 			'size' => 10,
 			'type' => 'text',

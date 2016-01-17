@@ -3,7 +3,7 @@
  * This checks that composer was installed and otherwise displays a web-friendly error page
  *  
  * @package Tiki
- * @copyright (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+ * @copyright (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
  * @licence Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
  */
 
@@ -64,13 +64,13 @@ function createPage($title, $content)
 			</div>
 			<div class="middle_outer">
 				<div name="middle" class="fixedwidth">
-					<div class="topbar clearfix">
-						<h1 style="font-size: 30px; line-height: 30px; text-shadow: 3px 2px 0 #ccccff; margin: 8px 0 0 10px; padding: 0;">
+					<div id="tiki-top" class="clearfix">
+						<h1 style="font-size: 30px; line-height: 30px; color: #fff; text-shadow: 3px 2px 0 #781437; margin: 8px 0 0 10px; padding: 0;">
 							$title
 						</h1>
 					</div>
 				</div>
-				<div id="middle" style="width: 960px; text-align: left; padding: 3em;">
+				<div id="middle" style="width: 960px; text-align: left; ">
 					$content
 				</div>
 			</div>

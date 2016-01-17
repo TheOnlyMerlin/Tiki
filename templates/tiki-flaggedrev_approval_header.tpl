@@ -2,7 +2,7 @@
 {if $prefs.flaggedrev_approval eq 'y' and $revision_approval}
 	{if ($revision_approved or $revision_displayed) and $revision_approved neq $lastVersion and $tiki_p_wiki_view_latest eq 'y'}
 		{if $lastVersion eq $revision_displayed}
-			{remarksbox type=warning title="{tr}Content waiting for approval{/tr}"}
+			{remarksbox type=comment title="{tr}Content waiting for approval{/tr}"}
 				<p>
 					{tr}You are currently viewing the latest version of the page.{/tr}
 					{if $revision_approved}
@@ -21,7 +21,7 @@
 						{/if}
 						<div class="submit">
 							<input type="hidden" name="revision" value="{$revision_displayed|escape}">
-							<input type="submit" class="btn btn-default btn-sm" name="approve" value="{tr}Approve current revision{/tr}">
+							<input type="submit" class="btn btn-default" name="approve" value="{tr}Approve current revision{/tr}">
 						</div>
 					</form>
 				{/if}

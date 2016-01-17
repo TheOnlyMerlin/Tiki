@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -12,109 +12,79 @@ function wikiplugin_chart_info()
 		'documentation' => 'PluginChart',
 		'description' => tra('Display a chart from TikiSheet'),
 		'prefs' => array( 'feature_sheet', 'wikiplugin_chart' ),
-		'iconname' => 'chart',
+		'icon' => 'img/icons/chart_curve.png',
 		'body' => tra('Chart caption.'),
-		'introduced' => 2,
 		'params' => array(
 			'id' => array(
 				'required' => true,
 				'name' => tra('Sheet ID'),
 				'description' => tra('Data sheet ID'),
-				'since' => '2.0',
-				'filter' => 'digits',
 				'profile_reference' => 'sheet',
 			),
 			'type' => array(
 				'required' => true,
 				'name' => tra('Chart Type'),
-				'description' => tra('Specify a valid chart type'),
-				'accepted' => 'BarStackGraphic | MultibarGraphic | MultilineGraphic | PieChartGraphic',
-				'since' => '2.0',
-				'filter' => 'word',
+				'description' => 'BarStackGraphic | MultibarGraphic | MultilineGraphic | PieChartGraphic', // Removed translation call since these are all system names. TODO: Make an actual English sentence from this
 			),
 			'width' => array(
 				'required' => true,
 				'name' => tra('Chart Width'),
 				'description' => tra('Width in pixels.'),
-				'since' => '2.0',
-				'filter' => 'digits',
 			),
 			'height' => array(
 				'required' => true,
 				'name' => tra('Chart Height'),
 				'description' => tra('Height in pixels.'),
-				'since' => '2.0',
-				'filter' => 'digits',
 			),
 			'value' => array(
 				'required' => false,
 				'name' => tra('Value series'),
 				'description' => tra('Required for pie charts'),
-				'since' => '2.0',
-				'filter' => 'text',
 			),
 			'x' => array(
 				'required' => false,
-				'name' => tra('Independent series'),
+				'name' => tra('Independant series'),
 				'description' => tra('Required for types other than pie chart'),
-				'since' => '2.0',
-				'filter' => 'text',
 			),
 			'y0' => array(
 				'required' => false,
-				'name' => tra('Dependent series'),
+				'name' => tra('Dependant series'),
 				'description' => tra('Required for types other than pie chart'),
-				'since' => '2.0',
-				'filter' => 'text',
 			),
 			'y1' => array(
 				'required' => false,
-				'name' => tra('Dependent series'),
+				'name' => tra('Dependant series'),
 				'description' => tra('Description needed'),
-				'since' => '2.0',
-				'filter' => 'text',
 			),
 			'y2' => array(
 				'required' => false,
-				'name' => tra('Dependent series'),
+				'name' => tra('Dependant series'),
 				'description' => tra('Description needed'),
-				'since' => '2.0',
-				'filter' => 'text',
 			),
 			'y3' => array(
 				'required' => false,
-				'name' => tra('Dependent series'),
+				'name' => tra('Dependant series'),
 				'description' => tra('Description needed'),
-				'since' => '2.0',
-				'filter' => 'text',
 			),
 			'y4' => array(
 				'required' => false,
-				'name' => tra('Dependent series'),
+				'name' => tra('Dependant series'),
 				'description' => tra('Description needed'),
-				'since' => '2.0',
-				'filter' => 'text',
 			),
 			'color' => array(
 				'required' => false,
 				'name' => tra('Colors'),
 				'description' => tra('List of colors to use.'),
-				'since' => '2.0',
-				'filter' => 'text',
 			),
 			'style' => array(
 				'required' => false,
 				'name' => tra('Styles'),
 				'description' => tra('List of styles to use.'),
-				'since' => '2.0',
-				'filter' => 'text',
 			),
 			'label' => array(
 				'required' => false,
 				'name' => tra('Labels'),
 				'description' => tra('Labels for the series or values in the legend.'),
-				'since' => '2.0',
-				'filter' => 'text',
 			),
 		),
 	);

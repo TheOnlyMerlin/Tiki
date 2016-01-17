@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -13,28 +13,20 @@ function wikiplugin_proposal_info()
 		'description' => tra('Allow users to vote on a proposal and view the results'),
 		'prefs' => array( 'wikiplugin_proposal' ),
 		'body' => tra('The list of votes cast. One vote per line. Either 0, +1 or -1 followed by a username.'),
-		'iconname' => 'thumbs-up',
-		'introduced' => 3,
+		'icon' => 'img/icons/thumb_up.png',
 		'tags' => array( 'basic' ),
 		'params' => array(
 			'caption' => array(
 				'required' => false,
 				'name' => tra('Caption'),
-				'description' => tra('Short description of the proposal to vote on. Will be displayed above the result
-					table.'),
-				'since' => '3.0',
-				'filter' => 'text',
+				'description' => tra('Short description of the proposal to vote on. Will be displayed above the result table.'),
 				'default' => '',
 			),
 			'weights' => array(
 				'required' => false,
 				'advanced' => true,
 				'name' => tr('Weights'),
-				'description' => tr('Comma-separated list of groups and their associated weight. Default is
-					%0Registered(1)%1 Example:', '<code>', '</code>')
-					. ' <code>Reviewer(2.5),User(1),Manager(0.25),Registered(0)</code>',
-				'since' => '10.0',
-				'filter' => 'text',
+				'description' => tr('Comma-separated list of groups and their associated weight. Ex: Reviewer(2.5),User(1),Manager(0.25),Registered(0)'),
 				'default' => 'Registered(1)',
 			),
 		)
@@ -43,7 +35,7 @@ function wikiplugin_proposal_info()
 
 function wikiplugin_proposal_save( $context, $data, $params )
 {
-	$attributelib = TikiLib::lib('attribute');
+	global $attributelib; require_once 'lib/attributes/attributelib.php';
 
 	static $objects = array();
 	$key = $context['type'] . ':' . $context['object'];
@@ -67,8 +59,8 @@ function wikiplugin_proposal($data, $params)
 {
 	$counts = wikiplugin_proposal_get_counts($data);
 	unset($counts['weights']);
-	global $user, $tiki_p_edit;
-	$smarty = TikiLib::lib('smarty');
+
+	global $smarty, $user, $tiki_p_edit;
 	$smarty->assign('counts', $counts);
 
 	if ( $user && $tiki_p_edit == 'y' ) {

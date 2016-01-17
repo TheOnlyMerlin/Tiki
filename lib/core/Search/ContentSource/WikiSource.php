@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2014 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -36,7 +36,6 @@ class Search_ContentSource_WikiSource implements Search_ContentSource_Interface
 	function getDocument($objectId, Search_Type_Factory_Interface $typeFactory)
 	{
 		$wikilib = TikiLib::lib('wiki');
-		$tikilib = TikiLib::lib('tiki');
 
 		$info = $this->tikilib->get_page_info($objectId, true, true);
 
@@ -49,11 +48,6 @@ class Search_ContentSource_WikiSource implements Search_ContentSource_Interface
 			$contributors[] = $info['user'];
 		}
 
-		if ($info['is_html']) {
-			// is_html flag does not get to the type handler, leaving HTML visible in the text provided
-			$info['data'] = $tikilib->strip_tags($info['data']);
-		}
-
 		$data = array(
 			'title' => $typeFactory->sortable($info['pageName']),
 			'language' => $typeFactory->identifier(empty($info['lang']) ? 'unknown' : $info['lang']),
@@ -62,7 +56,6 @@ class Search_ContentSource_WikiSource implements Search_ContentSource_Interface
 			'contributors' => $typeFactory->multivalue($contributors),
 
 			'wiki_content' => $typeFactory->wikitext($info['data']),
-			'wiki_keywords' => $typeFactory->plaintext($info['keywords']),
 
 			'view_permission' => $typeFactory->identifier('tiki_p_view'),
 			'url' => $typeFactory->identifier($wikilib->sefurl($info['pageName'])),
@@ -128,7 +121,6 @@ class Search_ContentSource_WikiSource implements Search_ContentSource_Interface
 			'contributors',
 
 			'wiki_content',
-			'wiki_keywords',
 			'wiki_approval_state',
 
 			'view_permission',
@@ -148,7 +140,6 @@ class Search_ContentSource_WikiSource implements Search_ContentSource_Interface
 			'description' => true,
 
 			'wiki_content' => false,
-			'wiki_keywords' => true,
 		);
 	}
 }

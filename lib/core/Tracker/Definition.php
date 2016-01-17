@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -197,15 +197,6 @@ class Tracker_Definition
 		}
 	}
 
-	function getArticleField()
- 	{
- 		foreach ($this->getFields() as $field) {
- 			if ($field['type'] == 'articles') { 
- 				return $field['fieldId'];
- 			}
- 		}
- 	}
-
 	function getGeolocationField()
 	{
 		foreach ($this->getFields() as $field) {
@@ -213,17 +204,6 @@ class Tracker_Definition
 				return $field['fieldId'];
 			}
 		}
-	}
-
-	function getWikiFields()
-	{
-		$fields = array(); 
-		foreach ($this->getFields() as $field) {
-			if ($field['type'] == 'wiki') {
-				$fields[] = $field['fieldId'];
-			}
-		}
-		return $fields;
 	}
 
 	function getIconField()
@@ -287,16 +267,6 @@ class Tracker_Definition
 
 		return $out;
 	}
-
-	function getRelationField($relation)
-	{
-		foreach ($this->getFields() as $field) {
-			if ($field['type'] == 'REL'
-				&& $field['options_map']['relation'] == $relation) {
-				return $field['fieldId'];
-			}
-		}
-	}
 	
 	/**
 	 * Get the name of the item user if any.
@@ -308,7 +278,7 @@ class Tracker_Definition
 	 */
 	function getItemUser($itemId)
 	{
-		$trklib = TikiLib::lib('trk');
+		global $trklib;
 		return $trklib->get_item_creator($this->trackerInfo['trackerId'], $itemId);
 	}
 

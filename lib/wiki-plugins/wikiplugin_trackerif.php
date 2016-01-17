@@ -1,11 +1,12 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 require_once('lib/ldap/filter.php');
+require_once('lib/trackers/trackerlib.php');
 
 function wikiplugin_trackerif_info()
 {
@@ -14,28 +15,19 @@ function wikiplugin_trackerif_info()
 		'documentation' => 'PluginTrackerIf',
 		'description' => tra('Display content based on results of a tracker field test'),
 		'prefs' => array( 'wikiplugin_trackerif', 'feature_trackers', 'wikiplugin_tracker' ), // ML: is wikiplugin_tracker necessary?
-		'iconname' => 'trackers',
-		'introduced' => 7,
+		'icon' => 'img/icons/database_table.png',
 		'defaultfilter' => 'wikicontent',
 		'params' => array(
 			'test' => array(
 				'required' => true,
 				'name' => tra('Test'),
 				'description' => tra('Test'),
-				'since' => '7.0',
 			),
 			'ignore' => array(
 				'required' => false,
 				'name' => tra('Ignore'),
 				'default' => 'y',
 				'description' => tra('Ignore test in edit mode'),
-				'since' => '7.0',
-				'filter' => 'alpha',
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
-					array('text' => tra('No'), 'value' => 'n')
-				)
 			),
 		),
 	);
@@ -43,7 +35,7 @@ function wikiplugin_trackerif_info()
 
 function wikiplugin_trackerif ($data, $params)
 {
-	$trklib = TikiLib::lib('trk');
+	global $trklib;
 	$test = null;
 	$values = array();
 	$dataelse = '';

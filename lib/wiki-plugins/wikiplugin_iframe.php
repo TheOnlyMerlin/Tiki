@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,22 +10,19 @@ function wikiplugin_iframe_info()
 	return array(
 		'name' => tra('Iframe'),
 		'documentation' => 'PluginIframe',
-		'description' => tra('Include the body of another web page in a scrollable frame within a page'),
+		'description' => tra('Include another web page within a frame'),
 		'prefs' => array( 'wikiplugin_iframe' ),
 		'body' => tra('URL'),
 		'format' => 'html',
 		'validate' => 'all',
 		'tags' => array( 'basic' ),
-		'iconname' => 'copy',
-		'introduced' => 3,
+		'icon' => 'img/icons/page_copy.png',
 		'params' => array(
 			'name' => array(
 				'safe' => true,
 				'required' => false,
 				'name' => tra('Name'),
 				'description' => tra('Name'),
-				'since' => '3.0',
-				'filter' => 'text',
 				'default' => '',
 			),
 			'title' => array(
@@ -33,8 +30,6 @@ function wikiplugin_iframe_info()
 				'required' => false,
 				'name' => tra('Title'),
 				'description' => tra('Frame title'),
-				'since' => '3.2',
-				'filter' => 'text',
 				'default' => '',
 			),
 			'width' => array(
@@ -42,8 +37,6 @@ function wikiplugin_iframe_info()
 				'required' => false,
 				'name' => tra('Width'),
 				'description' => tra('Width in pixels or %'),
-				'since' => '3.0',
-				'filter' => 'text',
 				'default' => '',
 			),
 			'height' => array(
@@ -51,8 +44,6 @@ function wikiplugin_iframe_info()
 				'required' => false,
 				'name' => tra('Height'),
 				'description' => tra('Pixels or %'),
-				'since' => '3.0',
-				'filter' => 'text',
 				'default' => '',
 			),
 			'align' => array(
@@ -60,8 +51,6 @@ function wikiplugin_iframe_info()
 				'required' => false,
 				'name' => tra('Alignment'),
 				'description' => tra('Align the iframe on the page'),
-				'since' => '3.0',
-				'filter' => 'word',
 				'default' => '',
 				'options' => array(
 					array('text' => '', 'value' => ''), 
@@ -77,8 +66,6 @@ function wikiplugin_iframe_info()
 				'required' => false,
 				'name' => tra('Frame Border'),
 				'description' => tra('Choose whether to show a border around the iframe'),
-				'since' => '3.0',
-				'filter' => 'digits',
 				'default' => '',
 				'options' => array(
 					array('text' => '', 'value' => ''), 
@@ -91,8 +78,6 @@ function wikiplugin_iframe_info()
 				'required' => false,
 				'name' => tra('Margin Height'),
 				'description' => tra('Margin height in pixels'),
-				'since' => '3.0',
-				'filter' => 'digits',
 				'default' => '',
 			),
 			'marginwidth' => array(
@@ -100,8 +85,6 @@ function wikiplugin_iframe_info()
 				'required' => false,
 				'name' => tra('Margin Width'),
 				'description' => tra('Margin width in pixels'),
-				'since' => '3.0',
-				'filter' => 'digits',
 				'default' => '',
 			),
 			'scrolling' => array(
@@ -109,8 +92,6 @@ function wikiplugin_iframe_info()
 				'required' => false,
 				'name' => tra('Scrolling'),
 				'description' => tra('Choose whether to add a scroll bar'),
-				'since' => '3.0',
-				'filter' => 'word',
 				'default' => '',
 				'options' => array(
 					array('text' => '', 'value' => ''), 
@@ -123,8 +104,6 @@ function wikiplugin_iframe_info()
 				'required' => false,
 				'name' => tra('URL'),
 				'description' => tra('URL'),
-				'filter' => 'url',
-				'since' => '3.0',
 				'default' => '',
 			),
 		), 

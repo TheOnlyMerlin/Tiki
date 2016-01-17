@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -40,7 +40,7 @@ class WikipluginDBReportToken
 				return $token->type;
 		}
 	}
-	public function __construct($content=null)
+	public function WikipluginDBReportToken($content=null)
 	{
 		$this->content = $content;
 	}
@@ -52,7 +52,7 @@ class WikipluginDBReportField
 	public $variable;
 	public $break;
 	public $index;
-	public function __construct($text)
+	public function WikipluginDBReportField($text)
 	{
 		global $wikiplugin_dbreport_fields, $wikiplugin_dbreport_fields_allowed;
 		$this->name = stripcslashes($text);
@@ -105,7 +105,7 @@ class WikipluginDBReportField
 class WikipluginDBReportString
 {
 	public $literal;
-	public function __construct($text)
+	public function WikipluginDBReportString($text)
 	{
 		$this->literal = stripcslashes($text);
 	}
@@ -222,7 +222,7 @@ class WikipluginDBReportContent
 	{
 		$this->parse_text($text);
 	}
-	public function __construct(&$token)
+	public function WikipluginDBReportContent(&$token)
 	{
 		switch($token->type) {
 			case 'txt':
@@ -311,7 +311,7 @@ class WikipluginDBReportStyle
 	public $tag;
 	public $class;
 	public $style;
-	public function __construct(&$token)
+	public function WikipluginDBReportStyle(&$token)
 	{
 		if (is_object($token)) {
 			if ($token->content['class']) {
@@ -1681,37 +1681,29 @@ function wikiplugin_dbreport_info()
 	return array(
 		'name' => tra('DB Report'),
 		'documentation' => 'PluginDBReport',
-		'description' => tra('Query an ADOdb database and display results (does not work with PDO)'),
+		'description' => tra('Query a database and display results (only works with ADOdb, does not work with PDO)'),
 		'prefs' => array('wikiplugin_dbreport'),
 		'body' => tra('report definition'),
 		'validate' => 'all',
-		'iconname' => 'table',
-		'introduced' => 3,
+		'icon' => 'img/icons/database_table.png',
 		'params' => array(
 			'dsn' => array(
 				'required' => false,
 				'name' => tra('Full DSN'),
-				'description' => tr('A full DSN (Data Source Name) connection string. Example: ')
-					. '<code>mysql://user:pass@server/database</code>',
-				'since' => '3.0',
+				'description' => tra('A full DSN (Data Source Name) connection string. eg: mysql://user:pass@server/database'),
 				'default' => '',
-				'filter' => 'url',
 			),
 			'db' => array(
 				'required' => false,
 				'name' => tra('Wiki DSN Name'),
 				'description' => tra('The name of a DSN connection defined by the Wiki administrator.'),
-				'since' => '3.0',
 				'default' => '',
-				'filter' => 'text',
 			),
 			'wiki' => array(
 				'required' => false,
 				'name' => tra('Wiki Syntax'),
 				'description' => tra('Parse wiki syntax within the report (not parsed by default)'),
-				'since' => '3.0',
 				'default' => '',
-				'filter' => 'digits',
 				'options' => array(
 					array('text' => '', 'value' => ''),
 					array('text' => tra('Yes'), 'value' => 1),
@@ -1722,9 +1714,7 @@ function wikiplugin_dbreport_info()
 				'required' => false,
 				'name' => tra('Debug'),
 				'description' => tra('Display the parsed report definition (not displayed by default)'),
-				'since' => '3.0',
 				'default' => '',
-				'filter' => 'digits',
 				'options' => array(
 					array('text' => '', 'value' => ''),
 					array('text' => tra('Yes'), 'value' => 1),

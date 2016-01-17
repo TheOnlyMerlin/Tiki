@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -12,30 +12,26 @@ function wikiplugin_showpages_info()
 		'documentation' => 'PluginShowPages',
 		'description' => tra('Find pages by searching within page names'),
 		'prefs' => array( 'wikiplugin_showpages' ),
-		'iconname' => 'search',
-		'introduced' => 1,
+		'icon' => 'img/icons/page_find.png',
 		'params' => array(
 			'find' => array(
 				'required' => true,
 				'name' => tra('Find'),
 				'description' => tra('Search criteria'),
-				'since' => '1',
 				'default' => '',
 			),
 			'max' => array(
 				'required' => false,
 				'name' => tra('Result Count'),
 				'description' => tra('Maximum amount of results displayed.'),
-				'since' => '1',
-				'filter' => 'int',
+				'filter' => 'digits',
 				'default' => '',
 			),
 			'display' => array(
 				'required' => false,
 				'name' => tra('Display'),
 				'description' => tra('Display page name and/or description. Both displayed by default.'),
-				'since' => '1',
-				'filter' => 'text',
+				'filter' => 'striptags',
 				'default' => 'name|desc',
 				'options' => array(
 					array('text' => '', 'value' => ''), 

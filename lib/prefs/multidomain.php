@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,7 +10,7 @@ function prefs_multidomain_list()
 	return array(
 		'multidomain_active' => array(
 			'name' => tra('Multi-domain'),
-            'description' => tra('Allows domain names to be mapped to perspectives and simulate multiple domains hosted with the same Tiki installation.'),
+            'description' => tra('Allows domain names to be mapped to perspectives and simulate multiple domains hosted on the same instance.'),
 			'perspective' => false,
 			'help' => 'Multi-Domain',
 			'type' => 'flag',
@@ -25,7 +25,7 @@ function prefs_multidomain_list()
             'perspective' => false,
 			'type' => 'textarea',
 			'size' => 10,
-			'hint' => tra('One domain per line with a comma separating it from the perspective ID. For example: tiki.org,1'),
+			'hint' => tra('One domain per line. Comma separated with perspective ID. Ex.: tiki.org,1'),
 			'default' => '',
 		),
 		'multidomain_switchdomain' => array(

@@ -21,7 +21,7 @@ close();
 		{redirect url=$prefs.permission_denied_url}
 	{else}
 
-		{if ($errortype eq 401 || $errortype eq 403) && empty($user) and $prefs.permission_denied_login_box eq 'y'} {* permission denied *}
+		{if ($errortype eq 401 || $errortype eq 403) && empty($user) and  $prefs.permission_denied_login_box eq 'y'} {* permission denied *}
 			{assign var='errortitle' value="{tr}Please log in{/tr}"}
 		{else}
 			{assign var='errortitle' value="{tr}Error{/tr}"}
@@ -44,10 +44,10 @@ close();
 						{/section}
 					</ul>
 				{else}
-					{remarksbox type="tip" title="{tr}Information{/tr}"}
+		 			{remarksbox}
 						{tr}There are no wiki pages similar to '{$page|escape}'{/tr}
 					{/remarksbox}
-				{/if}
+		 		{/if}
 			{/if}
 
 			{if ($prefs.feature_search eq 'y' or $prefs.feature_search_fulltext eq 'y') && $tiki_p_search eq 'y'}
@@ -79,15 +79,13 @@ close();
 				{remarksbox type='errors' title=$errortitle}
 					{$msg}
 					{if !empty($required_preferences)}
-						{remarksbox type='note' title="{tr}Settings{/tr}" close="n"}
-						<form method="post" action="tiki-admin.php" role="form" class="form">
+						{remarksbox type='note' title="{tr}Change them here{/tr}"}
+						<form method="post" action="tiki-admin.php">
 							<input type="hidden" name="ticket" value="{$ticket|escape}">
 							{foreach from=$required_preferences item=pref}
 								{preference name=$pref}
 							{/foreach}
-							<div class="text-center">
-								<input type="submit" class="btn btn-primary btn-sm" value="{tr}Apply{/tr}">
-							</div>
+							<input type="submit" class="btn btn-default" value="{tr}Set{/tr}">
 						</form>
 						{/remarksbox}
 					{/if}
@@ -110,11 +108,11 @@ close();
 		{* Hide the error navigation on the homepage *}
 		{if !isset($page) or $prefs.site_wikiHomePage neq $page}
 			{if $prefs.javascript_enabled eq 'y'}
-				{button _type="link" _icon_name="arrow-left" _onclick="javascript:history.back();return false;" _text="{tr}Go back{/tr}" _ajax="n"}
+				{button _onclick="javascript:history.back();return false;" _text="{tr}Go back{/tr}" _ajax="n"}
 				<br><br>
 			{/if}
 
-			{button href=$prefs.tikiIndex _type="link" _icon_name="home" _text="{tr}Return to home page{/tr}"}
+			{button href=$prefs.tikiIndex _text="{tr}Return to home page{/tr}"}
 		{/if}
 	{/if}
 {/capture}

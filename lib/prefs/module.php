@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,70 +10,70 @@ function prefs_module_list()
 	return array(
 		'module_zones_top' => array(
 			'name' => tra('Top module zone'),
-			'description' => tra('Activate zone for modules such as site logo, log-in form, etc. (page header)'),
+			'description' => tra('Visibility of area to keep modules such as logo, login etc (header)'),
 			'type' => 'list',
 			'keywords' => tra('side bar'),
 			'help' => 'Users+Flip+Columns',
 			'options' => array(
-				'y' => tra('Only if one or more modules are assigned'),
+				'y' => tra('Only if module'),
 				'fixed' => tra('Always'),
-//				'user' => tra('User decides'),
+//				'user' => tra('User Decides'),
 				'n' => tra('Never'),
 			),
 			'default' => 'y',
 		),
 		'module_zones_topbar' => array(
 			'name' => tra('Topbar module zone'),
-			'description' => tra('Activate zone for modules such as horizontal menu (navbar), search form, page-wide content, etc.'),
+			'description' => tra('Visibility of area for modules such as main horizontal menu, search form, page-wide content, etc.'),
 			'type' => 'list',
 			'keywords' => tra('topbar'),
 			'help' => 'Users+Flip+Columns',
 			'options' => array(
-				'y' => tra('Only if one or more modules are assigned'),
+				'y' => tra('Only if module'),
 				'fixed' => tra('Always'),
-//				'user' => tra('User decides'),
+//				'user' => tra('User Decides'),
 				'n' => tra('Never'),
 			),
 			'default' => 'y',
 		),
 		'module_zones_pagetop' => array(
 			'name' => tra('Page top module zone'),
-			'description' => tra('Activate zone for modules such as breadcrumbs, banners, share icons, etc'),
+			'description' => tra('Visibility of area to keep modules such as share etc'),
 			'type' => 'list',
 			'keywords' => tra('side bar'),
 			'help' => 'Users+Flip+Columns',
 			'options' => array(
-				'y' => tra('Only if one or more modules are assigned'),
+				'y' => tra('Only if module'),
 				'fixed' => tra('Always'),
-//				'user' => tra('User decides'),
+//				'user' => tra('User Decides'),
 				'n' => tra('Never'),
 			),
 			'default' => 'y',
 		),
 		'module_zones_bottom' => array(
 			'name' => tra('Bottom module zone'),
-			'description' => tra('Activate zone for modules such as "powered by" and "rss list" (page footer)'),
+			'description' => tra('Visibility of area to keep modules such as "powered by" and "rss list" (footer)'),
 			'type' => 'list',
 			'keywords' => tra('side bar'),
 			'help' => 'Users+Flip+Columns',
 			'options' => array(
-				'y' => tra('Only if one or more modules are assigned'),
+				'y' => tra('Only if module'),
 				'fixed' => tra('Always'),
-//				'user' => tra('User decides'),
+//				'user' => tra('User Decides'),
 				'n' => tra('Never'),
 			),
 			'default' => 'y',
 		),
 		'module_zones_pagebottom' => array(
 			'name' => tra('Page bottom module zone'),
-			'description' => tra('Activate zone for modules at the bottom of the main column of each page'),
+			'description' => tra('Visibility of area to keep modules at the foot of each page'),
 			'type' => 'list',
 			'keywords' => tra('side bar'),
 			'help' => 'Users+Flip+Columns',
 			'options' => array(
-				'y' => tra('Only if one or more modules are assigned'),
+				'y' => tra('Only if module'),
 				'fixed' => tra('Always'),
-//				'user' => tra('User decides'),
+//				'user' => tra('User Decides'),
 				'n' => tra('Never'),
 			),
 			'default' => 'y',
@@ -87,7 +87,7 @@ function prefs_module_list()
 		'module_zone_available_extra' => array(
 			'name' => tr('Extra module zones available'),
 			'description' => tr('Extra module zones to be managed through the module administration interface. Useful if your custom theme requires a special zone other than the predefined ones.'),
-			'hint' => tr('Comma-separated list, maximum of 20 characters per entry.'),
+			'hint' => tr('Comma-separated list, 20 characters max per entry.'),
 			'type' => 'text',
 			'separator' => ',',
 			'filter' => 'alpha',

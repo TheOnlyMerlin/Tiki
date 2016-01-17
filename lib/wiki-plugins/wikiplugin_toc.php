@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,26 +10,21 @@ function wikiplugin_toc_info()
 	return array(
 		'name' => tra('Table of Contents (Structure)'),
 		'documentation' => 'PluginTOC',
-		'description' => tra('Display a table of contents of pages in a structure'),
+		'description' => tra('Display a table of contents of pages or sub-pages'),
 		'prefs' => array( 'wikiplugin_toc', 'feature_wiki_structure' ),
-		'iconname' => 'list-numbered',
-		'introduced' => 3,
+		'icon' => 'img/icons/text_list_numbers.png',
 		'lateParse' => true,
 		'params' => array(
 			'maxdepth' => array(
 				'name' => tra('Maximum Depth'),
-				'description' => tr('Maximum number of levels to display. On very large structures, this should be
-					limited. %0 means no limit (and is the default).', '<code>0</code>'),
-				'since' => '3.0',
+				'description' => tra('Maximum number of levels to display. On very large structures, this should be limited. Zero means no limit (and is the default).'),
 				'required' => false,
 				'filter' => 'digits',
 				'default' => 0,
 			),
 			'structId' => array(
 				'name' => tra('Structure ID'),
-				'description' => tra('By default, structure for the current page will be displayed. Alternate
-					structure may be provided.'),
-				'since' => '3.0',
+				'description' => tra('By default, structure for the current page will be displayed. Alternate structure may be provided.'),
 				'required' => false,
 				'filter' => 'digits',
 				'default' => '',
@@ -38,7 +33,6 @@ function wikiplugin_toc_info()
 			'order' => array(
 				'name' => tra('Order'),
 				'description' => tra('Order items in ascending or descending order (default is ascending).'),
-				'since' => '3.0',
 				'required' => false,
 				'filter' => 'alpha',
 				'default' => 'asc',
@@ -51,9 +45,7 @@ function wikiplugin_toc_info()
 			'showdesc' => array(
 				'name' => tra('Show Description'),
 				'description' => tra('Show the page description instead of the page name'),
-				'since' => '3.0',
 				'required' => false,
-				'filter' => 'digits',
 				'default' => 0,
 				'options' => array(
 					array('text' => '', 'value' => ''),
@@ -64,9 +56,7 @@ function wikiplugin_toc_info()
 			'shownum' => array(
 				'name' => tra('Show Numbering'),
 				'description' => tra('Display the section numbers or not'),
-				'since' => '3.0',
 				'required' => false,
-				'filter' => 'digits',
 				'default' => 0,
 				'options' => array(
 					array('text' => '', 'value' => ''),
@@ -77,7 +67,6 @@ function wikiplugin_toc_info()
 			'type' => array(
 				'name' => tra('Type'),
 				'description' => tra('Style to apply'),
-				'since' => '3.0',
 				'required' => false,
 				'filter' => 'alpha',
 				'default' => 'plain',
@@ -90,11 +79,8 @@ function wikiplugin_toc_info()
 			),
 			'pagename' => array(
 				'name' => tra('Page Name'),
-				'description' => tra('By default, the table of contents for the current page will be displayed.
-					Alternate page may be provided.'),
-				'since' => '5.0',
+				'description' => tra('By default, the table of contents for the current page will be displayed. Alternate page may be provided.'),
 				'required' => false,
-				'filter' => 'pagename',
 				'default' => '',
 				'profile_reference' => 'wiki_page',
 			),
@@ -118,8 +104,8 @@ function wikiplugin_toc( $data, $params )
 	$params = array_merge($defaults, $params);
 	extract($params, EXTR_SKIP);
 
-	global $page_ref_id;
-	$structlib = TikiLib::lib('struct');
+	global $structlib, $page_ref_id;
+	include_once ("lib/structures/structlib.php");
 
 	global $prefs;
 	if ($prefs['feature_jquery_ui'] === 'y' && $type === 'admin') {

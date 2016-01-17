@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -12,17 +12,14 @@ function wikiplugin_randominclude_info()
 		'documentation' => 'PluginRandomInclude',
 		'description' => tra('Include a random page\'s content.'),
 		'prefs' => array('wikiplugin_randominclude'),
-		'iconname' => 'merge',
-		'introduced' => 6,
+		'icon' => 'img/icons/page_copy.png',
 		'params' => array(),
 	);
 }
 
 function wikiplugin_randominclude($data, $params)
 {
-	global $user, $page;
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
+	global $tikilib,$userlib,$user,$page;
 	static $included_pages, $data;
 
 	$params=array($page);

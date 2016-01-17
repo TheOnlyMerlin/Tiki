@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -7,15 +7,15 @@
 
 function smarty_function_user_registration($params, $smarty)
 {
-	global $prefs, $https_mode, $base_url_https, $user;
-	$registrationlib = TikiLib::lib('registration');
-	$userlib = TikiLib::lib('user');
+	global $prefs, $userlib, $https_mode, $base_url_https, $registrationlib, $user;
 
 	if ($prefs['allowRegister'] != 'y') {
 		return;
 	}
 
 	$errorreportlib = TikiLib::lib('errorreport');
+
+	include_once('lib/registration/registrationlib.php');
 
 	$_VALID = tra("Please enter a valid %s.  No spaces, more than %d characters and contain %s");
 	$smarty->assign('_PROMPT_UNAME', sprintf($_VALID, tra("username"), $registrationlib->merged_prefs['min_username_length'], "0-9,a-z,A-Z"));
@@ -58,7 +58,7 @@ function smarty_function_user_registration($params, $smarty)
 		$cookie_name = $prefs['session_cookie_name'];
 
 		if ( ini_get('session.use_cookie') && ! isset( $_COOKIE[$cookie_name] ) ) {
-			$errorreportlib->report(tra("Cookies must be enabled to log in to this site"));
+			$errorreportlib->report(tra("You have to enable cookies to be able to login to this site"));
 			return '';
 		}
 
@@ -156,19 +156,6 @@ function smarty_function_user_registration($params, $smarty)
 			}
 			$user = ''; // reset $user for security reasons
 			$smarty->assign('userTrackerData', $userTrackerData);
-		} elseif (isset($_REQUEST['name']) && !empty($re['usersTrackerId']) && empty($re['registrationUsersFieldIds'])) {
-			// If user has been created in the first round and there is a user tracker specified but fields are not set - proceed anyway
-			$result = $registrationlib->register_new_user($_REQUEST);
-			if (is_array($result)) {
-				foreach ($result as $r) {
-					$errorreportlib->report($r->msg);
-				}
-			} else if (is_a($result, 'RegistrationError')) {
-				$errorreportlib->report($result->msg);
-			} else {
-				$user = ''; // reset $user
-				return $result;
-			}	 
 		}
 	}
 

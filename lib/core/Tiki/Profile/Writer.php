@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -21,7 +21,6 @@ class Tiki_Profile_Writer
 			$this->data = Horde_Yaml::load($content);
 		} else {
 			$this->data = array(
-				'permissions' => array(),
 				'preferences' => array(),
 				'objects' => array(),
 				'unknown_objects' => array(),
@@ -82,13 +81,6 @@ class Tiki_Profile_Writer
 		return $reference;
 	}
 
-	function addPermissions($groupName, array $data)
-	{
-		$this->addFake('group', $groupName);
-
-		$this->data['permissions'][$groupName] = $data;
-	}
-
 	private function addRawObject($type, $reference, $currentId, $data)
 	{
 		$this->clearObject($type, $currentId);
@@ -117,11 +109,11 @@ class Tiki_Profile_Writer
 
 		// Find the object name property
 		$candidates = array();
-		$currentId = preg_replace('/[^\w]+/u', '', strtolower($currentId));
+		$currentId = preg_replace('/[^\w]+/', '', strtolower($currentId));
 
 		foreach (array('name', 'title') as $key) {
 			if (! empty($data[$key])) {
-				$basename = preg_replace('/\W+/u', '_', strtolower($data[$key]));
+				$basename = preg_replace('/\W+/', '_', strtolower($data[$key]));
 				$candidates[] = $basename;
 				$candidates[] = $type . '_' . $basename;
 				$candidates[] = $type . '_' . $basename . '_' . $currentId;
@@ -161,26 +153,14 @@ class Tiki_Profile_Writer
 		foreach ($this->data['unknown_objects'] as $key => $entry) {
 			if ($entry['type'] == $type && $entry['id'] == $id) {
 				$token = $entry['token'];
-				if (is_array($this->data['objects'])) {
-					array_walk_recursive(
-						$this->data['objects'],
-						function (& $entry) use ($token, $replacement) {
-							if (is_string($entry)) {
-								$entry = str_replace($token, $replacement, $entry);
-							}
+				array_walk_recursive(
+					$this->data['objects'],
+					function (& $entry) use ($token, $replacement) {
+						if (is_string($entry)) {
+							$entry = str_replace($token, $replacement, $entry);
 						}
-					);
-				}
-				if (is_array($this->data['permissions'])) {
-					array_walk_recursive(
-						$this->data['permissions'],
-						function (& $entry) use ($token, $replacement) {
-							if (is_string($entry)) {
-								$entry = str_replace($token, $replacement, $entry);
-							}
-						}
-					);
-				}
+					}
+				);
 
 				$writer = $this->externalWriter;
 				foreach ($writer->getFiles() as $file => $content) {
@@ -199,16 +179,13 @@ class Tiki_Profile_Writer
 	 */
 	function getUnknownObjects()
 	{
-		if (is_array($this->data['unknown_objects'])){
-			return array_map(
-				function ($entry) {
-					unset($entry['token']);
-					return $entry;
-				},
-				$this->data['unknown_objects']
-			);
-		}
-		return;
+		return array_map(
+			function ($entry) {
+				unset($entry['token']);
+				return $entry;
+			},
+			$this->data['unknown_objects']
+		);
 	}
 
 	/**

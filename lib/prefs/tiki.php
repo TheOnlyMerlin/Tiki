@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -26,13 +26,13 @@ function prefs_tiki_list()
 		'tiki_release_cycle' => array(
 			'name' => tr('Upgrade cycle'),
 			'type' => 'list',
-			'default' => 'regular',
+			'default' => 'longterm',
 			'dependencies' => array(
 				'feature_version_checks',
 			),
 			'options' => array(
 				'regular' => tr('Regular (6 months)'),
-				'longterm' => tr('Long-Term Support'),
+				'longterm' => tr('Long Term Support'),
 			),
 			'help' => 'Version+Lifecycle',
 		),
@@ -64,7 +64,7 @@ function prefs_tiki_list()
 			'description' => tra('In addition to reducing the size of the CSS, reduce the number of included files.'),
 			'type' => 'flag',
 			'perspective' => false,
-			'warning' => tra('This setting may not work out of the box for all styles. Import needs to use @import url("...") and not @import "..."'),
+			'warning' => tra('This setting may not work out of the box for all styles. import needs to use @import url("...") and not @import "..."'),
 			'default' => 'n',
 			'tags' => array('basic'),
 		),
@@ -93,7 +93,7 @@ function prefs_tiki_list()
 		),
 		'tiki_cdn' => array(
 			'name' => tra('Content Delivery Networks'),
-			'description' => tra('Use alternate domains to serve static files from this Tiki site to avoid sending cookies, improve local caching and generally improve user-experience performance.'),
+			'description' => tra('Use alternate domain names to serve static files from tiki to avoid sending cookies, improve local caching and generally improve user experience performance.'),
 			'hint' => tra('List of URI Prefixes to include before static files (One per line), for example: http://cdn1.example.com'),
 			'help' => 'Content+Delivery+Network',
 			'type' => 'textarea',
@@ -103,7 +103,7 @@ function prefs_tiki_list()
 		),
 		'tiki_cdn_ssl' => array(
 			'name' => tra('Content Delivery Networks (in SSL)'),
-			'description' => tra('Use alternate domains to serve static files from this Tiki site to avoid sending cookies, improve local caching and generally improve user-experience performance. Leave empty to disable CDN in SSL mode.'),
+			'description' => tra('Use alternate domain names to serve static files from tiki to avoid sending cookies, improve local caching and generally improve user experience performance. Leave empty to disable CDN in SSL mode.'),
 			'hint' => tra('List of URI Prefixes to include before static files (One per line), for example: https://sslcdn1.example.com'),
 			'help' => 'Content+Delivery+Network',
 			'type' => 'textarea',
@@ -144,14 +144,6 @@ function prefs_tiki_list()
 			'warning' => tra('Note, all permissions are granted to the Admins group including this one, so if you enable this you may expose your site to XSS (Cross Site Scripting) attacks for admin users.'),
 			'type' => 'flag',
 			'default' => 'n',
-		),
-		'tiki_object_selector_threshold' => array(
-			'name' => tr('Object selector threshold'),
-			'description' => tr('Number of records after which the object selectors will request searching instead of selecting from a list.'),
-			'type' => 'text',
-			'size' => 6,
-			'default' => 250,
-			'filter' => 'int',
 		),
 	);
 }

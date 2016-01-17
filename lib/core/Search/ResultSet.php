@@ -1,11 +1,11 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-class Search_ResultSet extends ArrayObject implements JsonSerializable
+class Search_ResultSet extends ArrayObject
 {
 	private $count;
 	private $estimate;
@@ -14,8 +14,6 @@ class Search_ResultSet extends ArrayObject implements JsonSerializable
 
 	private $highlightHelper;
 	private $filters = array();
-	private $id;
-	private $tsOn;
 
 	public static function create($list)
 	{
@@ -42,14 +40,11 @@ class Search_ResultSet extends ArrayObject implements JsonSerializable
 		$return->estimate = $this->estimate;
 		$return->filters = $this->filters;
 		$return->highlightHelper = $this->highlightHelper;
-		$return->id = $this->id;
-		$return->tsOn = $this->tsOn;
-		$return->count = $this->count;
 
 		return $return;
 	}
 
-	function setHighlightHelper(Zend\Filter\FilterInterface $helper)
+	function setHighlightHelper(Zend_Filter_Interface $helper)
 	{
 		$this->highlightHelper = $helper;
 	}
@@ -57,26 +52,6 @@ class Search_ResultSet extends ArrayObject implements JsonSerializable
 	function setEstimate($estimate)
 	{
 		$this->estimate = (int) $estimate;
-	}
-
-	function setId($id)
-	{
-		$this->id = $id;
-	}
-
-	function getId()
-	{
-		return $this->id;
-	}
-
-	function setTsOn($tsOn)
-	{
-		$this->tsOn = $tsOn;
-	}
-
-	function getTsOn()
-	{
-		return $this->tsOn;
 	}
 
 	function getEstimate()
@@ -181,23 +156,6 @@ class Search_ResultSet extends ArrayObject implements JsonSerializable
 		}
 
 		$this->exchangeArray($out);
-	}
-
-	function applyTransform(callable $transform)
-	{
-		foreach ($this as & $entry) {
-			$entry = $transform($entry);
-		}
-	}
-
-	function jsonSerialize()
-	{
-		return [
-			'count' => $this->count,
-			'offset' => $this->offset,
-			'maxRecords' => $this->maxRecords,
-			'result' => array_values($this->getArrayCopy()),
-		];
 	}
 }
 

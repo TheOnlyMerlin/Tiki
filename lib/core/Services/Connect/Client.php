@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -29,7 +29,7 @@ class Services_Connect_Client
 		global $prefs;
 
 		if (! Perms::get()->admin) {
-			throw new Services_Exception(tr('Reserved for administrators during development'), 403);
+			throw new Services_Exception(tr('Reserved to administrators during development'), 403);
 		}
 
 		if (empty($prefs['connect_guid'])) {
@@ -40,10 +40,10 @@ class Services_Connect_Client
 		$pref = $input->pref->text();
 
 		$votes = $this->connectlib->getVotes(true);
-		if (!isset( $votes->$pref )) {
-			$votes->$pref = array();
+		if (!isset( $votes[$pref] )) {
+			$votes[$pref] = array();
 		}
-		$arr = $votes->$pref;
+		$arr = $votes[$pref];
 
 		if (substr($vote, 0, 2) === 'un') {
 			$vote  = substr($vote, 2);
@@ -52,8 +52,8 @@ class Services_Connect_Client
 			$arr[] = $vote;
 			$vote = 'un' . $vote;	// send back the opposite vote to update the icon
 		}
-		if ($votes->$pref != $arr) {
-			$votes->$pref = $arr;
+		if ($votes[$pref] != $arr) {
+			$votes[$pref] = $arr;
 			$this->connectlib->saveVotesForGuid($prefs['connect_guid'], $votes);
 		}
 
@@ -63,7 +63,7 @@ class Services_Connect_Client
 	function action_list($input = null)
 	{
 		if (! Perms::get()->admin) {
-			throw new Services_Exception(tr('Reserved for administrators during development'), 403);
+			throw new Services_Exception(tr('Reserved to administrators during development'), 403);
 		}
 		$info = $this->connectlib->buildConnectData();
 
@@ -76,7 +76,7 @@ class Services_Connect_Client
 		global $prefs;
 
 		if (! Perms::get()->admin) {
-			throw new Services_Exception(tr('Reserved for administrators during development'), 403);
+			throw new Services_Exception(tr('Reserved to administrators during development'), 403);
 		}
 
 		$tikilib = TikiLib::lib('tiki');
@@ -94,7 +94,7 @@ class Services_Connect_Client
 				} else {
 					$data = array(
 						'status' => 'error',
-						'message' => empty($data['message']) ? tra('There was an error (Tiki Connect is still experimental). Please try again.') . ' (' . tra('registration') . ')' : $data['message'],
+						'message' => empty($data['message']) ? tra('Something went wrong. Tiki Connect is still experimental. Please try again.') . ' (' . tra('registration') . ')' : $data['message'],
 					);
 				}
 
@@ -116,7 +116,7 @@ class Services_Connect_Client
 				} else {
 					$data = array(
 						'status' => 'error',
-						'message' => empty($data['message']) ? tra('There was an error (Tiki Connect is still experimental). Please try again.') . ' (' . tra('confirmation') . ')' : $data['message'],
+						'message' => empty($data['message']) ? tra('Something went wrong. Tiki Connect is still experimental. Please try again.') . ' (' . tra('confirmation') . ')' : $data['message'],
 					);
 				}
 			}
@@ -143,7 +143,7 @@ class Services_Connect_Client
 
 	function action_cancel($input)
 	{
-		$guid = $input->guid->text();
+		$guid = $input->guid->filter();
 		if ($guid) {
 			$this->connectlib->removeGuid($guid);
 			$r = $this->remote->cancel(array('connect_data' => array('guid' => $guid)));

@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -45,9 +45,7 @@ if (isset($_REQUEST["localinfosubmit"])) {
 		$smarty->assign('msg', tra('Email is invalid'));
 	} else {
 		$tikilib->set_user_preference($user, 'socialnetworks_user_firstlogin', 'n');
-		if ($prefs['user_unique_email'] != 'y' || !$userlib->other_user_has_email($user, $_REQUEST['email'])) {
-			$userlib->change_user_email($user, $_REQUEST["email"]);
-		}
+		$userlib->change_user_email($user, $_REQUEST["email"]);
 		$userlib->change_login($user, $_REQUEST["name"]);
 		$user = $_REQUEST["name"];
 		$_SESSION[$user_cookie_site] = $user;

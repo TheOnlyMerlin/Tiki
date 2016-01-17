@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -36,15 +36,12 @@ function module_switch_lang_info()
  */
 function module_switch_lang($mod_reference, $module_params)
 {
-	global $prefs;
-	$smarty = TikiLib::lib('smarty');
-	$tikilib = TikiLib::lib('tiki');
+	global $tikilib, $smarty, $prefs;
 
 	// tiki-setup has already set the $language variable
 	//Create a list of languages
 	$languages = array();
-	$langLib = TikiLib::lib('language');
-	$languages = $langLib->list_languages(false, 'y');
+	$languages = $tikilib->list_languages(false, 'y');
 	$mode = isset($module_params["mode"]) ? $module_params["mode"] : "droplist";
 	$smarty->assign('mode', $mode);
 	if ($mode == 'flags' || $mode == 'words' || $mode == 'abrv') {

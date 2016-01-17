@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -14,18 +14,14 @@ function wikiplugin_wantedpages_info()
 		'documentation' => 'PluginWantedPages',
 		'description' => tra('Show location of links to pages not yet created'),
 		'prefs' => array( 'wikiplugin_wantedpages' ),
-		'body' => tr('Custom level regex. A custom filter for wanted pages to be listed (only used when %0). Possible
-			values: a valid regex-expression (PCRE).', '<code>level="custom"</code>'),
-		'iconname' => 'search',
-		'introduced' => 1,
+		'body' => tra('Custom level regex. A custom filter for wanted pages to be listed (only used when level=>custom). Possible values: a valid regex-expression (PCRE).'),
+		'icon' => 'img/icons/page_white_find.png',
 		'tags' => array( 'basic' ),
 		'params' => array(
 			'ignore' => array(
 				'required' => false,
 				'name' => tra('Ignore'),
-				'description' => tra('A wildcard pattern of originating pages to be ignored. (refer to PHP function
-					fnmatch() for details)'),
-				'since' => '1',
+				'description' => tra('A wildcard pattern of originating pages to be ignored. (refer to PHP fuction fnmatch() for details)'),
 				'accepted' => tra('a valid regex-expression (PCRE)'),
 				'default' => '',
 				'advanced' => true,
@@ -34,7 +30,6 @@ function wikiplugin_wantedpages_info()
 				'required' => false,
 				'name' => tra('Split By'),
 				'description' => tra('The character by which ignored patterns are separated.'),
-				'since' => '1',
 				'default' => '+',
 				'advanced' => true,
 			),
@@ -42,7 +37,6 @@ function wikiplugin_wantedpages_info()
 				'required' => false,
 				'name' => tra('Skip Alias'),
 				'description' => tra('Whether to skip wanted pages that have a defined alias (not skipped by default)'),
-				'since' => '12.1',
 				'default' => 0,
 				'filter' => 'digits',
 				'options' => array(
@@ -55,7 +49,6 @@ function wikiplugin_wantedpages_info()
 				'required' => false,
 				'name' => tra('Skip Extension'),
 				'description' => tra('Whether to include external wikis in the list (not included by default)'),
-				'since' => '1',
 				'default' => 0,
 				'filter' => 'digits',
 				'options' => array(
@@ -67,9 +60,7 @@ function wikiplugin_wantedpages_info()
 			'collect' => array(
 				'required' => false,
 				'name' => tra('Collect'),
-				'description' => tra('Collect either originating (from) or wanted pages (to) in a cell and display them
-					in the second column.'),
-				'since' => '1',
+				'description' => tra('Collect either originating (from) or wanted pages (to) in a cell and display them in the second column.'),
 				'default' => 'from',
 				'filter' => 'alpha',
 				'options' => array(
@@ -82,7 +73,6 @@ function wikiplugin_wantedpages_info()
 				'required' => false,
 				'name' => tra('Debug'),
 				'description' => tra('Switch on debug output with details about the items (debug not on by default)'),
-				'since' => '1',
 				'default' => 0,
 				'filter' => 'digits',
 				'advanced' => true,
@@ -96,9 +86,7 @@ function wikiplugin_wantedpages_info()
 			'table' => array(
 				'required' => false,
 				'name' => tra('Table'),
-				'description' => tra('Multiple collected items are separated in distinct table rows (default), or by
-					comma or line break in one cell.'),
-				'since' => '1',
+				'description' => tra('Multiple collected items are separated in distinct table rows (default), or by comma or line break in one cell.'),
 				'filter' => 'alpha',
 				'default' => 'sep',
 				'accepted' => 'sep, co, br',
@@ -112,11 +100,8 @@ function wikiplugin_wantedpages_info()
 			'level' => array(
 				'required' => false,
 				'name' => tra('Level'),
-				'description' => tra('Filter the list of wanted pages according to page_regex or custom filter. The
-					default value is the site\'s __current__ page_regex.'),
-				'since' => '1',
+				'description' => tra('Filter the list of wanted pages according to page_regex or custom filter. The default value is the site\'s __current__ page_regex.'),
 				'default' => '',
-				'filter' => 'alpha',
 				'advanced' => true,
 				'options' => array(
 					array('text' => '', 'value' => ''),

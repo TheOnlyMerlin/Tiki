@@ -12,16 +12,13 @@ function wikiplugin_catorphans_info()
 		'documentation' => 'PluginCatOrphans',
 		'description' => tra('List objects that are not categorized'),
 		'prefs' => array( 'feature_categories', 'wikiplugin_catorphans' ),
-		'iconname' => 'structure',
-		'introduced' => 1,
+		'icon' => 'img/icons/sitemap_color.png',
 		'params' => array(
 			'objects' => array(
 				'required' => false,
 				'name' => tra('Object'),
-				'description' => tr('Determine which type of objects are shown (default is %0)', '<code>wiki</code>'),
-				'since' => '1',
+				'description' => tra('Currently, only works with wiki pages, file galleries, articles, trackers, blogs, calendars, and forums (set to wiki (Wiki Pages) by default)'),
 				'default' => 'wiki',
-				'filter' => 'text',
 				'options' => array(
 					array('text' => tra('Wiki Pages'), 'value' => 'wiki'),
 					array('text' => tra('File Galleries'), 'value' => 'file gallery'),
@@ -35,19 +32,14 @@ function wikiplugin_catorphans_info()
 			'max' => array(
 				'required' => false,
 				'name' => tra('Max'),
-				'description' => tr('Maximum number of items. Use %0 for unlimited. Default is the site admin setting
-					for maximum records.', '<code>-1</code>'),
-				'since' => '1',
-				'default' => '$prefs[\'maxRecords\']',
-				'filter' => 'int',
+				'description' => tra('Maximum number of items. Use -1 for unlimited. Default is the site admin setting for maximum records.'),
+				'default' => '$prefs[\'maxRecords\']'
 			),
 			'offset' => array(
 				'required' => false,
 				'name' => tra('Result Offset'),
 				'description' => tra('Result number at which the listing should start (default is no offset)'),
-				'since' => '1',
-				'default' => 0,
-				'filter' => 'int',
+				'default' => 0
 			),
 		),
 	);

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -41,12 +41,11 @@ class Tracker_Field_Files extends Tracker_Field_Abstract
 					),
 					'displayMode' => array(
 						'name' => tr('Display Mode'),
-						'description' => tr('Show files as object links or via a wiki plugin (img so far)'),
+						'description' => tr('Show files as object links or via a wiki plugins (img so far)'),
 						'filter' => 'word',
 						'options' => array(
 							'' => tr('Links'),
 							'img' => tr('Images'),
-							'vimeo' => tr('Vimeo'),
 							'googleviewer' => tr('Google Viewer'),
 							'moodlescorm' => tr('Moodle Scorm Viewer'),
 						),
@@ -54,13 +53,13 @@ class Tracker_Field_Files extends Tracker_Field_Abstract
 					),
 					'displayParams' => array(
 						'name' => tr('Display parameters'),
-						'description' => tr('URL-encoded parameters used such as in the {img} plugin, for example,.') . ' "max=400&desc=namedesc&stylebox=block"',
+						'description' => tr('URL encoded params used as in the {img} plugin. e.g.') . ' "max=400&desc=namedesc&stylebox=block"',
 						'filter' => 'text',
 						'legacy_index' => 4,
 					),
 					'displayParamsForLists' => array(
 						'name' => tr('Display parameters for lists'),
-						'description' => tr('URL-encoded parameters used such as in the {img} plugin, for example,.') . ' "thumb=mouseover&max=60&rel=box[g]"',
+						'description' => tr('URL encoded params used as in the {img} plugin. e.g.') . ' "thumb=mouseover&max=60&rel=box[g]"',
 						'filter' => 'text',
 						'legacy_index' => 5,
 					),
@@ -76,7 +75,7 @@ class Tracker_Field_Files extends Tracker_Field_Abstract
 					),
 					'replace' => array(
 						'name' => tr('Replace Existing File'),
-						'description' => tr('Replace the existing file, if any, instead of uploading a new one.'),
+						'description' => tr('Replace existing file if any, instead of uploading new one.'),
 						'filter' => 'alpha',
 						'default' => 'n',
 						'options' => array(
@@ -111,22 +110,11 @@ class Tracker_Field_Files extends Tracker_Field_Abstract
 						),
 						'legacy_index' => 10,
 					),
-					'uploadInModal' => array(
-						'name' => tr('Upload In Modal'),
-						'description' => tr('Upload files in a new modal window.'),
-						'filter' => 'alpha',
-						'default' => 'y',
-						'options' => array(
-							'n' => tr('No'),
-							'y' => tr('Yes'),
-						),
-						'legacy_index' => 11,
-					)
 				),
 			),
 		);
 		if (isset($prefs['vimeo_upload']) && $prefs['vimeo_upload'] === 'y') {
-			$options['FG']['params']['displayMode']['description'] = tr('Show files as object links or via a wiki plugin (img, Vimeo)');
+			$options['FG']['params']['displayMode']['description'] = tr('Show files as object links or via a wiki plugins (img, vimeo)');
 			$options['FG']['params']['displayMode']['options']['vimeo'] = tr('Vimeo');
 		}
 		return $options;
@@ -141,11 +129,6 @@ class Tracker_Field_Files extends Tracker_Field_Abstract
 		$count = (int) $this->getOption('count');
 		$deepGallerySearch = (boolean) $this->getOption('deepGallerySearch');
 
-		// Support Addon File Gallery API switching
-		$api = new TikiAddons_Api_FileGallery;
-		$itemId = $this->getItemId();
-		$galleryId = $api->mapGalleryId($galleryId, $itemId);
-
 		// to use the user's userfiles gallery enter the fgal_root_user_id which is often (but not always) 2
 		$galleryId = $filegallib->check_user_file_gallery($galleryId);
 
@@ -158,8 +141,28 @@ class Tracker_Field_Files extends Tracker_Field_Abstract
 			$value = $requestData[$ins_id];
 			$fileIds = explode(',', $value);
 
+			// Add manually uploaded files (non-HTML5 browsers only)
+			if (isset($_FILES[$ins_id]['name']) && is_array($_FILES[$ins_id]['name'])) {
+				foreach (array_keys($_FILES[$ins_id]['name']) as $index) {
+					$fileIds[] = $this->handleUpload(
+						$galleryId,
+						array(
+							'name' => $_FILES[$ins_id]['name'][$index],
+							'type' => $_FILES[$ins_id]['type'][$index],
+							'size' => $_FILES[$ins_id]['size'][$index],
+							'tmp_name' => $_FILES[$ins_id]['tmp_name'][$index],
+						)
+					);
+				}
+			}
+
 			// Remove missed uploads
 			$fileIds = array_filter($fileIds);
+
+			// Keep only the last files if a limit is applied
+			if ($count) {
+				$fileIds = array_slice($fileIds, -$count);
+			}
 
 			// Obtain the info for display and filter by type if specified
 			$fileInfo = $this->getFileInfo($fileIds);
@@ -171,15 +174,7 @@ class Tracker_Field_Files extends Tracker_Field_Abstract
 					$fileId = 0;
 				}
 			}
-
-			// Keep only the last files if a limit is applied
-			if ($count) {
-				$fileIds = array_filter($fileIds);
-				$fileIds = array_slice($fileIds, -$count);
-				$value = implode(',', $fileIds);
-			} else {
-				$value = implode(',', array_filter($fileIds));
-			}
+			$value = implode(',', array_filter($fileIds));
 		} else {
 			$value = $this->getValue();
 
@@ -213,6 +208,7 @@ class Tracker_Field_Files extends Tracker_Field_Abstract
 			$canUpload = $perms['tiki_p_upload_files'] === 'y';
 		}
 
+
 		return array(
 			'galleryId' => $galleryId,
 			'canUpload' => $canUpload,
@@ -227,26 +223,6 @@ class Tracker_Field_Files extends Tracker_Field_Abstract
 
 	function renderInput($context = array())
 	{
-		global $prefs;
-
-		if ($prefs['fgal_tracker_existing_search']) {
-			if ($this->getOption('browseGalleryId')) {
-				$defaultGalleryId = $this->getOption('browseGalleryId');
-			} else if ($this->getOption('galleryId')) {
-				$defaultGalleryId = $this->getOption('galleryId');
-			} else {
-				$defaultGalleryId = 0;
-			}
-			$deepGallerySearch = $this->getOption('galleryId');
-
-			$context['onclick'] = 'return openElFinderDialog(this, {
-	defaultGalleryId:' . $defaultGalleryId . ',
-	deepGallerySearch: ' . $deepGallerySearch . ',
-	getFileCallback: function(file,elfinder){ window.handleFinderFile(file,elfinder); },
-	eventOrigin:this
-});';
-		}
-
 		return $this->renderTemplate('trackerinput/files.tpl', $context, array(
 			'replaceFile' => 'y' == $this->getOption('replace', 'n'),
 		));
@@ -257,11 +233,6 @@ class Tracker_Field_Files extends Tracker_Field_Abstract
 		global $prefs;
 		global $mimetypes; include ('lib/mime/mimetypes.php');
 		$galleryId = (int)$this->getOption('galleryId');
-
-		// Support Addon File Gallery API switching
-		$api = new TikiAddons_Api_FileGallery;
-		$itemId = $this->getItemId();
-		$galleryId = $api->mapGalleryId($galleryId, $itemId);
 
 		if (!isset($context['list_mode'])) {
 			$context['list_mode'] = 'n';
@@ -363,12 +334,8 @@ class Tracker_Field_Files extends Tracker_Field_Abstract
 						$file['filetype'] == $mimetypes["png"] ||
 						$file['filetype'] == $mimetypes["tiff"])
 					) {
-						$smarty->loadPlugin('smarty_function_icon');
-						$editicon = smarty_function_icon(['name' => 'edit'], $smarty);
-						$ret .= " <a href='tiki-edit_draw.php?fileId=" . $file['fileId']
-							. "' onclick='return $(this).ajaxEditDraw();' class='tips' title='Edit: ".$file['name']
-							."' data-fileid='".$file['fileId']."' data-galleryid='".$galleryId."'>
-							$editicon
+						$ret .= " <a href='tiki-edit_draw.php?fileId=" . $file['fileId'] . "' onclick='return $(this).ajaxEditDraw();'  title='Edit: ".$file['name']."' data-fileid='".$file['fileId']."' data-galleryid='".$galleryId."'>
+							<img width='16' height='16' class='icon' alt='Edit' src='img/icons/page_edit.png' />
 						</a>";
 					}
 
@@ -505,7 +472,7 @@ class Tracker_Field_Files extends Tracker_Field_Abstract
 
 		$perms = Perms::get('file gallery', $galleryId);
 		if (! $perms->upload_files) {
-			TikiLib::lib('errorreport')->report(tr('You don\'t have permission to upload a file to gallery "%0"', $gal_info['name']));
+			TikiLib::lib('errorreport')->report(tr('No permissions to upload file to gallery "%0"', $gal_info['name']));
 			return false;
 		}
 

@@ -1,34 +1,24 @@
-{extends 'layout_view.tpl'}
-
-{block name="title"}
-	{title}{$title|escape}{/title}
-{/block}
-
-{block name="content"}
 <div class="friend-container" data-controller="social" data-action="list_friends">
-<ul class="friend-list clearfix">
+<ul class="friend-list">
 	{foreach from=$friends item=friend}
-		<li>
+		<li class="clear">
 			{$friend.user|userlink}
-			{* Show 'X' remove buttons only when on active user's profile *}
-			{if $user eq $username}
-				<a class="pull-right remove-friend tips" href="{service controller=social action=remove_friend friend=$friend.user}" data-confirm="{tr _0=$friend.user}Do you really want to remove %0?{/tr}" title=":{tr}Remove Friend{/tr}">{icon name='delete'}</a>
-			{/if}
+			<a class="floatright remove-friend" href="{service controller=social action=remove_friend friend=$friend.user}" data-confirm="{tr _0=$friend.user}Do you really want to remove %0?{/tr}">{icon _id=cross alt="{tr}Remove Friend{/tr}"}</a>
 		</li>
 	{foreachelse}
-		<li>{tr}No friends have been added.{/tr}</li>
+		<li>{tr}You do not have friends.{/tr}</li>
 	{/foreach}
 </ul>
 {if $incoming|count > 0}
 	<p>{tr}Incoming requests:{/tr}
-	<ul class="request-list clearfix">
+	<ul class="request-list">
 		{foreach from=$incoming item=candidate}
-			<li>
+			<li class="clear">
 				{$candidate.user|userlink}
-				<a class="pull-right remove-friend tips" href="{service controller=social action=remove_friend friend=$candidate.user}" data-confirm="{tr _0=$candidate.user}Do you really want to remove %0?{/tr}" title=":{tr}Remove Friend{/tr}">{icon name='delete'}</a>
-				<a class="pull-right add-friend tips" href="{service controller=social action=add_friend username=$candidate.user}" title=":{tr}Accept and add{/tr}">{icon name='add'}</a>
+				<a class="floatright remove-friend" href="{service controller=social action=remove_friend friend=$candidate.user}" data-confirm="{tr _0=$candidate.user}Do you really want to remove %0?{/tr}">{icon _id=cross alt="{tr}Reject{/tr}"}</a>
+				<a class="floatright add-friend" href="{service controller=social action=add_friend username=$candidate.user}">{icon _id=add alt="{tr}Accept &amp; Add{/tr}"}</a>
 				{if $prefs.social_network_type eq 'follow_approval'}
-					<a class="pull-right approve-friend tips" href="{service controller=social action=approve_friend friend=$candidate.user}" title="{tr}Accept Request{/tr}">{icon name='ok'}</a>
+					<a class="floatright approve-friend" href="{service controller=social action=approve_friend friend=$candidate.user}">{icon _id=accept alt="{tr}Accept Request{/tr}"}</a>
 				{/if}
 			</li>
 		{/foreach}
@@ -36,17 +26,14 @@
 {/if}
 {if $outgoing|count > 0}
 	<p>{tr}Still waiting for approval:{/tr}
-	<ul class="request-list clearfix">
+	<ul class="request-list">
 		{foreach from=$outgoing item=candidate}
-			<li>
+			<li class="clear">
 				{$candidate.user|userlink}
-				<a class="pull-right remove-friend tips" href="{service controller=social action=remove_friend friend=$candidate.user}" data-confirm="{tr _0=$candidate.user}Do you really want to cancel request for %0?{/tr}" title=":{tr}Cancel{/tr}">{icon name='delete'}</a>
+				<a class="floatright remove-friend" href="{service controller=social action=remove_friend friend=$candidate.user}" data-confirm="{tr _0=$candidate.user}Do you really want to cancel request for %0?{/tr}">{icon _id=cross alt="{tr}Cancel{/tr}"}</a>
 			</li>
 		{/foreach}
 	</ul>
 {/if}
-{if $showbutton eq 'y'}
-    <button class="add-friend btn btn-default"><i class="fa fa-user-plus"></i>&nbsp;{tr}Add Friend{/tr}</button>
-{/if}
+<button class="add-friend">{tr}Add Friend{/tr}</button>
 </div>
-{/block}

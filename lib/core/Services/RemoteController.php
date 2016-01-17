@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -53,12 +53,11 @@ class Services_RemoteController
 	private function getJson($action, $postArguments = array())
 	{
 		$client = $this->getClient($action, $postArguments);
-		$client->setHeaders(array('Accept' => 'application/json'));
-		$client->setMethod(Zend\Http\Request::METHOD_POST);
-		$response = $client->send();
+		$client->setHeaders('Accept', 'application/json');
+		$response = $client->request('POST');
 
-		if (! $response->isSuccess()) {
-			throw new Services_Exception(tr('Remote service inaccessible (%0)', $response->getStatusCode()), 400);
+		if (! $response->isSuccessful()) {
+			throw new Services_Exception(tr('Remote service unaccessible (%0)', $response->getStatus()), 400);
 		}
 
 		return json_decode($response->getBody(), true);

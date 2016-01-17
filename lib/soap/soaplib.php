@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -36,7 +36,7 @@ class Tiki_Soap
 			$options['soap_version'] = SOAP_1_1;
 		}
 
-		$client = new Zend\Soap\Client($wsdl, $options);
+		$client = new Zend_Soap_Client($wsdl, $options);
 		$soap_params = array();
 
 		foreach ($params as $param_name => $param_value) {

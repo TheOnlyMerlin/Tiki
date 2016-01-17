@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,7 +11,7 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 	exit;
 }
 
-$logslib = TikiLib::lib('logs');
+require_once ('lib/logs/logslib.php');
 
 /**
  * Basic functions used by the accounting feature
@@ -78,8 +78,7 @@ class AccountingLib extends LogsLib
 			, $bookAutoTax = 'y'
 			)
 	{
-		global $user;
-		$userlib = TikiLib::lib('user');
+		global $userlib, $user;
 		if (strlen($bookName) == 0) {
 			return "The book must have a name";
 		}
@@ -553,18 +552,18 @@ class AccountingLib extends LogsLib
 	 *
 	 * Checks if the book date is within the books limits
 	 * @param array		$book		book array
-	 * @param DateTime $Date
+	 * @param unknown_type $Date
 	 */
 	function checkBookDates($book, $Date)
 	{
-		$StartDate = new DateTime($book['bookStartDate']);
-		if ($Date < $StartDate) {
-			return array(tra("The date of the transaction is before the start date of this book."));
+		$StartDate = new Zend_Date($book['bookStartDate']);
+		if ($Date->compareDate($StartDate) === -1) {
+			return array(tra("The date for the transaction is before this books start date."));
 		}
 
-		$EndDate = new DateTime($book['bookEndDate']);
-		if ($Date > $EndDate) {
-			return array(tra("The date of the transaction is after the end date of this book."));
+		$EndDate = new Zend_Date($book['bookEndDate']);
+		if ($Date->compareDate($EndDate) === 1) {
+			return array(tra("The date for the transaction is after this books end date."));
 		}
 
 		return true;
@@ -598,10 +597,10 @@ class AccountingLib extends LogsLib
 		$book = $this->getBook($bookId);
 
 		if ($book['bookClosed'] == 'y') {
-			return array(tra("This book has been closed. Bookings can no longer be made in it."));
+			return array(tra("This book has been closed. You can't book into it any more."));
 		} try {
-			$date = new DateTime($journalDate);
-		} catch(Exception $e) {
+			$date = new Zend_Date($journalDate);
+		} catch(Zend_Date_Exception $e) {
 			return array(tra("Invalid booking date."));
 		}
 
@@ -680,10 +679,10 @@ class AccountingLib extends LogsLib
 		$book = $this->getBook($bookId);
 
 		if ($book['bookClosed'] == 'y') {
-			$errors[] = tra("This book has been closed. Bookings can no longer be made in it.");
+			$errors[] = tra("This book has been closed. You can't book into it any more.");
 		} try {
-			$date = new DateTime($journalDate);
-		} catch(Exception $e) {
+			$date = new Zend_Date($journalDate);
+		} catch(Zend_Date_Exception $e) {
 			return array(tra("Invalid booking date."));
 		}
 
@@ -703,11 +702,11 @@ class AccountingLib extends LogsLib
 		if (!is_array($creditText)) $creditText = array($creditText);
 
 		if (count($debitAccount) != count($debitAmount) or count($debitAccount) != count($debitText)) {
-			$errors[] = tra('The number of debit entries differs: ') . count($debitAccount) . '/' . count($debitAmount) . '/' . count($debitText);
+			$errors[] = tra('Number of debit entries differ: ') . count($debitAccount) . '/' . count($debitAmount) . '/' . count($debitText);
 		}
 
 		if (count($creditAccount) != count($creditAmount) or count($creditAccount) != count($creditText)) {
-			$errors[] = tra('The number of credit entries differs: ') . count($creditAccount) . '/' . count($creditAmount) . '/' . count($creditText);
+			$errors[] = tra('Number of credit entries differ: ') . count($creditAccount) . '/' . count($creditAmount) . '/' . count($creditText);
 		}
 
 		if (count($debitAccount)>1 and count($creditAccount)>1) {
@@ -819,7 +818,7 @@ class AccountingLib extends LogsLib
 	{
 		$book = $this->getBook($bookId);
 		if ($book['bookClosed'] == 'y') {
-			$errors[] = tra("This book has been closed. Transactions can no longer be cancelled in it.");
+			$errors[] = tra("This book has been closed. You can't cancel transactions in it any more.");
 		}
 		$query = "UPDATE `tiki_acct_journal` SET `journalCancelled`=1 WHERE `journalBookId`=? and `journalId`=?";
 		$res = $this->query($query, array($bookId, $journalId));
@@ -905,10 +904,10 @@ class AccountingLib extends LogsLib
 
 		$book = $this->getBook($bookId);
 		if ($book['bookClosed'] == 'y') {
-			$errors[] = tra("This book has been closed. Bookings can no longer be made in it.");
+			$errors[] = tra("This book has been closed. You can't book into it any more.");
 		} try {
-			$date = new DateTime($stackDate);
-		} catch (Exception $e) {
+			$date = new Zend_Date($stackDate);
+		} catch (Zend_Date_Exception $e) {
 			return array(tra("Invalid booking date."));
 		}
 		$errors = $this->checkBookDates($book, $date);
@@ -925,11 +924,11 @@ class AccountingLib extends LogsLib
 		if (!is_array($creditText)) $creditText = array($creditText);
 
 		if (count($debitAccount) != count($debitAmount) or count($debitAccount) != count($debitText)) {
-			$errors[] = tra('The number of debit entries differs: ') . count($debitAccount) . '/' . count($debitAmount) . '/' . count($debitText);
+			$errors[] = tra('Number of debit entries differ: ') . count($debitAccount) . '/' . count($debitAmount) . '/' . count($debitText);
 		}
 
 		if (count($creditAccount) != count($creditAmount) or count($creditAccount) != count($creditText)) {
-			$errors[] = tra('The number of credit entries differs: ') . count($creditAccount) . '/' . count($creditAmount) . '/' . count($creditText);
+			$errors[] = tra('Number of credit entries differ: ') . count($creditAccount) . '/' . count($creditAmount) . '/' . count($creditText);
 		}
 
 		if (count($debitAccount)>1 and count($creditAccount)>1) {
@@ -1020,10 +1019,10 @@ class AccountingLib extends LogsLib
 
 		$book = $this->getBook($bookId);
 		if ($book['bookClosed'] == 'y') {
-			$errors[] = tra("This book has been closed. Bookings can no longer be made in it.");
+			$errors[] = tra("This book has been closed. You can't book into it any more.");
 		}	try {
-			$date = new DateTime($stackDate);
-		} catch (Exception $e) {
+			$date = new Zend_Date($stackDate);
+		} catch (Zend_Date_Exception $e) {
 			return array(tra("Invalid booking date."));
 		}
 		$errors = $this->checkBookDates($book, $date);
@@ -1040,11 +1039,11 @@ class AccountingLib extends LogsLib
 		if (!is_array($creditText)) $creditText = array($creditText);
 
 		if (count($debitAccount) != count($debitAmount) or count($debitAccount) != count($debitText)) {
-			$errors[] = tra('The number of debit entries differs: ') . count($debitAccount) . '/' . count($debitAmount) . '/' . count($debitText);
+			$errors[] = tra('Number of debit entries differ: ') . count($debitAccount) . '/' . count($debitAmount) . '/' . count($debitText);
 		}
 
 		if (count($creditAccount) != count($creditAmount) or count($creditAccount) != count($creditText)) {
-			$errors[] = tra('The number of credit entries differs: ') . count($creditAccount) . '/' . count($creditAmount) . '/' . count($creditText);
+			$errors[] = tra('Number of credit entries differ: ') . count($creditAccount) . '/' . count($creditAmount) . '/' . count($creditText);
 		}
 
 		if (count($debitAccount) > 1 and count($creditAccount) > 1) {
@@ -1172,7 +1171,7 @@ class AccountingLib extends LogsLib
 				FROM `tiki_acct_stackitem` WHERE `stackBookId`=? AND `stackItemStackId`=?";
 		$res = $this->query($query, array($bookId, $journalId, $bookId, $stackId));
 		if ($res === false) {
-			$errors[] = tra('Booking error confirming stack entry') . $this->ErrorNo() . ": " . $this->ErrorMsg() . "<br /><pre>$query</pre>";
+			$errors[] = tra('Booking error cconfirming stack entry') . $this->ErrorNo() . ": " . $this->ErrorMsg() . "<br /><pre>$query</pre>";
 			$errors[] = $this->manualRollback($bookId, $journalId);
 			return $errors;
 		}
@@ -1388,7 +1387,7 @@ class AccountingLib extends LogsLib
 		$errors = array();
 		if (!is_numeric($id)) {
 			$errors[] = htmlspecialchars($idname) . ' (' . htmlspecialchars($id) . ')'
-				. tra('is not a number.');
+				. tra('is is not a number.');
 		} elseif ($id <= 0) {
 			$errors[] = htmlspecialchars($idname) . ' ' . tra('must be > 0.');
 		} else {

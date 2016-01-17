@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,7 +10,7 @@ function prefs_auth_list()
 	return array(
 		'auth_method' => array(
 			'name' => tra('Authentication method'),
-			'description' => tra('Tiki supports several authentication methods. The default method is to use the internal user database.'),
+			'description' => tra('Tiki supports several authentication methods. The default value is to use the internal user database.'),
 			'type' => 'list',
 			'help' => 'External+Authentication',
 			'perspective' => false,
@@ -28,7 +28,7 @@ function prefs_auth_list()
 		),
 		'auth_token_access' => array(
 			'name' => tra('Token Access'),
-			'description' => tra('With the presentation of a token, allow access to the content with elevated rights. The primary use of this authentication method is to grant temporary access to content to an external service.'),
+			'description' => tra('Allow to access the content with superior rights with the presentation of a token. The primary use of this authentication method is to grant temporary access to content to an external service.'),
 			'help' => 'Token+Access',
 			'perspective' => false,
 			'type' => 'flag',
@@ -36,8 +36,8 @@ function prefs_auth_list()
 			'view' => 'tiki-admin_tokens.php',
 		),
 		'auth_token_access_maxtimeout' => array(
-			'name' => tra('Token Access Default Timeout'),
-			'description' => tra('The default duration for which the generated tokens will be valid.'),
+			'name' => tra('Token Access Max Timeout'),
+			'description' => tra('The maximum duration for which the generated tokens will be valid.'),
 			'type' => 'text',
 			'size' => 5,
 			'perspective' => false,
@@ -46,8 +46,8 @@ function prefs_auth_list()
 			'default' => 3600*24*7,
 		),
 		'auth_token_access_maxhits' => array(
-			'name' => tra('Token Access Default Maximum Hits'),
-			'description' => tra('The default maximum number of times a token can be used before it expires.'),
+			'name' => tra('Token Access Max Hits'),
+			'description' => tra('The maximum amount of times a token can be used before it expires.'),
 			'type' => 'text',
 			'size' => 5,
 			'perspective' => false,
@@ -56,7 +56,7 @@ function prefs_auth_list()
 		),
 		'auth_token_tellafriend' => array(
 			'name' => tra('Share access rights with friends when using Tell a friend'),
-			'description' => tra('Allow users to share their access rights for the current page with a friend when sending the link by email. The lifespan of the link is defined by the site.'),
+			'description' => tra('Allow users to share their access rights on the current page with a friend when sending the link by email. Lifespan of the links is defined by the site.'),
 			'type' => 'flag',
 			'perspective' => false,
 			'dependencies' => array(
@@ -65,18 +65,9 @@ function prefs_auth_list()
 			),
 			'default' => 'n',
 		),
-		'auth_token_preserve_tempusers' => array(
-			'name' => tra('Do not delete temporary users when token is deleted/expired'),
-			'description' => tra('Normally temporary users created (see tiki-adminusers.php) are deleted when their access token is deleted/expired. If turned on, this will keep those users around (and can be manually deleted later) but they will have no groups and therefore no perms'),
-			'type' => 'flag',
-			'dependencies' => array(
-				'auth_token_access',
-			),
-			'default' => 'n',
-		),
 		'auth_token_share' => array(
 			'name' => tra('Share access rights with friends when using Share'),
-			'description' => tra('Allow users to share their access rights for the current page with a friend when sending the link by email, Twitter, or Facebook. The lifespan of the link is defined by the site.'),
+			'description' => tra('Allow users to share their access rights on the current page with a friend when sending the link by email/Twitter/Facebook. Lifespan of the links is defined by the site.'),
 			'type' => 'flag',
 			'perspective' => false,
 			'dependencies' => array(
@@ -86,8 +77,8 @@ function prefs_auth_list()
 			'default' => 'n',
 		),
 		'auth_phpbb_create_tiki' => array(
-			'name' => tra('Create user if not already a registered user'),
-            'description' => tra('Automatically create a new Tiki user for the PHPbb login'),
+			'name' => tra('Create user if not in Tiki'),
+            'description' => tra('Automatically create a new Tiki User for the PHPbb login'),
             'type' => 'flag',
 			'perspective' => false,
 			'default' => 'n',
@@ -170,7 +161,6 @@ function prefs_auth_list()
 			'size' => 20,
 			'perspective' => false,
 			'default' => '',
-			'extensions' => ['ldap'],
 		),
 		'auth_ldap_port' => array(
 			'name' => tra('Port'),
@@ -180,7 +170,6 @@ function prefs_auth_list()
 			'filter' => 'digits',
 			'perspective' => false,
 			'default' => '',
-			'extensions' => ['ldap'],
 		),
 		'auth_ldap_debug' => array(
 			'name' => tra('Write LDAP debug Information in Tiki Logs'),
@@ -188,7 +177,7 @@ function prefs_auth_list()
 			'type' => 'flag',
 			'perspective' => false,
 			'default' => 'n',
-			'view' => 'tiki-syslog.php'			
+			'view' => 'tiki-syslog.php'
 		),
 		'auth_ldap_ssl' => array(
 			'name' => tra('Use SSL (ldaps)'),
@@ -242,7 +231,7 @@ function prefs_auth_list()
 			'name' => tra('Base DN'),
             'description' => tra(''),
 			'type' => 'text',
-			'size' => 15,
+			'size' => 35,
 			'perspective' => false,
 			'default' => '',
 		),
@@ -250,7 +239,7 @@ function prefs_auth_list()
 			'name' => tra('User DN'),
             'description' => tra(''),
 			'type' => 'text',
-			'size' => 20,
+			'size' => 25,
 			'perspective' => false,
 			'default' => '',
 		),
@@ -362,7 +351,7 @@ function prefs_auth_list()
 			'name' => tra('Admin user'),
             'description' => tra(''),
 			'type' => 'text',
-			'size' => 15,
+			'size' => 50,
 			'autocomplete' => 'off',
 			'perspective' => false,
 			'default' => '',
@@ -371,7 +360,7 @@ function prefs_auth_list()
 			'name' => tra('Admin password'),
             'description' => tra(''),
 			'type' => 'password',
-			'size' => 15,
+			'size' => 25,
 			'autocomplete' => 'off',
 			'perspective' => false,
 			'default' => '',
@@ -459,7 +448,7 @@ function prefs_auth_list()
 			'name' => tra('Base DN'),
             'description' => tra(''),
 			'type' => 'text',
-			'size' => 15,
+			'size' => 35,
 			'perspective' => false,
 			'default' => '',
 		),
@@ -467,7 +456,7 @@ function prefs_auth_list()
 			'name' => tra('User DN'),
             'description' => tra(''),
 			'type' => 'text',
-			'size' => 20,
+			'size' => 25,
 			'perspective' => false,
 			'default' => '',
 		),
@@ -499,7 +488,7 @@ function prefs_auth_list()
 			'name' => tra('Admin user'),
             'description' => tra(''),
 			'type' => 'text',
-			'size' => 15,
+			'size' => 55,
 			'perspective' => false,
 			'default' => '',
 		),
@@ -507,12 +496,12 @@ function prefs_auth_list()
 			'name' => tra('Admin password'),
             'description' => tra(''),
 			'type' => 'password',
-			'size' => 15,
+			'size' => 25,
 			'perspective' => false,
 			'default' => '',
 		),
 		'auth_ws_create_tiki' => array(
-			'name' => tra('Create user if not already a registered user'),
+			'name' => tra('Create user if not in Tiki'),
             'description' => tra(''),
 			'type' => 'flag',
 			'perspective' => false,

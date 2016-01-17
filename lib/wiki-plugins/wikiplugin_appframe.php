@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -9,13 +9,12 @@ function wikiplugin_appframe_info()
 {
 	return array(
 		'name' => tra('Application Frame'),
-		'description' => tra('Create a frame in which to assemble custom applications'),
+		'description' => tra('Creates a frame to assemble custom applications in. Components in the frame will be various wiki pages and modules.'),
 		'prefs' => array('wikiplugin_appframe'),
 		'format' => 'html',
-		'documentation' => 'PluginAppFrame',
-		'iconname' => 'merge',
-		'filter' => 'wikicontent',
 		'introduced' => 9,
+		'documentation' => 'PluginAppFrame',
+		'filter' => 'wikicontent',
 		'body' => tr('Application layout'),
 		'params' => array(
 			'min' => array(
@@ -24,7 +23,6 @@ function wikiplugin_appframe_info()
 				'description' => tr('Prevent the frame from becoming any shorter than the specified size.'),
 				'default' => 300,
 				'filter' => 'int',
-				'since' => '9.0',
 			),
 			'max' => array(
 				'required' => false,
@@ -32,14 +30,12 @@ function wikiplugin_appframe_info()
 				'description' => tr('Prevent the frame from becoming any higher than the specified size.'),
 				'default' => -1,
 				'filter' => 'int',
-				'since' => '10.0',
 			),
 			'hideleft' => array(
 				'requred' => false,
 				'name' => tr('Hide left column'),
 				'description' => tr('Hide the left column when the application frame is in use to provide more space to the application.'),
 				'default' => 'n',
-				'since' => '9.0',
 				'options' => array(
 					array('value' => 'n', 'text' => tr('No')),
 					array('value' => 'y', 'text' => tr('Yes')),
@@ -50,7 +46,6 @@ function wikiplugin_appframe_info()
 				'name' => tr('Hide right column'),
 				'description' => tr('Hide the right column when the application frame is in use to provide more space to the application.'),
 				'default' => 'n',
-				'since' => '9.0',
 				'options' => array(
 					array('value' => 'n', 'text' => tr('No')),
 					array('value' => 'y', 'text' => tr('Yes')),
@@ -61,7 +56,6 @@ function wikiplugin_appframe_info()
 				'name' => tr('Full page'),
 				'description' => tr('Occupy the complete content area of the page.'),
 				'default' => 'n',
-				'since' => '9.0',
 				'options' => array(
 					array('value' => 'n', 'text' => tr('No')),
 					array('value' => 'y', 'text' => tr('Yes')),
@@ -72,7 +66,6 @@ function wikiplugin_appframe_info()
 				'name' => tr('Absolute Position'),
 				'description' => tr('Position the app frame to use absolute position and really use all available space.'),
 				'default' => 'n',
-				'since' => '9.0',
 				'options' => array(
 					array('value' => 'n', 'text' => tr('No')),
 					array('value' => 'y', 'text' => tr('Yes')),
@@ -84,14 +77,12 @@ function wikiplugin_appframe_info()
 				'description' => tr('When using absolute mode, leave some space for the header at the top.'),
 				'default' => 0,
 				'filter' => 'int',
-				'since' => '9.0',
 			),
 			'fullscreen' => array(
 				'required' => false,
 				'name' => tr('Full screen'),
 				'description' => tr('Occupy the complete page.'),
 				'default' => 'n',
-				'since' => '10.0',
 				'options' => array(
 					array('value' => 'n', 'text' => tr('No')),
 					array('value' => 'y', 'text' => tr('Yes')),

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -7,8 +7,8 @@
 
 function smarty_function_rating( $params, $smarty )
 {
-	global $prefs, $user;
-	$ratinglib = TikiLib::lib('rating');
+	global $prefs, $ratinglib, $user;
+	require_once 'lib/rating/ratinglib.php';
 
 	if ( ! isset($params['type'], $params['id']) ) {
 		return tra('No object information provided for rating.');
@@ -36,35 +36,24 @@ function smarty_function_rating( $params, $smarty )
 				}
 	        }
 
-			$tikilib = TikiLib::lib('tiki');
-			if ($type == 'comment') {
-				$forum_id = $commentslib->get_comment_forum_id($id);
-			  	$forum_info = $commentslib->get_forum($forum_id);
-			  	$thread_info = $commentslib->get_comment($id, null, $forum_info);
-			  	$item_user = $thread_info['userName'];
-			} elseif ($type == 'article') {
-			  	$artlib = TikiLib::lib('art');
-			  	$res = $artlib->get_article($id);
-			  	$item_user = $res['author'];
-			}
-			if ($value == '1') {
-				TikiLib::events()->trigger('tiki.social.rating.add',
-					array(
-						'type' => $type,
-						'object' => $id,
-						'author' => $item_user,
-						'user' => $user,
-					)
-				);
-			} elseif ($value == '2') {
-				TikiLib::events()->trigger('tiki.social.rating.remove',
-					array(
-						'type' => $type,
-						'object' => $id,
-						'author' => $item_user,
-						'user' => $user,
-					)
-				);
+			if ($prefs['feature_score'] == 'y' && $id) {
+				global $tikilib;
+				if ($type == 'comment') {
+				  $forum_id = $commentslib->get_comment_forum_id($id);
+				  $forum_info = $commentslib->get_forum($forum_id);
+				  $thread_info = $commentslib->get_comment($id, null, $forum_info);
+				  $item_user = $thread_info['userName'];
+				} elseif ($type == 'article') {
+				  require_once 'lib/articles/artlib.php';
+				  $artlib = new ArtLib();
+				  $res = $artlib->get_article($id);
+				  $item_user = $res['author'];
+				}
+				if ($value == '1') {
+				  $tikilib->score_event($item_user, 'item_is_rated', "$user:$type:$id");
+				} elseif ($value == '2') {
+				  $tikilib->score_event($item_user, 'item_is_unrated', "$user:$type:$id");
+				}
 			}
 		} elseif ( $value != $prev ) {
 			return tra('An error occurred.');
@@ -72,7 +61,7 @@ function smarty_function_rating( $params, $smarty )
 	}
 
 	$vote = $ratinglib->get_vote($type, $id);
-	$options = $ratinglib->get_options($type, $id, false, $hasLabels);
+	$options = $ratinglib->get_options($type, $id);
 
 	if ($prefs['rating_smileys'] == 'y') {
 		$smiles = $ratinglib->get_options_smiles($type, $id);
@@ -83,7 +72,6 @@ function smarty_function_rating( $params, $smarty )
 	$smarty->assign('rating_id', $id);
 	$smarty->assign('rating_options', $options);
 	$smarty->assign('current_rating', $vote);
-	$smarty->assign('rating_has_labels', $hasLabels);
 	return $smarty->fetch('rating.tpl');
 }
 

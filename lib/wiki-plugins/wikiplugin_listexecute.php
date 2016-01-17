@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,14 +10,13 @@ function wikiplugin_listexecute_info()
 	return array(
 		'name' => tra('List Execute'),
 		'documentation' => 'PluginListExecute',
-		'description' => tra('Set custom actions that can be executed on a filtered list of objects'),
+		'description' => tra('Generates a list of objects based on a set of filters and allows to execute configured actions on them.'),
 		'prefs' => array('wikiplugin_listexecute', 'feature_search'),
 		'body' => tra('List configuration information'),
 		'validate' => 'all',
 		'filter' => 'wikicontent',
 		'profile_reference' => 'search_plugin_content',
-		'iconname' => 'list',
-		'introduced' => 11,
+		'icon' => 'img/icons/text_list_bullets.png',
 		'tags' => array( 'advanced' ),
 		'params' => array(
 		),
@@ -80,8 +79,9 @@ function wikiplugin_listexecute($data, $params)
 	$builder->setFormatterPlugin($plugin);
 
 	$formatter = $builder->getFormatter();
+	$formatter->setDataSource($dataSource);
 
-	$reportSource = new Search_Action_ReportingTransform;
+	$reportSource = new Search_GlobalSource_Reporting;
 
 	if (isset($_POST['list_action'], $_POST['objects'])) {
 		$action = $_POST['list_action'];
@@ -114,9 +114,11 @@ function wikiplugin_listexecute($data, $params)
 			'actions' => array_keys($actions),
 		)
 	);
+	$dataSource = new Search_Formatter_DataSource_Declarative;
+	$dataSource->addGlobalSource($reportSource);
 
 	$formatter = new Search_Formatter($plugin);
-	$result->applyTransform($reportSource);
+	$formatter->setDataSource($dataSource);
 	return $formatter->format($result);
 }
 

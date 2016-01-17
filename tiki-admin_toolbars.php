@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -49,8 +49,7 @@ $sections = array_merge($sections, $sections2);
 if ( isset($_REQUEST['section']) && in_array($_REQUEST['section'], array_keys($sections)) ) {
 	$section = $_REQUEST['section'];
 } else {
-	$keys = array_keys($sections);
-	$section = reset($keys);
+	$section = reset(array_keys($sections));
 }
 if ( isset($_REQUEST['comments']) && $_REQUEST['comments'] == 'on') {
 	$comments = true;
@@ -59,8 +58,7 @@ if ( isset($_REQUEST['comments']) && $_REQUEST['comments'] == 'on') {
 }
 
 foreach ($sections as $skey => $sval) {
-	if (isset($prefs['toolbar_' . $skey . ($comments ? '_comments' : '') . 'modified'])
-		&& $prefs['toolbar_' . $skey . ($comments ? '_comments' : '') . 'modified'] == 'y') {
+	if ($prefs['toolbar_' . $skey . ($comments ? '_comments' : '') . 'modified'] == 'y') {
 		$sections[$skey] = $sval . ' *';
 	}
 }
@@ -116,7 +114,7 @@ if (empty($current)) {
 }
 $smarty->assign('not_default', false);
 if ($section == 'global') {
-	$cachelib = TikiLib::lib('cache');
+	global $cachelib;
 	if ( $defprefs = $cachelib->getSerialized("tiki_default_preferences_cache") ) {
 		if ($defprefs['toolbar_global' . ($comments ? '_comments' : '')] != $current) {
 			$smarty->assign('not_default', true);
@@ -253,7 +251,7 @@ sort($display_c);
 sort($display_p);
 sort($display_w);
 
-$headerlib->add_cssfile('themes/base_files/feature_css/admin.css');
+$headerlib->add_cssfile('css/admin.css');
 
 if (count($_REQUEST) == 0) {
 	$smarty->assign('autoreload', 'on');

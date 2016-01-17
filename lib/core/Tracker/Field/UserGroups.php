@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -32,9 +32,9 @@ class Tracker_Field_UserGroups extends Tracker_Field_Abstract
 	function getFieldData(array $requestData = array())
 	{
 		$itemId = $this->getItemId();
-
-		$value = array();
 		
+		$value = array();
+	
 		if ($itemId) {
 			$itemUser = $this->getTrackerDefinition()->getItemUser($itemId);
 			

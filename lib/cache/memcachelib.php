@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -12,8 +12,6 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 }
 
 /**
- * Class Memcachelib
- *
  * Simple central point for configuring and using memcache support.
  *
  * This utility library is not a complete wrapper for PHP memcache functions,
@@ -26,29 +24,11 @@ class Memcachelib
 	public $options;
 
 	/**
-	 * Memcachelib constructor.
-	 * @param bool $memcached_servers
-	 * @param bool $memcached_options
+	 * Initialize this thing.
 	 */
-	function __construct($memcached_servers=FALSE, $memcached_options=FALSE)
+	function Memcachelib($memcached_servers=FALSE, $memcached_options=FALSE)
 	{
-		global $prefs, $tikidomainslash;
-
-		if ($memcached_servers === false && $memcached_options === false) {
-			if ( is_array($prefs['memcache_servers']) ) {
-				$memcached_servers = $prefs['memcache_servers'];
-			} else {
-				$memcached_servers = unserialize($prefs['memcache_servers']);
-			}
-
-			$memcached_options = array(
-				'enabled' => true,
-				'expiration' => (int) $prefs['memcache_expiration'],
-				'key_prefix' => $prefs['memcache_prefix'],
-				'compress' => $prefs['memcache_compress'],
-			);
-		}
-
+		global $tikidomainslash;
 		$localphp = "db/{$tikidomainslash}local.php";
 
 		if (is_readable($localphp)) {
@@ -100,8 +80,8 @@ class Memcachelib
 
 	/**
 	 * Get an option, with default.
-	 * @param  string $name of the option
-	 * @param  mixed  $default value
+	 * @param  string name of the option
+	 * @param  mixed  default value
 	 * @return mixed  value of the option, or default.
 	 */
 	function getOption($name, $default=NULL)
@@ -127,8 +107,8 @@ class Memcachelib
 	/**
 	 * Get a key from memcache
 	 *
-	 * @param  mixed $key, passed through buildKey() before use
-	 * @param  mixed $default value returned if result from memcache is NULL
+	 * @param  mixed Key, passed through buildKey() before use
+	 * @param  mixed Default value returned if result from memcache is NULL
 	 * @return mixed Value from memcache, or the default
 	 */
 	function get($key, $default=NULL)
@@ -145,7 +125,7 @@ class Memcachelib
 	 * passed in will result in a corresponding value returned.  If the
 	 * key was not found in the cache, the returned value will be NULL.
 	 *
-	 * @param  array $keys, each will be passed through buildKey() before use
+	 * @param  array Keys, each will be passed through buildKey() before use
 	 * @return array Values, in order of keys passed.
 	 */
 	function getMulti($keys)
@@ -171,12 +151,11 @@ class Memcachelib
 
 	/**
 	 * Set a key in memcache
-
-	 * @param mixed $key, passed through buildKey() before use
-	 * @param mixed $value
-	 * @param bool $flags       Optional memcache flags
-	 * @param bool $expiration  Optional expiration time
-	 * @return bool
+	 *
+	 * @param mixed  Key, passed through buildKey() before use
+	 * @param mixed  Value
+	 * @param int    Optional memcache flags
+	 * @param int    Optional expiration time
 	 */
 	function set($key, $value, $flags=FALSE, $expiration=FALSE)
 	{
@@ -194,8 +173,7 @@ class Memcachelib
 	/**
 	 * Delete a key in memcache
 	 *
-	 * @param $key, passed through buildKey() before use
-	 * @return bool
+	 * @param  mixed Key, passed through buildKey() before use
 	 */
 	function delete($key)
 	{
@@ -216,14 +194,6 @@ class Memcachelib
 	 *
 	 * @param  mixed  A string, or an object to be turned into a key.
 	 * @return string The cache key.
-	 */
-
-	/**
-	 * Build a cache key from a given parameter
-	 *
-	 * @param mixed $key            a string, or an object to be turned into a key
-	 * @param bool $use_md5
-	 * @return string               the cache key
 	 */
 	function buildKey($key, $use_md5=false)
 	{
@@ -253,3 +223,19 @@ class Memcachelib
 	}
 }
 
+global $prefs, $memcachelib;
+
+if ( is_array($prefs['memcache_servers']) ) {
+	$servers = $prefs['memcache_servers'];
+} else {
+	$servers = unserialize($prefs['memcache_servers']);
+}
+
+$memcachelib = new Memcachelib(
+	$servers, array(
+		'enabled' => true,
+		'expiration' => (int) $prefs['memcache_expiration'],
+		'key_prefix' => $prefs['memcache_prefix'],
+		'compress' => $prefs['memcache_compress'],
+	)
+);

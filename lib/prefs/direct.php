@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -15,14 +15,14 @@ function prefs_direct_list()
 			'default' => 'y',
 		),
 		'direct_pagination_max_middle_links' => array(
-			'name' => tra('Maximum number of links around the current item'),
+			'name' => tra('Max. number of links around the current item'),
             'description' => tra(''),
 			'type' => 'text',
 			'size' => '4',
 			'default' => 2,
 		),
 		'direct_pagination_max_ending_links' => array(
-			'name' => tra('Maximum number of links after the first or before the last item'),
+			'name' => tra('Max. number of links after the first or before the last item'),
             'description' => tra(''),
 			'type' => 'text',
 			'size' => '4',

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -12,10 +12,9 @@ function wikiplugin_dl_info()
 		'documentation' => 'PluginDL',
 		'description' => tra('Create a definition list'),
 		'prefs' => array('wikiplugin_dl'),
-		'body' => tr('One entry per line. Each line is in %0Term: Definition%1 format.', '<code>', '</code>'),
-		'iconname' => 'list',
-		'tags' => array( 'basic' ),
-		'introduced' => 1,
+		'body' => tra('One entry per line. Each line is in "Term: Definition" format.'),
+		'icon' => 'img/icons/text_list_bullets.png',
+		'tags' => array( 'basic' ),		
 		'params' => array(
 		),
 	);

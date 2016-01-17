@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,7 +10,7 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 	header('location: index.php');
 	exit;
 }
-$filegallib = TikiLib::lib('filegal');
+include_once ('lib/filegals/filegallib.php');
 if (isset($_REQUEST["filegalset"])) {
 	simple_set_value("home_file_gallery");
 }
@@ -83,7 +83,7 @@ if (isset($_REQUEST["filegallistprefs"])) {
 	simple_set_value('fgal_list_hits');
 	simple_set_value('fgal_list_lastDownload');
 	simple_set_value('fgal_list_deleteAfter');
-	simple_set_value('fgal_show_checked');
+	simple_set_value('fgal_list_checked');
 	simple_set_value('fgal_list_share');
 	simple_set_value('fgal_list_lockedby');
 	$_REQUEST['fgal_sort_mode'] = (empty($_REQUEST['fgal_sortorder']) ? 'created' : $_REQUEST['fgal_sortorder']) . '_' . (empty($_REQUEST['fgal_sortdirection']) ? 'desc' : $_REQUEST['fgal_sortdirection']);
@@ -136,11 +136,6 @@ if (isset($_REQUEST["filegalhandlers"])) {
 if (isset($_REQUEST["filegalredosearch"])) {
 	$filegallib->reindex_all_files_for_search_text();
 }
-
-if (isset($_REQUEST["filegalfixvndmsfiles"])) {
-	$filegallib->fix_vnd_ms_files();
-}
-
 if ($prefs['fgal_viewerjs_feature'] === 'y') {
 	$viewerjs_err = '';
 	if (empty($prefs['fgal_viewerjs_uri'])) {
@@ -155,7 +150,7 @@ if ($prefs['fgal_viewerjs_feature'] === 'y') {
 
 	} else {												// remote (will take a while)
 
-		$file_headers = get_headers(\ZendOpenId\OpenId::absoluteUrl($prefs['fgal_viewerjs_uri']));
+		$file_headers = get_headers(Zend_OpenId::absoluteUrl($prefs['fgal_viewerjs_uri']));
 		if (strpos($file_headers[0], '200') === false) {
 			$viewerjs_err = tr('ViewerJS URI not found (%0)', $file_headers[0]);
 		}
@@ -186,18 +181,13 @@ ksort($handlers);
 $smarty->assign("fgal_handlers", $handlers);
 $usedTypes = $filegallib->getFiletype();
 $missingHandlers = array();
-$vnd_ms_files_exist = false;
 
 foreach ($usedTypes as $type) {
 	if (! $filegallib->get_parse_app($type, true)) {
 		$missingHandlers[] = $type;
-		if (strpos($type, '/vnd.ms-') !== false) {
-			$vnd_ms_files_exist = true;
-		}
 	}
 }
 
 $smarty->assign_by_ref('missingHandlers', $missingHandlers);
-$smarty->assign('vnd_ms_files_exist', $vnd_ms_files_exist);
 include_once ('fgal_listing_conf.php');
 ask_ticket('admin-inc-fgal');

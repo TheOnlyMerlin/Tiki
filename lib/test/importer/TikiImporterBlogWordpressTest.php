@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -431,7 +431,7 @@ Estou a disposição para te ajudar com mais informações. Abraços, Rodrigo.',
 
 	public function testDownloadAttachmentsShouldDisplayMessageIfNoAttachments()
 	{
-		$filegallib = TikiLib::lib('filegal');
+		global $filegallib; require_once('lib/filegals/filegallib.php');
 
 		$filegallib = $this->getMock('FileGalLib', array('insert_file',));
 		$filegallib->expects($this->exactly(0))->method('insert_file')->will($this->returnValue(1));
@@ -443,7 +443,7 @@ Estou a disposição para te ajudar com mais informações. Abraços, Rodrigo.',
 
 	function testCreateFileGallery()
 	{
-		$filegallib = TikiLib::lib('filegal');
+		global $filegallib; require_once('lib/filegals/filegallib.php');
 
 		$filegallib = $this->getMock('FileGalLib', array('replace_file_gallery'));
 		$filegallib->expects($this->once())->method('replace_file_gallery')->will($this->returnValue(3));
@@ -455,12 +455,12 @@ Estou a disposição para te ajudar com mais informações. Abraços, Rodrigo.',
 
 	public function testDownloadAttachment()
 	{
-		$filegallib = TikiLib::lib('filegal');
+		global $filegallib; require_once('lib/filegals/filegallib.php');
 
 		$filegallib = $this->getMock('FileGalLib', array('insert_file'));
 		$filegallib->expects($this->exactly(3))->method('insert_file')->will($this->returnValue(1));
 
-		$adapter = new Zend\Http\Client\Adapter\Test();
+		$adapter = new Zend_Http_Client_Adapter_Test();
 
 		$adapter->setResponse(
 			"HTTP/1.1 200 OK"         . "\r\n" .
@@ -470,7 +470,7 @@ Estou a disposição para te ajudar com mais informações. Abraços, Rodrigo.',
 			'empty content'
 		);
 
-		$client = new Zend\Http\Client();
+		$client = new Zend_Http_Client();
 		$client->setAdapter($adapter);
 
 		$obj = $this->getMock('TikiImporter_Blog_Wordpress', array('getHttpClient', 'createFileGallery'));
@@ -539,15 +539,15 @@ Estou a disposição para te ajudar com mais informações. Abraços, Rodrigo.',
 
 	public function testDownloadAttachmentShouldNotCallInsertFileWhenZendHttpClientFails()
 	{
-		$filegallib = TikiLib::lib('filegal');
+		global $filegallib; require_once('lib/filegals/filegallib.php');
 
 		$filegallib = $this->getMock('FileGalLib', array('insert_file'));
 		$filegallib->expects($this->exactly(0))->method('insert_file');
 
-		$adapter = new Zend\Http\Client\Adapter\Test();
+		$adapter = new Zend_Http_Client_Adapter_Test();
 		$adapter->setNextRequestWillFail(true);
 
-		$client = new Zend\Http\Client();
+		$client = new Zend_Http_Client();
 		$client->setAdapter($adapter);
 
 		$obj = $this->getMock('TikiImporter_Blog_Wordpress', array('getHttpClient', 'createFileGallery'));
@@ -563,11 +563,11 @@ Estou a disposição para te ajudar com mais informações. Abraços, Rodrigo.',
 
 	public function testDownloadAttachmentShouldNotCallInsertFileWhen404()
 	{
-		$filegallib = TikiLib::lib('filegal');
+		global $filegallib; require_once('lib/filegals/filegallib.php');
 
 		$filegallib = $this->getMock('FileGalLib', array('insert_file'));
 		$filegallib->expects($this->exactly(0))->method('insert_file');
-		$adapter = new Zend\Http\Client\Adapter\Test();
+		$adapter = new Zend_Http_Client_Adapter_Test();
 
 		$adapter->setResponse(
 			"HTTP/1.1 404 NOT FOUND"         . "\r\n" .
@@ -577,7 +577,7 @@ Estou a disposição para te ajudar com mais informações. Abraços, Rodrigo.',
 			'empty content'
 		);
 
-		$client = new Zend\Http\Client();
+		$client = new Zend_Http_Client();
 		$client->setAdapter($adapter);
 
 		$obj = $this->getMock('TikiImporter_Blog_Wordpress', array('getHttpClient', 'createFileGallery'));

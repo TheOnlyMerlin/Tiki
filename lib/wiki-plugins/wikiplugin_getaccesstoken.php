@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,36 +10,31 @@ function wikiplugin_getaccesstoken_info()
 	return array(
 		'name' => tra('Get Security Token'),
 		'documentation' => tra('PluginGetAccessToken'),
-		'description' => tra('Display a link on a secure page using an access token'),
+		'description' => tra('Get security token for specified parameters'),
 		'prefs' => array( 'auth_token_access', 'wikiplugin_getaccesstoken' ),
 		'inline' => true,
 		'validate' => 'all',
-		'iconname' => 'lock',
 		'filter' => 'wikicontent',
-		'introduced' => 7,
 		'params' => array(
 			'entry' => array(
 				'required' => true,
-				'name' => tra('Entry Patg'),
-				'description' => tra('The path or part of the path for which the token is for'),
-				'since' => '7.0',
+				'name' => tra('Entry point path or part of it'),
+				'description' => tra('The path of part of the path for which the token is for'),
 				'filter' => 'text',
 				'default' => ''
 			),
 			'keys' => array(
 				'required' => false,
-				'keys' => tra('Query Keys'),
-				'description' => tra('Query string parameter keys for which the token is for, separated by colon'),
-				'since' => '7.0',
+				'keys' => tra('Query string parameter keys'),
+				'description' => tra('Query string parameter keys for which the token is for, separated by :'),
 				'filter' => 'text',
 				'default' => '',
 				'separator' => ':'
 			),
 			'values' => array(
 				'required' => false,
-				'name' => tra('Query Values'),
-				'description' => tra('Query string parameter values for which the token is for, separated by colon'),
-				'since' => '7.0',
+				'name' => tra('Query string parameter Values'),
+				'description' => tra('Query string parameter values for which the token is for, separated by :'),
 				'filter' => 'text',
 				'default' => '',
 				'separator' => ':'

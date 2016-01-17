@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -65,7 +65,7 @@ class TikiImporter_Blog_Wordpress extends TikiImporter_Blog
 			array(
 					'name' => 'htaccessRules',
 					'type' => 'checkbox',
-					'label' => tra('Suggest .htaccess rules to redirect from old WordPress URLs to new Tiki URLs (experimental)')
+					'label' => tra('Suggest .htaccess rules to redirect from old WP URLs to new Tiki URLs (experimental)')
 			)
 		);
 
@@ -115,14 +115,10 @@ class TikiImporter_Blog_Wordpress extends TikiImporter_Blog
 	 * @return null
 	 * @throws UnexpectedValueException if invalid file mime type
 	 */
-	function import($filePath = null)
+	function import($filePath)
 	{
-        if ($filePath == null)
-        {
-            die("This particular implementation of the method requires an explicity file path.");
-        }
 		if (isset($_FILES['importFile']) && !in_array($_FILES['importFile']['type'], $this->validTypes)) {
-			throw new UnexpectedValueException(tra('Invalid file MIME type'));
+			throw new UnexpectedValueException(tra('Invalid file mime type'));
 		}
 
 		if (!empty($_POST['importAttachments']) && $_POST['importAttachments'] == 'on') {
@@ -132,7 +128,7 @@ class TikiImporter_Blog_Wordpress extends TikiImporter_Blog
 		$this->dom = new DOMDocument;
 
 		if (!$this->dom->load($filePath)) {
-			throw new DOMException(tra('There was an error while loading the XML file. Probably the XML file is malformed. Some versions of WordPress generate a malformed XML file. See the Tiki Importer documentation for more information.'));
+			throw new DOMException(tra('Error while loading XML file. Probably your XML file is malformed. Some versions of Wordpress generate a malformed XML file. See the Tiki Importer documentation for more information.'));
 		}
 
 		$this->validateInput();
@@ -173,7 +169,7 @@ class TikiImporter_Blog_Wordpress extends TikiImporter_Blog
 			}
 		}
 
-		throw new DOMException(tra('Invalid WordPress XML file'));
+		throw new DOMException(tra('Invalid Wordpress XML file'));
 	}
 
 	/**
@@ -185,7 +181,7 @@ class TikiImporter_Blog_Wordpress extends TikiImporter_Blog
 	function checkRequirementsForAttachments()
 	{
 		if (ini_get('allow_url_fopen') === false) {
-			$this->saveAndDisplayLog("Aborting: you need to enable the PHP setting 'allow_url_fopen' to be able to import attachments. Fix the problem or try to import without the attachments.\n");
+			$this->saveAndDisplayLog("ABORTING: you need to enable the PHP setting 'allow_url_fopen' to be able to import attachments. Fix the problem or try to import without the attachments.\n");
 			die;
 		}
 	}
@@ -365,7 +361,7 @@ class TikiImporter_Blog_Wordpress extends TikiImporter_Blog
 	 */
 	function downloadAttachments()
 	{
-		$filegallib = TikiLib::lib('filegal');
+		global $filegallib; require_once('lib/filegals/filegallib.php');
 
 		$attachments = $this->extractAttachmentsInfo();
 
@@ -388,8 +384,8 @@ class TikiImporter_Blog_Wordpress extends TikiImporter_Blog
 			$client->setUri($attachment['link']);
 
 			try {
-				$response = $client->send();
-			} catch (Zend\Http\Exception\ExceptionInterface $e) {
+				$response = $client->request();
+			} catch (Zend_Http_Client_Adapter_Exception $e) {
 				$this->saveAndDisplayLog(
 					'Unable to download file ' . $attachment['fileName'] . '. Error message was: ' . $e->getMessage() . "\n",
 					true
@@ -398,11 +394,11 @@ class TikiImporter_Blog_Wordpress extends TikiImporter_Blog
 				continue;
 			}
 
-			$data = $response->getBody();
-			$size = $response->getHeaders()->get('Content-length');
-			$mimeType = $response->getHeaders()->get('Content-type');
+			$data = $response->getRawBody();
+			$size = $response->getHeader('Content-length');
+			$mimeType = $response->getHeader('Content-type');
 
-			if ($response->isSuccess()) {
+			if ($response->isSuccessful()) {
 				$fileId = $filegallib->insert_file(
 					$galleryId,
 					$attachment['name'],
@@ -430,8 +426,8 @@ class TikiImporter_Blog_Wordpress extends TikiImporter_Blog
 					tr(
 						'Unable to download attachment %0. Error message was: %1 %2',
 						$attachment['fileName'],
-						$response->getStatusCode(),
-						$response->getReasonPhrase()
+						$response->getStatus(),
+						$response->getMessage()
 					) . "\n",
 					true
 				);
@@ -455,7 +451,7 @@ class TikiImporter_Blog_Wordpress extends TikiImporter_Blog
 	 */
 	function createFileGallery()
 	{
-		$filegallib = TikiLib::lib('filegal');
+		global $filegallib; require_once('lib/filegals/filegallib.php');
 		global $user;
 
 		$gal_info = array(
@@ -637,7 +633,7 @@ class TikiImporter_Blog_Wordpress extends TikiImporter_Blog
 	 */
 	function parseContentAttachmentsUrl($content)
 	{
-		$filegallib = TikiLib::lib('filegal');
+		global $filegallib;
 
 		if (!empty($this->newFiles)) {
 			foreach ($this->newFiles as $file) {
@@ -875,11 +871,11 @@ class TikiImporter_Blog_Wordpress extends TikiImporter_Blog
 		return $created;
 	}
 
-	//TODO: check if a proxy is configured and than use Zend\Http\Client\Adapter\Proxy
+	//TODO: check if a proxy is configured and than use Zend_Http_Client_Adapter_Proxy
 	/**
-	 * Set $this->httpClient property as an instance of Zend\Http\Client
+	 * Set $this->httpClient property as an instance of Zend_Http_Client
 	 *
-	 * @return Zend\Http\Client
+	 * @return void
 	 */
 	function getHttpClient()
 	{
@@ -941,12 +937,9 @@ class TikiImporter_Blog_Wordpress extends TikiImporter_Blog
 	 * Call $this->replaceInternalLinks() and leave the
 	 * rest with the parent method.
 	 *
-     * Note: The $parsedData argument is not used. It's just there to make the signatures
-     *       of insertData() uniform across implementations.
-     *
 	 * @see lib/importer/TikiImporter_Blog#insertData()
 	 */
-	function insertData($parsedData = null)
+	function insertData()
 	{
 		$countData = parent::insertData();
 
@@ -967,8 +960,7 @@ class TikiImporter_Blog_Wordpress extends TikiImporter_Blog
 	 */
 	function replaceInternalLinks($items)
 	{
-		$bloglib = TikiLib::lib('blog');
-		$tikilib = TikiLib::lib('tiki');
+		global $tikilib, $bloglib;
 
 		foreach ($items as $item) {
 			if ($item['hasInternalLinks']) {

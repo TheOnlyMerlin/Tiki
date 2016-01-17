@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -8,7 +8,7 @@
 class Search_Elastic_Connection
 {
 	private $dsn;
-	private $dirty = array();
+	private $dirty = false;
 
 	private $indices = array();
 
@@ -26,10 +26,11 @@ class Search_Elastic_Connection
 
 	function startBulk($size = 500)
 	{
+		$self = $this;
 		$this->bulk = new Search_Elastic_BulkOperation(
 			$size,
-			function ($data) {
-				$this->postBulk($data);
+			function ($data) use ($self) {
+				$self->postBulk($data);
 			}
 		);
 	}
@@ -74,111 +75,19 @@ class Search_Elastic_Connection
 		}
 	}
 
-	function search($index, array $query, array $args = [])
+	function search($index, array $query, $resultStart, $resultCount)
 	{
-		$indices = (array) $index;
-		foreach ($indices as $index) {
-			if (! empty($this->dirty[$index])) {
-				$this->refresh($index);
-			}
+		if ($this->dirty) {
+			$this->refresh($index);
 		}
 
-		$index = implode(',', $indices);
-		return $this->get("/$index/_search?" . http_build_query($args, '', '&'), json_encode($query));
-	}
-
-	function scroll($scrollId, array $args = [])
-	{
-		return $this->post('/_search/scroll?' . http_build_query($args, '', '&'), $scrollId);
-	}
-
-	function storeQuery($index, $name, $query)
-	{
-		return $this->rawIndex($index, '.percolator', $name, $query);
-	}
-
-	function unstoreQuery($index, $name)
-	{
-		return $this->delete("/$index/.percolator/$name");
-	}
-
-	function percolate($index, $type, $document)
-	{
-		if (! empty($this->dirty['_percolator'])) {
-			$this->refresh('_percolator');
-		}
-
-		$type = $this->simplifyType($type);
-		return $this->get("/$index/$type/_percolate", json_encode(array(
-			'doc' => $document,
-			'prefer_local' => false,
-		)));
+		return $this->get("/$index/_search", json_encode($query));
 	}
 
 	function index($index, $type, $id, array $data)
 	{
+		$this->dirty = true;
 		$type = $this->simplifyType($type);
-
-		$this->rawIndex($index, $type, $id, $data);
-	}
-
-	function assignAlias($alias, $targetIndex)
-	{
-		$this->flush();
-
-		$active = [];
-		$toRemove = [];
-		$current = $this->rawApi('/_aliases');
-		foreach ($current as $indexName => $info) {
-			if (isset($info->aliases->$alias)) {
-				$active[] = $indexName;
-				$toRemove[] = $indexName;
-			} elseif (0 === strpos($indexName, $alias . '_') && $indexName != $targetIndex) {
-				$toRemove[] = $indexName;
-			}
-		}
-		$actions = [
-			['add' => ['index' => $targetIndex, 'alias' => $alias]],
-		];
-
-		foreach ($active as $index) {
-			$actions[] = ['remove' => ['index' => $index, 'alias' => $alias]];
-		}
-
-		// Before assigning new alias, check there is not already an index matching alias name.
-		if (isset($current->$alias) && !$this->aliasExists($alias)) {
-			$this->deleteIndex($alias);
-		}
-
-		$this->post('/_aliases', json_encode([
-			'actions' => $actions,
-		]));
-
-		// Make sure the new index is fully active, then clean-up
-		$this->refresh($alias);
-
-		foreach ($toRemove as $old) {
-			$this->deleteIndex($old);
-		}
-	}
-
-	function isRebuilding($aliasName)
-	{
-		$current = $this->rawApi('/_aliases');
-		foreach ($current as $indexName => $info) {
-			$hasAlias = isset($info->aliases) && count((array) $info->aliases) > 0;
-			if (0 === strpos($indexName, $aliasName . '_') && ! $hasAlias) {
-				// Matching name, no alias, means currently rebuilding
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	private function rawIndex($index, $type, $id, $data)
-	{
-		$this->dirty[$index] = true;
 
 		if ($this->bulk) {
 			$this->bulk->index($index, $type, $id, $data);
@@ -191,7 +100,7 @@ class Search_Elastic_Connection
 
 	function unindex($index, $type, $id)
 	{
-		$this->dirty[$index] = true;
+		$this->dirty = true;
 		$type = $this->simplifyType($type);
 
 		if ($this->bulk) {
@@ -215,12 +124,12 @@ class Search_Elastic_Connection
 		$this->flush();
 
 		$this->post("/$index/_refresh", '');
-		$this->dirty[$index] = false;
+		$this->dirty = false;
 	}
 
 	function document($index, $type, $id)
 	{
-		if (! empty($this->dirty[$index])) {
+		if ($this->dirty) {
 			$this->refresh($index);
 		}
 
@@ -234,7 +143,7 @@ class Search_Elastic_Connection
 		}
 	}
 
-	function mapping($index, $type, array $mapping, callable $getIndex)
+	function mapping($index, $type, array $mapping)
 	{
 		$type = $this->simplifyType($type);
 		$data = array($type => array(
@@ -242,7 +151,7 @@ class Search_Elastic_Connection
 		));
 
 		if (empty($this->indices[$index])) {
-			$this->createIndex($index, $getIndex);
+			$this->createIndex($index);
 			$this->indices[$index] = true;
 		}
 
@@ -261,25 +170,32 @@ class Search_Elastic_Connection
 		return $this->get($path);
 	}
 
-	private function aliasExists($index)
+	private function createIndex($index)
 	{
-		try {
-			$this->get("/_alias/$index", "");
-		} catch (Search_Elastic_Exception $e) {
-			return false;
-		}
-		return true;
-	}
-
-	private function createIndex($index, callable $getIndex)
-	{
-		if ($this->aliasExists($index)) {
-			return;
-		}
-
 		try {
 			$this->put(
-				"/$index", json_encode($getIndex())
+				"/$index", json_encode(
+					array(
+						'analysis' => array(
+							'analyzer' => array(
+								'default' => array(
+									'tokenizer' => 'standard',
+									'filter' => array('standard', 'lowercase', 'asciifolding', 'tiki_stop', 'porterStem'),
+								),
+								'sortable' => array(
+									'tokenizer' => 'keyword',
+									'filter' => array('lowercase'),
+								),
+							),
+							'filter' => array(
+								'tiki_stop' => array(
+									'type' => 'stop',
+									'stopwords' => array ("a", "an", "and", "are", "as", "at", "be", "but", "by", "for", "if", "in", "into", "is", "it", "no", "not", "of", "on", "or", "s", "such", "t", "that", "the", "their", "then", "there", "these", "they", "this", "to", "was", "will", "with"),
+								),
+							),
+						),
+					)
+				)
 			);
 		} catch (Search_Elastic_Exception $e) {
 			// Index already exists: ignore
@@ -291,12 +207,11 @@ class Search_Elastic_Connection
 		try {
 			$client = $this->getClient($path);
 			if ($data) {
-				$client->setRawBody($data);
+				$client->setRawData($data);
 			}
-			$client->setMethod(Zend\Http\Request::METHOD_GET);
-			$response = $client->send();
+			$response = $client->request('GET');
 			return $this->handleResponse($response);
-		} catch (Zend\Http\Exception\ExceptionInterface $e) {
+		} catch (Zend_Http_Exception $e) {
 			throw new Search_Elastic_TransportException($e->getMessage());
 		}
 	}
@@ -305,12 +220,11 @@ class Search_Elastic_Connection
 	{
 		try {
 			$client = $this->getClient($path);
-			$client->getRequest()->setMethod(Zend\Http\Request::METHOD_PUT);
-			$client->getRequest()->setContent($data);
-			$response = $client->send();
+			$client->setRawData($data);
+			$response = $client->request('PUT');
 
 			return $this->handleResponse($response);
-		} catch (Zend\Http\Exception\ExceptionInterface $e) {
+		} catch (Zend_Http_Exception $e) {
 			throw new Search_Elastic_TransportException($e->getMessage());
 		}
 	}
@@ -319,12 +233,11 @@ class Search_Elastic_Connection
 	{
 		try {
 			$client = $this->getClient($path);
-			$client->getRequest()->setMethod(Zend\Http\Request::METHOD_POST);
-			$client->getRequest()->setContent($data);
-			$response = $client->send();
+			$client->setRawData($data);
+			$response = $client->request('POST');
 
 			return $this->handleResponse($response);
-		} catch (Zend\Http\Exception\ExceptionInterface $e) {
+		} catch (Zend_Http_Exception $e) {
 			throw new Search_Elastic_TransportException($e->getMessage());
 		}
 	}
@@ -333,11 +246,10 @@ class Search_Elastic_Connection
 	{
 		try {
 			$client = $this->getClient($path);
-			$client->getRequest()->setMethod(Zend\Http\Request::METHOD_DELETE);
-			$response = $client->send();
+			$response = $client->request('DELETE');
 
 			return $this->handleResponse($response);
-		} catch (Zend\Http\Exception\ExceptionInterface $e) {
+		} catch (Zend_Http_Exception $e) {
 			throw new Search_Elastic_TransportException($e->getMessage());
 		}
 	}
@@ -346,7 +258,7 @@ class Search_Elastic_Connection
 	{
 		$content = json_decode($response->getBody());
 
-		if ($response->isSuccess()) {
+		if ($response->isSuccessful()) {
 			return $content;
 		} elseif (isset($content->exists) && $content->exists === false) {
 			throw new Search_Elastic_NotFoundException($content->_type, $content->_id);
@@ -356,22 +268,11 @@ class Search_Elastic_Connection
 				throw new Search_Elastic_MappingException($parts['type'], $parts['field']);
 			} elseif (preg_match('/No mapping found for \[(\S+)\] in order to sort on/', $message, $parts)) {
 				throw new Search_Elastic_SortException($parts[1]);
-			} elseif (preg_match('/NumberFormatException\[For input string: "(.*?)"\]/', $message, $parts)) {
-				$pattern = '/' . preg_quote('{"match":{"___wildcard___":{"query":"' . $parts[1] . '"}}') . '/';
-				$pattern = str_replace('___wildcard___', '([^"]*)', $pattern);
-				if (preg_match($pattern, $message, $parts2)) {
-					$field = $parts2[1];
-				} else {
-					$field = '';
-				}
-				throw new Search_Elastic_NumberFormatException($parts[1], $field);
-			} elseif (preg_match('/QueryParsingException\[\[[^\]]*\] \[[^\]]*\] ([^\]]*)\]/', $message, $parts)) {
-				throw new Search_Elastic_QueryParsingException($parts[1]);
 			} else {
-				throw new Search_Elastic_Exception($message->reason, $content->status);
+				throw new Search_Elastic_Exception($message, $content->status);
 			}
 		} else {
-			return $content;
+			throw new Search_Elastic_Exception($content->error, $content->status);
 		}
 	}
 
@@ -380,34 +281,12 @@ class Search_Elastic_Connection
 		$full = "{$this->dsn}$path";
 
 		$tikilib = TikiLib::lib('tiki');
-		try {
-			return $tikilib->get_http_client($full);
-		} catch (\Zend\Http\Exception\ExceptionInterface $e) {
-			throw new Search_Elastic_TransportException($e->getMessage());
-		}
+		return $tikilib->get_http_client($full);
 	}
 
 	private function simplifyType($type)
 	{
 		return preg_replace('/[^a-z]/', '', $type);
-	}
-
-	/**
-	 * Store the dirty flags at the end of the request and restore them when opening the
-	 * connection within a single user session so that if a modification requires re-indexing,
-	 * the next page load will wait until indexing is done to show the results.
-	 */
-	function persistDirty(Tiki_Event_Manager $events)
-	{
-		if (isset($_SESSION['elastic_search_dirty'])) {
-			$this->dirty = $_SESSION['elastic_search_dirty'];
-			unset($_SESSION['elastic_search_dirty']);
-		}
-
-		// Before the HTTP request is closed
-		$events->bind('tiki.process.redirect', function () {
-			$_SESSION['elastic_search_dirty'] = $this->dirty;
-		});
 	}
 }
 

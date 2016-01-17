@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,7 +10,8 @@
 
 require_once ('tiki-setup.php');
 
-$messulib = TikiLib::lib('message');
+include_once ('lib/messu/messulib.php');
+include_once ('lib/userprefs/scrambleEmail.php');
 
 // This feature needs both 'feature_contact' and 'feature_messages' to work
 $access->check_feature(array('feature_contact', 'feature_messages'));
@@ -83,7 +84,7 @@ if (isset($_REQUEST['send'])) {
 $email = $userlib->get_user_email($prefs['contact_user']);
 if ($email == '') $email = $userlib->get_admin_email();
 $smarty->assign('email0', $email);
-$email = TikiMail::scrambleEmail($email, $tikilib->get_user_preference('admin', "email is public"));
+$email = scrambleEmail($email, $tikilib->get_user_preference('admin', "email is public"));
 $smarty->assign('email', $email);
 
 $smarty->assign('priority', $priority);

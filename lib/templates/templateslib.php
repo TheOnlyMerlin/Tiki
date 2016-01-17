@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -58,10 +58,6 @@ class TemplatesLib extends TikiLib
 			$ret[] = $res;
 		}
 
-		// filter out according to perms
-		$ret = Perms::filter(array('type' => 'template'), 'object', $ret, array( 'object' => 'templateId' ), 'use_content_templates');
-		$cant = count($ret);
-
 		$retval = array();
 		$retval["data"] = $ret;
 		$retval["cant"] = $cant;
@@ -75,8 +71,6 @@ class TemplatesLib extends TikiLib
      */
     public function get_template($templateId, $lang = null)
 	{
-		TikiLib::lib('access')->check_permission('use_content_templates', 'Use templates', 'template', $templateId);
-
 		$query = "select * from `tiki_content_templates` where `templateId`=?";
 		$result = $this->query($query, array((int) $templateId));
 
@@ -150,7 +144,7 @@ class TemplatesLib extends TikiLib
 		$info = $this->get_page_info($page);
 
 		if ( $prefs['feature_multilingual'] == 'y' ) {
-			$multilinguallib = TikiLib::lib('multilingual');
+			global $multilinguallib; require_once 'lib/multilingual/multilinguallib.php';
 
 			if ( $lang && $info['lang'] && $lang != $info['lang'] ) {
 				$bestLangPageId = $multilinguallib->selectLangObj('wiki page', $info['page_id'], $lang);
@@ -187,39 +181,21 @@ class TemplatesLib extends TikiLib
 		$query = "select `name`,`created`,`templateId` from `tiki_content_templates` $mid order by " .
 							$this->convertSortMode($sort_mode);
 
+		$query_cant = "select count(*) from `tiki_content_templates` $mid";
 		$result = $this->query($query, $bindvars, $maxRecords, $offset);
+		$cant = $this->getOne($query_cant, $bindvars);
 		$ret = array();
-		$categlib = TikiLib::lib('categ');
 
 		while ($res = $result->fetchRow()) {
-
-			$perms = Perms::get(array('type' => 'template', 'object' => $res["templateId"]));
-
-			if ($perms->use_content_templates) {
-
-				$query2 = "select `section` from `tiki_content_templates_sections` where `templateId`=?";
-				$result2 = $this->query($query2, array((int)$res["templateId"]));
-				$sections = array();
-				while ($res2 = $result2->fetchRow()) {
-					$sections[] = $res2["section"];
-				}
-				$res["sections"] = $sections;
-
-				$categs = $categlib->get_object_categories('template', $res['templateId']);
-
-				$res['categories'] = [];
-				foreach ($categs as $categ) {
-					$res['categories'][$categ] = $categlib->get_category_name($categ);
-				}
-
-				$res['edit'] = $perms->edit_content_templates || $perms->admin_content_templates;
-				$res['remove'] = $perms->admin_content_templates;	// admin_content_templates otherwise unused
-
-				$ret[] = $res;
+			$query2 = "select `section` from `tiki_content_templates_sections` where `templateId`=?";
+			$result2 = $this->query($query2, array((int) $res["templateId"]));
+			$sections = array();
+			while ($res2 = $result2->fetchRow()) {
+				$sections[] = $res2["section"];
 			}
+			$res["sections"] = $sections;
+			$ret[] = $res;
 		}
-
-		$cant = count($ret);
 
 		$retval = array();
 		$retval["data"] = $ret;
@@ -236,8 +212,6 @@ class TemplatesLib extends TikiLib
      */
     public function replace_template($templateId, $name, $content, $type = 'static')
 	{
-		TikiLib::lib('access')->check_permission('edit_content_templates', 'Edit template', 'template', $templateId);
-
 		$bindvars = array($content, $name, (int) $this->now, $type);
 		if ($templateId) {
 			$query = "update `tiki_content_templates` set `content`=?, `name`=?, `created`=?, `template_type`=? where `templateId`=?";
@@ -263,8 +237,6 @@ class TemplatesLib extends TikiLib
      */
     public function add_template_to_section($templateId, $section)
 	{
-		TikiLib::lib('access')->check_permission('edit_content_templates', 'Edit template', 'template', $templateId);
-
 		$this->query(
 			"delete from `tiki_content_templates_sections` where `templateId`=? and `section`=?",
 			array((int) $templateId, $section),
@@ -283,8 +255,6 @@ class TemplatesLib extends TikiLib
      */
     public function remove_template_from_section($templateId, $section)
 	{
-		TikiLib::lib('access')->check_permission('edit_content_templates', 'Edit template', 'template', $templateId);
-
 		$result = $this->query(
 			"delete from `tiki_content_templates_sections` where `templateId`=? and `section`=?",
 			array((int) $templateId, $section)
@@ -312,8 +282,6 @@ class TemplatesLib extends TikiLib
      */
     public function remove_template($templateId)
 	{
-		TikiLib::lib('access')->check_permission('admin_content_templates', 'Admin template', 'template', $templateId);
-
 		$query = "delete from `tiki_content_templates` where `templateId`=?";
 		$result = $this->query($query, array((int) $templateId));
 		$query = "delete from `tiki_content_templates_sections` where `templateId`=?";

@@ -7,20 +7,17 @@
 function wikiplugin_autoqueryargs_info()
 {
 	return array(
-		'name' => tra('Auto Query Args'),
+		'name' => tra('Auto query Args'),
 		'documentation' => 'PluginAutoQueryArgs',
-		'description' => tra('Automatically propagate arguments when clicking on links'),
+		'description' => tra('Automatically propagate arguments when clicking on links '),
 		'prefs' => array('wikiplugin_autoqueryargs'),
-		'iconname' => 'link-external',
-		'introduced' => 12,
-		'params' => array(
+		'icon' => 'img/icons/world_link.png',
+		'params' => array( 
 			'arguments' => array(
 				'required' => false,
 				'name' => tra('Arguments for auto query'),
-				'description' => tra('Colon-separated list of arguments, the values of which will be propagated through
-					any link created below this plugin'),
-				'since' => '12.0',
-				'filter' => 'text',
+				'description' => tra('Colon-separated list of arguments, the values of which will be propagated through any link created below this plugin'),
+				'filter' => 'striptags',
 				'separator' => ':',
 				'default' => ''
 			),
@@ -30,7 +27,7 @@ function wikiplugin_autoqueryargs_info()
 
 function wikiplugin_autoqueryargs($data, $params)
 {
-	global $user;
+	global $smarty, $user;
 	$arguments = $params['arguments'];
 	if ( count($arguments) > 0 && is_array($arguments) ) {
 		global $auto_query_args;

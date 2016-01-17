@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -12,16 +12,14 @@ function wikiplugin_trackeritemfield_info()
 		'documentation' => 'PluginTrackerItemField',
 		'description' => tra('Display or test the value of a tracker item field'),
 		'prefs' => array( 'wikiplugin_trackeritemfield', 'feature_trackers' ),
-		'body' => tr('Wiki text containing an %0{ELSE}%1 marker.', '<code>', '</code>'),
-		'iconname' => 'trackers',
-		'introduced' => 2,
+		'body' => tra('Wiki text containing an {ELSE} marker.'),
+		'icon' => 'img/icons/database_go.png',
 		'filter' => 'wikicontent',
 		'params' => array(
 			'trackerId' => array(
 				'required' => false,
 				'name' => tra('Tracker ID'),
 				'description' => tra('Numeric value representing the tracker ID.'),
-				'since' => '2.0',
 				'filter' => 'digits',
 				'default' => '',
 				'profile_reference' => 'tracker',
@@ -29,9 +27,7 @@ function wikiplugin_trackeritemfield_info()
 			'itemId' => array(
 				'required' => false,
 				'name' => tra('Item ID'),
-				'description' => tra('Numeric value representing the item ID. Default is the user tracker item for the
-					current user.'),
-				'since' => '2.0',
+				'description' => tra('Numeric value representing the item ID. Default is the user tracker item for the current user.'),
 				'filter' => 'digits',
 				'default' => '',
 				'profile_reference' => 'tracker_item',
@@ -40,7 +36,6 @@ function wikiplugin_trackeritemfield_info()
 				'required' => false,
 				'name' => tra('Field ID'),
 				'description' => tra('Numeric value representing the field ID displayed or tested'),
-				'since' => '2.0',
 				'filter' => 'digits',
 				'default' => '',
 				'profile_reference' => 'tracker_field',
@@ -49,7 +44,6 @@ function wikiplugin_trackeritemfield_info()
 				'required' => false,
 				'name' => tra('Fields'),
 				'description' => tra('Colon separated list of field IDs. Default is all fields'),
-				'since' => '2.0',
 				'default' => '',
 				'filter' => 'text',
 				'separator' => ':',
@@ -59,7 +53,6 @@ function wikiplugin_trackeritemfield_info()
 				'required' => false,
 				'name' => tra('Status'),
 				'description' => tra('Status of the tracker item'),
-				'since' => '2.0',
 				'filter' => 'alpha',
 				'default' => '',
 				'options' => array(
@@ -76,9 +69,7 @@ function wikiplugin_trackeritemfield_info()
 			'test' => array(
 				'required' => false,
 				'name' => tra('Test'),
-				'description' => tr('Set to Yes (%01%1) to test whether a field is empty (if value parameter is empty)
-					or has a value the same as the value parameter.', '<code>', '</code>'),
-				'since' => '2.0',
+				'description' => tra('Set to 1 (Yes) to test whether a field is empty (if value parameter is empty) or has a value the same as the value parameter.'),
 				'default' => '',
 				'filter' => 'digits',
 				'options' => array(
@@ -91,7 +82,6 @@ function wikiplugin_trackeritemfield_info()
 				'required' => true,
 				'name' => tra('Value'),
 				'description' => tra('Value to compare against.'),
-				'since' => '2.0',
 				'default' => '',
 				'filter' => 'text',
 			),
@@ -101,18 +91,13 @@ function wikiplugin_trackeritemfield_info()
 
 function wikiplugin_trackeritemfield($data, $params)
 {
-	global $userTracker, $group, $user, $tiki_p_admin_trackers, $prefs;
-
+	global $userTracker, $group, $user, $userlib, $tiki_p_admin_trackers, $prefs, $smarty, $tikilib;
+	global $trklib; include_once('lib/trackers/trackerlib.php');
 	static $memoItemId = 0;
 	static $memoTrackerId = 0;
 	static $memoStatus = 0;
 	static $memoUserTracker = false;
 	static $memoItemObject = null;
-
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
-	$trklib = TikiLib::lib('trk');
 
 	extract($params, EXTR_SKIP);
 
@@ -195,7 +180,7 @@ function wikiplugin_trackeritemfield($data, $params)
 		$memoTrackerId = $info['trackerId'];
 		$memoItemObject = $itemObject;
 		if (isset($_REQUEST['itemId']) && $_REQUEST['itemId'] != $itemId) {
-			$logslib = TikiLib::lib('logs');
+			global $logslib; include_once('lib/logs/logslib.php');
 			$logslib->add_action('Viewed', $itemId, 'trackeritem', $_SERVER['REQUEST_URI'].'&trackeritemfield');
 		}
 	}

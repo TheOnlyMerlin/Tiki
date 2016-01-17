@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,10 +10,9 @@ function wikiplugin_include_info()
 	return array(
 		'name' => tra('Include'),
 		'documentation' => 'PluginInclude',
-		'description' => tra('Include a portion of another wiki page'),
+		'description' => tra('Include content from a wiki page'),
 		'prefs' => array('wikiplugin_include'),
-		'iconname' => 'copy',
-		'introduced' => 1,
+		'icon' => 'img/icons/page_copy.png',
 		'tags' => array( 'basic' ),
 		'format' => 'html',
 		'params' => array(
@@ -21,7 +20,6 @@ function wikiplugin_include_info()
 				'required' => true,
 				'name' => tra('Page Name'),
 				'description' => tra('Wiki page name to include.'),
-				'since' => '1',
 				'filter' => 'pagename',
 				'default' => '',
 				'profile_reference' => 'wiki_page',
@@ -29,58 +27,41 @@ function wikiplugin_include_info()
 			'start' => array(
 				'required' => false,
 				'name' => tra('Start'),
-				'description' => tra('When only a portion of the page should be included, specify the marker from which
-					inclusion should start.'),
-				'since' => '1',
+				'description' => tra('When only a portion of the page should be included, specify the marker from which inclusion should start.'),
 				'default' => '',
 			),
 			'stop' => array(
 				'required' => false,
 				'name' => tra('Stop'),
-				'description' => tra('When only a portion of the page should be included, specify the marker at which
-					inclusion should end.'),
-				'since' => '1',
+				'description' => tra('When only a portion of the page should be included, specify the marker at which inclusion should end.'),
 				'default' => '',
 			),
 			'nopage_text' => array(
 				'required' => false,
 				'name' => tra('Nopage Text'),
 				'description' => tra('Text to show when no page is found.'),
-				'since' => '6.0',
-				'filter' => 'text',
 				'default' => '',
 			),
 			'pagedenied_text' => array(
 				'required' => false,
 				'name' => tra('Page Denied Text'),
 				'description' => tra('Text to show when the page exists but is denied to the user.'),
-				'since' => '6.0',
-				'filter' => 'text',
 				'default' => '',
 			),
 			'page_edit_icon' => array(
 				'required' => false,
-				'name' => tra('Edit Icon'),
-				'description' => tra('Option to show the edit icon for the included page (shown by default).'),
-				'since' => '12.1',
+				'name' => tra('Show the page edit icon'),
+				'description' => tra('y/n option to show the edit icon for the included page.'),
 				'default' => 'y',
-				'filter' => 'alpha',
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
-					array('text' => tra('No'), 'value' => 'n'),
-				),
-			),
+			),			
 		),
 	);
 }
 
 function wikiplugin_include($dataIn, $params)
 {
-	global $user, $killtoc;
+	global $tikilib,$userlib,$user, $killtoc;
     static $included_pages, $data;
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
 
 	$killtoc = true;
 	$max_times = 5;
@@ -89,11 +70,6 @@ function wikiplugin_include($dataIn, $params)
 	if (!isset($page)) {
 		return ("<b>missing page for plugin INCLUDE</b><br />");
 	}
-
-	// This variable is for accessing included page name within plugins in that page
-	global $wikiplugin_included_page;
-	$wikiplugin_included_page = $page;
-
 	$memo = $page;
 	if (isset($start)) $memo .= "/$start";
 	if (isset($end)) $memo .= "/$end";
@@ -186,7 +162,7 @@ function wikiplugin_include($dataIn, $params)
 	// append an edit button if page_edit_icon does not equal 'n'
 	if ($page_edit_icon != 'n') {
 	if (isset($perms) && $perms['tiki_p_edit'] === 'y' && strpos($_SERVER['PHP_SELF'], 'tiki-send_newsletters.php') === false) {
-		$smarty = TikiLib::lib('smarty');
+		global $smarty;
 		$smarty->loadPlugin('smarty_block_ajax_href');
 		$smarty->loadPlugin('smarty_function_icon');
 		$tip = tra('Include Plugin'). ' | ' . tra('Edit the included page:').' &quot;' . $page . '&quot;';

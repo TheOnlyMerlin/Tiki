@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,7 +11,7 @@
  * Letter key: ~f~
  *
  */
-class Tracker_Field_DateTime extends Tracker_Field_Abstract implements Tracker_Field_Synchronizable, Tracker_Field_Exportable, Tracker_Field_Filterable
+class Tracker_Field_DateTime extends Tracker_Field_Abstract implements Tracker_Field_Synchronizable
 {
 	public static function getTypes()
 	{
@@ -86,11 +86,6 @@ class Tracker_Field_DateTime extends Tracker_Field_Abstract implements Tracker_F
 	{
 		global $user;
 
-		// datetime select fields now have the class "date" which triggers an automatic class rule in jquery.validation
-		// but that expects a full valid date value, so always fails
-		TikiLib::lib('header')->add_jq_onready('$.validator.classRuleSettings.date = false;
-');
-
 		TikiLib::lib('smarty')->assign('use_24hr_clock', TikiLib::lib('userprefs')->get_user_clock_pref($user));
 		return $this->renderTemplate('trackerinput/datetime.tpl', $context);
 	}
@@ -111,7 +106,7 @@ class Tracker_Field_DateTime extends Tracker_Field_Abstract implements Tracker_F
 			}
 
 			if ($context['list_mode'] == 'csv') {
-				return $tikilib->get_short_datetime($value);
+				return $tikilib->get_short_datetime($value, false);
 			}
 
 			$current = $tikilib->get_short_date($tikilib->now);
@@ -120,7 +115,7 @@ class Tracker_Field_DateTime extends Tracker_Field_Abstract implements Tracker_F
 			if ($date == $current && $prefs['tiki_same_day_time_only'] == 'y' ) {
 				return $tikilib->get_short_time($value);
 			} else {
-				return $tikilib->get_short_datetime($value);
+				return $tikilib->get_short_datetime($value, false);
 			}
 		}
 	}
@@ -159,50 +154,5 @@ class Tracker_Field_DateTime extends Tracker_Field_Abstract implements Tracker_F
 		);
 	}
 
-	function getTabularSchema()
-	{
-		global $prefs;
-
-		$permName = $this->getConfiguration('permName');
-		$type = $this->getOption('datetime');
-
-		$schema = new Tracker\Tabular\Schema($this->getTrackerDefinition());
-
-		$label = $this->getConfiguration('name');
-		$helper = new Tracker\Tabular\Schema\DateHelper($label);
-		$helper->setupUnix($schema->addNew($permName, 'unix'));
-
-		$tikidate = TikiLib::lib('tikidate');
-		if ($type == 'd') {
-			$helper->setupFormat('Y-m-d', $schema->addNew($permName, 'yyyy-mm-dd'));
-			$helper->setupFormat(str_replace($tikidate->search, $tikidate->replace, $prefs['short_date_format']), $schema->addNew($permName, 'short date format'));
-			$helper->setupFormat(str_replace($tikidate->search, $tikidate->replace, $prefs['long_date_format']), $schema->addNew($permName, 'long date format'));
-		} else {
-			$helper->setupFormat('Y-m-d H:i:s', $schema->addNew($permName, 'yyyy-mm-dd hh:mm:ss'));
-			$helper->setupFormat(str_replace($tikidate->search, $tikidate->replace, $prefs['short_date_format'] . ' ' . $prefs['short_time_format']), $schema->addNew($permName, 'short datetime format'));
-			$helper->setupFormat(str_replace($tikidate->search, $tikidate->replace, $prefs['long_date_format'] . ' ' . $prefs['long_time_format']), $schema->addNew($permName, 'long datetime format'));
-		}
-
-		return $schema;
-	}
-
-	function getFilterCollection()
-	{
-		$filters = new Tracker\Filter\Collection($this->getTrackerDefinition());
-		$permName = $this->getConfiguration('permName');
-		$name = $this->getConfiguration('name');
-		$baseKey = $this->getBaseKey();
-
-		$filters->addNew($permName, 'range')
-			->setLabel($name)
-			->setControl(new Tracker\Filter\Control\DateRange("tf_{$permName}_range"))
-			->setApplyCondition(function ($control, Search_Query $query) use ($baseKey) {
-				if ($control->hasValue()) {
-					$query->filterRange($control->getFrom(), $control->getTo(), $baseKey);
-				}
-			});
-
-		return $filters;
-	}
 }
 

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -17,7 +17,7 @@ function prefs_log_list()
 		),
 		'log_tpl' => array(
 			'name' => tra('Smarty Template usage indicator'),
-			'description' => tra('Add HTML comment at start and end of each Smarty template (.tpl file)'),
+			'description' => tra('Add HTML comment at start and end of each Smarty template (TPL)'),
 			'hint' => tra('Use only for development, not in production because these warnings are added to emails as well, and visible to the users'),
 			'warning' => tra('You need to clear your Tiki template cache for this change to take effect'),
 			'type' => 'flag',

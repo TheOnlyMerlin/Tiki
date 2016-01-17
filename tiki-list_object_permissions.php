@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -35,8 +35,7 @@ function is_perm($permName, $objectType)
  */
 function list_perms($objectId, $objectType, $objectName, $filterGroup='')
 {
-	global $prefs;
-	$userlib = TikiLib::lib('user');
+	global $userlib, $prefs;
 	$ret = array();
 	$cats = array();
 	$perms = $userlib->get_object_permissions($objectId, $objectType);
@@ -49,7 +48,8 @@ function list_perms($objectId, $objectType, $objectName, $filterGroup='')
 			}
 		}
 	} elseif ($prefs['feature_categories'] == 'y') {
-		$categlib = TikiLib::lib('categ');
+		global $categlib;
+		include_once ('lib/categories/categlib.php');
 		$categs = $categlib->get_object_categories($objectType, $objectId);
 		if (!empty($categs)) {
 			foreach ($categs as $categId) {
@@ -71,8 +71,8 @@ function list_perms($objectId, $objectType, $objectName, $filterGroup='')
 
 $filterGroup = empty($_REQUEST['filterGroup']) ? array() : $_REQUEST['filterGroup'];
 $feedbacks = array();
-$del = !empty($_REQUEST['delete']) && $_REQUEST['delete'] === 'delete';
-$dup = !empty($_REQUEST['duplicate']) && $_REQUEST['duplicate'] === 'duplicate';
+$del = !empty($_REQUEST['delsel_x']) || !empty($_REQUEST['delsel']);
+$dup = !empty($_REQUEST['dupsel']);
 if ($del || $dup) {
 	$access->check_authenticity();
 	if (!empty($_REQUEST['groupPerm'])) {
@@ -226,7 +226,7 @@ foreach ($types as $type) {
 			
 			foreach ($objects['data'] as $object) {
 				
-				$r = list_perms($object['blogId'], $type, isset($object['name']) ? $object['name'] : null, $filterGroup);
+				$r = list_perms($object['blogId'], $type, $object['name'], $filterGroup);
 				if (count($r['special']) > 0) {
 					$res[$type]['objects'][] = array('objectId' => $r['objectId'], 'special' => $r['special'], 'objectName' => $object['name']);
 				}
@@ -240,7 +240,7 @@ foreach ($types as $type) {
 			$sheetlib = TikiLib::lib('sheet');
 			$objects = $sheetlib->list_sheets();
 			foreach ($objects['data'] as $object) {
-				$r = list_perms($object['sheetId'], $type, isset($object['name']) ? $object['name'] : null, $filterGroup);
+				$r = list_perms($object['sheetId'], $type, $object['name'], $filterGroup);
 				if (count($r['special']) > 0) {
 					$res[$type]['objects'][] = array('objectId' => $r['objectId'], 'special' => $r['special'], 'objectName' => $object['name']);
 				}
