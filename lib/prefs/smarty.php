@@ -9,21 +9,21 @@ function prefs_smarty_list()
 {
 	return array(
 		'smarty_notice_reporting' => array(
-			'name' => tra('Include Smarty notices in the PHP error report'),
-			'description' => tra('In most cases, Smarty notices can be safely ignored. However, they may be useful in the development process when unexpected issues occur.'),
+			'name' => tra('Include smarty notices in PHP error report'),
+			'description' => tra('In most cases, smarty notices can be safely ignored. However, they may be useful in the development process when strange issues occur.'),
 			'type' => 'flag',
 			'default' => 'n',
 		),
 		'smarty_security' => array(
 			'name' => tra('Smarty Security'),
-			'description' => tra('Do not allow PHP code in Smarty templates.'),
+			'description' => tra('Do not allow php code in smarty templates.'),
 			'warning' => tra('You should leave this on unless you know what you are doing.'),
 			'type' => 'flag',
 			'perspective' => false,
 			'default' => 'y',
 		),
 		'smarty_security_modifiers' => array(
-			'name' => tr('Extra Smarty modifiers'),
+			'name' => tr('Extra smarty modifiers'),
 			'description' => tr('Make additional PHP functions available as smarty modifiers. May be needed for custom templates.'),
 			'warning' => tr('There may be security implications. Make sure you know what you are doing.'),
 			'type' => 'text',

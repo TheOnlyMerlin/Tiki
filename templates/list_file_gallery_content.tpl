@@ -172,7 +172,7 @@
 								{else}
 									{assign var=propkey value="show_$propname"}
 								{/if}
-								{if not empty($files[changes].$propname)}
+								{if isset($files[changes].$propname)}
 									{if $propname == 'share' && isset($files[changes].share.data)}
 										{foreach item=tmp_prop key=tmp_propname from=$files[changes].share.data}
 											{$email[]=$tmp_prop.email}
@@ -181,11 +181,10 @@
 									{else}
 										{assign var=propval value=$files[changes].$propname}
 									{/if}
-								{else}
-									{$propval = ''}
 								{/if}
 								{* Format property values *}
-								{if isset($propname) and ($propname eq 'created' or $propname eq 'lastModif' or $propname eq 'lastDownload')}
+								{if isset($propname) and ($propname eq 'created' or $propname eq 'lastModif'
+									or $propname eq 'lastDownload')}
 									{if empty($propval)}
 										{assign var=propval value=''}
 									{else}
@@ -201,7 +200,8 @@
 									{assign var=propval value=$propval|nl2br}
 								{/if}
 
-								{if isset($gal_info.$propkey) and ( $gal_info.$propkey eq 'a' or $gal_info.$propkey eq 'o' )}
+								{if isset($gal_info.$propkey) and $propval neq '' and ( $gal_info.$propkey eq 'a'
+									or $gal_info.$propkey eq 'o' )}
 									<tr>
 										<th class="text-right">
 											{$fgal_listing_conf.$propname.name|escape}
@@ -375,7 +375,7 @@
 							{else}
 								{assign var=propval value=$files[changes].nbBacklinks}
 								{assign var=fid value=$files[changes].id}
-								{assign var=propval value="<a class='ajaxtips' href='list-file_backlinks_ajax.php?fileId=$fid' data-ajaxtips='list-file_backlinks_ajax.php?fileId=$fid'>$propval</a>"}
+								{assign var=propval value="<a class='ajaxtips' href='list-file_backlinks_ajax.php?fileId=$fid' rel='list-file_backlinks_ajax.php?fileId=$fid'>$propval</a>"}
 							{/if}
 						{elseif $propname eq 'deleteAfter'}
 							{if empty($files[changes].deleteAfter)}

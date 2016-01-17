@@ -24,7 +24,7 @@
 				{/if}
 			{/if}
 
-			<div style="display: inline-block">{strip}
+			<span style="display: inline-block">{strip}
 
 	{*previous*}
 				<div>
@@ -61,7 +61,7 @@
 						{icon name="next"}
 					</a>
 				</div>
-			{/strip}</div>
+			{/strip}</span>
 		</div>
 	</div>
 	<br style="clear:both" />

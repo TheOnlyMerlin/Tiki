@@ -130,7 +130,7 @@ if ($_REQUEST['locSection'] == 'read') {
 
 	if (isset($_REQUEST['msgid'])) {
 		$message = $mail->getMessage($_REQUEST['msgid']);
-		$aux = $message->getHeaders()->toArray();
+		$aux = $message->getHeaders();
 		$realmsgid = preg_replace('/[<>]/', '', $aux['message-id']);
 		$smarty->assign('msgid', $_REQUEST['msgid']);
 		$smarty->assign('realmsgid', $realmsgid);
@@ -799,14 +799,6 @@ if ($_REQUEST['locSection'] == 'compose') {
 			$mail->addAttachment($a3, $_REQUEST['attach3'], $_REQUEST['attach3type']);
 			@unlink('temp/mail_attachs/' . $_REQUEST['attach3file']);
 		}
-		
-		if ($_REQUEST['fattId']) {			
-			$filegallib = TikiLib::lib('filegal');
-			$filedata = $filegallib->get_file_info($_REQUEST['fattId']);
-			$a4 = file_get_contents($prefs['fgal_use_dir'].$filedata['path']);
-			
-			$mail->addAttachment($a4, $filedata['filename'], $filedata['filetype']);
-		}		
 
 		if ($_REQUEST['fattId']) {			
 			$filegallib = TikiLib::lib('filegal');

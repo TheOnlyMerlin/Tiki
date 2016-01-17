@@ -25,8 +25,8 @@ function prefs_freetags_list()
 		'objectid_desc' => tra('Object ID') . ' ' . tra('descending'),
 		'type_asc' => tra('Type') . ' ' . tra('ascending'),
 		'type_desc' => tra('Type') . ' ' . tra('descending'),
-		'comments_locked_asc' => tra('Comments locked') . ' ' . tra('ascending'),
-		'comments_locked_desc' => tra('Comments locked') . ' ' . tra('descending'),
+		'comments_locked_asc' => tra('Comments Locked') . ' ' . tra('ascending'),
+		'comments_locked_desc' => tra('Comments Locked') . ' ' . tra('descending'),
 	);
 
 	return array (
@@ -42,8 +42,8 @@ function prefs_freetags_list()
 			'default' => 'n',
 		),
 		'freetags_sort_mode' => array(
-			'name' => tra('Ordering of tagged objects'),
-			'description' => tra('Default sort mode for tagged items'),
+			'name' => tra('Tagged objects ordering'),
+			'description' => tra('Default sort mode for the tagged objects listing'),
 			'type' => 'list',
 			'options' => $freetags_sort_orders,
 			'default' => 'name_asc',
@@ -75,8 +75,8 @@ function prefs_freetags_list()
 			'default' => 'y',
 		),
 		'freetags_browse_amount_tags_suggestion' => array(
-			'name' => tra('Tag Suggestions'),
-            'description' => tra('Number of tags to show in tag suggestions'),
+			'name' => tra('Number of Tags to show in Tag Suggestions'),
+            'description' => tra(''),
 			'type' => 'text',
 			'size' => '4',
 			'filter' => 'digits',
@@ -192,7 +192,7 @@ function prefs_freetags_list()
 			'default' => '250',
 		),
 		'freetags_3d_feed_animation_interval' => array(
-			'name' => tra('Feed animation interval (miliseconds)'),
+			'name' => tra('Feed animation interval (milisecs)'),
             'description' => tra(''),
 			'type' => 'text',
 			'size' => '5',

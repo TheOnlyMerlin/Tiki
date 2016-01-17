@@ -875,7 +875,7 @@ class Comments extends TikiLib
 		}
 		if ($this->time_control) {
 			$limit = time() - $this->time_control;
-			$time_cond = " and b.`commentDate` > ? ";
+			$time_cond = " and a.`commentDate` > ? ";
 			$bind_time = array((int) $limit);
 		} else {
 			$time_cond = '';
@@ -1063,8 +1063,6 @@ class Comments extends TikiLib
 			$forumLanguage = ''
 	)
 	{
-		global $prefs;
-
 		if (!$forumId && empty($att_store_dir)) {
 			// Set new default location for forum attachments (only affect new forums for backward compatibility))
 			$att_store_dir = 'files/forums/';
@@ -1133,7 +1131,6 @@ class Comments extends TikiLib
 		$forums = $this->table('tiki_forums');
 
 		if ($forumId) {
-			$oldData = $forums->fetchRow(array(), array('forumId' => (int) $forumId));
 			$forums->update($data, array('forumId' => (int) $forumId));
 			$event = 'tiki.forum.update';
 		} else {
@@ -1150,11 +1147,6 @@ class Comments extends TikiLib
 			'description' => $description,
 			'forum_section' => $section,
 		]);
-
-		//if the section changes, re-index forum posts to change section there as well
-		if ($prefs['feature_forum_post_index'] == 'y' && $oldData && $oldData['section'] != $section){
-			$this->index_posts_by_forum($forumId);
-		}
 
 		return $forumId;
 	}
@@ -2965,8 +2957,6 @@ class Comments extends TikiLib
 				$parent_title = '';
 			}
 
-			$forum_info = $this->get_forum($object[1]);
-
 			TikiLib::events()->trigger(
 				$finalEvent,
 				array(
@@ -2974,10 +2964,8 @@ class Comments extends TikiLib
 					'object' => $threadId,
 					'parent_id' => $parentId,
 					'forum_id' => $object[1],
-					'forum_section' => $forum_info['section'],
 					'user' => $GLOBALS['user'],
 					'title' => $title,
-					'name' => $forum_info['name'],
 					'parent_title' => $parent_title,
 					'content' => $data,
 					'index_handled' => true,
@@ -3055,7 +3043,7 @@ class Comments extends TikiLib
 			$tikilib = TikiLib::lib('tiki');
 
 			$url = $tikilib->tikiUrl();
-			$akismet = new ZendService\Akismet\Akismet($prefs['comments_akismet_apikey'], $url);
+			$akismet = new Zend_Service_Akismet($prefs['comments_akismet_apikey'], $url);
 
 			return $akismet->isSpam(
 				array(
@@ -3436,18 +3424,8 @@ class Comments extends TikiLib
 		if ($prefs['feature_contribution'] == 'y' && $prefs['feature_contribution_mandatory_forum'] == 'y' && empty($params['contributions'])) {
 			$errors[] = tra('A contribution is mandatory');
 		}
-		//if original post, comment title is necessary. Message is also necessary unless, pref says message is not.
-		if (empty($params['comments_reply_threadId'])){
-			if(empty($params['comments_title']) || (empty($params['comments_data']) && $prefs['feature_forums_allow_thread_titles'] != 'y')){
-				$errors[] = tra('Please enter a Title and Message for your new forum topic.');
-			}
-		}else{
-			//if comments require title and no title is given, or if message is empty
-			if ($prefs['comments_notitle'] != 'y' && (empty($params['comments_title']) || empty($params['comments_data']))){
-				$errors[] = tra('Please enter a Title and Message for your forum reply.');
-			}elseif (empty($params['comments_data'])){ //if comments do not require title but message is empty
-				$errors[] = tra('Please enter a Message for your forum reply.');
-			}
+		if (($prefs['comments_notitle'] != 'y' && empty($params['comments_title'])) || (empty($params['comments_data']) && $prefs['feature_forums_allow_thread_titles'] != 'y')) {
+			$errors[] = tra('You have to enter a title and text');
 		}
 		if (!empty($params['anonymous_email']) && !validate_email($params['anonymous_email'], $prefs['validateEmail'])) {
 			$errors[] = tra('Invalid Email');
@@ -3549,6 +3527,13 @@ class Comments extends TikiLib
 					);
 					// The thread *WAS* successfully created.
 
+					if ($prefs['feature_score'] == 'y') {
+					  if ($parent_id) {
+						$tikilib->score_event($user, 'forum_topic_reply', $threadId);
+					  } else {
+						$tikilib->score_event($user, 'forum_topic_post', $threadId);
+					  }
+					}
 					if ($threadId) {
 						// Deal with mail notifications.
 						include_once('lib/notifications/notificationemaillib.php');
@@ -3746,39 +3731,6 @@ class Comments extends TikiLib
 		return array('cant' => $cant, 'data' => $ret);
 	}
 
-	/**
-	 * Particularly useful for flat forums, you get the position and page of a comment.
-	 *
-	 * @param $comment_id
-	 * @param $parent_id
-	 * @param $sort_mode
-	 * @param $max_per_page
-	 */
-	function get_comment_position($comment_id, $parent_id, $sort_mode, $max_per_page, $show_approved='y'){
-
-		$bindvars = array($parent_id, $sort_mode);
-		$query = "SELECT `threadId` FROM `tiki_comments` tc WHERE (tc.`parentId`=?)";
-		if ($show_approved == "y") {
-			$query .= " AND tc.`approved` = 'y'";
-		}
-		$query .= " ORDER BY ?";
-		$results = $this->fetchAll($query, $bindvars);
-
-		$position = 0;
-		foreach ($results as $result){
-			if ($result['threadId'] == $comment_id) {
-				break;
-			}
-			$position++;
-		}
-		$page_offset = floor($position/$max_per_page);
-
-		return array(
-			'position' => $position,
-			'page_offset' => $page_offset,
-		);
-	}
-
     /**
      * @param $type
      * @param $threadId
@@ -3812,23 +3764,6 @@ class Comments extends TikiLib
 		}
 	}
 
-	/**
-	 * Re-indexes the forum posts within a specified forum
-	 * @param $forumId
-	 */
-	private function index_posts_by_forum($forumId)
-	{
-		$topics = $this->get_forum_topics($forumId);
-
-		foreach($topics as $topic) {
-			if ($element === end($array)){ //if element is the last in the array, then run the process.
-				refresh_index('forum post', $topic['threadId'], true);
-			}else{
-				refresh_index('forum post', $topic['threadId'], false); //don't run the process right away (re: false), wait until last element
-			}
-		}
-	}
-
     /**
      * @param $threadId
      * @return mixed
@@ -3841,34 +3776,6 @@ class Comments extends TikiLib
 			return $this->find_root($parent);
 		} else {
 			return $threadId;
-		}
-	}
-
-	/**
-	 * Utlity to check whether a user can admin a form, either through permissions or as moderator
-	 *
-	 * @param $forumId
-	 * @return bool
-	 * @throws Exception
-	 */
-	function admin_forum($forumId)
-	{
-		$perms = Perms::get('forum', $forumId);
-		if (!$perms->admin_forum) {
-			$info = $this->get_forum($forumId);
-			global $user;
-			if ($info['moderator'] !== $user) {
-				$userlib = TikiLib::lib('user');
-				if (!in_array($info['moderator_group'], $userlib->get_user_groups($user))) {
-					return false;
-				} else {
-					return true;
-				}
-			} else {
-				return true;
-			}
-		} else {
-			return true;
 		}
 	}
 }

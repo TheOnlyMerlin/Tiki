@@ -1,6 +1,6 @@
 {* $Id$ *}
 
-{title help="SearchStats"}{tr}Search statistics{/tr}{/title}
+{title help="SearchStats"}{tr}Search stats{/tr}{/title}
 
 <div class="t_navbar">
 	{button href="?clear=1" class="btn btn-default" _text="{tr}Clear Stats{/tr}"}
@@ -9,7 +9,7 @@
 {include file='find.tpl'}
 
 <div class="table-responsive">
-	<table class="table">
+	<table class="table normal">
 		<tr>
 			<!-- term -->
 			<th><a href="tiki-search_stats.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'term_desc'}term_asc{else}term_desc{/if}">{tr}Word{/tr}</a></th>

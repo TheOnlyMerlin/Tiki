@@ -40,7 +40,7 @@ class WikipluginDBReportToken
 				return $token->type;
 		}
 	}
-	public function __construct($content=null)
+	public function WikipluginDBReportToken($content=null)
 	{
 		$this->content = $content;
 	}
@@ -52,7 +52,7 @@ class WikipluginDBReportField
 	public $variable;
 	public $break;
 	public $index;
-	public function __construct($text)
+	public function WikipluginDBReportField($text)
 	{
 		global $wikiplugin_dbreport_fields, $wikiplugin_dbreport_fields_allowed;
 		$this->name = stripcslashes($text);
@@ -105,7 +105,7 @@ class WikipluginDBReportField
 class WikipluginDBReportString
 {
 	public $literal;
-	public function __construct($text)
+	public function WikipluginDBReportString($text)
 	{
 		$this->literal = stripcslashes($text);
 	}
@@ -222,7 +222,7 @@ class WikipluginDBReportContent
 	{
 		$this->parse_text($text);
 	}
-	public function __construct(&$token)
+	public function WikipluginDBReportContent(&$token)
 	{
 		switch($token->type) {
 			case 'txt':
@@ -311,7 +311,7 @@ class WikipluginDBReportStyle
 	public $tag;
 	public $class;
 	public $style;
-	public function __construct(&$token)
+	public function WikipluginDBReportStyle(&$token)
 	{
 		if (is_object($token)) {
 			if ($token->content['class']) {

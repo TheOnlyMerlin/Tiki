@@ -13,8 +13,8 @@
 {if $tiki_p_admin_users eq 'y'}
 	<div class="t_navbar btn-group form-group">
 		{assign var=thisuser value=$userinfo.login}
-		{button href="tiki-assignuser.php?assign_user=$thisuser" _type="link" _text="{tr}Assign Group{/tr}"}
-		{button href="tiki-user_information.php?view_user=$thisuser" _type="link" _text="{tr}User Information{/tr}"}
+		{button href="tiki-assignuser.php?assign_user=$thisuser" class="btn btn-default" _text="{tr}Assign Group{/tr}"}
+		{button href="tiki-user_information.php?view_user=$thisuser" class="btn btn-default" _text="{tr}User Information{/tr}"}
 	</div>
 {/if}
 
@@ -330,7 +330,7 @@
 					</label>
 				</div>
 				<div class="form-group">
-					<label class="input-control" for="minPrio">{tr}Send me an email for messages with priority equal to or greater than:{/tr}</label>
+					<label class="input-control" for="minPrio">{tr}Send me an email for messages with priority equal or greater than:{/tr}</label>
 					<select class="form-control" id="minPrio" name="minPrio">
 						<option value="1" {if $user_prefs.minPrio eq 1}selected="selected"{/if}>1 -{tr}Lowest{/tr}-</option>
 						<option value="2" {if $user_prefs.minPrio eq 2}selected="selected"{/if}>2 -{tr}Low{/tr}-</option>

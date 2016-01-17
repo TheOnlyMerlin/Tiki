@@ -58,7 +58,7 @@ function smarty_function_user_registration($params, $smarty)
 		$cookie_name = $prefs['session_cookie_name'];
 
 		if ( ini_get('session.use_cookie') && ! isset( $_COOKIE[$cookie_name] ) ) {
-			$errorreportlib->report(tra("Cookies must be enabled to log in to this site"));
+			$errorreportlib->report(tra("You have to enable cookies to be able to login to this site"));
 			return '';
 		}
 
@@ -156,19 +156,6 @@ function smarty_function_user_registration($params, $smarty)
 			}
 			$user = ''; // reset $user for security reasons
 			$smarty->assign('userTrackerData', $userTrackerData);
-		} elseif (isset($_REQUEST['name']) && !empty($re['usersTrackerId']) && empty($re['registrationUsersFieldIds'])) {
-			// If user has been created in the first round and there is a user tracker specified but fields are not set - proceed anyway
-			$result = $registrationlib->register_new_user($_REQUEST);
-			if (is_array($result)) {
-				foreach ($result as $r) {
-					$errorreportlib->report($r->msg);
-				}
-			} else if (is_a($result, 'RegistrationError')) {
-				$errorreportlib->report($result->msg);
-			} else {
-				$user = ''; // reset $user
-				return $result;
-			}	 
 		}
 	}
 

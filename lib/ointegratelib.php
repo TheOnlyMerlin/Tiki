@@ -76,62 +76,61 @@ class OIntegrate
 
 		if ( empty($postBody) ) {
 			$method = 'GET';
-			$http_headers = array(
+			$client->setHeaders(
+				array(
 					'Accept' => 'application/json,text/x-yaml',
 					'OIntegrate-Version' => '1.0',
-				);
-		} else {
-			$method = 'POST';
-			$http_headers = array(
-					'Accept' => 'application/json,text/x-yaml',
-					'OIntegrate-Version' => '1.0',
-					'Content-Type' => 'application/x-www-form-urlencoded',
+				)
 			);
-			$client->setRawBody($postBody);
+		} else {
+			$client->setHeaders(
+				array(
+					'Accept' => 'application/json,text/x-yaml',
+					'OIntegrate-Version' => '1.0',
+				)
+			);
+			$client->setRawData($postBody, 'application/x-www-form-urlencoded');
 		}
 
 		if ( count($this->schemaVersion) ) {
-			$http_headers['OIntegrate-SchemaVersion'] = implode(', ', $this->schemaVersion);
+			$client->setHeaders('OIntegrate-SchemaVersion', implode(', ', $this->schemaVersion));
 		}
 		if ( count($this->acceptTemplates) ) {
-			$http_headers['OIntegrate-AcceptTemplate'] = implode(', ', $this->acceptTemplates);
+			$client->setHeaders('OIntegrate-AcceptTemplate', implode(', ', $this->acceptTemplates));
 		}
-		$client->setHeaders($http_headers);
 
-		$client->setMethod($method);
-		$httpResponse = $client->send();
+		$httpResponse = $client->request($method);
 		$content = $httpResponse->getBody();
 
-		$contentType = $httpResponse->getHeaders()->get('Content-Type');
-		$cacheControl = $httpResponse->getHeaders()->get('Cache-Control');
+		$contentType = $httpResponse->getHeader('Content-Type');
+		$cacheControl = $httpResponse->getHeader('Cache-Control');
 
 		$response = new OIntegrate_Response;
 		$response->contentType = $contentType;
 		$response->cacheControl = $cacheControl;
-		$response->data = $this->unserialize($contentType->getMediaType(), $content);
+		$response->data = $this->unserialize($contentType, $content);
 
 		$filter = new DeclFilter;
 		$filter->addCatchAllFilter('xss');
 
 		$response->data = $filter->filter($response->data);
-		$response->version = $httpResponse->getHeaders()->get('OIntegrate-Version');
-		$response->schemaVersion = $httpResponse->getHeaders()->get('OIntegrate-SchemaVersion');
+		$response->version = $httpResponse->getHeader('OIntegrate-Version');
+		$response->schemaVersion = $httpResponse->getHeader('OIntegrate-SchemaVersion');
 		if ( ! $response->schemaVersion && isset( $response->data->_version ) )
 			$response->schemaVersion = $response->data->_version;
-		$response->schemaDocumentation = $httpResponse->getHeaders()->get('OIntegrate-SchemaDocumentation');
+		$response->schemaDocumentation = $httpResponse->getHeader('OIntegrate-SchemaDocumentation');
 
 		global $prefs;
 		// Respect cache duration asked for
-		$maxage = $cacheControl->getDirective('max-age');
-		if ( $maxage ) {
-			$expiry = time() + $maxage;
+		if ( preg_match('/max-age=(\d+)/', $cacheControl, $parts) ) {
+			$expiry = time() + $parts[1];
 
 			$cachelib->cacheItem(
 				$url,
 				serialize(array('expires' => $expiry, 'data' => $response))
 			);
 		// Unless service specifies not to cache result, apply a default cache
-		} elseif ( $cacheControl->getDirective('no-cache') !== null && $prefs['webservice_consume_defaultcache'] > 0 ) {
+		} elseif ( false !== strpos($cacheControl, 'no-cache') && $prefs['webservice_consume_defaultcache'] > 0 ) {
 			$expiry = time() + $prefs['webservice_consume_defaultcache'];
 
 			$cachelib->cacheItem($url, serialize(array('expires' => $expiry, 'data' => $response)));
@@ -141,12 +140,14 @@ class OIntegrate
 	} // }}}
 
     /**
-     * @param string $type
-     * @param string $data
+     * @param $type
+     * @param $data
      * @return array|mixed|null
      */
     function unserialize( $type, $data ) // {{{
 	{
+		$parts = explode(';', $type);
+		$type = trim($parts[0]);
 
 		if ( empty($data) ) {
 			return null;

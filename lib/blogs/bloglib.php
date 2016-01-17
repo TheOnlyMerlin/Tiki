@@ -111,15 +111,9 @@ class BlogLib extends TikiDb_Bridge
 			return false;
 		}
 
-		if ($user != $res['user']) {
-			TikiLib::events()->trigger('tiki.blog.view',
-				array(
-					'type' => 'blog',
-					'object' => $blogId,
-					'user' => $user,
-					'author' => $res['user'],
-				)
-			);
+		if ($prefs['feature_score'] == 'y' && $user != $res['user']) {
+			$tikilib->score_event($user, 'blog_read', $blogId);
+			$tikilib->score_event($res['user'], 'blog_is_read', "$user:$blogId");
 		}
 
 		return $res;
@@ -218,7 +212,6 @@ class BlogLib extends TikiDb_Bridge
 	function list_posts($offset = 0, $maxRecords = -1, $sort_mode = 'created_desc', $find = '', $filterByBlogId = -1, $author='', $ref='', $date_min = 0, $date_max = 0)
 	{
 		$tikilib = TikiLib::lib('tiki');
-		$filterByBlogIds = explode(':',$filterByBlogId);
 
 		$authorized_blogs = $this->list_blogs(0, -1, 'created_desc', '', $ref);
 		$permit_blogs = array();
@@ -226,23 +219,10 @@ class BlogLib extends TikiDb_Bridge
 			$permit_blogs[] = $authorized_blogs["data"][$i]['blogId'];
 		}
 
-		if ( count($filterByBlogIds) == 1 && $filterByBlogId >= 0) {	// There is one single blog Id
+		if ($filterByBlogId >= 0) {
 			// get posts for a given blogId:
 			$mid = " where ( `blogId` = ? ) ";
 			$bindvars = array($filterByBlogId);
-		} else if ( count($filterByBlogIds) > 1 ) {	// There is more than one blog Id
-			$multimid = array();
-			foreach ( $filterByBlogIds as $blogId ) {
-				if ( $blogId > 0 ) {
-					$multimid[] = ' `blogId` = ? ';
-					$bindvars[] = intval($blogId);
-				}
-			}
-			if ( count($multimid) > 1 ) {
-				$mid = ' WHERE ( ' . implode( ' or ', $multimid ) . ' ) ';
-			} else if ( count($multimid) == 1 ) {
-				$mid = ' where ( ' . $multimid[0] . ' ) ';
-			}
 		} else {
 			// get posts from all blogs
 			$mid = '';
@@ -491,14 +471,9 @@ class BlogLib extends TikiDb_Bridge
 			$query2 = "select max(`blogId`) from `tiki_blogs` where `lastModif`=?";
 			$blogId = $this->getOne($query2, array($lastModif));
 
-			TikiLib::events()->trigger('tiki.blog.create',
-				array(
-					'type' => 'blog',
-					'object' => $blogId,
-					'user' => $user,
-				)
-			);
-
+			if ($prefs['feature_score'] == 'y') {
+				$tikilib->score_event($user, 'blog_new');
+			}
 			$tikilib->object_post_save(array('type'=>'blog', 'object'=>$blogId, 'description'=>$description, 'name'=>$title, 'href'=>"tiki-view_blog.php?blogId=$blogId"), array( 'content' => $heading ));
 		}
 
@@ -510,8 +485,6 @@ class BlogLib extends TikiDb_Bridge
 
 	/**
 	 * list_blog_posts Returns all the posts for the blog $blogId
-	 * $blogId can express more than one blog like "1:11" 
-	 * but then own draft posts (private posts) are not shown (FIXME)
 	 *
 	 * @param int $blogId
 	 * @param bool $allowDrafts
@@ -538,30 +511,15 @@ class BlogLib extends TikiDb_Bridge
 
 		$mid = array();
 		$bindvars = array();
-		$blogIds = explode(':',$blogId);
 
 		$ownsblog = 'n';
-		if ( count($blogIds) == 1 && $blogIds[0] > 0 ) {	// There is one single blog Id
+		if ( $blogId > 0 ) {
 			$mid[] = "tbp.`blogId`=?";
 			$bindvars[] = (int)$blogId;
 
 			$blog_data = $this->get_blog($blogId);
 			if ($user && $user == $blog_data["user"]) {
 				$ownsblog = 'y';
-			}
-		} else if ( count($blogIds) > 1 ) {	// There is more than one blog Id
-			$multimid = array();
-			foreach ( $blogIds as $objId ) {
-				if ( $objId > 0 ) {
-					$multimid[] = ' tbp.`blogId`=? ';
-					$bindvars[] = intval($objId);
-					// Note: when there is more than one blog Id, own draft posts (private posts) are not shown (FIXME)
-				}
-			}
-			if ( count($multimid) > 1 ) {
-				$mid[] = ' ( ' . implode( ' or ', $multimid ) . ' ) ';
-			} else if ( count($multimid) == 1 ) {
-				$mid[] = $multimid[0];
 			}
 		}
 		$mid[] = "tbp.blogId = tb.blogId";
@@ -829,14 +787,9 @@ class BlogLib extends TikiDb_Bridge
 			}
 		}
 
-		TikiLib::events()->trigger('tiki.blogpost.create',
-			array(
-				'type' => 'blog post',
-				'object' => $id,
-				'blog' => $blogId,
-				'user' => $user,
-			)
-		);
+		if ($prefs['feature_score'] == 'y') {
+			$tikilib->score_event($user, 'blog_post');
+		}
 
 		if ($prefs['feature_actionlog'] == 'y') {
 			$logslib = TikiLib::lib('logs');
@@ -859,7 +812,7 @@ class BlogLib extends TikiDb_Bridge
 	 */
 	function remove_blog($blogId)
 	{
-		global $tikilib, $user;
+		global $tikilib;
 
 		$query = "delete from `tiki_blogs` where `blogId`=?";
 
@@ -867,14 +820,6 @@ class BlogLib extends TikiDb_Bridge
 		$query = "delete from `tiki_blog_posts` where `blogId`=?";
 		$result = $this->query($query, array((int) $blogId));
 		$tikilib->remove_object('blog', $blogId);
-
-		TikiLib::events()->trigger('tiki.blog.delete',
-			array(
-				'type' => 'blog',
-				'object' => $blogId,
-				'user' => $user,
-			)
-		);
 
 		return true;
 	}
@@ -928,15 +873,6 @@ class BlogLib extends TikiDb_Bridge
 		$this->query($query, array((int) $postId));
 
 		$tikilib->remove_object('blog post', $postId);
-
-		TikiLib::events()->trigger('tiki.blogpost.delete',
-			array(
-				'type' => 'blog post',
-				'object' => $postId,
-				'blog' => $blogId,
-				'user' => $GLOBALS['user'],
-			)
-		);
 
 		return true;
 	}

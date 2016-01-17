@@ -75,7 +75,7 @@ function smarty_function_payment( $params, $smarty )
 				$smarty->assign('ccresult', $result);
 				$smarty->assign('ccresult_ok', $result);
 			} else {
-				$smarty->assign('ccresult', tr('Payment was sent but verification is not currently available (this feature is a work in progress)'));
+				$smarty->assign('ccresult', tr('Payment sent but verification not currently available. (Work in progress)'));
 			}
 		} else if ( $prefs['payment_system'] == 'tikicredits') {
 			require_once 'lib/payment/creditspaylib.php';
@@ -103,6 +103,6 @@ function smarty_function_payment( $params, $smarty )
 		return $smarty->fetch('tiki-payment-single.tpl', $smarty_cache_id, $smarty_compile_id);
 
 	} else {
-		return tra('This invoice does not exist or access to it is restricted.');
+		return tra('This invoice does not exist or is in limited access.');
 	}
 }

@@ -118,7 +118,7 @@ class Smarty_Tiki extends Smarty
 	function __construct()
 	{
 		parent::__construct();
-		global $prefs;
+		global $prefs, $style_base;
 
 		$this->initializePaths();
 
@@ -166,10 +166,6 @@ class Smarty_Tiki extends Smarty
 		  require_once ('tiki-sefurl.php');
 		  $this->registerFilter('output', 'filter_out_sefurl');
 		}
-
-		// restore tiki's own escape function
-		$this->loadPlugin('smarty_modifier_escape');
-		$this->registerPlugin('modifier', 'escape', 'smarty_modifier_escape');
 	}
 
 	/**
@@ -452,7 +448,7 @@ class Smarty_Tiki extends Smarty
 	*/
 	function initializePaths()
 	{
-		global $prefs, $tikidomainslash, $section;
+		global $prefs, $tikidomainslash;
 
 		if (! $this->main_template_dir) {
 			// First run only
@@ -470,27 +466,15 @@ class Smarty_Tiki extends Smarty
 
 		// when called from release.php TikiLib isn't initialised so we can ignore the themes and addons
 		if (class_exists('TikiLib')) {
+
 			// Theme templates
 			$themelib = TikiLib::lib('theme');
-			if (!empty($prefs['theme']) && !in_array($prefs['theme'], ['custom_url'])) {
+			if (!in_array($prefs['theme'], ['custom_url'])) {
 				$theme_path = $themelib->get_theme_path($prefs['theme'], $prefs['theme_option'], '', 'templates'); // path to the theme options
 				$this->addTemplateDir(TIKI_PATH . "/$theme_path/");
-				//if theme_admin is empty, use main theme and site_layout instead of site_layout_admin
-				if ($section != "admin" || empty($prefs['theme_admin'])) {
-					$this->addTemplateDir(TIKI_PATH . "/$theme_path/" . 'layouts/' . $prefs['site_layout'] . '/');
-				} else {
-					$this->addTemplateDir(TIKI_PATH . "/$theme_path/" . 'layouts/' . $prefs['site_layout_admin'] . '/');
-				}
-				$this->addTemplateDir(TIKI_PATH . "/$theme_path/" . 'layouts/');
 
 				$main_theme_path = $themelib->get_theme_path($prefs['theme'], '', '', 'templates'); // path to the main theme
 				$this->addTemplateDir(TIKI_PATH . "/$main_theme_path/");
-				//if theme_admin is empty, use main theme and site_layout instead of site_layout_admin
-				if ($section != "admin" || empty($prefs['theme_admin'])) {
-					$this->addTemplateDir(TIKI_PATH . "/$main_theme_path/" . 'layouts/' . $prefs['site_layout'] . '/');
-				} else {
-					$this->addTemplateDir(TIKI_PATH . "/$main_theme_path/" . 'layouts/' . $prefs['site_layout_admin'] . '/');
-				}
 			}
 			// Tikidomain main template folder
 			if (!empty($tikidomainslash)) {
@@ -507,11 +491,7 @@ class Smarty_Tiki extends Smarty
 		}
 		
 		//Layout templates
-		if (!empty($prefs['site_layout']) && ($section != "admin" || empty($prefs['theme_admin']))){ //use the admin layout if in the admin section
-			$this->addTemplateDir($this->main_template_dir . '/layouts/' . $prefs['site_layout'] . '/');
-		} elseif (!empty($prefs['site_layout_admin'])) {
-			$this->addTemplateDir($this->main_template_dir . '/layouts/' . $prefs['site_layout_admin'] . '/');
-		}
+		$this->addTemplateDir($this->main_template_dir.'/layouts/'.$prefs['site_layout'].'/');
 		$this->addTemplateDir($this->main_template_dir.'/layouts/');
 		$this->addTemplateDir($this->main_template_dir);
 	}

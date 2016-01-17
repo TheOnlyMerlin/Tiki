@@ -9,13 +9,8 @@
 // $Id$
 
 require_once ('tiki-setup.php');
-$messulib = TikiLib::lib('message');
-
-if ($prefs['feature_unified_user_details'] == 'y'){
-	include "tiki-user_unified_details.php";
-	die;
-}
-
+include_once ('lib/messu/messulib.php');
+include_once ('lib/userprefs/scrambleEmail.php');
 $registrationlib = TikiLib::lib('registration');
 $trklib = TikiLib::lib('trk');
 if (isset($_REQUEST['userId'])) {
@@ -72,14 +67,9 @@ if ($user) {
 		$smarty->assign('message', $message);
 	}
 }
-if (isset($user) and $user != $userwatch) {
-	TikiLib::events()->trigger('tiki.user.view',
-		array(
-			'type' => 'user',
-			'object' => $userwatch,
-			'user' => $user,
-		)
-	);
+if ($prefs['feature_score'] == 'y' and isset($user) and $user != $userwatch) {
+	$tikilib->score_event($user, 'profile_see');
+	$tikilib->score_event($userwatch, 'profile_is_seen');
 }
 $smarty->assign('priority', 3);
 if ($prefs['allowmsg_is_optional'] == 'y') {
@@ -92,8 +82,7 @@ $smarty->assign_by_ref('user_prefs', $user_preferences[$userwatch]);
 $user_style = $tikilib->get_user_preference($userwatch, 'theme', $prefs['site_style']);
 $smarty->assign_by_ref('user_style', $user_style);
 $user_language = $tikilib->get_language($userwatch);
-$langLib = TikiLib::lib('language');
-$user_language_text = $langLib->format_language_list(array($user_language));
+$user_language_text = $tikilib->format_language_list(array($user_language));
 $smarty->assign_by_ref('user_language', $user_language_text[0]['name']);
 $realName = $tikilib->get_user_preference($userwatch, 'realName', '');
 $gender = $tikilib->get_user_preference($userwatch, 'gender', '');
@@ -113,9 +102,8 @@ $smarty->assign('user_information', $user_information);
 $userinfo = $userlib->get_user_info($userwatch);
 $email_isPublic = $tikilib->get_user_preference($userwatch, 'email is public', 'n');
 if ($email_isPublic != 'n') {
-	$smarty->assign('scrambledEmail', TikiMail::scrambleEmail($userinfo['email'], $email_isPublic));
+	$smarty->assign('scrambledEmail', scrambleEmail($userinfo['email'], $email_isPublic));
 }
-$userinfo['score'] = TikiLib::lib('score')->get_user_score($userwatch);
 $smarty->assign_by_ref('userinfo', $userinfo);
 $smarty->assign_by_ref('email_isPublic', $email_isPublic);
 $userPage = $prefs['feature_wiki_userpage_prefix'] . $userinfo['login'];

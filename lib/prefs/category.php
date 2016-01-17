@@ -9,7 +9,7 @@ function prefs_category_list()
 {
 	return array(
 		'category_jail' => array(
-			'name' => tra('Category jail'),
+			'name' => tra('Category Jail'),
 			'description' => tra('Limits the visibility of objects to those in these category IDs. Used mainly for creating workspaces from perspectives.'),
 			'separator' => ',',
 			'type' => 'text',
@@ -19,7 +19,7 @@ function prefs_category_list()
 			'profile_reference' => 'category',
 		),
 		'category_jail_root' => array(
-			'name' => tra('Category jail root'),
+			'name' => tra('Category Jail Root'),
 			'description' => tra('Always display categories outside of the jail root, which would be for normal categorization.'),
 			'separator' => ',',
 			'type' => 'text',
@@ -28,11 +28,11 @@ function prefs_category_list()
 			'profile_reference' => 'category',
 		),
 		'category_defaults' => array(
-			'name' => tra('Category defaults'),
-			'description' => tra('Require certain categories to be present. If none of the categories in a given set is provided, assign a category by default.').' '.tra('Use *7 to specify all the categories in the subtree of 7 + category 7.').' '.tra('Can do only this for objectname matching the regex (Example: /^RND_/ = name beginning by RND_)(Optional)').' '.tra('Can do for wiki only (optional).').' '.tra('Rename will only reassign the categories for wiki pages.'),
+			'name' => tra('Category Defaults'),
+			'description' => tra('Force certain categories to be present. If none of the categories in a given set are provided, assign a category by default.').' '.tra('Use *7 to specify all the categories in the subtree of 7 + category 7.').' '.tra('Can do only this for objectname matching the regex (Example: /^RND_/ = name beginning by RND_)(Optional)').' '.tra('Can do for wiki only (optional).').' '.tra('Rename will only reassign the categories for wiki pages.'),
 			'type' => 'textarea',
 			'filter' => 'striptags',
-			'hint' => tra('One per line, for example: 1,4,6,*7/4:/^RND_/:wiki page'),
+			'hint' => tra('One per line. ex:1,4,6,*7/4:/^RND_/:wiki page'),
 			'size' => 5,
 			'serialize' => 'prefs_category_serialize_defaults',
 			'unserialize' => 'prefs_category_unserialize_defaults',
@@ -41,7 +41,7 @@ function prefs_category_list()
 		),
 		'category_i18n_sync' => array(
 			'name' => tra('Synchronize multilingual categories'),
-			'description' => tra('Make sure that the categories of the translations are synchronized when modified on any version.'),
+			'description' => tra('Make sure that the categories on the translations are synchronized when modified on any version.'),
 			'type' => 'list',
 			'dependencies' => array( 'feature_multilingual' ),
 			'options' => array(
@@ -75,8 +75,8 @@ function prefs_category_list()
 			'default' => '',
 		),
 		'category_autogeocode_replace' => array(
-			'name' => tra('Replace existing geocode, if any'),
-			'description' => tra('When automatically geocoding items based on category name, replace existing geocode, if any'),
+			'name' => tra('Replace existing geocode if any'),
+			'description' => tra('When automatically geocoding items based on category name, replace existing geocode if any'),
 			'type' => 'flag',		
 			'default' => 'n',
 		),
@@ -122,7 +122,7 @@ function prefs_category_list()
 			'default' => 'y',
 		),
 		'category_morelikethis_mincommon_max' => array(
-			'name' => tra('Maximum number of "more like this" objects; otherwise, use the default maximum records'),
+			'name' => tra('Maximum of objects more like this, otherwise use the default max records'),
             'description' => tra(''),
 			'type' => 'text',
 			'size' => 3,
@@ -131,7 +131,7 @@ function prefs_category_list()
 		),
 		'category_custom_facets' => array(
 			'name' => tr('Generate custom facets from categories'),
-			'description' => tr('Comma-separated list of category IDs.'),
+			'description' => tr('Comma separated list of category IDs.'),
 			'type' => 'text',
 			'size' => 15,
 			'filter' => 'int',
@@ -140,8 +140,8 @@ function prefs_category_list()
 		),
 		'category_browse_count_objects' => array(
 			'name' => tra('Show category object count'),
-            'description' => tra('Show object count when browsing categories, complying with search and type filters'),
-			'hint' => tra('Can slow the loading of the categories page on large sites.'),
+            'description' => tra('Show object count when browsing categories, obeying search and type filters'),
+			'hint' => tra('Can make the categories page slow to load on large sites.'),
 			'type' => 'flag',
 			'default' => 'y',
 		),

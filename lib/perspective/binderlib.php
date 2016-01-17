@@ -60,7 +60,7 @@ class AreasLib extends CategLib
 
 				if (($area && !$area['share_common']) || ($objectArea && $objectArea['exclusive'])) {
 					$perspectivelib->set_perspective($objectPerspective, true);
-					ZendOpenId\OpenId::redirect(ZendOpenId\OpenId::selfUrl());
+					Zend_OpenId::redirect(Zend_OpenId::selfUrl());
 				}
 			}
 		}
@@ -70,7 +70,7 @@ class AreasLib extends CategLib
 			if ($area) {
 				if ( !$area['share_common']) {
 					$perspectivelib->set_perspective($objectPerspective, true);
-					ZendOpenId\OpenId::redirect(ZendOpenId\OpenId::selfUrl());
+					Zend_OpenId::redirect(Zend_OpenId::selfUrl());
 				}
 			}
 		}
@@ -153,7 +153,7 @@ class AreasLib extends CategLib
 			$this->cacheAreas(true); // recache the whole table
 			return true;
 		} else {
-			return tra("Areas root category ID") . " " . tra("is invalid.");
+			return tra("Areas root category id") . " " . tra("is invalid.");
 		}
 	}
 

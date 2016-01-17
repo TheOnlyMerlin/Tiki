@@ -394,7 +394,7 @@ $(window).load(function(){
 		if ($input->sheet->int()) {
 			$help_sections[] = [
 				'id' => 'sheet-help',
-				'title' => tr('Spreadsheet Help'),
+				'title' => tr('Sheet Help'),
 				'content' => $smarty->fetch('tiki-edit_help_sheet.tpl'),
 			];
 		}

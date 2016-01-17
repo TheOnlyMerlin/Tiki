@@ -24,7 +24,7 @@
 			{if $show_reads eq 'y'}({$reads} {tr}Reads{/tr}){/if}
 		</span>
 		{if $comment_can_rate_article eq 'y' and $prefs.article_user_rating eq 'y' && ($tiki_p_ratings_view_results eq 'y' or $tiki_p_admin eq 'y')}
-			- <span class="ratingResultAvg">{tr}Users rating: {/tr}</span>{rating_result_avg id=$articleId type=article}
+			- <span class="ratingResultAvg">{tr}Users Rating: {/tr}</span>{rating_result_avg id=$articleId type=article}
 		{/if}
 	</header>
 
@@ -93,7 +93,7 @@
 			{if $big_image}
 				{if $show_image_caption eq 'y' and $image_caption || $image_x > 0}
 					<div class="center-block thumbcaption">
-						{if $image_x > 0}<div class="magnify"><a class="internal cboxElement" data-box="box" href="article_image.php?image_type=article&amp;id={$articleId}">{icon name='view' title=$smarty.capture.imgTitle}</a></div>{/if}
+						{if $image_x > 0}<div class="magnify"><a class="internal cboxElement" rel="box" href="article_image.php?image_type=article&amp;id={$articleId}">{icon name='view' title=$smarty.capture.imgTitle}</a></div>{/if}
 						{if $show_image_caption eq 'y' and $image_caption}{$image_caption|escape}{else}&nbsp;{/if}
 					</div>
 				{/if}

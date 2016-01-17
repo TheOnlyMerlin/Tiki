@@ -200,16 +200,15 @@ class Iconset
 			$tag = isset($icon['tag']) ? $icon['tag'] : $this->tag;
 			$prepend = isset($icon['prepend']) ? $icon['prepend'] : $this->prepend;
 			$append = isset($icon['append']) ? $icon['append'] : $this->append;
-			$icon_class = isset($icon['class']) ? $icon['class'] : '';
-			$custom_class = isset($params['iclass']) ? $params->iclass->striptags() : '';
+			$icon_class = isset($icon['class']) ? ' ' . $icon['class'] : '';
+			$custom_class = isset($params['iclass']) ? ' ' . $params->iclass->striptags() : '';
 			$title = isset($params['ititle']) ? 'title="' . $params->ititle->striptags() . '"' : '';
 			$id = isset($params['id']) ? 'id="' . $params->id->striptags() . '"' : '';
-			//apply both user defined style and any style from the icon definition
+			//apply both user defined style and any stule from the icon definition
 			$styleparams = [];
 			if (!empty($icon['style'])) {
 				$styleparams[] = $icon['style'];
-			}
-			if (!empty($params['istyle'])) {
+			} elseif (!empty($params['istyle'])) {
 				$styleparams[] = $params->istyle->striptags();
 			}
 			$sizeuser = !empty($params['size']) && $params['size'] < 10 ? abs($params->size->int()) : 1;
@@ -240,7 +239,7 @@ class Iconset
 					$space = !empty($icon_class) ? ' ' : '';
 					$icon_class .= $space . $prepend . $icon['id'] . $append;
 				} else {
-					TikiLib::lib('errorreport')->report(tr('Icon set: Class not defined for icon %0', $name));
+					TikiLib::lib('errorreport')->report(tr('Iconset: Class not defined for icon %0', $name));
 				}
 				if ((!empty($sizeuser) && $sizeuser != 1)) {
 					$styleparams[] = 'font-size:' . ($sizeuser * 100) . '%';
@@ -260,13 +259,10 @@ class Iconset
 	private function setStyle(array $styleparams)
 	{
 		if (!empty($styleparams)) {
+			$style = 'style="';
 			foreach ($styleparams as $sparam) {
 				if (!empty($sparam)) {
-					if (empty($style)) {
-						$style = 'style="' . $sparam . ';';
-					} else {
-						$style .= ' ' . $sparam . ';';
-					}
+					$style .= $sparam . ';';
 				}
 			}
 			$style .= '"';

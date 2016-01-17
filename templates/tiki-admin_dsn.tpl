@@ -23,19 +23,10 @@
 		<input type="submit" class="btn btn-primary btn-sm" name="save" value="{tr}Save{/tr}">
 	</div>
 </form>
-{* Use css menus as fallback for item dropdown action menu if javascript is not being used *}
-{if $prefs.javascript_enabled !== 'y'}
-	{$js = 'n'}
-	{$libeg = '<li>'}
-	{$liend = '</li>'}
-{else}
-	{$js = 'y'}
-	{$libeg = ''}
-	{$liend = ''}
-{/if}
+
 <h2>{tr}DSN{/tr}</h2>
-<div class="{if $js === 'y'}table-responsive{/if}"> {* table-responsive class cuts off css drop-down menus *}
-	<table class="table table-striped table-hover">
+<div class="table-responsive">
+	<table class="table normal table-striped table-hover">
 		<tr>
 			<th>
 				<a href="tiki-admin_dsn.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'name_desc'}name_asc{else}name_desc{/if}">{tr}Name{/tr}</a>
@@ -61,28 +52,22 @@
 				<td class="action">
 					{capture name=dsn_actions}
 						{strip}
-							{$libeg}<a href="tiki-admin_dsn.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;dsnId={$channels[user].dsnId}">
+							<a href="tiki-admin_dsn.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;dsnId={$channels[user].dsnId}">
 								{icon name='edit' _menu_text='y' _menu_icon='y' alt="{tr}Edit{/tr}"}
-							</a>{$liend}
-							{$libeg}{permission_link mode=text type=dsn id=$channels[user].name title=$channels[user].name}{$liend}
-							{$libeg}<a href="tiki-admin_dsn.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$channels[user].dsnId}">
+							</a>
+							{permission_link mode=text type=dsn id=$channels[user].name title=$channels[user].name}
+							<a href="tiki-admin_dsn.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$channels[user].dsnId}">
 								{icon name='remove' _menu_text='y' _menu_icon='y' alt="{tr}Remove{/tr}"}
-							</a>{$liend}
+							</a>
 						{/strip}
 					{/capture}
-					{if $js === 'n'}<ul class="cssmenu_horiz"><li>{/if}
-					<a
-						class="tips"
-						title="{tr}Actions{/tr}"
-						href="#"
-						{if $js === 'y'}{popup delay="0|2000" fullhtml="1" center=true text=$smarty.capture.dsn_actions|escape:"javascript"|escape:"html"}{/if}
-						style="padding:0; margin:0; border:0"
-					>
+					<a class="tips"
+					   title="{tr}Actions{/tr}"
+					   href="#" {popup delay="0|2000" fullhtml="1" center=true text=$smarty.capture.dsn_actions|escape:"javascript"|escape:"html"}
+					   style="padding:0; margin:0; border:0"
+							>
 						{icon name='wrench'}
 					</a>
-					{if $js === 'n'}
-						<ul class="dropdown-menu" role="menu">{$smarty.capture.dsn_actions}</ul></li></ul>
-					{/if}
 				</td>
 			</tr>
 		{/section}

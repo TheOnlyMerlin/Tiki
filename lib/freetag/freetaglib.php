@@ -1464,8 +1464,7 @@ class FreetagLib extends ObjectLib
 	 */
 	function set_tag_language( $tagId, $lang )
 	{
-		$langLib = TikiLib::lib('language');
-		if ( ! $langLib->is_valid_language($lang) )
+		if ( ! $this->is_valid_language($lang) )
 			return;
 
 		$result = $this->query(
@@ -1636,7 +1635,7 @@ class FreetagLib extends ObjectLib
 	}
 
     /**
-     * @return Zend\Tag\Cloud
+     * @return Zend_Tag_Cloud
      */
     function get_cloud()
 	{
@@ -1647,7 +1646,7 @@ class FreetagLib extends ObjectLib
 			$row['params'] = array('url' => $row['tagId']);
 		}
 
-		return new Zend\Tag\Cloud(array('tags' => $result));
+		return new Zend_Tag_Cloud(array('tags' => $result));
 	}
 }
 

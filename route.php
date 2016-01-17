@@ -170,7 +170,7 @@ function tiki_route($path)
 
 function tiki_route_attempt($pattern, $file, $callback = null, $extra = array())
 {
-	global $path, $inclusion, $base, $full;
+	global $path, $inclusion;
 
 	if ($inclusion) {
 		return;
@@ -178,8 +178,6 @@ function tiki_route_attempt($pattern, $file, $callback = null, $extra = array())
 
 	if (preg_match($pattern, $path, $parts)) {
 		$inclusion = $file;
-
-		$full = $base . $file;
 
 		if ($callback && is_callable($callback)) {
 			$_GET = array_merge($_GET, $callback($parts), $extra);
@@ -258,21 +256,10 @@ if ($inclusion) {
 } else {
 	error_log("No route found - full:$full query:{$_SERVER['QUERY_STRING']}");
 
-	// Route to the "no-route" URL, if found
-	require_once('lib/init/initlib.php');
-	$local_php = TikiInit::getCredentialsFile();
-	if ( file_exists($local_php) ) {
-		include($local_php);
-	}
-	if (empty($noroute_url)) {
-		// Fail
-		header('HTTP/1.0 404 Not Found');
-		header('Content-Type: text/plain; charset=utf-8');
+	header('HTTP/1.0 404 Not Found');
+	header('Content-Type: text/plain; charset=utf-8');
 
-		echo "No route found. Please see http://dev.tiki.org/URL+Rewriting+Revamp";
-	} else {
-		header('Location: '.$noroute_url);
-	}
+	echo "No route found. Please see http://dev.tiki.org/URL+Rewriting+Revamp";
 	exit;
 }
 

@@ -16,9 +16,16 @@ $access->check_feature('lang_use_db');
 $access->check_permission('tiki_p_edit_languages');
 
 // Get available languages
-$langLib = TikiLib::lib('language');
-$languages = $langLib->list_languages();
+$languages = $tikilib->list_languages();
 $smarty->assign_by_ref('languages', $languages);
+
+// check if is possible to write to lang/
+// TODO: check if each language file is writable instead of the whole lang/ dir
+if (is_writable('lang/')) {
+	$smarty->assign('langIsWritable', true);
+} else {
+	$smarty->assign('langIsWritable', false);
+}
 
 // preserving variables
 if (isset($_REQUEST["edit_language"])) {
@@ -146,8 +153,41 @@ if ($action == "edit_rec_sw" || $action == "edit_tran_sw") {
 	$smarty->assign('hasDbTranslations', $translations->hasDbTranslations);
 }
 
+if (isset($_REQUEST["exp_language"])) {
+	$exp_language = $_REQUEST["exp_language"];
+	$export_language = new LanguageTranslations($exp_language);
+	$smarty->assign('exp_language', $exp_language);
+} else {
+	$smarty->assign('exp_language', $prefs['language']);
+}
+
+// Export
+if (isset($_REQUEST['downloadFile'])) {
+	check_ticket('edit-languages');
+	$data = $export_language->createCustomFile();
+	header("Content-type: application/unknown");
+	header("Content-Disposition: inline; filename=language.php");
+	header("Content-encoding: UTF-8");
+	echo $data;
+	exit (0);
+}
+
+// Write to language.php
+if (isset($_REQUEST['exportToLanguage']) && $tiki_p_admin == 'y') {
+	try {
+		$stats = $export_language->writeLanguageFile();
+	} catch (Exception $e) {
+		$smarty->assign('msg', $e->getMessage());
+		$smarty->display('error.tpl');
+		die;
+	}
+
+	$expmsg = sprintf(tra('Wrote %d new strings and updated %d to lang/%s/language.php'), $stats['new'], $stats['modif'], $export_language->lang);
+	$smarty->assign('expmsg', $expmsg);
+}
+
 $db_languages = Language::getDbTranslatedLanguages();
-$db_languages = $langLib->format_language_list($db_languages);
+$db_languages = $tikilib->format_language_list($db_languages);
 $smarty->assign_by_ref('db_languages', $db_languages);
 
 ask_ticket('edit-languages');

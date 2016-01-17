@@ -115,14 +115,9 @@ function wikiplugin_fancytable($data, $params)
 				isset($tsfilters) ? $tsfilters : null,
 				isset($tsfilteroptions) ? $tsfilteroptions : null,
 				isset($tspaginate) ? $tspaginate : null,
-				isset($tscolselect) ? $tscolselect : null,
-				null,
-				null,
-				isset($tstotals) ? $tstotals : null,
-				isset($tstotaloptions) ? $tstotaloptions : null
+				isset($tscolselect) ? $tscolselect : null
 			);
 			if (is_array($ts->settings)) {
-				$ts->settings['resizable'] = true;
 				Table_Factory::build('plugin', $ts->settings);
 				$sort = true;
 			} else {
@@ -179,10 +174,9 @@ function wikiplugin_fancytable($data, $params)
 		);
 
 		//restore original tags and plugin syntax
-		$headhtml = $headrows['html'];
-		postprocess_section($headhtml, $tagremove, $pluginremove);
+		postprocess_section($headrows, $tagremove, $pluginremove);
 
-		$wret .= '<thead>' . $headhtml . "\r\t" . '</thead>' . "\r\t";
+		$wret .= '<thead>' . $headrows . "\r\t" . '</thead>' . "\r\t" . '<tbody>';
 	}
 
 	//Body
@@ -208,17 +202,13 @@ function wikiplugin_fancytable($data, $params)
 	);
 
 	//restore original tags and plugin syntax
-	$bodyhtml = $bodyrows['html'];
-	postprocess_section($bodyhtml, $tagremove, $pluginremove);
+	postprocess_section($bodyrows, $tagremove, $pluginremove);
 
-	//end the tbody
-	$wret .= '<tbody>' . $bodyhtml . "\r\t" . '</tbody>';
+	$wret .= $bodyrows;
 
-	if (isset($ts->settings)) {
-		$footer = Table_Totals::getTotalsHtml($ts->settings, $bodyrows['cols']);
-		if ($footer) {
-			$wret .= $footer;
-		}
+	//end the table
+	if (isset($head)) {
+		$wret .= "\r\t" . '</tbody>';
 	}
 	$wret .= "\r" . '</table></div>' . "\r" . $msg;
 	return $wret;
@@ -425,9 +415,7 @@ function process_section ($data, $type, $line_sep, $cellbeg, $cellend, $widths, 
 		}
 		$l++;//increment row number
 	}
-	$ret['html'] = $wret;
-	$ret['cols'] = count($parts);
-	return $ret;
+	return $wret;
 }
 
 /**

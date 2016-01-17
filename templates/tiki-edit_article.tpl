@@ -12,8 +12,8 @@
 {/title}
 
 <div class="t_navbar margin-bottom-md">
-	{button href="tiki-list_articles.php"  _type="text" class="btn btn-link" _icon_name="list" _text="{tr}List Articles{/tr}"}
-	{button href="tiki-view_articles.php"  _type="text" class="btn btn-link" _icon_name="articles" _text="{tr}View Articles{/tr}"}
+	{button href="tiki-list_articles.php" class="btn btn-default" _icon_name="list" _text="{tr}List Articles{/tr}"}
+	{button href="tiki-view_articles.php" class="btn btn-default" _icon_name="articles" _text="{tr}View Articles{/tr}"}
 </div>
 
 {if $preview}
@@ -59,7 +59,7 @@
 					{textarea _simple="y" name="heading" class="form-control" rows="5" id="subheading" comments="y"}{$heading}{/textarea}
 				{/if}
 			</div>
-			<div id='heading_only' class="form-group  margin-side-0{if $types.$type.heading_only eq 'y'} hidden{/if}">
+			<div class="form-group  margin-side-0{if $types.$type.heading_only eq 'y'}hidden{/if}">
 				<label for="body">{tr}Body{/tr}</label>
 				{textarea name="body" id="body"}{$body}{/textarea}
 			</div>
@@ -124,8 +124,8 @@
 				</select>
 			</div> {if $tiki_p_admin_cms eq 'y'}
 				<span class="col-sm-3">
-							<a href="tiki-admin_topics.php" class="btn btn-link">
-								{icon name="flag"} {tr}Article Topics{/tr}
+							<a href="tiki-admin_topics.php" class="btn btn-default">
+								{icon name="cog"} {tr}Article Topics{/tr}
 							</a>
 						</span>
 			{/if}
@@ -141,8 +141,8 @@
 				</select>
 			</div> {if $tiki_p_admin_cms eq 'y'}
 				<span class="col-sm-3">
-							<a href="tiki-article_types.php" class="btn btn-link">
-								{icon name="structure"} {tr}Article Types{/tr}
+							<a href="tiki-article_types.php" class="btn btn-default">
+								{icon name="cog"} {tr}Article Types{/tr}
 							</a>
 						</span>
 			{/if}
@@ -172,7 +172,7 @@
 				</div>
 			</div>
 			<div class="form-group clearfix">
-				<label for="authorName" class="control-label col-sm-3">{tr}Author name (as displayed){/tr}</label>
+				<label for="authorName" class="control-label col-sm-3">{tr}Author Name (as displayed){/tr}</label>
 				<div class="col-sm-4">
 					<input type="text" name="authorName" value="{$authorName|escape}" class="form-control">
 				</div>
@@ -320,7 +320,7 @@
 				</div>
 			</div>
 			<div class="form-group {if $types.$type.use_ratings neq 'y'}hidden{/if}">
-				<label for="rating" class="col-sm-3 control-label">{tr}Author rating{/tr}</label>
+				<label for="rating" class="col-sm-3 control-label">{tr}Author Rating{/tr}</label>
 				<div class="col-sm-3 col-sm-offet-6">
 				<select name='rating' class="form-control">
 					<option value="10" {if $rating eq 10}selected="selected"{/if}>10</option>

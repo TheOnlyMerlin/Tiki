@@ -22,7 +22,6 @@ class WikiPluginPluginManager extends PluginsLib
 					'limit' => '',
 					'paramtype' => '',
 					'showparamtype' => 'n',
-					'showtopinfo' => 'y'
 				);
 	}
 	function getName()
@@ -231,13 +230,6 @@ class WikiPluginPluginManager extends PluginsLib
 				$header .= $headbegin . tra('Accepted Values') . '</th>';
  			   	$header .= $headbegin . tra('Description') . '</th>';
 				$rowCounter = 1;
-				//sort required params first
-				$reqarray = array_column($infoPlugin['params'], 'required');
-				$keysarray = array_keys($infoPlugin['params']);
-				$reqarray = array_combine($keysarray, $reqarray);
-				if (count($reqarray) == count($infoPlugin['params'])) {
-					array_multisort($reqarray, SORT_DESC, $infoPlugin['params']);
-				}
 				//add body instructions to the parameter array
 				if (!empty($infoPlugin['body'])) {
 					$body = array('(body of plugin)' => array('description' => $infoPlugin['body']));
@@ -250,7 +242,6 @@ class WikiPluginPluginManager extends PluginsLib
 						|| ((empty($paraminfo['doctype']) && !empty($params['paramtype']) && $params['paramtype'] === 'none')
 						|| (!empty($paraminfo['doctype']) && $params['paramtype'] == $paraminfo['doctype']))
 					) {
-						$filteredparams[] = $paraminfo;
 						$rows .= "\n\t" . '<tr>' . $cellbegin;
 						//Parameters column
 						if (isset($paraminfo['required']) && $paraminfo['required'] == true) {
@@ -346,14 +337,16 @@ class WikiPluginPluginManager extends PluginsLib
 				$rows .= "\n\t" . '<tr>' . $cellbegin . '<em>' . tra('no parameters') . '</em></td>';
 			}
 			$header .= "\n\t" . '</tr>';
-			$pluginprefs = !empty($infoPlugin['prefs']) && $params['showtopinfo'] !== 'n' ? '<em>'
-				. tra('Preferences required:') . '</em> ' . implode(', ', $infoPlugin['prefs']). '<br/>' : '';
-			$title .= isset($infoPlugin['introduced']) && $params['showtopinfo'] !== 'n' ? '<em>' .
-				tr('Introduced in %0', 'Tiki' . $infoPlugin['introduced']) . '.</em>' : '';
-			$required = !empty($filteredparams) ? array_column($filteredparams, 'required') : false;
-			$bold = in_array(true, $required) > 0 ? '<em> ' . tr('Required parameters are in%0 %1bold%2', '</em>',
-				'<strong><code>', '</code></strong>.') : '';
-			$sOutput = $title . $bold . '<br>' . $pluginprefs . '<div class="table-responsive">' .
+			if (!empty($infoPlugin['prefs'])) {
+				$pluginprefs = '<em>' . tra('Preferences required:') . '</em> ' . implode(', ', $infoPlugin['prefs']). '<br/>';
+			} else {
+				$pluginprefs = '';
+			}
+			if (isset($infoPlugin['introduced'])) {
+				$title .= '<em>' . tr('Introduced in %0', 'Tiki' . $infoPlugin['introduced']) . '.</em>';
+			}
+			$sOutput = $title . '<em> ' . tr('Required parameters are in%0 %1bold%2', '</em>', '<strong><code>',
+				'</code></strong>') . '.<br>' . $pluginprefs . '<div class="table-responsive">' .
 				'<table class="table table-striped table-hover">' . $header . $rows . '</table></div>' . "\n";
 			return $sOutput;
 		}
@@ -466,21 +459,6 @@ function wikiplugin_pluginmanager_info()
 				'required' => false,
 				'name' => tra('Show Parameter Type'),
 				'description' => tr('Show the parameter %0doctype%1 value.' , '<code>', '</code>'),
-				'since' => '15.0',
-				'filter' => 'alpha',
-				'default' => '',
-				'advanced' => true,
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
-					array('text' => tra('No'), 'value' => 'n')
-				)
-			),
-			'showtopinfo' => array(
-				'required' => false,
-				'name' => tra('Show Top Info'),
-				'description' => tr('Show information above the table regarding preferences required and the first
-					version when the plugin became available. Shown by default.'),
 				'since' => '15.0',
 				'filter' => 'alpha',
 				'default' => '',

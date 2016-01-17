@@ -21,4 +21,3 @@ $wikilib = TikiLib::lib('wiki');
 $plugins = $wikilib->list_plugins(true);
 $smarty->assign_by_ref('plugins', $plugins);
 $smarty->display("tiki-edit_help.tpl");
-

@@ -99,9 +99,6 @@ if ($useDefaultPrefs) {
     require_once('lib/wizard/pages/upgrade_new_in_14.php');
     $pages[] = new UpgradeWizardNewIn14();
 
-    require_once('lib/wizard/pages/upgrade_new_in_15.php');
-    $pages[] = new UpgradeWizardNewIn15();
-
     require_once('lib/wizard/pages/upgrade_doc_page_iframe.php');
     $pages[] = new UpgradeWizardDocPageIframe();
 
@@ -209,17 +206,10 @@ foreach ($pages as $page) {
 		$url .= '&amp;use-upgrade-wizard=1';
 	}
 	$cnt = 	$stepNr+1;
-	if ($stepNr == 1 && $useUpgradeWizard) {
-		$toc .= '<ul><li>'. tra("New in Tiki 12 (LTS)") .'</li>';
-	}
 	if ($cnt <= 9) {
 		$cnt = '&nbsp;&nbsp;'.$cnt;
 	}
-	if (preg_match('/ Tiki /',$page->pageTitle()) OR $stepNr == 0) {
-		$toc .= '</ul><ul><li><a ';
-	} else {
-		$toc .= '<ul><li><a ';
-	}
+	$toc .= '<li><a ';
 	$cssClasses .= 'adminWizardTOCItem ';
 	if ($stepNr == $reqStepNr) {
 		$cssClasses .= 'highlight ';
@@ -233,7 +223,6 @@ foreach ($pages as $page) {
 	}
 	$toc .= $css;
 	$toc .= 'href="'.$url.'">'.$page->pageTitle().'</a></li>';
-	$toc .= '</ul>';
 	$stepNr++;
 }
 $toc .= '</ul>';

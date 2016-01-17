@@ -30,7 +30,6 @@ class TikiAddons_Addon
 		if ($this->configuration->smarty) {
 			$this->smarty = new Smarty_Tiki;
 			$this->smarty->assign('prefs', $GLOBALS['prefs']);
-			$this->smarty->assign('user', $GLOBALS['user']);
 			$this->smarty->assign('tikiaddon_package', $this->configuration->package);
 		}
 	}
@@ -94,6 +93,6 @@ class TikiAddons_Addon
 		}
 
 		unlink(TIKI_PATH . '/temp/cache/container.php'); // Remove the container cache to help transition
-		throw new Exception(tr("%0 library not found. This may be due to a typo or caused by a recent update.", $name));
+		throw new Exception(tr("%0 library not found. It may be a typo or caused by a recent update.", $name));
 	}
 }

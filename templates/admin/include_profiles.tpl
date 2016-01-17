@@ -3,28 +3,21 @@
 	var baseURI = '{$smarty.server.REQUEST_URI}';
 	{literal}
 		function refreshCache( entry ) { // {{{
+			var status = document.getElementById( 'profile-status-' + entry );
 			var datespan = document.getElementById( 'profile-date-' + entry );
+			var pending = 'img/icons/status_pending.gif';
 
-			if($('profile-status-' + entry + ' > span.icon-status-pending').is(':visible')) {
+			if( status.src == pending )
 				return;
-			}
 
-			$('#profile-status-' + entry + ' > span.icon-status-pending').show();
-			$('#profile-status-' + entry + ' > span.icon-status-open').hide();
-			$('#profile-status-' + entry + ' > span.icon-status-closed').hide();
+			status.src = pending;
 
 			var req = getHttpRequest( 'POST', baseURI + '&refresh=' + escape(entry), true );
 			req.onreadystatechange = function (aEvt) {
 				if (req.readyState == 4) {
 					if(req.status == 200) {
 						var data = eval( "(" + req.responseText + ")" );
-						$.each(['open', 'pending', 'closed'], function (key, value) {
-							if (value == data.status) {
-								$('#profile-status-' + entry + ' > span.icon-status-' + value).show();
-							} else {
-								$('#profile-status-' + entry + ' > span.icon-status-' + value).hide();
-							}
-						});
+						status.src = 'img/icons/status_' + data.status + '.gif';
 						datespan.innerHTML = data.lastupdate;
 					} else
 						alert("Error loading page\n");
@@ -127,12 +120,10 @@
 								submit.name = 'install';
 								submit.value = 'Apply Now';
 								form.setAttribute ( "onsubmit", 'return confirm(\"{/literal}{tr}Are you sure you want to apply the profile{/tr}{literal} ' + profile + '?\");' );
-								form.setAttribute ( "class", "btn btn-primary");
 							} else if ( data.already ) {
 								submit.name = 'forget';
 								submit.value = 'Forget and Re-apply';
 								form.setAttribute ( "onsubmit", 'return confirm(\"{/literal}{tr}Are you sure you want to re-apply the profile{/tr}{literal} ' + profile + '?\");' );
-								form.setAttribute ( "class", "btn btn-primary");
 							}
 
 							p.appendChild(submit);
@@ -258,7 +249,7 @@
 				<input type="hidden" name="ticket" value="{$ticket|escape}">
 				<h4>{tr}Find Profiles{/tr} <small>{tr}Search by name, types and repository{/tr}</small></h4>
 				<div class="table-responsive">
-					<table class="table">
+					<table class="table normal">
 						<tr>
 							<td class="col-lg-6">
 								<div class="form-group">
@@ -302,7 +293,7 @@
 									{/jq}
 								</div>
 							<div class="form-group text-center">
-								<input type="submit" class="btn btn-primary" name="list" value="{tr}Find{/tr}" />
+								<input type="submit" class="btn btn-default" name="list" value="{tr}Find{/tr}" />
 							</div>
 						</td>
 						<td class="col-lg-6">
@@ -340,11 +331,11 @@
 				</table>
 				</div>
 			</form>
-			<a id="step2"></a>
+			<a name="step2"></a>
 			{if isset($result) && $result|@count != '0'}
 				<h4>{tr}Select and apply profile <small>Click on a Configuration Profile Name below to review it and apply it on your site</small>{/tr}</h4>
 				<div class="table-responsive">
-					<table class="table">
+					<table class="table normal">
 						<tr>
 							<th>{tr}Profile Name{/tr}</th>
 							<th>{tr}Repository{/tr}</th>
@@ -483,7 +474,7 @@
 		<h2>{tr}Advanced{/tr}</h2>
 		<fieldset>
 			<h4>{tr}Repository Status{/tr} <small>{tr}Status of the registered profile repositories{/tr}</small></h4>
-			<table class="table">
+			<table class="table normal">
 				<tr>
 					<th>{tr}Profile repository{/tr}</th>
 					<th>{tr}Status{/tr}</th>
@@ -492,22 +483,8 @@
 				{foreach key=k item=entry from=$sources}
 					<tr>
 						<td>{$entry.short}</td>
-						<td id="profile-status-{$k}">
-							{if $entry.status == 'open'}
-								{icon name='status-open' iclass='tips' ititle="{tr}Status{/tr}:{tr}Open{/tr}"}
-								{icon name='status-pending' istyle='display:none' iclass='tips' ititle="{tr}Status{/tr}:{tr}Pending{/tr}"}
-								{icon name='status-closed' istyle='display:none' iclass='tips' ititle="{tr}Status{/tr}:{tr}Closed{/tr}"}
-							{elseif $entry.status == 'closed'}
-								{icon name='status-open' istyle='display:none' iclass='tips' ititle="{tr}Status{/tr}:{tr}Open{/tr}"}
-								{icon name='status-pending' istyle='display:none' iclass='tips' ititle="{tr}Status{/tr}:{tr}Pending{/tr}"}
-								{icon name='status-closed' iclass='tips' ititle="{tr}Status{/tr}:{tr}Closed{/tr}"}
-							{else}
-								{icon name='status-open' istyle='display:none' iclass='tips' ititle="{tr}Status{/tr}:{tr}Open{/tr}"}
-								{icon name='status-pending' iclass='tips' ititle="{tr}Status{/tr}:{tr}Pending{/tr}"}
-								{icon name='status-closed' istyle='display:none' iclass='tips' ititle="{tr}Status{/tr}:{tr}Closed{/tr}"}
-							{/if}
-						</td>
-						<td><span id="profile-date-{$k}">{$entry.formatted}</span> <a href="javascript:refreshCache({$k})" title="{tr}Refresh{/tr}">{icon name="refresh" iclass='tips' ititle=":{tr}Refresh{/tr}"}</a></td>
+						<td><img id="profile-status-{$k}" alt="{tr}Status{/tr}" src="img/icons/status_{$entry.status}.gif"></td>
+						<td><span id="profile-date-{$k}">{$entry.formatted}</span> <a href="javascript:refreshCache({$k})" title="{tr}Refresh{/tr}">{icon name="refresh"}</a></td>
 					</tr>
 				{/foreach}
 			</table>

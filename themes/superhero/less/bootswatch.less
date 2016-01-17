@@ -1,20 +1,14 @@
-// Superhero 3.3.5
+// Superhero 3.1.1
 // Bootswatch
 // -----------------------------------------------------
-
-@web-font-path: "https://fonts.googleapis.com/css?family=Lato:300,400,700";
-
-.web-font(@path) {
-	@import url("@{path}");
-}
-.web-font(@web-font-path);
+@import url("//fonts.googleapis.com/css?family=Lato:300,400,700");
 
 // Navbar =====================================================================
 
 .navbar {
 	.box-shadow(none);
 	border: none;
-	font-size: @font-size-small;
+	font-size: 12px;
 
 	&-default {
 
@@ -37,6 +31,8 @@
 
 .btn {
 
+	font-weight: 300;
+
 	&-default {
 		&:hover {
 			background-color: darken(@btn-default-bg, 3%);
@@ -45,11 +41,15 @@
 
 	&-sm,
 	&-xs {
-		font-size: @font-size-small;
+		font-size: 12px;
 	}
 }
 
 // Typography =================================================================
+
+body {
+	font-weight: 300;
+}
 
 .text-primary,
 .text-primary:hover {
@@ -87,7 +87,8 @@
 	.box-shadow(none);
 
 	> li > a {
-		font-size: @font-size-small;
+		font-size: 12px;
+		font-weight: 300;
 	}
 }
 
@@ -96,22 +97,18 @@
 }
 
 .dropdown-header {
-	font-size: @font-size-small;
+	font-size: 12px;
 }
 
 // Tables =====================================================================
 
 table,
 .table {
-	font-size: @font-size-small;
+	font-size: 12px;
 
-	a:not(.btn) {
+	a {
 		color: #fff;
 		text-decoration: underline;
-	}
-
-	.dropdown-menu a {
-		text-decoration: none;
 	}
 
 	.text-muted {
@@ -139,7 +136,8 @@ label,
 .radio label,
 .checkbox label,
 .help-block {
-	font-size: @font-size-small;
+	font-size: 12px;
+	font-weight: 300;
 }
 
 .input-addon,
@@ -150,60 +148,24 @@ label,
 .has-warning {
 	.help-block,
 	.control-label,
-	.radio,
-	.checkbox,
-	.radio-inline,
-	.checkbox-inline,
-	&.radio label,
-	&.checkbox label,
-	&.radio-inline label,
-	&.checkbox-inline label,
 	.form-control-feedback {
 		color: @brand-warning;
-	}
-
-	.input-group-addon {
-		border: none;
 	}
 }
 
 .has-error {
 	.help-block,
 	.control-label,
-	.radio,
-	.checkbox,
-	.radio-inline,
-	.checkbox-inline,
-	&.radio label,
-	&.checkbox label,
-	&.radio-inline label,
-	&.checkbox-inline label,
 	.form-control-feedback {
 		color: @brand-danger;
-	}
-
-	.input-group-addon {
-		border: none;
 	}
 }
 
 .has-success {
 	.help-block,
 	.control-label,
-	.radio,
-	.checkbox,
-	.radio-inline,
-	.checkbox-inline,
-	&.radio label,
-	&.checkbox label,
-	&.radio-inline label,
-	&.checkbox-inline label,
 	.form-control-feedback {
 		color: @brand-success;
-	}
-
-	.input-group-addon {
-		border: none;
 	}
 }
 
@@ -249,15 +211,6 @@ label,
 
 // Indicators =================================================================
 
-.alert {
-	color: #fff;
-
-	a,
-	.alert-link {
-		color: #fff;
-	}
-}
-
 .close {
 	opacity: 0.4;
 
@@ -267,54 +220,25 @@ label,
 	}
 }
 
+.label {
+	font-weight: 300;
+}
+
+.alert {
+	color: #fff;
+
+	a,
+	.alert-link {
+		color: #fff;
+	}
+}
+
 // Progress bars ==============================================================
 
 // Containers =================================================================
 
 .well {
 	.box-shadow(none);
-}
-
-a.list-group-item {
-
-	&.active,
-	&.active:hover,
-	&.active:focus {
-		border: none;
-	}
-
-	&-success {
-		&.active {
-			background-color: @state-success-bg;
-		}
-
-		&.active:hover,
-		&.active:focus {
-			background-color: darken(@state-success-bg, 5%);
-		}
-	}
-
-	&-warning {
-		&.active {
-			background-color: @state-warning-bg;
-		}
-
-		&.active:hover,
-		&.active:focus {
-			background-color: darken(@state-warning-bg, 5%);
-		}
-	}
-
-	&-danger {
-		&.active {
-			background-color: @state-danger-bg;
-		}
-
-		&.active:hover,
-		&.active:focus {
-			background-color: darken(@state-danger-bg, 5%);
-		}
-	}
 }
 
 .panel {

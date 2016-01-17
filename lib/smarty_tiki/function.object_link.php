@@ -75,10 +75,6 @@ function smarty_function_object_link( $params, $smarty )
 	case 'group':
 		// Nowhere to link, at least, yet.
 		return $object;
-	case 'forumpost':
-	case 'forum post':
-		$function = 'smarty_function_object_link_forumpost';
-		break;
 	default:
 		$function = 'smarty_function_object_link_default';
 		break;
@@ -93,7 +89,6 @@ function smarty_function_object_link_default( $smarty, $object, $title = null, $
 
 	$smarty->loadPlugin('smarty_modifier_sefurl');
 	$smarty->loadPlugin('smarty_modifier_escape');
-	$smarty->loadPlugin('smarty_modifier_addongroupname');
 
 	if (empty($title)) {
 		$title = TikiLib::lib('object')->get_title($type, $object);
@@ -107,9 +102,6 @@ function smarty_function_object_link_default( $smarty, $object, $title = null, $
 		// Blank freetag should not be returned with "No title specified"
 		return '';
 	}
-
-	// get add on object title if needed
-	$title = smarty_modifier_addongroupname($title);
 
 	$text = $title;
 	$titleAttribute = '';
@@ -190,19 +182,11 @@ function smarty_function_object_link_default( $smarty, $object, $title = null, $
 
 function smarty_function_object_link_trackeritem( $smarty, $object, $title = null, $type = 'wiki page', $url = null )
 {
-	global $prefs;
 	$pre = null;
 
 	$item = Tracker_Item::fromId($object);
 
-	//Set show status to 'y' by default
-	if (!empty($prefs['tracker_status_in_objectlink'])) {
-		$show_status = $prefs['tracker_status_in_objectlink'];
-	} else {
-		$show_status = 'y';
-	}
-
-	if (($show_status == 'y') && $item && $status = $item->getDisplayedStatus()) {
+	if ($item && $status = $item->getDisplayedStatus()) {
 		$alt = tr($status);
 		$pre = "<img src=\"img/icons/status_$status.gif\" alt=\"$status\"/>&nbsp;";
 	}
@@ -320,20 +304,5 @@ function smarty_function_object_link_freetag( $smarty, $tag, $title = null )
 	}
 
 	return smarty_function_object_link_default($smarty, $tag, $tag, 'freetag');
-}
-function smarty_function_object_link_forumpost( $smarty, $object, $title = null, $type = 'forumpost', $url = null )
-{
-	$commentslib = TikiLib::lib('comments');
-	$comment = $commentslib->get_comment($object);
-
-	while (empty($comment['title'])) {
-		$parent = $commentslib->get_comment($comment['parentId']);
-		$comment['title'] = $parent['title'];
-		if ($parent['parentId'] == 0) {
-			break;
-		}
-	}
-
-	return "<a href='tiki-view_forum_thread.php?comments_parentId=" . $comment['threadId']. "'>" .$comment['title'] . "</a>";
 }
 

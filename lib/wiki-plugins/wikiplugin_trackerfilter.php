@@ -29,7 +29,6 @@ function wikiplugin_trackerfilter_info()
 						than, less than, greater than or equal, less than or equal.') . '<br />'
 					. tr('Example:') . ' <code>2/d:4/r:5:(6:7)/sqlsearch</code>',
 				'since' => '1',
-				'doctype' => 'trackerfilter',
 				'default' => '',
 				'profile_reference' => 'tracker_field_string',
 			),
@@ -39,7 +38,6 @@ function wikiplugin_trackerfilter_info()
 				'description' => tr('Label on the submit button. Default: %0Filter%1. Use a space character to omit the
 					button (for use in datachannels etc)', '<code>', '</code>'),
 				'since' => '2.0',
-				'doctype' => 'trackerfilter',
 				'default' => 'Filter'
 			),
 			'displayList' => array(
@@ -47,7 +45,6 @@ function wikiplugin_trackerfilter_info()
 				'name' => tra('Display List'),
 				'description' => tra('Show the full list (before filtering) initially (filtered list shown by default)'),
 				'since' => '2.0',
-				'doctype' => 'trackerfilter',
 				'filter' => 'alpha',
 				'default' => 'n',
 				'options' => array(
@@ -61,7 +58,6 @@ function wikiplugin_trackerfilter_info()
 				'name' => tra('Line'),
 				'description' => tra('Displays all the filters on the same line (not shown on same line by default)'),
 				'since' => '2.0',
-				'doctype' => 'trackerfilter',
 				'filter' => 'alpha',
 				'default' => 'n',
 				'options' => array(
@@ -77,7 +73,6 @@ function wikiplugin_trackerfilter_info()
 				'description' => tr('The toggle button to show/hide filters will not be shown if set to Yes (%0y%1).
 					Default is to show the toggle.', '<code>', '</code>'),
 				'since' => '6.0',
-				'doctype' => 'trackerfilter',
 				'filter' => 'alpha',
 				'default' => 'n',
 				'options' => array(
@@ -91,7 +86,6 @@ function wikiplugin_trackerfilter_info()
 				'name' => tra('Export CSV.'),
 				'description' => tra('Label for an export button. Leave blank to show the usual "Filter" button instead.'),
 				'since' => '6.0',
-				'doctype' => 'trackerfilter',
 				'default' => '',
 				'advanced' => true,
 			),
@@ -102,7 +96,6 @@ function wikiplugin_trackerfilter_info()
 				'since' => '11.1',
 				'advanced' => true,
 				'filter' => 'alpha',
-				'doctype' => 'trackerfilter',
 				'default' => 'n',
 				'options' => array(
 					array('text' => '', 'value' => ''),
@@ -117,7 +110,6 @@ function wikiplugin_trackerfilter_info()
 				'since' => '11.1',
 				'advanced' => true,
 				'filter' => 'alpha',
-				'doctype' => 'trackerfilter',
 				'default' => 'n',
 				'options' => array(
 					array('text' => '', 'value' => ''),
@@ -132,7 +124,6 @@ function wikiplugin_trackerfilter_info()
 				'since' => '11.1',
 				'advanced' => true,
 				'filter' => 'alpha',
-				'doctype' => 'trackerfilter',
 				'default' => 'n',
 				'options' => array(
 					array('text' => '', 'value' => ''),
@@ -145,7 +136,6 @@ function wikiplugin_trackerfilter_info()
 				'name' => tra('Export Character Set'),
 				'description' => tra('Character set to be used if the Export CSV option is used'),
 				'since' => '11.1',
-				'doctype' => 'trackerfilter',
 				'default' => 'UTF-8',
 				'advanced' => true,
 			),					
@@ -155,7 +145,6 @@ function wikiplugin_trackerfilter_info()
 				'description' => tra('Display Mapview and Listview buttons'),
 				'since' => '6.0' . tr(' - was %0 until 12.0', '<code>googlemapButtons</code>'),
 				'filter' => 'alpha',
-				'doctype' => 'trackerfilter',
 				'default' => '',
 				'options' => array(
 					array('text' => '', 'value' => ''),

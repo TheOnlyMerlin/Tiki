@@ -50,18 +50,9 @@ class Search_GlobalSource_RelationSource implements Search_GlobalSource_Interfac
 			$types[] = $rel['relation'] . '.invert';
 		}
 
-		//take the type array and get a count of each indiv. type
-		$type_count = array_count_values($types);
-		$rel_count = array();
-		foreach ($type_count as $key=>$val) {
-			//instead of returning an assoc. array, format to "relation:count" format for input in index
-			$rel_count[] = $key . ":" . $val;
-		}
-
 		return array(
 			'relations' => $typeFactory->multivalue($relations),
 			'relation_types' => $typeFactory->multivalue(array_unique($types)),
-			'relation_count' => $typeFactory->multivalue($rel_count),
 		);
 	}
 }

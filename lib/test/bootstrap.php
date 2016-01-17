@@ -104,7 +104,7 @@ require_once(dirname(__FILE__) . '/TikiTestCase.php');
 require_once(dirname(__FILE__) . '/TestableTikiLib.php');
 
 global $systemConfiguration;
-$systemConfiguration = new Zend\Config\Config(
+$systemConfiguration = new Zend_Config(
 	array(
 		'preference' => array(),
 		'rules' => array(),

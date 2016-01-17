@@ -17,7 +17,6 @@ function wikiplugin_addon_info()
 		'filter' => 'rawhtml_unsafe',
 		'iconname' => 'view',
 		'tags' => array( 'basic' ),
-		'extraparams' => true,
 		'params' => array(
 			'package' => array(
 				'required' => true,

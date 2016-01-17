@@ -16,8 +16,7 @@ function prefs_available_list($partial = false)
 	];
 	
 	if (! $partial) {
-		$langLib = TikiLib::lib('language');
-		$languages = $langLib->list_languages(false, null, true);
+		$languages = $tikilib->list_languages(false, null, true);
 		foreach ( $languages as $lang ) {
 			$map[ $lang['value'] ] = $lang['name'];
 		}
@@ -30,7 +29,7 @@ function prefs_available_list($partial = false)
 	return array(
 		'available_languages' => array(
 			'name' => tra('Available languages'),
-			'description' => tra('By default, all languages supported by Tiki are available on multilingual sites. This option allows limiting the languages to a subset.'),
+			'description' => tra('By default, all languages supported by Tiki are available on multilingual sites. This option allows to limit the languages to a subset.'),
 			'filter' => 'lang',
 			'type' => 'multilist',
 			'dependencies' => array(

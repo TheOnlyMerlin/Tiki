@@ -194,13 +194,7 @@ class Tiki_Webservice
 
 						$response = new OIntegrate_Response();
 						$soaplib->allowCookies = $this->allowCookies;
-						try {
-							$response->data = $soaplib->performRequest($built, $this->operation, $map, $options, $fullReponse);
-						} catch (Exception $e) {
-							TikiLib::lib('errorreport')->report(
-									tr('Webservice error on %0 request "%1"', $this->wstype, $this->url) . '<br>' . $e->getMessage()
-							);
-						}
+						$response->data = $soaplib->performRequest($built, $this->operation, $map, $options, $fullReponse);
 
 						return $response;
 					}
@@ -223,13 +217,7 @@ class Tiki_Webservice
 						$ointegrate->addSchemaVersion($this->schemaVersion);
 					}
 
-				try {
 					$response = $ointegrate->performRequest($built, $builtBody);
-				} catch (Exception $e) {
-					TikiLib::lib('errorreport')->report(
-							tr('Webservice error on %0 request "%1"', $this->wstype, $this->url) . '<br>' . $e->getMessage()
-					);
-				}
 
 					return $response;
 			}

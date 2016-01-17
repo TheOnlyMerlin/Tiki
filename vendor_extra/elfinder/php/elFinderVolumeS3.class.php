@@ -728,3 +728,5 @@ class S3SoapClient extends SoapClient {
 	}
 	
 }
+
+?>

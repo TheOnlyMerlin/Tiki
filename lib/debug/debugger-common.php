@@ -32,7 +32,7 @@ class ResultType
 	var $result_tpl;
 
 	/// Constructor init all
-	function __construct()
+	function ResultType()
 	{
 		$this->reset();
 	}

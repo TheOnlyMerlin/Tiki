@@ -63,12 +63,13 @@
         function antibotVerification(element, rule) {
             if (!jqueryTiki.validate) return;
 
-            var form = $(".antibot").parents('form');
-            if (!form.data("validator")) {
-                form.validate({});
-            }
-            element.rules( "add", rule);
-        }
+			var form = $(".antibot").parents('form');
+			if (!form.data("validator")) {
+				form.validate({});
+			}
+			form.data("validator").settings.ignore = [];
+			element.rules( "add", rule);
+		}
     {/jq}
 
     {if $captchalib->type eq 'recaptcha'}

@@ -22,6 +22,8 @@ class Tiki_Profile_Transport_File implements Tiki_Profile_Transport_Interface
 		} else {
 			return ''; // assume empty if file not found to prevent unexpected errors
 		}
+
+		return null;
 	}
 
 	function getPageParsed($pageName)

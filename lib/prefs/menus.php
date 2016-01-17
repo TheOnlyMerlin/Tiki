@@ -20,5 +20,22 @@ function prefs_menus_list()
 			'type' => 'text',
 			'default' => 'img/icons/large',
 		),
+		'menus_item_names_raw_teaser' => array(
+			'name' => tra('Allow HTML in menu option names and URLs'),
+			'description' => tra('If enabled, menu option names and URL-s are treated as HTML content and they are not escaped (no replacement of HTML special characters). This allows the use of HTML to insert images for example. Code must be valid. This allows menu item editors to put arbitrary HTML; only enable if you know what you are doing.'),
+			'help' => 'Menus',
+			'type' => 'flag',
+			'default' => 'n',
+		),
+		'menus_item_names_raw' => array(
+			'name' => tra('REALLY allow HTML (INSECURE)'),
+			'description' => tra('This needs to be checked for the parent preference to be actually enabled. This allows menu item editors to put arbitrary HTML, which could allow session hijacking; only enable if you know what you are doing.'),
+			'help' => 'Menus',
+			'dependencies' => array(
+				'menus_item_names_raw_teaser',
+			),
+			'type' => 'flag',
+			'default' => 'n',
+		),
 	);
 }

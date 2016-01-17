@@ -81,14 +81,6 @@ function wikiplugin_datachannel_info()
 				'since' => '6.0',
 				'default' => '',
 			),
-			'template' => array(
-				'required' => false,
-				'name' => tra('Template'),
-				'description' => tra('Template to be used to render the form, instead of the default template'),
-				'default' => '',
-				'since' => '15.0',
-				'filter' => 'text',
-			),
 			'emptyCache' => array(
 				'required' => false,
 				'name' => tra('Empty Caches'),
@@ -166,8 +158,6 @@ function wikiplugin_datachannel( $data, $params )
 	$headerlib = TikiLib::lib('header');
 	$executionId = 'datachannel-exec-' . ++$execution;
 
-	$datachannelWithTemplate = empty($params['template']) ? false : true;
-
 	if (isset($params['price']) && $params['price'] == 0) {
 		// Convert things like 0.00 to empty
 		unset($params['price']);
@@ -185,10 +175,6 @@ function wikiplugin_datachannel( $data, $params )
 	foreach ( $lines as $line ) {
 		$parts = explode(',', $line, 2);
 		$parts = array_map('trim', $parts);
-
-		if ($datachannelWithTemplate && (count($parts) == 1)) { // copy name as lablel, for datachannels with templates
-			$parts[1] = $parts[0];
-		}
 
 		if ( count($parts) == 2 ) {
 			if (strpos($parts[1], 'external') === 0) {	// e.g. "fieldid,external=fieldname"
@@ -239,17 +225,7 @@ function wikiplugin_datachannel( $data, $params )
 			&& $_POST['datachannel_execution'] == $executionId
 			&& $config->canExecuteChannels(array( $params['channel'] ), $groups) ) {
 
-			$input = array_intersect_key($_POST, $inputfields);
-
-			$trimAndMapArraysAsYaml = function($element) {
-				if(!is_array($element)){
-					return trim($element);
-				}
-				$element = array_map(trim, $element);
-				return '[' . implode(', ', $element) . ']';
-			};
-
-			$input = array_map($trimAndMapArraysAsYaml, $input);
+			$input = array_intersect_key(array_map('trim', $_POST), $inputfields);
 			
 			$itemIds = array();					// process possible arrays in post
 			if ($params['array_values'] === 'y') {
@@ -388,11 +364,7 @@ function wikiplugin_datachannel( $data, $params )
 			$smarty->assign('datachannel_form_onsubmit', '');
 		}
 
-    if (empty($params['template'])){
-      return '~np~' . $smarty->fetch('wiki-plugins/wikiplugin_datachannel.tpl') . '~/np~';
-    } else {
-      return '~np~' . $smarty->fetch($params['template']) . '~/np~';
-    }
+		return '~np~' . $smarty->fetch('wiki-plugins/wikiplugin_datachannel.tpl') . '~/np~';
 	}
 }
 

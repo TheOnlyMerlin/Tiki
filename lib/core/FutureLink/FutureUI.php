@@ -37,10 +37,10 @@ Class FutureLink_FutureUI extends Feed_Abstract
 	{
 		//May be used soon for encrypting futurelinks
 		if (isset($_REQUEST['action'], $_REQUEST['hash']) && $_REQUEST['action'] == 'timestamp') {
-			$client = new Zend\Http\Client(TikiLib::tikiUrl() . 'tiki-timestamp.php', array('timeout' => 60));
-			$client->getRequest()->getQuery()->set('hash', $_REQUEST['hash']);
-			$client->getRequest()->getQuery()->set('clienttime', time());
-			$response = $client->send();
+			$client = new Zend_Http_Client(TikiLib::tikiUrl() . 'tiki-timestamp.php', array('timeout' => 60));
+			$client->setParameterGet('hash', $_REQUEST['hash']);
+			$client->setParameterGet('clienttime', time());
+			$response = $client->request();
 			echo $response->getBody();
 			exit();
 		}
@@ -456,7 +456,7 @@ JQ
 									};
 
 									answersDialog.dialog({
-										title: tr("Please answer the questions below"),
+										title: tr("Please fill in the questions below"),
 										buttons: answersDialogButtons,
 										modal: true,
 										width: $(window).width() / 2
@@ -507,7 +507,7 @@ JQ
 									me.data('rangyBusy', true);
 
 									var pastlinkCopy = $('<div></div>');
-									var pastlinkCopyButton = $('<div>' + tr('Click here to copy to clipboard') + '</div>')
+									var pastlinkCopyButton = $('<div>' + tr('Click HERE to Copy to Clipboard') + '</div>')
 										.button()
 										.appendTo(pastlinkCopy);
 									var pastlinkCopyValue = $('<textarea style="width: 100%; height: 80%;"></textarea>')
@@ -515,7 +515,7 @@ JQ
 										.appendTo(pastlinkCopy);
 
 									pastlinkCopy.dialog({
-										title: tr("Copy text and metadata"),
+										title: tr("Copy text and Metadata"),
 										modal: true,
 										close: function() {
 											me.data('rangyBusy', false);
@@ -536,7 +536,7 @@ JQ
 										me.data('rangyBusy', false);
 
 
-										$.notify(tr('Text and metadata copied to clipboard'));
+										$.notify(tr('Text and Metadata copied to Clipboard'));
 										return false;
 									});
 

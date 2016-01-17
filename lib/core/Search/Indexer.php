@@ -10,7 +10,6 @@ class Search_Indexer
 	private $searchIndex;
 	private $contentSources = array();
 	private $globalSources = array();
-	private $addonSources = array();
 
 	private $cacheGlobals = null;
 	private $cacheTypes = array();
@@ -21,17 +20,13 @@ class Search_Indexer
 
 	public function __construct(Search_Index_Interface $searchIndex, $logWriter = null)
 	{
-		if (! $logWriter instanceof \Zend\Log\Writer\AbstractWriter) {
-			$logWriter = new Zend\Log\Writer\Noop();
+		if (! $logWriter instanceof Zend_Log_Writer_Abstract) {
+			$logWriter = new Zend_Log_Writer_Null();
 		}
-		$logWriter->setFormatter(new Zend\Log\Formatter\Simple(Zend\Log\Formatter\Simple::DEFAULT_FORMAT . ' [%memoryUsage% bytes]' . PHP_EOL));
-		$this->log = new Zend\Log\Logger();
-		$this->log->addWriter($logWriter);
+		$logWriter->setFormatter(new Zend_Log_Formatter_Simple(Zend_Log_Formatter_Simple::DEFAULT_FORMAT . ' [%memoryUsage% bytes]' . PHP_EOL));
+		$this->log = new Zend_Log($logWriter);
 
 		$this->searchIndex = $searchIndex;
-
-		$api = new TikiAddons_Api_Search();
-		$this->addonSources = $api->getAddonSources();
 	}
 
 	public function addContentSource($objectType, Search_ContentSource_Interface $contentSource)
@@ -50,7 +45,7 @@ class Search_Indexer
 		$this->globalSources = array();
 	}
 
-	public function addContentFilter(Zend\Filter\FilterInterface $filter)
+	public function addContentFilter(Zend_Filter_Interface $filter)
 	{
 		$this->contentFilters[] = $filter;
 	}
@@ -118,10 +113,6 @@ class Search_Indexer
 			$contentSource = $this->contentSources[$objectType];
 
 			if (false !== $data = $contentSource->getDocument($objectId, $typeFactory)) {
-				if ($data === null) {
-					TikiLib::lib('errorreport')->report(tr('Object %0 type %1 returned null from getDocument function', $objectId, $objectType));
-					$data = array();
-				}
 				if (! is_int(key($data))) {
 					$data = array($data);
 				}
@@ -144,15 +135,6 @@ class Search_Indexer
 
 			if (false !== $local) {
 				$data = array_merge($data, $local);
-			}
-		}
-		foreach ($this->addonSources as $addonSource) {
-			if ($addonSource->toIndex($objectType, $objectId, $initialData)) {
-				$local = $addonSource->getData($objectType, $objectId, $typeFactory, $initialData);
-
-				if (false !== $local) {
-					$data = array_merge($data, $local);
-				}
 			}
 		}
 
@@ -242,7 +224,8 @@ class Search_Indexer
 
 	private function log($message)
 	{
-		$this->log->info($message, array('memoryUsage' => memory_get_usage()));
+		$this->log->setEventItem('memoryUsage', memory_get_usage());
+		$this->log->info($message);
 	}
 }
 

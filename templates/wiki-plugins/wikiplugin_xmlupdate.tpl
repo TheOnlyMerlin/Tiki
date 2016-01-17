@@ -1,4 +1,4 @@
- {* $Id$ *}
+ {* $Id: wikiplugin_xmlupdate.tpl 56873 2015-12-02 18:00:32Z arildb $ *}
  
 
 <p>The current values for the {$xmlcount} items from the XML management file are shown in the input fields below.</p>

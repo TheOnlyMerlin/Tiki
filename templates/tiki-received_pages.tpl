@@ -18,34 +18,36 @@
 
 {if $receivedPageId > 0}
 	<h2>{tr}Edit Received Page{/tr}</h2>
-	<form action="tiki-received_pages.php" method="post" class="form-horizontal">
+	<form action="tiki-received_pages.php" method="post">
 		<input type="hidden" name="receivedPageId" value="{$receivedPageId|escape}">
-		<div class="form-group">
-			<label class="control-label col-sm-3">{tr}Name:{/tr}</label>
-			<div class="col-sm-7">
-				<input type="text" name="pageName" value="{$pageName|escape}" class="form-control">
-			</div>
-		</div>
-		<div class="form-group">
-			<label class="control-label col-sm-3">{tr}Data:{/tr}</label>
-			<div class="col-sm-7">
-				<textarea name="data" rows="10" cols="60" class="form-control">{$data|escape}</textarea>
-			</div>
-		</div>
-		<div class="form-group">
-			<label class="control-label col-sm-3">{tr}Comment:{/tr}</label>
-			<div class="col-sm-7">
-				<input type="text" name="comment" value="{$comment|escape}" class="form-control">
-			</div>
-		</div>
-		<div class="form-group">
-			<label class="control-label col-sm-3"></label>
-			<div class="col-sm-7">
-				<input type="submit" class="btn btn-default btn-sm" name="preview" value="{tr}Preview{/tr}">
-				&nbsp;
-				<input type="submit" class="btn btn-primary btn-sm" name="save" value="{tr}Save{/tr}">
-			</div>
-		</div>
+		<table class="formcolor">
+			<tr>
+				<td>{tr}Name:{/tr}</td>
+				<td>
+					<input type="text" name="pageName" value="{$pageName|escape}">
+				</td>
+			</tr>
+			<tr>
+				<td>{tr}Data:{/tr}</td>
+				<td>
+					<textarea name="data" rows="10" cols="60">{$data|escape}</textarea>
+				</td>
+			</tr>
+			<tr>
+				<td>{tr}Comment:{/tr}</td>
+				<td>
+					<input type="text" name="comment" value="{$comment|escape}">
+				</td>
+			</tr>
+			<tr>
+				<td>&nbsp;</td>
+				<td>
+					<input type="submit" class="btn btn-default btn-sm" name="preview" value="{tr}Preview{/tr}">
+					&nbsp;
+					<input type="submit" class="btn btn-primary btn-sm" name="save" value="{tr}Save{/tr}">
+				</td>
+			</tr>
+		</table>
 	</form>
 {/if}
 
@@ -58,7 +60,7 @@
 		</p>
 	{/if}
 	<div class="table-responsive">
-		<table class="table table-striped table-hover">
+		<table class="table normal table-striped table-hover">
 			<tr>
 				<th>
 					<a href="tiki-received_pages.php?offset={$offset}&amp;sort_mode={if $sort_mode eq 'receivedPageId_desc'}receivedPageId_asc{else}receivedPageId_desc{/if}">{tr}ID{/tr}</a>
@@ -122,7 +124,7 @@
 {/if}
 <form action="tiki-received_pages.php" method="post">
 	<div class="table-responsive">
-		<table class="table table-striped table-hover">
+		<table class="table normal table-striped table-hover">
 			<tr>
 				<th>&nbsp;</th>
 				<th>
@@ -200,8 +202,6 @@
 			{select_all checkbox_names='checked[]' label="{tr}Select All{/tr}"}
 		</table>
 	</div>
-	<div class="form-inline">
-	{tr}Prefix the checked: {/tr}<input type="text" name="prefix" class="form-control">
-	{tr} Postfix the checked: {/tr}<input type="text" name="postfix" class="form-control">&nbsp;<input type="submit" class="btn btn-default " value="{tr}OK{/tr}">
-	</div>
+	{tr}Prefix the checked:{/tr}<input type="text" name="prefix">
+	{tr}Postfix the checked:{/tr}<input type="text" name="postfix">&nbsp;<input type="submit" class="btn btn-default btn-sm" value="{tr}OK{/tr}">
 </form>

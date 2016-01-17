@@ -185,7 +185,7 @@
 	{strip}
 
 		{if $wiki_extras eq 'y' && $prefs.feature_wiki_attachments eq 'y' and $tiki_p_wiki_view_attachments eq 'y'}
-			<a id="attachments"></a>
+			<a name="attachments"></a>
 			{if $prefs.feature_use_fgal_for_wiki_attachments eq 'y'}
 				{attachments _id=$page _type='wiki page'}
 			{else}

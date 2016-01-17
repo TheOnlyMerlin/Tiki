@@ -76,7 +76,7 @@ class Tiki_Profile
 
 	public static function convertYesNo( $data ) // {{{
 	{
-		$copy = (array) $data;
+		$copy = $data;
 		foreach ( $copy as &$value )
 			if ( is_bool($value) )
 				$value = $value ? 'y' : 'n';
@@ -314,6 +314,12 @@ class Tiki_Profile
 		return true;
 	} // }}}
 
+	public function refreshYaml() // {{{
+	{
+		$this->objects = null;
+		$this->loadYaml($this->pageContent);
+	} // }}}
+
 	private function loadYaml( $content ) // {{{
 	{
 		$this->pageContent = $content;
@@ -346,15 +352,7 @@ class Tiki_Profile
 		$this->getObjects();
 	} // }}}
 
-	public function getData(){
-		return $this->data;
-	}
-
-	public function setData($data){
-		$this->data = $data;
-	}
-
-	public function fetchExternals() // {{{
+	private function fetchExternals() // {{{
 	{
 		$this->traverseForExternals($this->data);
 	} // }}}
@@ -619,7 +617,7 @@ class Tiki_Profile
 					$preferenceName = $row[1];
 					$definition = TikiLib::lib('prefs')->getPreference($preferenceName);
 
-					if (! empty($definition)) {
+					if (! empty($definition['public'])) {
 						$needles[] = $row[0];
 						$replacements[] = $definition['value'];
 					}
@@ -735,7 +733,8 @@ class Tiki_Profile
 
 	function getObjects() // {{{
 	{
-		// Note this function needs to be called each time the objects need to be refreshed after YAML replacements
+		if ( !is_null($this->objects) )
+			return $this->objects;
 
 		$objects = array();
 
@@ -851,23 +850,5 @@ class Tiki_Profile
 			}
 		}
 	}
-
-	function getPath()
-	{
-		$domain = $this->domain;
-		$profile = $this->profile;
-		if ( strpos($domain, '://') === false ) {
-			if ( is_dir($domain) ) {
-				$domain = "file://" . $domain;
-			} else {
-				$domain = "http://" . $domain;
-			}
-		}
-		if ( substr($domain, 0, 7) == "file://" ) {
-			return TIKI_PATH . '/' . substr($domain, 7);
-		} else {
-			return $domain;
-		}
-	} // }}}
 }
 

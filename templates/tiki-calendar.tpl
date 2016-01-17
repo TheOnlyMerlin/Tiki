@@ -52,7 +52,7 @@
 			{if $displayedcals|@count eq 1}
 				{button href="tiki-admin_calendars.php?calendarId={$displayedcals[0]}" _text="{tr}Edit{/tr}" _icon_name="edit"}
 			{/if}
-			{button href="tiki-admin_calendars.php?cookietab=1" _text="{tr}Admin{/tr}" _icon_name="admin"}
+			{button href="tiki-admin_calendars.php?cookietab=1" _text="{tr}Admin{/tr}" _icon_name="administer"}
 		{/if}
 
 {* avoid Add Event being shown if no calendar is displayed *}
@@ -97,16 +97,16 @@
 				{button href="" _style="background-color:#fff;padding:0 4px;" _text="{tr}None{/tr}"}
 			{/if}
 		{/if}
-	</div>
+
 {* show jscalendar if set *}
 		{if $prefs.feature_jscalendar eq 'y'}
-			<div class="jscalrow" style="display: inline-block">
+			<div class="jscalrow">
 				<form action="{$myurl}" method="post" name="f">
 					{jscalendar date="$focusdate" id="trig" goto="$jscal_url" align="Bc"}
 				</form>
 			</div>
 		{/if}
-
+	</div>
 
 
 
@@ -294,6 +294,3 @@
 	{/if}
 	<p>&nbsp;</p>
 </div>
-{if $prefs.feature_jscalendar eq 'y' and $prefs.javascript_enabled eq 'y'}
-	{js_insert_icon type="jscalendar"}
-{/if}

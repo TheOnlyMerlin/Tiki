@@ -10,7 +10,7 @@ function prefs_file_list()
 	return array(
 		'file_galleries_comments_per_page' => array(
 			'name' => tra('Default number per page'),
-            'description' => tra('Number of comments per page'),
+            'description' => tra('how many comments per page'),
 			'type' => 'text',
 			'size' => '5',
 			'default' => 10,
@@ -28,7 +28,7 @@ function prefs_file_list()
 		),
 		'file_galleries_use_jquery_upload' => array(
 			'name' => tra('Use jQuery Upload'),
-            'description' => tra('Use the improved Tiki 15+ upload page'),
+            'description' => tra('Use the improved Tiki 14.2+ upload page'),
 			'type' => 'flag',
 			'default' => 'n',
 			'tags' => array('experimental'),

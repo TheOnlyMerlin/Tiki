@@ -182,8 +182,7 @@ function wikiplugin_playscorm($data, $params) {
 		);
 
 		$client->setParameterPost( $moodleform );
-		$client->setMethod(Zend\Http\Request::METHOD_POST);
-		$response = $client->send();
+		$response = $client->request( 'POST' ); 
 
 		$body = $response->getBody();
 

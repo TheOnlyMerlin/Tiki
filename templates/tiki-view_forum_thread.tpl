@@ -1,11 +1,9 @@
 {* $Id$ *}
 {$forum_info.name|addonnavbar:'forum'}
-{block name=title}
-	{title help="forums" admpage="forums"}
-		{$forum_info.name|addongroupname}
-		{if $prefs.feature_forum_topics_archiving eq 'y' && $thread_info.archived eq 'y'}({tr}Archived{/tr}){/if}
-	{/title}
-{/block}
+{title help="forums" admpage="forums"}
+	{$forum_info.name|addongroupname}
+	{if $prefs.feature_forum_topics_archiving eq 'y' && $thread_info.archived eq 'y'}({tr}Archived{/tr}){/if}
+{/title}
 
 <div class="t_navbar btn-group margin-bottom-md">
 	{if $tiki_p_admin_forum eq "y"}
@@ -16,7 +14,12 @@
 	{/if}
 	{button href="tiki-view_forum.php?forumId=$forumId" class="btn btn-default" _text="{tr}Topic List{/tr}"}
 </div>
-{include file="utilities/feedback.tpl"}
+<div id="ajax-feedback" style="display:none"></div>
+{if isset($ajaxfeedback) && $ajaxfeedback eq 'y'}
+	<div id="posted-ajax-feedback">
+		{include file="utilities/alert.tpl"}
+	</div>
+{/if}
 {if $post_reported eq 'y'}
 	{remarksbox type=warning title="{tr}The post has been reported and will be reviewed by a moderator.{/tr}"}{/remarksbox}
 {/if}
@@ -38,7 +41,6 @@
 	{$thread_info.title|escape}
 </div>
 
-{block name=thread_actions}
 <div class="text-right margin-bottom-md">
 	{if empty($thread_info.topic.threadId)}
 		<span>
@@ -114,7 +116,6 @@
 		</div>
 
 </div>
-{/block}
 
 
 {if $openpost eq 'y'}
@@ -139,7 +140,7 @@
 
 <div class="form-group">
 	<form class="form-horizontal" role="form" id='time_control' method="get" action="tiki-view_forum_thread.php">
-		<input type="hidden" name="comments_offset" value="0"><!--Reset offset to 0 when applying a new filter -->
+		<input type="hidden" name="comments_offset" value="{$comments_offset|escape}">
 		<input type="hidden" name="comments_threadId" value="{$comments_threadId|escape}">
 		<input type="hidden" name="comments_parentId" value="{$comments_parentId|escape}">
 		<input type="hidden" name="comments_threshold" value="{$comments_threshold|escape}" />
@@ -192,7 +193,7 @@
 {if isset($view_atts) and $view_atts eq 'y'}
 	<h2 id="attachments">{tr}Attachments{/tr}</h2>
 	<div class="table-responsive">
-		<table class="table table-striped table-hover">
+		<table class="table normal table-striped table-hover">
 			<tr>
 				<th>{tr}Type{/tr}</th>
 				<th>{tr}Filename{/tr}</th>

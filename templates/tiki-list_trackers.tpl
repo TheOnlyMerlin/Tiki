@@ -49,7 +49,7 @@
 {/block}
 
 {block name="content"}
-	<a id="view"></a>
+	<a name="view"></a>
 	{if ($trackers) or ($find)}
 		{include autocomplete='trackername' file='find.tpl' filters=''}
 		{if ($find) and ($trackers)}

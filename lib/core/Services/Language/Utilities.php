@@ -32,12 +32,12 @@ class Services_Language_Utilities
 	function getTranslations($type, $object)
 	{
 		$multilinguallib = TikiLib::lib('multilingual');
-		$langLib = TikiLib::lib('language');
+		$tikilib = TikiLib::lib('tiki');
 
 		$objId = $this->toInternalId($type, $object);
 
 		$translations = $multilinguallib->getTrads($type, $objId);
-		$languages = $langLib->get_language_map();
+		$languages = $tikilib->get_language_map();
 
 		foreach ($translations as & $trans) {
 			$trans['objId'] = $this->toExternalId($type, $trans['objId']);
@@ -77,7 +77,7 @@ class Services_Language_Utilities
 		}
 
 		if (! $lang) {
-			throw new Services_Exception(tr('The object has no language indicated and cannot be translated'), 400);
+			throw new Services_Exception(tr('Object has no language and cannot be translated'), 400);
 		}
 
 		return $lang;

@@ -51,6 +51,7 @@ if (empty($_REQUEST['report']) || $_REQUEST['report'] != 'y') {
 
 	// message related
 	if (isset($prefs['feature_messages']) and $prefs['feature_messages'] == 'y') {
+		include_once ('lib/messu/messulib.php');
 		$logslib = TikiLib::lib('logs');
 
 		$smarty->assign('priority', (isset($_REQUEST['priority'])?$_REQUEST['priority']:3));
@@ -459,7 +460,7 @@ function sendMail($sender, $recipients, $subject, $tokenlist = array())
 function sendMessage($recipients, $subject)
 {
 	global $errors, $prefs, $user;
-	$messulib = TikiLib::lib('message');
+	global $messulib;
 	$userlib = TikiLib::lib('user');
 	$tikilib = TikiLib::lib('tiki');
 	$smarty = TikiLib::lib('smarty');
@@ -512,13 +513,10 @@ function sendMessage($recipients, $subject)
 			isset($_REQUEST['replyto_hash']) ? $_REQUEST['replyto_hash'] : ''
 		);
 
-		TikiLib::events()->trigger('tiki.user.message',
-			array(
-				'type' => 'user',
-				'object' => $a_user,
-				'user' => $user,
-			)
-		);
+		if ($prefs['feature_score'] == 'y') {
+			$tikilib->score_event($user, 'message_send');
+			$tikilib->score_event($a_user, 'message_receive');
+		}
 	}
 
 	// Insert a copy of the message in the sent box of the sender

@@ -25,11 +25,6 @@ $inputConfiguration = array(
 			'dbinfo' => 'alpha',
 			'email_test_cc' => 'digits',
 //			'email_test_to' => '',  //validated later
-			'use_proxy' => 'alpha',
-			'proxy_host' => 'striptags',
-			'proxy_port' => 'digits',
-			'proxy_user' => 'striptags',
-			'proxy_pass' => 'striptags',
 			'error_reporting_adminonly' => 'alpha',
 			'error_reporting_level' => 'int',
 			'feature_switch_ssl_mode' => 'alpha',
@@ -67,24 +62,10 @@ $inputConfiguration = array(
 		)
 	)
 );
-
-$errors = '';
-
-
-try {
-
-	$inputFilter = DeclFilter::fromConfiguration($inputConfiguration);
-	$_GET = $inputFilter->filter($_GET);
-	$_POST = $inputFilter->filter($_POST);
-	$_REQUEST = array_merge($_GET, $_POST);
-
-} catch (Exception $e) {
-
-	$errors .= '<strong>' . $e->getMessage() . '</strong><br>
-Check <a href="tiki-check.php">tiki-check.php</a> to ensure your system is ready for Tiki or refer to <a href="https://doc.tiki.org/Requirements">https://doc.tiki.org/Requirements</a> for more information.
-	';
-	error_and_exit();
-}
+$inputFilter = DeclFilter::fromConfiguration($inputConfiguration);
+$_GET = $inputFilter->filter($_GET);
+$_POST = $inputFilter->filter($_POST);
+$_REQUEST = array_merge($_GET, $_POST);
 
 require_once('tiki-filter-base.php');
 
@@ -211,7 +192,6 @@ function write_local_php($dbb_tiki, $host_tiki, $user_tiki, $pass_tiki, $dbs_tik
 			$filetowrite .= "\$client_charset='$client_charset';\n";
 		}
 		$filetowrite .= "// \$dbfail_url = '';\n";
-		$filetowrite .= "// \$noroute_url = './';\n";
 		$filetowrite .= "// If you experience text encoding issues after updating (e.g. apostrophes etc showing up as strange characters) \n";
 		$filetowrite .= "// \$client_charset='latin1';\n";
 		$filetowrite .= "// \$client_charset='utf8';\n";
@@ -730,6 +710,8 @@ if (function_exists('mysqli_connect'))	$dbservers['mysqli'] = tra('MySQL Improve
 if (function_exists('mysql_connect'))	$dbservers['mysql'] = tra('MySQL classic (mysql)');
 $smarty->assignByRef('dbservers', $dbservers);
 
+$errors = '';
+
 check_session_save_path();
 
 get_webserver_uid();
@@ -762,8 +744,7 @@ if (!defined('ADODB_CASE_ASSOC')) { // typo in adodb's driver for sybase? // so 
 require_once('lib/tikilib.php');
 
 // Get list of available languages
-$langLib = TikiLib::lib('language');
-$languages = $langLib->list_languages(false, null, true);
+$languages = TikiLib::list_languages(false, null, true);
 $smarty->assignByRef("languages", $languages);
 
 $logslib = TikiLib::lib('logs');
@@ -1089,7 +1070,7 @@ if ($install_step == '2') {
 			}
 
 			// check email address format
-			$validator = new Zend\Validator\EmailAddress();
+			$validator = new Zend_Validate_EmailAddress();
 			if (!$validator->isValid($email_test_to)) {
 				$smarty->assign('email_test_err', tra('Email address not valid, test mail not sent'));
 				$email_test_ready = false;
@@ -1174,7 +1155,6 @@ if ( isset($_POST['general_settings']) && $_POST['general_settings'] == 'y' ) {
 		"DELETE FROM `tiki_preferences` WHERE `name` IN " .
 		"('browsertitle', 'sender_email', 'https_login', 'https_port', ".
 		"'feature_switch_ssl_mode', 'feature_show_stay_in_ssl_mode', 'language',".
-		"'use_proxy', 'proxy_host', 'proxy_port', 'proxy_user', 'proxy_pass',".
 		"'error_reporting_level', 'error_reporting_adminonly', 'smarty_notice_reporting', 'log_tpl')"
 	);
 
@@ -1184,12 +1164,6 @@ if ( isset($_POST['general_settings']) && $_POST['general_settings'] == 'y' ) {
 		. " ('https_login', ?),"
 		. " ('https_port', ?),"
 		. " ('error_reporting_level', ?),"
-		. " ('use_proxy', '" . (isset($_POST['use_proxy'])
-			&& $_POST['use_proxy'] == 'on' ? 'y' : 'n') . "'),"
-		. " ('proxy_host', '". $_POST['proxy_host'] . "'),"
-		. " ('proxy_port', '". $_POST['proxy_port'] . "'),"
-		. " ('proxy_user', '". $_POST['proxy_user'] . "'),"
-		. " ('proxy_pass', '". $_POST['proxy_pass'] . "'),"
 		. " ('error_reporting_adminonly', '" . (isset($_POST['error_reporting_adminonly'])
 			&& $_POST['error_reporting_adminonly'] == 'on' ? 'y' : 'n') . "'),"
 		. " ('smarty_notice_reporting', '" . (isset($_POST['smarty_notice_reporting'])

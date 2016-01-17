@@ -1,6 +1,6 @@
 {* $Id$ *}
 
-{tikimodule error="{if isset($module_params.error)}{$module_params.error}{/if}" title=$tpl_module_title name="last_visitors" flip=$module_params.flip decorations=$module_params.decorations nobox=$module_params.nobox notitle=$module_params.notitle}
+{tikimodule error=$module_params.error title=$tpl_module_title name="last_visitors" flip=$module_params.flip decorations=$module_params.decorations nobox=$module_params.nobox notitle=$module_params.notitle}
 	{if ($nonums eq 'y') or ($showavatars eq 'y')}<ul style="padding-left:0; list-style:none;">{else}<ol>{/if}
 		{if !$user}
 			<li>
@@ -35,18 +35,13 @@
 							</td>
 						<td>
 				{/if}
-				{if $maxlen > 0}{* 0 is default value for maxlen eq to 'no truncate' *}
-					{$ustring = "{$item.user|userlink:'userlink':'not_set':'':$maxlen}"}
-				{else}
-					{$ustring = "{$item.user|userlink}"}
-				{/if}
-				{if $ustring|substring:0:2 == '<a'}
-					{$ustring}
-				{else}
-					<a class="tips" href="tiki-user_information.php?view_user={$item.user|escape:"url"}" title="{tr}User:{/tr}{$item.user}">
-						{$ustring}
-					</a>
-				{/if}
+				<a class="linkmodule" href="tiki-user_information.php?view_user={$item.user|escape:"url"}">
+					{if $maxlen > 0}{* 0 is default value for maxlen eq to 'no truncate' *}
+						{$item.user|userlink:'userlink':'not_set':'':$maxlen}
+					{else}
+						{$item.user|userlink}
+					{/if}
+				</a>
 				{if $nodate neq 'y'}
 					{if $item.currentLogin}
 						<div class="date">{$item.currentLogin|tiki_short_datetime}</div>

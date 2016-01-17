@@ -41,26 +41,16 @@
 	{tabset name='tabs_webmail_settings'}
 
 		{tab name="{tr}List{/tr}"}
-			{* Use css menus as fallback for item dropdown action menu if javascript is not being used *}
-			{if $prefs.javascript_enabled !== 'y'}
-				{$js = 'n'}
-				{$libeg = '<li>'}
-				{$liend = '</li>'}
-			{else}
-				{$js = 'y'}
-				{$libeg = ''}
-				{$liend = ''}
-			{/if}
 			{if count($accounts) != 0}
 				<h2>{tr}Personal email accounts{/tr}</h2>
-				<div class="{if $js === 'y'}table-responsive{/if}"> {* table-responsive class cuts off css drop-down menus *}
-					<table class="table table-striped table-hover">
+				<div class="table-responsive">
+					<table class="table normal">
 						<tr>
 							<th>{tr}Active{/tr}</th>
 							<th>{tr}Account{/tr}</th>
 							<th>{tr}Server{/tr}</th>
 							<th>{tr}Username{/tr}</th>
-							<th></th>
+							<th>{tr}Action{/tr}</th>
 						</tr>
 
 						{section name=ix loop=$accounts}
@@ -94,34 +84,17 @@
 									{$accounts[ix].username}
 								</td>
 								<td class="action">
-									{capture name=webmail_actions}
-										{strip}
-											{$libeg}{self_link accountId=$accounts[ix].accountId _icon_name='edit' _menu_text='y' _menu_icon='y'}
-												{tr}Edit{/tr}
-											{/self_link}{$liend}
-											{$libeg}{self_link remove=$accounts[ix].accountId _icon_name='remove' _menu_text='y' _menu_icon='y'}
-												{tr}Delete{/tr}
-											{/self_link}{$liend}
-											{if !$active}
-												{$libeg}{self_link current=$accounts[ix].accountId _icon_name='ok' _menu_text='y' _menu_icon='y'}
-													{tr}Activate{/tr}
-												{/self_link}{$liend}
-											{/if}
-										{/strip}
-									{/capture}
-									{if $js === 'n'}<ul class="cssmenu_horiz"><li>{/if}
-										<a
-											class="tips"
-											title="{tr}Actions{/tr}"
-											href="#"
-											{if $js === 'y'}{popup delay="0|2000" fullhtml="1" center=true text=$smarty.capture.webmail_actions|escape:"javascript"|escape:"html"}{/if}
-											style="padding:0; margin:0; border:0"
-										>
-											{icon name='settings'}
-										</a>
-										{if $js === 'n'}
-											<ul class="dropdown-menu" role="menu">{$smarty.capture.webmail_actions}</ul></li></ul>
-										{/if}
+									{self_link accountId=$accounts[ix].accountId _icon_name='edit' _menu_text='y' _menu_icon='y'}
+										{tr}Edit{/tr}
+									{/self_link}
+									{self_link remove=$accounts[ix].accountId _icon_name='remove' _menu_text='y' _menu_icon='y'}
+										{tr}Delete{/tr}
+									{/self_link}
+									{if !$active}
+										{self_link current=$accounts[ix].accountId _icon_name='ok' _menu_text='y' _menu_icon='y'}
+											{tr}Activate{/tr}
+									{/self_link}
+									{/if}
 								</td>
 							</tr>
 						{sectionelse}
@@ -134,14 +107,14 @@
 			{if $tiki_p_use_group_webmail eq 'y'}
 				{if count($pubAccounts) != 0}
 					<h2>{tr}Group email accounts{/tr}</h2>
-					<div class="{if $js === 'y'}table-responsive{/if}"> {* table-responsive class cuts off css drop-down menus *}
-						<table class="table table-striped table-hover">
+					<div class="table-responsive">
+						<table class="table normal">
 							<tr>
 								<th>{tr}Active{/tr}</th>
 								<th>{tr}Account{/tr}</th>
 								<th>{tr}Server{/tr}</th>
 								<th>{tr}Username{/tr}</th>
-								<th></th>
+								<th>{tr}Action{/tr}</th>
 							</tr>
 
 							{section name=ixp loop=$pubAccounts}
@@ -151,7 +124,7 @@
 										{if !$active}
 											{self_link _icon_name='star-half' current=$pubAccounts[ixp].accountId}{tr}Activate{/tr}{/self_link}
 										{else}
-											{icon name='star' iclass='tips' ititle=':{tr}This is the active account.{/tr}'}
+											{icon name='star' iclass='tips' ititle=":{tr}This is the active account.{/tr}"}
 										{/if}
 									</td>
 									<td class="username">
@@ -174,35 +147,12 @@
 									</td>
 									<td class="username">{$pubAccounts[ixp].username}</td>
 									<td class="action">
-										{capture name=webmail_group_actions}
-											{strip}
-												{if $tiki_p_admin_group_webmail eq 'y'or $tiki_p_admin eq 'y'}
-													{$libeg}{self_link _icon_name='edit' accountId=$pubAccounts[ixp].accountId _menu_text='y' _menu_icon='y'}
-												{tr}Edit{/tr}
-												{/self_link}{$liend}
-													{$libeg}{self_link _icon_name='delete' remove=$pubAccounts[ixp].accountId _menu_text='y' _menu_icon='y'}
-												{tr}Delete{/tr}
-												{/self_link}{$liend}
-												{/if}
-												{if !$active}
-													{$libeg}{self_link _icon_name='ok' current=$pubAccounts[ixp].accountId _menu_text='y' _menu_icon='y'}
-												{tr}Activate{/tr}
-												{/self_link}{$liend}
-												{/if}
-											{/strip}
-										{/capture}
-										{if $js === 'n'}<ul class="cssmenu_horiz"><li>{/if}
-										<a
-											class="tips"
-											title="{tr}Actions{/tr}"
-											href="#"
-											{if $js === 'y'}{popup delay="0|2000" fullhtml="1" center=true text=$smarty.capture.webmail_group_actions|escape:"javascript"|escape:"html"}{/if}
-											style="padding:0; margin:0; border:0"
-										>
-											{icon name='settings'}
-										</a>
-										{if $js === 'n'}
-											<ul class="dropdown-menu" role="menu">{$smarty.capture.webmail_group_actions}</ul></li></ul>
+										{if $tiki_p_admin_group_webmail eq 'y'or $tiki_p_admin eq 'y'}
+											{self_link _icon_name='edit' accountId=$pubAccounts[ixp].accountId}{tr}Edit{/tr}{/self_link}
+											{self_link _icon_name='delete' remove=$pubAccounts[ixp].accountId}{tr}Delete{/tr}{/self_link}
+										{/if}
+										{if !$active}
+											{self_link _icon_name='ok' current=$pubAccounts[ixp].accountId}{tr}Activate{/tr}{/self_link}
 										{/if}
 									</td>
 								</tr>
@@ -416,7 +366,7 @@
 		<br>
 		<br>
 		<div class="table-responsive">
-			<table class="table webmail_list">
+			<table class="table normal webmail_list">
 				<tr>
 					<th>{select_all checkbox_names='msg[]'}</th>
 					<th>&nbsp;</th>
@@ -704,7 +654,7 @@
 				<br><br>
 				<form action="tiki-webmail.php" method="post">
 					<div class="table-responsive">
-						<table class="table">
+						<table class="table normal">
 							<tr>
 								<th>&nbsp;</th>
 								<th>{tr}Email{/tr}</th>
@@ -808,12 +758,6 @@
 						</td>
 					</tr>
 				{/if}
-                <tr>
-					<td>{tr}Attach a File Gallery file{/tr}</td>
-					<td>
-						<input size="10" type="text" id="fattId" name="fattId" value="{$fattId|escape}"> :FileId
-					</td>
-				</tr>
 				<tr>
 					<td>{tr}Attach a File Gallery file{/tr}</td>
 					<td>

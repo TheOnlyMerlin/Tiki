@@ -75,6 +75,7 @@ $needed_prefs = array(
 	'memcache_servers' => false,
 	'min_pass_length' => 5,
 	'pass_chr_special' => 'n',
+	'menus_item_names_raw' => 'n',
 	'cookie_consent_feature' => 'n',
 	'cookie_consent_name' => 'tiki_cookies_accepted',
 
@@ -99,7 +100,12 @@ $patterns['stringlist'] = "/^[^<>\"#]*$/"; // to, cc, bcc (for string lists like
 $patterns['vars'] = "/^[-_a-zA-Z0-9]*$/"; // for variable keys
 $patterns['dotvars'] = "/^[-_a-zA-Z0-9\.]*$/"; // same pattern as a variable key, but that may contain a dot
 $patterns['hash'] = "/^[a-z0-9]*$/"; // for hash reqId in live support
-$patterns['url'] = "/^(https?:\/\/)?[^<>\"]*$/";
+// allow quotes in url for additional tag attributes if html allowed in menu options links
+if ($prefs['menus_item_names_raw'] == 'y' and strpos($_SERVER["SCRIPT_NAME"], 'tiki-admin_menu_options.php') !== false) {
+	$patterns['url'] = "/^(https?:\/\/)?[^<>]*$/";
+} else {
+	$patterns['url'] = "/^(https?:\/\/)?[^<>\"]*$/";
+}
 
 // IIS always sets the $_SERVER['HTTPS'] value (on|off)
 $noSSLActive = !isset($_SERVER['HTTPS']) || (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'off');
@@ -148,13 +154,6 @@ if (isset($_GET[session_name()]) && (($tikilib->get_ip_address() == '127.0.0.1')
 	session_id($_GET[session_name()]);		
 }
 
-//Set tikiroot and tikidomain to blank string if not set.
-if (empty($tikiroot)) {
-	$tikiroot = "";
-}
-if (empty($tikidomain)) {
-	$tikidomain = "";
-}
 
 if ($prefs['cookie_consent_feature'] === 'y' && empty($_COOKIE[$prefs['cookie_consent_name']])) {
 	$feature_no_cookie = true;
@@ -188,7 +187,7 @@ if (isset($_SERVER["REQUEST_URI"])) {
 
 		try {
 						
-			Zend\Session\Container::getDefaultManager()->start();
+			Zend_Session::start();
 
 			/* This portion may seem strange, but it is an extra validation against session
 			 * collisions. An extra cookie is set with an additional random value. When loading
@@ -205,7 +204,7 @@ if (isset($_SERVER["REQUEST_URI"])) {
 
 					TikiLib::lib('logs')->add_log('system', 'session cookie validation failed');
 
-					Zend\Session\Container::getDefaultManager()->destroy();
+					Zend_Session::destroy();
 					header('Location: ' . $_SERVER['REQUEST_URI']);
 					exit;
 				}
@@ -215,7 +214,7 @@ if (isset($_SERVER["REQUEST_URI"])) {
 				setcookie($extra_cookie_name, $sequence, time() + 365*24*3600, ini_get('session.cookie_path'));
 				unset($sequence);
 			}
-		} catch( Zend\Session\Exception\ExceptionInterface $e ) {
+		} catch( Zend_Session_Exception $e ) {
 			// Ignore
 		}
 	}

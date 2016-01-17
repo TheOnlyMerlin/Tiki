@@ -39,8 +39,7 @@ if (isset($_REQUEST['lock']) && isset($_REQUEST['forumId'])) {
 }
 if ($prefs['feature_multilingual'] === 'y') {
 	$languages = array();
-	$langLib = TikiLib::lib('language');
-	$languages = $langLib->list_languages();
+	$languages = $tikilib->list_languages();
 	$smarty->assign_by_ref('languages', $languages);
 } else {
 	$_REQUEST["forumLanguage"] = '';
@@ -266,6 +265,12 @@ static $iid = 0;
 ++$iid;
 $ts_tableid = 'adminforums' . $iid;
 $smarty->assign('ts_tableid', $ts_tableid);
+if ($tsOn) {
+	$ts_countid = $ts_tableid . '-count';
+	$ts_offsetid = $ts_tableid . '-offset';
+	$smarty->assign('ts_countid', $ts_countid);
+	$smarty->assign('ts_offsetid', $ts_offsetid);
+}
 //initialize tablesorter
 if ($tsOn && !$tsAjax) {
 	//set tablesorter code
@@ -274,6 +279,14 @@ if ($tsOn && !$tsAjax) {
 		array(
 			'id' => $ts_tableid,
 			'total' => $channels['cant'],
+			'ajax' => array(
+				'servercount' => array(
+					'id' => $ts_countid,
+				),
+				'serveroffset' => array(
+					'id' => $ts_offsetid,
+				),
+			),
 		)
 	);
 }
@@ -390,7 +403,7 @@ $smarty->assign(
 		'average_desc' => tra('Score (desc)'),
 		'replies_desc' => tra('Replies (desc)'),
 		'hits_desc' => tra('Reads (desc)'),
-		'lastPost_desc' => tra('Latest post (desc)'),
+		'lastPost_desc' => tra('Last post (desc)'),
 		'title_desc' => tra('Title (desc)'),
 		'title_asc' => tra('Title (asc)')
 	)
@@ -414,7 +427,7 @@ $smarty->assign(
 		'' => tra('Default'),
 		'commentStyle_plain' => tra('Plain'),
 		'commentStyle_threaded' => tra('Threaded'),
-		'commentStyle_headers' => tra('Headers only')
+		'commentStyle_headers' => tra('Headers Only')
 	)
 );
 

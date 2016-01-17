@@ -5,39 +5,16 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-class Captcha_Questions extends Zend\Captcha\AbstractWord
+class Captcha_Questions extends Zend_Captcha_Word
 {
-
-	protected $name = "questions";
-
 	/**
 	 * CAPTCHA label
 	 * @type string
 	 */
-	protected $label = '';
+	protected $_label = '';
 
-	private $questions = array();    // array for quesiotns and answers passed to ctor
-	private $current = null;        // int current q & a
-
-	/**#@+
-	 * Error codes
-	 */
-	const MISSING_VALUE = 'missingValue';
-	const ERR_CAPTCHA   = 'errCaptcha';
-	const BAD_CAPTCHA   = 'badCaptcha';
-	const MISSING_ID    = 'missingID';
-	/**#@-*/
-
-	/**
-	 * Error messages
-	 * @var array
-	 */
-	protected $messageTemplates = array(
-		self::MISSING_VALUE => 'Missing captcha fields',
-		self::ERR_CAPTCHA   => 'Failed to validate CAPTCHA',
-		self::BAD_CAPTCHA   => 'Captcha value is wrong: %value%',
-		self::MISSING_ID    => 'missingID',
-	);
+	private $_questions = array();    // array for quesiotns and answers passed to ctor
+	private $_current = null;        // int current q & a
 
 	/**
 	 * Constructor
@@ -46,8 +23,7 @@ class Captcha_Questions extends Zend\Captcha\AbstractWord
 	 */
 	public function __construct($questions)
 	{
-		$this->questions = $questions;
-		$this->abstractOptions['messageTemplates'] = $this->messageTemplates;
+		$this->_questions = $questions;
 	}
 
 	/**
@@ -57,26 +33,26 @@ class Captcha_Questions extends Zend\Captcha\AbstractWord
 	 */
 	public function generate()
 	{
-		if (!$this->keepSession) {
-			$this->session = null;
+		if (!$this->_keepSession) {
+			$this->_session = null;
 		}
-		$id = $this->generateRandomId();
-		$this->setId($id);
-		$word = $this->generateWord();
-		$this->setWord($word);
+		$id = $this->_generateRandomId();
+		$this->_setId($id);
+		$word = $this->_generateWord();
+		$this->_setWord($word);
 		return $id;
 	}
 
 	/**
 	 * Render the captcha
 	 *
-	 * @param  $view
+	 * @param  Zend_View_Interface $view
 	 * @param  mixed $element
 	 * @return string
 	 */
-	public function render($view = null, $element = null)
+	public function render(Zend_View_Interface $view = null, $element = null)
 	{
-		$question = $this->questions[$this->current];
+		$question = $this->_questions[$this->_current];
 
 		return tra($question[0]);
 	}
@@ -84,7 +60,7 @@ class Captcha_Questions extends Zend\Captcha\AbstractWord
 	/**
 	 * Validate the answer
 	 *
-	 * @see    Zend\Validator\Interface::isValid()
+	 * @see    Zend_Validate_Interface::isValid()
 	 * @param  mixed $value
 	 * @param  array|null $context
 	 * @return boolean
@@ -106,22 +82,22 @@ class Captcha_Questions extends Zend\Captcha\AbstractWord
 		}
 
 		if (!isset($value['input'])) {
-			$this->error(self::MISSING_VALUE);
+			$this->_error(self::MISSING_VALUE);
 			return false;
 		}
 		$input = strtolower($value['input']);
-		$this->setValue($input);
+		$this->_setValue($input);
 
 		if (!isset($value['id'])) {
-			$this->error(self::MISSING_ID);
+			$this->_error(self::MISSING_ID);
 			return false;
 		}
 
-		$this->id = $value['id'];
+		$this->_id = $value['id'];
 		$word = $this->getWord();
 
 		if (empty($word)) {
-			$this->error(self::MISSING_VALUE);
+			$this->_error(self::MISSING_VALUE);
 			return false;
 		}
 
@@ -129,7 +105,7 @@ class Captcha_Questions extends Zend\Captcha\AbstractWord
 			$input !== $word
 		) {
 
-			$this->error(self::BAD_CAPTCHA);
+			$this->_error(self::BAD_CAPTCHA);
 			return false;
 		}
 
@@ -143,11 +119,11 @@ class Captcha_Questions extends Zend\Captcha\AbstractWord
 	 */
 	public function getWord()
 	{
-		if (empty($this->word)) {
+		if (empty($this->_word)) {
 			$session = $this->getSession();
-			$this->word = $session->word;
+			$this->_word = $session->word;
 		}
-		return $this->word;
+		return $this->_word;
 	}
 
 	/**
@@ -155,10 +131,10 @@ class Captcha_Questions extends Zend\Captcha\AbstractWord
 	 *
 	 * @return string
 	 */
-	protected function generateWord()
+	protected function _generateWord()
 	{
-		$this->current = array_rand($this->questions);
-		$question = $this->questions[$this->current];
+		$this->_current = array_rand($this->_questions);
+		$question = $this->_questions[$this->_current];
 
 		$word = $question[1];
 
@@ -171,7 +147,7 @@ class Captcha_Questions extends Zend\Captcha\AbstractWord
 	 */
 	public function setLabel($label)
 	{
-		$this->label = $label;
+		$this->_label = $label;
 	}
 
 	/**
@@ -180,7 +156,7 @@ class Captcha_Questions extends Zend\Captcha\AbstractWord
 	 */
 	public function getLabel()
 	{
-		return $this->label;
+		return $this->_label;
 	}
 
 

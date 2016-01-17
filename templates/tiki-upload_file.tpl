@@ -103,7 +103,7 @@
 		{if $user eq $fileInfo.lockedby}
 			{tr}You locked the file{/tr}
 		{else}
-			{tr}The file has been locked by {$fileInfo.lockedby}{/tr}
+			{tr}The file is locked by {$fileInfo.lockedby}{/tr}
 		{/if}
 	{/remarksbox}
 {/if}
@@ -173,9 +173,9 @@
 						<div class="form-group">
 							<label for="deleteAfter" class="col-sm-3 control-label">{tr}File can be deleted after{/tr}</label>
 								{if $editFileId}
-									{html_select_duration prefix='deleteAfter' id="deleteAfter" default_value=$fileInfo.deleteAfter}
+									{html_select_duration prefix='deleteAfter' default_value=$fileInfo.deleteAfter}
 								{else}
-									{html_select_duration prefix='deleteAfter[]' id="deleteAfter" default_unit=week}
+									{html_select_duration prefix='deleteAfter[]' default_unit=week}
 								{/if}
 						</div>
 					{/if}
@@ -186,11 +186,7 @@
 						<input type="hidden" name="lockedby" value="{$fileInfo.lockedby|escape}">
 					{else}
 						{if count($galleries) eq 0}
-							{if !empty($galleryId)}
 							<input type="hidden" name="galleryId" value="{$galleryId}">
-							{else}
-							<input type="hidden" name="galleryId" value="{$treeRootId}">
-							{/if}
 						{elseif empty($groupforalert)}
 							<div class="form-group">
 								<label for="galleryId" class="col-sm-3 control-label">{tr}File gallery{/tr}</label>
@@ -250,9 +246,7 @@
 							<div class="col-sm-9">
 								<select id="filetype" class="form-control" name="filetype[]">
 									{foreach $mimetypes as $type}
-										<option value="{$type}"{if $fileInfo.filetype eq $type && $fileInfo.extension eq $type@key} selected="selected"{/if}>
-											{$type|truncate:60} (*.{$type@key})
-										</option>
+										<option value="{$type}"{if $fileInfo.filetype eq $type} selected="selected"{/if}>{$type|truncate:60} (*.{$type@key})</option>
 									{/foreach}
 								</select>
 							</div>
@@ -352,7 +346,7 @@
 
 	{if !empty($fileInfo.lockedby) and $user ne $fileInfo.lockedby}
 		{icon name="lock"}
-		<span class="attention">{tr}The file has been locked by {$fileInfo.lockedby}{/tr}</span>
+		<span class="attention">{tr}The file is locked by {$fileInfo.lockedby}{/tr}</span>
 	{/if}
 	<br>
 

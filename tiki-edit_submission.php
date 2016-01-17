@@ -61,9 +61,8 @@ $smarty->assign(
 	(isset($_REQUEST['imageIsChanged']) && $_REQUEST['imageIsChanged']=='y') ? 'y' : 'n'
 );
 
-$templateslib = TikiLib::lib('template');
-
 if (isset($_REQUEST['templateId']) && $_REQUEST['templateId'] > 0) {
+	global $templateslib; require_once 'lib/templates/templateslib.php';
 	$template_data = $templateslib->get_template($_REQUEST['templateId'], $prefs['language']);
 	$_REQUEST['preview'] = 1;
 	$_REQUEST['body'] = $template_data['content'];
@@ -107,6 +106,7 @@ $smarty->assign('rating', 7);
 $smarty->assign('edit_data', 'n');
 
 if (isset($_REQUEST['templateId']) && $_REQUEST['templateId'] > 0) {
+	global $templateslib; require_once 'lib/templates/templateslib.php';
 	$template_data = $templateslib->get_template($_REQUEST['templateId'], $prefs['language']);
 	$_REQUEST['preview'] = 1;
 	$_REQUEST['body'] = $template_data['content'];
@@ -546,7 +546,8 @@ if ($prefs['article_custom_attributes'] == 'y') {
 }
 $smarty->assign_by_ref('types', $types);
 
-if ($prefs['feature_cms_templates'] == 'y') {
+if ($prefs['feature_cms_templates'] == 'y' && $tiki_p_use_content_templates == 'y') {
+	global $templateslib; require_once 'lib/templates/templateslib.php';
 	$templates = $templateslib->list_templates('cms', 0, -1, 'name_asc', '');
 }
 
@@ -554,8 +555,7 @@ $smarty->assign_by_ref('templates', $templates['data']);
 
 if ($prefs['feature_multilingual'] == 'y') {
 	$languages = array();
-	$langLib = TikiLib::lib('language');
-	$languages = $langLib->list_languages();
+	$languages = $tikilib->list_languages();
 	$smarty->assign_by_ref('languages', $languages);
 }
 

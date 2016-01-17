@@ -1,14 +1,4 @@
 {* $Id$ *}
-{* Use css menus as fallback for item dropdown action menu if javascript is not being used *}
-{if $prefs.javascript_enabled !== 'y'}
-	{$js = 'n'}
-	{$libeg = '<li>'}
-	{$liend = '</li>'}
-{else}
-	{$js = 'y'}
-	{$libeg = ''}
-	{$liend = ''}
-{/if}
 {if !$tsAjax}
 	{title help="Users+Management" admpage="login" url="tiki-adminusers.php"}{tr}Admin Users{/tr}{/title}
 
@@ -35,7 +25,21 @@
 			{if $prefs.feature_intertiki_import_preferences eq 'y'}{tr}Since this Tiki site is in slave mode and imports preferences, the master user preferences will be automatically reimported at each login{/tr}{/if}
 		{/remarksbox}
 	{/if}
-	{include file='utilities/feedback.tpl'}
+	<div id="ajax-feedback" style="display:none"></div>
+	{if isset($ajaxfeedback) && $ajaxfeedback eq 'y'}
+		<div id="posted-ajax-feedback">
+			{include file="utilities/alert.tpl"}
+		</div>
+	{/if}
+	{if $tikifeedback}
+		{remarksbox type="feedback" title="{tr}Feedback{/tr}"}
+			{section name=n loop=$tikifeedback}
+				{tr}{$tikifeedback[n].mes|escape}{/tr}
+				<br>
+			{/section}
+		{/remarksbox}
+	{/if}
+
 	{if !empty($added) or !empty($discarded) or !empty($discardlist)}
 		{remarksbox type="feedback" title="{tr}Batch Upload Results{/tr}"}
 			{tr}Updated users{/tr} {$added}
@@ -44,7 +48,7 @@
 			<br>
 			{if $discardlist != ''}
 				<div class="table-responsive">
-					<table class="table">
+					<table class="table normal">
 						<tr>
 							<th>{tr}Username{/tr}</th>
 							<th>{tr}Reason{/tr}</th>
@@ -59,10 +63,10 @@
 				</div>
 			{/if}
 
-			{if $batcherrors}
+			{if $errors}
 				<br>
-				{section name=ix loop=$batcherrors}
-					{$batcherrors[ix]}<br>
+				{section name=ix loop=$errors}
+					{$errors[ix]}<br>
 				{/section}
 			{/if}
 		{/remarksbox}
@@ -149,14 +153,16 @@
 			{if ($cant > $numrows or !empty($initial)) && !$tsOn}
 				{initials_filter_links}
 			{/if}
-			<form class="form-horizontal" name="checkform" id="checkform" method="post">
+			<form class="form-horizontal" name="checkform" method="post" action="{$smarty.server.PHP_SELF|escape}">
+				<input type="hidden" name="all_groups" value="{$all_groups_encoded|escape}">
 				<div id="{$ts_tableid}-div" {if $tsOn}style="visibility:hidden;"{/if}>
-					<div class="{if $js === 'y'}table-responsive{/if} user-table ts-wrapperdiv">
+					<div class="table-responsive user-table ts-wrapperdiv">
 		{/if}
-						{* Use css menus as fallback for item dropdown action menu if javascript is not being used *}
-						<table id="{$ts_tableid}" class="table normal table-striped table-hover" data-count="{$cant|escape}">
+						<table id="{$ts_tableid}" class="table normal table-striped table-hover">
 							{* Note: th element ids here need to match those at /lib/core/Table/Settings/TikiAdminusers.php
 							for tablesorter to work properly *}
+							<input type="hidden" {if $tsOn}id="{$ts_offsetid|escape}" {/if}name="offset" value="{$offset|escape}">
+							<input type="hidden" {if $tsOn}id="{$ts_countid|escape}" {/if}name="count" value="{$cant|escape}">
 							{if !$tsAjax}
 								<thead>
 									<tr>
@@ -245,7 +251,22 @@
 															{if $what eq 'included'}<span class="label label-info">{tr}Included{/tr}</span>{/if}
 															{if $grs eq $users[user].default_group}<small>({tr}default{/tr})</small>{/if}
 															{if $what ne 'included' and $grs != "Registered"}
-																<a href="{bootstrap_modal controller=user action=manage_groups checked=$username groupremove=$grs offset=$offset sort_mode=$sort_mode numrows=$numrows}">
+																<a href="#"
+																	class="btn-link tips"
+																	title="{$username}:{tr _0="{$grs}"}Remove from group %0{/tr}"
+																	onclick="confirmModal(this,
+																		{ldelim}
+																			'controller':'user',
+																			'action':'manage_groups',
+																			'closest':'form',
+																			'params':
+																				{ldelim}
+																					'checked[]': '{$username}',
+																					'groupremove' : '{$grs}'
+																				{rdelim}
+																		{rdelim}
+																	);"
+																>
 																	{icon name="remove"}
 																</a>
 															{/if}
@@ -258,68 +279,87 @@
 											<td class="action">
 												{capture name=user_actions}
 													{strip}
-														{$libeg}<a href="{bootstrap_modal controller=user action=manage_groups checked=$username all_groups=$all_groups offset=$offset sort_mode=$sort_mode numrows=$numrows}">
+														<a href="#"
+															onclick="confirmModal(this,
+																{ldelim}
+																	'controller':'user',
+																	'action':'manage_groups',
+																	'closest':'form',
+																	'params':
+																	{ldelim}
+																		'checked[]': '{$username}',
+																		'all_groups': '{$all_groups_encoded|escape}'
+																{rdelim}
+															{rdelim});$('[data-toggle=popover]').popover('hide');"
+														>
 															{icon name="group" _menu_text='y' _menu_icon='y' alt="{tr}Add or remove from a group{/tr}"}
-														</a>{$liend}
-														{$libeg}<a href="{query _type='relative' user=$users[user].userId}">
+														</a>
+														<a href="{query _type='relative' user=$users[user].userId}">
 															{icon name="edit" _menu_text='y' _menu_icon='y' alt="{tr}Edit account settings{/tr}"}
-														</a>{$liend}
+														</a>
 														{if $prefs.feature_userPreferences eq 'y' || $user eq 'admin'}
-															{$libeg}<a href="tiki-user_preferences.php?userId={$users[user].userId}">
+															<a href="tiki-user_preferences.php?userId={$users[user].userId}">
 																{icon name="settings" _menu_text='y' _menu_icon='y' alt="{tr}Change user preferences{/tr}" }
-															</a>{$liend}
+															</a>
 														{/if}
 														{if $users[user].user eq $user or $users[user].user_information neq 'private' or $tiki_p_admin eq 'y'}
-															{$libeg}<a href="tiki-user_information.php?userId={$users[user].userId}"{if $users[user].user_information eq 'private'}
+															<a href="tiki-user_information.php?userId={$users[user].userId}"{if $users[user].user_information eq 'private'}
 																style="opacity:0.5;"{/if}
 															>
 																{icon name="help" _menu_text='y' _menu_icon='y' alt="{tr}User information{/tr}"}
-															</a>{$liend}
+															</a>
 														{/if}
 
 														{if $users[user].user ne 'admin'}
-															{$libeg}<a href="{bootstrap_modal controller=user action=remove_users checked=$username offset=$offset sort_mode=$sort_mode numrows=$numrows}">
+															<a href="#"
+																onclick="confirmModal(this,
+																	{ldelim}
+																		'controller':'user',
+																		'action':'remove_users',
+																		'closest':'form',
+																		'params':
+																		{ldelim}
+																			'checked[]': '{$username}'
+																		{rdelim}
+																	{rdelim}
+																); $('[data-toggle=popover]').popover('hide'); "
+															>
 																{icon name="remove" _menu_text='y' _menu_icon='y' alt="{tr}Delete{/tr}"}
-															</a>{$liend}
+															</a>
 															{if $users[user].waiting eq 'a'}
-																{$libeg}<a href="tiki-login_validate.php?user={$users[user].user|escape:url}&amp;pass={$users[user].valid|escape:url}">
+																<a href="tiki-login_validate.php?user={$users[user].user|escape:url}&amp;pass={$users[user].valid|escape:url}">
 																	{icon name="ok" _menu_text='y' _menu_icon='y' alt="{tr}Validate user{/tr}"}
-																</a>{$liend}
+																</a>
 															{/if}
 															{if $users[user].waiting eq 'u'}
-																{$libeg}<a href="tiki-confirm_user_email.php?user={$users[user].user|escape:url}&amp;pass={$users[user].provpass|md5|escape:url}" title="{tr _0=$users[user].user|username}Confirm user email: %0{/tr}">
+																<a href="tiki-confirm_user_email.php?user={$users[user].user|escape:url}&amp;pass={$users[user].provpass|md5|escape:url}" title="{tr _0=$users[user].user|username}Confirm user email: %0{/tr}">
 																	{icon name="envelope" _menu_text='y' _menu_icon='y' alt="{tr}Confirm user email{/tr}"}
 																</a>
 															{/if}
 															{if $prefs.email_due > 0 and $users[user].waiting ne 'u' and $users[user].waiting ne 'a'}
-																{$libeg}<a href="tiki-adminusers.php?user={$users[user].user|escape:url}&amp;action=email_due">
+																<a href="tiki-adminusers.php?user={$users[user].user|escape:url}&amp;action=email_due">
 																	{icon name="trash"  _menu_text='y' _menu_icon='y' alt="{tr}Invalidate email{/tr}"}
-																</a>{$liend}
+																</a>
 															{/if}
 														{/if}
 														{if !empty($users[user].openid_url)}
-															{$libeg}{self_link _menu_text='y' _menu_icon='y' userId=$users[user].userId action='remove_openid' _icon_name="trash"}
+															{self_link _menu_text='y' _menu_icon='y' userId=$users[user].userId action='remove_openid' _icon_name="trash"}
 																{tr}Remove link with OpenID account{/tr}
-															{/self_link}{$liend}
+															{/self_link}
 
-															{$libeg}<a class="link" href="{self_link userId=$users[user].userId action='remove_openid' _tag="n"}{/self_link}" title="{tr _0=$users[user].user|username}User %0{/tr}:">
+															<a class="link" href="{self_link userId=$users[user].userId action='remove_openid' _tag="n"}{/self_link}" title="{tr _0=$users[user].user|username}User %0{/tr}:">
 																{icon name="link" _menu_text='y' _menu_icon='y' alt="{tr}Remove link with OpenID account{/tr}"}
-															</a>{$liend}
+															</a>
 														{/if}
 													{/strip}
 												{/capture}
-												{if $js === 'n'}<ul class="cssmenu_horiz"><li>{/if}
-												<a
-													class="tips"
-													title="{tr}Actions{/tr}" href="#"
-													{if $js === 'y'}{popup delay="0|2000" fullhtml="1" center=true text=$smarty.capture.user_actions|escape:"javascript"|escape:"html"}{/if}
-													style="padding:0; margin:0; border:0"
+												<a class="tips"
+												   title="{tr}Actions{/tr}"
+												   href="#" {popup delay="0|2000" fullhtml="1" center=true text=$smarty.capture.user_actions|escape:"javascript"|escape:"html"}
+												   style="padding:0; margin:0; border:0"
 												>
 													{icon name='wrench'}
 												</a>
-												{if $js === 'n'}
-													<ul class="dropdown-menu" role="menu">{$smarty.capture.user_actions}</ul></li></ul>
-												{/if}
 											</td>
 										</tr>
 									{/if}
@@ -336,11 +376,12 @@
 					</div>
 					{if $users}
 						<div class="input-group col-sm-6">
-							<select class="form-control" name="action">
+							<label for="user_action" class="control-label sr-only">{tr}Select action to perform with checked{/tr}</label>
+							<select class="form-control" name="user_action">
 								<option value="no_action" selected="selected">
 									{tr}Select action to perform with checked{/tr}...
 								</option>
-								<option value="remove_users">
+								<option value="remove_users" >
 									{tr}Remove{/tr}
 								</option>
 								{if $prefs.feature_banning == 'y'}
@@ -361,7 +402,7 @@
 										</option>
 									{/if}
 								{/if}
-								<option value="manage_groups">
+								<option value="manage_groups" >
 									{tr}Change group assignments{/tr}
 								</option>
 								<option value="default_groups">
@@ -375,11 +416,17 @@
 							</select>
 							<span class="input-group-btn">
 								<button
-									type="submit"
-									form="checkform"
-									formaction="{bootstrap_modal controller=user}"
-									class="btn btn-primary confirm-submit"
-								>
+									id="adminusers-actions" type="button" class="btn btn-primary"
+									onclick="confirmModal(this,
+											{ldelim}
+												'controller':'user',
+												'action':
+													{ldelim}
+														'selector': 'select[name=user_action]',
+														'fn': 'val'
+													{rdelim},
+												'closest':'form'
+											{rdelim});">
 									{tr}OK{/tr}
 								</button>
 							</span>
@@ -398,14 +445,14 @@
 	{if !$tsAjax}
 
 		{* ---------------------- tab with form -------------------- *}
-		<a id="tab2" ></a>
+		<a name="2" ></a>
 		{if isset($userinfo.userId) && $userinfo.userId}
 			{capture assign=add_edit_user_tablabel}{tr}Edit user{/tr} <i>{$userinfo.login|escape}</i>{/capture}
 		{else}
 			{assign var=add_edit_user_tablabel value="{tr}Add a New User{/tr}"}
 		{/if}
 
-		{tab name="{$add_edit_user_tablabel}"}
+		{tab name=$add_edit_user_tablabel}
 			{if $prefs.feature_user_encryption eq 'y'}
 				{remarksbox type="warning" title="{tr}Warning: User Encryption is Active{/tr}"}
 				{tr}The feature User Encryption stores encrypted user information, such as password used to connect to externalsystems.
@@ -435,11 +482,6 @@
 								{elseif $prefs.lowercase_username eq 'y'}
 									<br>
 									<em>{tr}Lowercase only{/tr}</em>.
-								{elseif $prefs.login_autogenerate eq 'y'}
-									<br>
-
-									{icon name='warning' alt="{tr}Warning{/tr}" style="vertical-align:middle"}
-									<em>{tr}The username will be an autogenerated number based on the user ID if no actual username is provided when the user is created. Do not change these numeric usernames.{/tr}</em>
 								{/if}
 								{if isset($userinfo.userId) && $userinfo.userId}
 									<p>
@@ -472,43 +514,49 @@
 							</div>
 						</div>
 					{else}
-						{include file='password_jq.tpl' ignorejq='y'}
 						<div class="form-group">
 							<label class="col-sm-3 col-md-2 control-label" for="pass1">{tr}New Password{/tr}</label>
 							<div class="col-sm-7 col-md-6">
-								<input type="password" class="form-control" placeholder="New Password" name="pass" id="pass1">
-								<div style="margin-left:5px;">
-									<div id="mypassword_text">{icon name='ok' istyle='display:none'}{icon name='error' istyle='display:none' } <span id="mypassword_text_inner"></span></div>
-									<div id="mypassword_bar" style="font-size: 5px; height: 2px; width: 0px;"></div>
-								</div>
-								<div style="margin-top:5px">
-									{include file='password_help.tpl'}
-								</div>
+								<input type="password" class="form-control" placeholder="New Password" name="pass" id="pass1"
+										onkeypress="regCapsLock(event)" onkeyup="runPassword(this.value, 'mypassword');{if 0 and $prefs.feature_ajax eq 'y'}check_pass();{/if}">
 							</div>
+							<div class="col-md-4">
+								<div id="mypassword_text"></div>
+								<div id="mypassword_bar" style="font-size: 5px; height: 2px; width: 0px;"></div>
+							</div>
+							<div class="col-md-4 col-sm-10 help-block">{include file='password_help.tpl'}</div>
 						</div>
 						<div class="form-group">
 							<label class="col-sm-3 col-md-2 control-label" for="pass2">{tr}Repeat Password{/tr}</label>
 							<div class="col-sm-7 col-md-6">
-								<input type="password" class="form-control" name="passAgain" id="pass2" placeholder="Repeat Password">
-								<div id="mypassword2_text">
-									<div id="match" style="display:none">
-										{icon name='ok' istyle='color:#0ca908'} {tr}Passwords match{/tr}
-									</div>
-									<div id="nomatch" style="display:none">
-										{icon name='error' istyle='color:#ff0000'} {tr}Passwords do not match{/tr}
-									</div>
-								</div>
+								<input type="password" class="form-control" name="pass2" id="pass2" placeholder="Repeat Password">
 							</div>
 						</div>
 						{if ! ( $prefs.auth_method eq 'ldap' and ( $prefs.ldap_create_user_tiki eq 'n' or $prefs.ldap_skip_admin eq 'y' ) and $prefs.ldap_create_user_ldap eq 'n' )}
 							<div class="form-group">
-								<div class="col-sm-3 col-sm-offset-3 col-md-2 col-md-offset-2">
-									<span id="genPass">{button href="#" _text="{tr}Generate a password{/tr}"}</span>
-								</div>
-								<div class="col-sm-3 col-md-2">
-									<input id='genepass' class="form-control" name="genepass" type="text" tabindex="0" style="display:none">
+								<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2">
+									<span id="genPass">{button href="#" _onclick="genPass('genepass');runPassword(document.RegForm.genepass.value, 'mypassword');checkPasswordsMatch('#pass2', '#pass1', '#mypassword2_text');return false;" _text="{tr}Generate a password{/tr}"}</span>
 								</div>
 							</div>
+							<div id="genepass_div" class="form-group" style="display: none">
+								<label class="col-sm-3 col-md-2 control-label" for="pass2">{tr}Generated Password{/tr}</label>
+								<div class="col-sm-7 col-md-6">
+									<input id='genepass' class="form-control" name="genepass" type="text" tabindex="0">
+								</div>
+							</div>
+
+	{jq}
+		$("#genPass").click(function () {
+		$('#pass1, #pass2').val('');
+		$('#mypassword_text, #mypassword2_text').hide();
+		$("#genepass_div").show();
+		});
+		$("#pass1, #pass2").change(function () {
+		$('#mypassword_text, #mypassword2_text').show();
+		document.RegForm.genepass.value='';
+		$("#genepass_div").hide();
+		});
+	{/jq}
 						{/if}
 						{if $userinfo.login neq 'admin' && $prefs.change_password neq 'n'}
 							<div class="form-group">
@@ -719,67 +767,6 @@
 			{if $tiki_p_admin eq 'y'} {* only full admins can manage groups, not tiki_p_admin_users *}
 				{remarksbox type="tip" title="{tr}Tip{/tr}"}{tr}You can export users of a group by clicking on that group at <a href="tiki-admingroups.php">admin->groups</a>{/tr}{/remarksbox}
 			{/if}
-		{/tab}
-
-		{tab name="{tr}Temporary Users{/tr}"}
-			<h2>Invite new temporary user(s)</h2>
-			{if $prefs['auth_token_access'] != 'y'}
-				{remarksbox type="warning" title="Token Access Feature Dependency"}
-					{tr}The token access feature is needed for Temporary Users to login.{/tr}
-					<a href="tiki-admin.php?page=security">{tr}Turn it on here.{/tr}</a>
-				{/remarksbox}
-			{/if}
-			{remarksbox type="info" title="Temporary Users"}
-				<p>{tr}Temporary users cannot login the usual way but instead do so via an autologin URL that is associated with a token.{/tr} {tr}An email will be sent out to invited users containing this URL. You will receive a copy of the email yourself.{/tr}</p>
-				<p>{tr}These temporary users will be deleted (but can be set to be preserved in Admin Tokens) once the validity period is over. Normally, these users should have read-only access. Nevertheless, if you are allowing these users to submit information, e.g. fill in a tracker form, make sure to ask for their information again in those forms.{/tr}</p>
-				<p>{tr}Please do not assign temporary users to Groups that can access any security sensitive information, since access to these accounts is relatively easy to obtain, for example by intercepting or otherwise getting access to these emails.{/tr}</p>
-			{/remarksbox}
-			{remarksbox type="info" title="Revoking Access"}
-				{tr}To revoke access before validity expires or to review who has access, please see:{/tr} <a href="tiki-admin_tokens.php">{tr}Admin Tokens{/tr}</a>
-			{/remarksbox}
-			<form class="form-horizontal" name="tempuser" id="tempuser" method="post">
-				<div class="form-group">
-					<label class="col-sm-4 col-md-4 control-label" for="tempuser_emails">{tr}Emails (comma separated){/tr}</label>
-					<div class="col-sm-8 col-md-8">
-						<input type="text" class="form-control" name="tempuser_emails" id="tempuser_emails" />
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-sm-4 col-md-4 control-label" for="tempuser_groups">{tr}Groups (comma separated){/tr}</label>
-					<div class="col-sm-8 col-md-8">
-						<input type="text" class="form-control" name="tempuser_groups" id="tempuser_groups" />
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-sm-4 col-md-4 control-label" for="tempuser_expiry">{tr}Valid for days (use -1 for forever){/tr}</label>
-					<div class="col-sm-8 col-md-8">
-						<input type="text" class="form-control" name="tempuser_expiry" id="tempuser_expiry" />
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-sm-4 col-md-4 control-label" for="tempuser_prefix">{tr}Username prefix{/tr}</label>
-					<div class="col-sm-8 col-md-8">
-						<input type="text" class="form-control" name="tempuser_prefix" id="tempuser_prefix" placeholder="guest"/>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-sm-4 col-md-4 control-label" for="tempuser_path">{tr}Autologin (non-SEFURL) path{/tr}</label>
-					<div class="col-sm-8 col-md-8">
-						<input type="text" class="form-control" name="tempuser_path" id="tempuser_path" placeholder="tiki-index.php"/>
-					</div>
-				</div>
-				<div class="form-group">
-					<div class="col-sm-10 col-sm-offset-4 col-md-10 col-md-offset-4">
-						<input
-							type="submit"
-							class="btn btn-primary confirm-submit"
-							form="tempuser"
-							formaction="{bootstrap_modal controller=user action=invite_tempuser}"
-							value="{tr}Invite{/tr}"
-						>
-					</div>
-				</div>
-			</form>
 		{/tab}
 	{/if}
 {/tabset}

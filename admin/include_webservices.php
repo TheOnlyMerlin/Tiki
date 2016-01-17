@@ -108,14 +108,6 @@ if (!isset($_REQUEST['parse']) && $response = $webservice->performRequest($_REQU
 				$service->schemaVersion = $response->schemaVersion;
 				$service->save();
 				$webservice = $service;
-			} else {
-				TikiLib::lib('errorreport')->report(tr('Webservice error "%0" not saved (alpha characters only)', $name));
-				$webservice = new Tiki_Webservice;
-				$webservice->url = $url;
-				$webservice->wstype = $wstype;
-				$webservice->body = $body;
-				$webservice->operation = $operation;
-				$storedTemplates = array();
 			}
 		}
 	}

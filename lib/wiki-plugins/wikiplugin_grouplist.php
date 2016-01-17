@@ -24,7 +24,7 @@ function wikiplugin_grouplist_info()
 			),
 			'linkhome' => array(
 				'required' => false,
-				'name' => tra('Group Homepage'),
+				'name' => tra('Group Home Page'),
 				'description' => tra('Link the group name to the group home page, if there is one (not linked by default)'),
 				'since' => '5.0',
 				'default' => 'n',

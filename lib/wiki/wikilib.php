@@ -509,13 +509,13 @@ class WikiLib extends TikiLib
 
 				$canBeRefreshed = true;
 			} else {
-				$jsFile1 = $headerlib->getJsFilesWithScriptTags();
+				$jsFile1 = $headerlib->getJsfiles();
 				$js1 = $headerlib->getJs();
-				$info['outputType'] = $tikilib->getOne ("SELECT `outputType` FROM `tiki_output` WHERE `entityId` = ? AND `objectType` = ? AND `version` = ?", array($info['pageName'], 'wikiPage', $info['version']));
-				$content = (new WikiLibOutput($info, $info['data'],$parse_options))->parsedValue;
+                $info['outputType'] = $tikilib->getOne ("SELECT `outputType` FROM `tiki_output` WHERE `entityId` = ? AND `objectType` = ? AND `version` = ?", array($info['pageName'], 'wikiPage', $info['version']));
+                $content = (new WikiLibOutput($info, $info['data'],$parse_options))->parsedValue;
 
 				// get any JS added to headerlib during parse_data and add to the bottom of the data to cache
-				$jsFile2 = $headerlib->getJsFilesWithScriptTags();
+				$jsFile2 = $headerlib->getJsfiles();
 				$js2 = $headerlib->getJs();
 
 				$jsFile = array_diff($jsFile2, $jsFile1);
@@ -582,14 +582,9 @@ class WikiLib extends TikiLib
 		]);
 
 		global $prefs;
-		TikiLib::events()->trigger('tiki.wiki.attachfile',
-			array(
-				'type' => 'file',
-				'object' => $attId,
-				'wiki' => $page,
-				'user' => $user,
-			)
-		);
+		if ($prefs['feature_score'] == 'y') {
+			$this->score_event($user, 'wiki_attach_file');
+		}
 		if ($prefs['feature_user_watches'] = 'y') {
 			include_once('lib/notifications/notificationemaillib.php');
 			sendWikiEmailNotification('wiki_file_attached', $page, $user, $comment, '', $name, '', '', false, '', 0, $attId);

@@ -2,9 +2,7 @@
 {title help="comments" admpage="comments"}{$title}{/title}
 
 {if $comments or ($find ne '') or count($show_types) gt 0 or isset($smarty.request.findfilter_approved)}
-	<div class="col-md-6">
-		{include file='find.tpl' types=$show_types find_type=$selected_types types_tag='checkbox' filters=$filters filter_names=$filter_names filter_values=$filter_values}
-	</div>
+	{include file='find.tpl' types=$show_types find_type=$selected_types types_tag='checkbox' filters=$filters filter_names=$filter_names filter_values=$filter_values}
 {/if}
 
 {if $comments}
@@ -25,7 +23,7 @@
 	{$liend = ''}
 {/if}
 		<div class="{if $js === 'y'}table-responsive{/if} comment-table"> {*the table-responsive class cuts off dropdown menus *}
-<table class="table table-striped table-hover">
+<table class="table normal table-striped table-hover">
 	<tr>
 		{if $comments}
 			<th>
@@ -56,7 +54,7 @@
 		{capture name=over_actions}
 			{strip}
 				{$libeg}<a href="{$comments[ix].href}">
-					{icon name='view' _menu_text='y' _menu_icon='y'}
+					{icon name='view' _menu_text='y' _menu_icon='y' alt="{tr}Display{/tr}"}
 				</a>{$liend}
 				{$libeg}<a href="{$comments[ix].href|cat:"&amp;comments_threadId=$id&amp;edit_reply=1#form"}">
 					{icon name='edit' _menu_text='y' _menu_icon='y' alt="{tr}Edit{/tr}"}

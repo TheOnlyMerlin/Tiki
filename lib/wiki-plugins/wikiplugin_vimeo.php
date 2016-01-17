@@ -34,7 +34,7 @@ function wikiplugin_vimeo_info()
 				'name' => tra('Width'),
 				'description' => tra('Width in pixels'),
 				'since' => '6.1',
-				'filter' => 'text',
+				'filter' => 'digits',
 				'default' => 425,
 			),
 			'height' => array(
@@ -42,7 +42,7 @@ function wikiplugin_vimeo_info()
 				'name' => tra('Height'),
 				'description' => tra('Height in pixels'),
 				'since' => '6.1',
-				'filter' => 'text',
+				'filter' => 'digits',
 				'default' => 350,
 			),
 			'quality' => array(
@@ -134,7 +134,7 @@ function vimeo_iframe($data, $params) {
 	} else {
 		$height = '350';
 	}	
-	if (!empty($params['width'])) {
+	if (!empty($params['height'])) {
 		$width = $params['width'];
 	} else {
 		$width = '425';
@@ -162,7 +162,7 @@ function wikiplugin_vimeo($data, $params)
 	$instance++;
 
 	if ($params['useFroogaloopApi']) { 
-		TikiLib::lib('header')->add_jsfile('vendor_extra/vimeo/froogaloop.min.js', true);
+		TikiLib::lib('header')->add_jsfile('vendor_extra/vimeo/froogaloop.min.js');
 		TikiLib::lib('header')->add_jsfile('vendor_extra/vimeo/vimeo.js');
 	}
 

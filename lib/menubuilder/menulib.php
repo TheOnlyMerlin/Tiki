@@ -516,7 +516,7 @@ class MenuLib extends TikiLib
 		$fhandle = fopen($fname, "r");
 		$fields = fgetcsv($fhandle, 1000);
 		if (!$fields[0]) {
-			$smarty->assign('msg', tra('The file has incorrect syntax or is not a CSV file'));
+			$smarty->assign('msg', tra('The file is not a CSV file or has not a correct syntax'));
 			$smarty->display("error.tpl");
 			die;
 		}
@@ -532,7 +532,7 @@ class MenuLib extends TikiLib
 			if ($res['optionId'] == 0 || $this->check_menu_option($menuId, $res['optionId'])) {
 				$options[] = $res;
 			} else {
-				$smarty->assign('msg', tra('You can only use optionId = 0 to create a new option; or, to update a menu, use an optionId that is the same as an optionId that is already used in the menu.'));
+				$smarty->assign('msg', tra('You can only use optionId = 0 to create a new option or optionId equal an id that already belongs to the menu to update it.'));
 				$smarty->display('error.tpl');
 				die;
 			}
@@ -624,12 +624,8 @@ class MenuLib extends TikiLib
 		foreach ($result as $res) {
 			$res['canonic'] = $res['url'];
 			$resourceGroups = array_filter(explode(',', $res['groupname'] ?: ''));
-			if (!$do_not_parse) {
-				if (isset($menu['parse']) && $menu['parse'] === 'y') {
-					$res['name'] = $wikilib->parse_data($res['name']);
-				} else {
-					$res['name'] = htmlspecialchars($res['name']);
-				}
+			if (!$do_not_parse && isset($menu['parse']) && $menu['parse'] === 'y') {
+				$res['name'] = $wikilib->parse_data($res['name'], array('is_html' => ($prefs['menus_item_names_raw'] === 'y')));
 			}
 			if (preg_match('|^\(\((.+?)\)\)$|', $res['url'], $matches)) {
 				$res['url'] = 'tiki-index.php?page=' . rawurlencode($matches[1]);

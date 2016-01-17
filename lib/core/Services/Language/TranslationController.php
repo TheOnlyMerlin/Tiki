@@ -68,7 +68,7 @@ class Services_Language_TranslationController
 		}
 
 		if (! $this->canAttach($type, $source) || ! $this->canAttach($type, $target)) {
-			throw new Services_Exception(tr('You do not have permission to attach the selected translations'), 403);
+			throw new Services_Exception(tr('Not allowed to attach the selected translations'), 403);
 		}
 
 		$succeeded = $this->utilities->insertTranslation($type, $source, $target);
@@ -104,7 +104,7 @@ class Services_Language_TranslationController
 		}
 
 		if (! $this->canDetach($type, $source) || ! $this->canDetach($type, $target)) {
-			throw new Services_Exception(tr('You do not have permission to detach the selected translations'), 403);
+			throw new Services_Exception(tr('Not allowed to detach the selected translations'), 403);
 		}
 
 		if (! $confirmed) {
@@ -141,8 +141,7 @@ class Services_Language_TranslationController
 	private function getSearchFilters($type, $object)
 	{
 		$translations = $this->utilities->getTranslations($type, $object);
-		$langLib = TikiLib::lib('language');
-		$languages = $langLib->get_language_map();
+		$languages = TikiLib::get_language_map();
 
 		foreach ($translations as $trans) {
 			unset($languages[$trans['lang']]);

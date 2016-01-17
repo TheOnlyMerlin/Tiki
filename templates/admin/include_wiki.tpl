@@ -222,23 +222,17 @@
 
 			{preference name=feature_wiki_pictures}
 			<div class="adminoptionboxchild" id="feature_wiki_pictures_childcontainer">
-				<div class="col-sm-offset-4 col-sm-8">
-					{permission_link mode=button permType=wiki textFilter=picture showDisabled=y}
-				</div>
+				{permission_link mode=button permType=wiki textFilter=picture showDisabled=y}
 				{preference name=feature_filegals_manager}
-				<div class="col-sm-offset-4 col-sm-8">
-					{button href="tiki-admin.php?page=wiki&amp;rmvunusedpic=1" _text="{tr}Remove unused pictures{/tr}"}
-					{button href="tiki-admin.php?page=wiki&amp;moveWikiUp=1" _text="{tr}Move images from wiki_up to the home file gallery{/tr}"}
-					<span class="help-block">
-						{tr}If you use these buttons please make sure to have a backup of the database and the directory wiki_up{/tr}
-					</span>
-				</div>
+				{button href="tiki-admin.php?page=wiki&amp;rmvunusedpic=1" _text="{tr}Remove unused pictures{/tr}"}
+				{button href="tiki-admin.php?page=wiki&amp;moveWikiUp=1" _text="{tr}Move images from wiki_up to the home file gallery{/tr}"}
+				<br><em>{tr}If you use these buttons please make sure to have a backup of the database and the directory wiki_up{/tr}</em>
 			</div>
 
 			{preference name=feature_wiki_export}
-			<div class="adminoptionboxchild col-md-8 col-sm-offset-4" id="feature_wiki_export_childcontainer">
-				{permission_link mode=button permType=wiki textFilter=export showDisabled=y label="{tr}Export permissions{/tr}"}
-				{permission_link mode=button permType=wiki textFilter=picture showDisabled=y label="{tr}Picture permissions{/tr}"}
+			<div class="adminoptionboxchild col-md-8 col-md-push-4" id="feature_wiki_export_childcontainer">
+				{permission_link mode=button permType=wiki textFilter=export showDisabled=y}
+				{permission_link mode=icon permType=wiki textFilter=picture showDisabled=y}
 				{button href="tiki-export_wiki_pages.php" _text="{tr}Export Wiki Pages{/tr}"}
 			</div>
 
@@ -250,9 +244,7 @@
 
 			{preference name=feature_history}
 			<div class="adminoptionboxchild" id="feature_history_childcontainer">
-				<div class="col-sm-offset-4 col-sm-8" style="margin-bottom:10px">
-					{permission_link mode=button permType=wiki textFilter=history showDisabled=y}
-				</div>
+				{permission_link mode=button permType=wiki textFilter=history showDisabled=y}
 				{preference name=maxVersions}
 				{preference name=keep_versions}
 				{preference name=feature_wiki_history_ip}
@@ -264,19 +256,17 @@
 			{preference name=feature_wiki_discuss}
 			<div class="adminoptionboxchild" id="feature_wiki_discuss_childcontainer">
 				{preference name=wiki_forum_id}
-				<div class="col-sm-offset-4 col-sm-8" style="margin-bottom:10px">
-					{permission_link mode=button permType=forums}
-				</div>
+				{permission_link mode=button permType=forums}
 				{preference name=wiki_discuss_visibility}
 			</div>
 
 			{preference name=feature_source}
-			<div class="adminoptionboxchild col-md-8 col-sm-offset-4" id="feature_source_childcontainer">
+			<div class="adminoptionboxchild" id="feature_source_childcontainer">
 				{permission_link mode=button permType=wiki textFilter=source showDisabled=y}
 			</div>
 
 			{preference name=feature_wiki_ratings}
-			<div class="adminoptionboxchild col-sm-offset-4 col-sm-8" id="feature_wiki_ratings_childcontainer">
+			<div class="adminoptionboxchild" id="feature_wiki_ratings_childcontainer">
 				{permission_link mode=button permType=wiki textFilter=ratings showDisabled=y}
 			</div>
 			{preference name=wiki_simple_ratings}
@@ -287,7 +277,7 @@
 			{preference name=feature_backlinks}
 			<div class="adminoptionboxchild" id="feature_backlinks_childcontainer">
 				{preference name=wiki_backlinks_name_len}
-				<div class="col-sm-offset-4 col-md-8">
+				<div class="col-md-8 col-md-push-4">
 					{permission_link mode=button permType=wiki textFilter=backlinks showDisabled=y}
 				</div>
 			</div>
@@ -330,7 +320,7 @@
 			</div>
 
 			{preference name=feature_wiki_usrlock}
-			<div class="adminoptionboxchild col-sm-8 col-sm-offset-4" id="feature_wiki_usrlock_childcontainer">
+			<div class="adminoptionboxchild col-md-8 col-md-push-4" id="feature_wiki_usrlock_childcontainer">
 				{permission_link mode=button permType=wiki textFilter=lock showDisabled=y}
 			</div>
 
@@ -359,24 +349,21 @@
 				<legend>{tr}Namespaces{/tr}{help url="Namespaces"}</legend>
 				{preference name=namespace_enabled}
 				<div class="adminoptionboxchild" id="namespace_enabled_childcontainer">
-					<div class="col-sm-offset-4 colsm-8">
-						{tr}The namespace separator should not{/tr}
-						<ul>
-							<li>{tr}contain any of the characters not allowed in wiki page names, typically{/tr} /?#[]@$&amp;+;=&lt;&gt;</li>
-							<li>{tr}conflict with wiki syntax tagging{/tr}</li>
-						</ul>
-					</div>
+					{tr}The namespace separator should not{/tr}
+					<ul>
+						<li>{tr}contain any of the characters not allowed in wiki page names, typically{/tr} /?#[]@$&amp;+;=&lt;&gt;</li>
+						<li>{tr}conflict with wiki syntax tagging{/tr}</li>
+					</ul>
 					{preference name=namespace_separator}
 					{preference name=namespace_indicator_in_structure}
-					<div class="col-sm-offset-4 colsm-8">
-						<p><strong>{tr}Settings that may be affected by the namespace separator{/tr}</strong></p>
-						{tr}To use :: as a separator, you should also use ::: as the wiki center tag syntax{/tr}.<br/>
-						{tr}Note: a conversion of :: to ::: for existing pages must be done manually.{/tr}<br/>
-					</div>
+
+					<p><strong>{tr}Settings that may be affected by the namespace separator{/tr}</strong></p>
+
+					{tr}To use :: as a separator, you should also use ::: as the wiki center tag syntax{/tr}.<br/>
+					{tr}Note: a conversion of :: to ::: for existing pages must be done manually{/tr}
 					{preference name=feature_use_three_colon_centertag}
-					<div class="col-sm-offset-4 colsm-8">
-						{tr}If the page name display stripper conflicts with the namespace separator, the namespace is used and the page name display is not stripped.{/tr}
-					</div>
+
+					{tr}If the page name display stripper conflicts with the namespace separator, the namespace is used and the page name display is not stripped.{/tr}
 					{preference name=wiki_pagename_strip}
 					{preference name=namespace_force_links}
 				</div>

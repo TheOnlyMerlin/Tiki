@@ -10,7 +10,7 @@
 
 $section = 'user_messages';
 require_once ('tiki-setup.php');
-$messulib = TikiLib::lib('message');
+include_once ('lib/messu/messulib.php');
 $access->check_user($user);
 $access->check_feature('feature_messages');
 $access->check_permission('tiki_p_messages');

@@ -83,12 +83,7 @@ function wikiplugin_invite( $data, $params)
 				$new_user = true;
 				$password =  'toto';//$tikilib->genPass();
 				$codedPassword = md5($password);
-				if ($prefs['login_autogenerate'] == 'y') {
-					$uname = '';
-				} else {
-					$uname = $email;
-				}
-				$uname = $userlib->add_user($uname, $password, $email, $password, true, NULL);
+				$userlib->add_user($email, $password, $email, $password, true, NULL);
 				$smarty->assign('codedPassword', $codedPassword);
 				$invite = $email;
 			} else {
@@ -98,7 +93,7 @@ function wikiplugin_invite( $data, $params)
 			$smarty->assign_by_ref('invite', $invite);
 			if (!empty($_REQUEST['groups'])) {
 				foreach ($_REQUEST['groups'] as $group) {
-					$userlib->assign_user_to_group($uname, $group);
+					$userlib->assign_user_to_group($invite, $group);
 					$invitedGroups[] = $userlib->get_group_info($group);
 				}
 			}

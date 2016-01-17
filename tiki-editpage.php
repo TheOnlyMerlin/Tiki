@@ -67,8 +67,7 @@ function guess_new_page_attributes_from_parent_pages($page, $page_info)
 			// Language of new page was not defined, and could not be guessed from the
 			// parent pages. User will have to specify it explicitly.
 			//
-			$langLib = TikiLib::lib('language');
-			$languages = $langLib->list_languages(false, true);
+			$languages = $tikilib->list_languages(false, true);
 			$smarty->assign('languages', $languages);
 			$smarty->assign('default_lang', $prefs['language']);
 			$need_lang = true;
@@ -667,6 +666,7 @@ if ( isset($_REQUEST["wikiHeaderTpl"]) && !isset($_REQUEST['preview']) && !isset
 	$smarty->assign('wikiHeaderTpl', $smarty->fetch("wiki:{$_REQUEST['wikiHeaderTpl']}"));
 }
 if ((isset($_REQUEST["template_name"]) || isset($_REQUEST["templateId"])) && !isset($_REQUEST['preview']) && !isset($_REQUEST['save'])) {
+	global $templateslib; require_once 'lib/templates/templateslib.php';
 	$templateLang = isset( $_REQUEST['lang'] ) ? $_REQUEST['lang'] : null;
 
 	if (isset($_REQUEST["templateId"])) {
@@ -675,7 +675,7 @@ if ((isset($_REQUEST["template_name"]) || isset($_REQUEST["templateId"])) && !is
 		$multilinguallib = TikiLib::lib('multilingual');
 		$templateId = $multilinguallib->getTemplateIDInLanguage('wiki', $_REQUEST["template_name"], $templateLang);
 	}
-	$template_data = TikiLib::lib('template')->get_template($templateId, $templateLang);
+	$template_data = $templateslib->get_template($templateId, $templateLang);
 	$_REQUEST["edit"] = $template_data["content"]."\n".$_REQUEST["edit"];
 	$smarty->assign("templateId", $templateId);
 }
@@ -840,9 +840,7 @@ if ( $prefs['wiki_authors_style_by_page'] === 'y' ) {
 if ($is_html) {
 	$smarty->assign('allowhtml', 'y');
 } else {
-	if (!empty($_REQUEST['preview'])) {
-		$edit_data = str_replace('<x>', '', $edit_data);
-	}
+	$edit_data = str_replace('<x>', '', $edit_data);
 	$smarty->assign('allowhtml', 'n');
 }
 if (empty($_REQUEST['lock_it']) && !empty($info['flag']) && $info['flag'] === 'L') {
@@ -1370,8 +1368,9 @@ if (
 	$access->redirect($url);
 } //save
 $smarty->assign('pageAlias', $pageAlias);
-if ($prefs['feature_wiki_templates'] === 'y') {
-	$templates = TikiLib::lib('template')->list_templates('wiki', 0, -1, 'name_asc', '');
+if ($prefs['feature_wiki_templates'] === 'y' && $tiki_p_use_content_templates === 'y') {
+	global $templateslib; require_once 'lib/templates/templateslib.php';
+	$templates = $templateslib->list_templates('wiki', 0, -1, 'name_asc', '');
 	$smarty->assign_by_ref('templates', $templates["data"]);
 }
 if ($prefs['feature_polls'] ==='y' and $prefs['feature_wiki_ratings'] === 'y' && $tiki_p_wiki_admin_ratings === 'y') {
@@ -1392,8 +1391,7 @@ if ($prefs['feature_polls'] ==='y' and $prefs['feature_wiki_ratings'] === 'y' &&
 
 if ($prefs['feature_multilingual'] === 'y') {
 	$languages = array();
-	$langLib = TikiLib::lib('language');
-	$languages = $langLib->list_languages();
+	$languages = $tikilib->list_languages();
 	$smarty->assign_by_ref('languages', $languages);
 
 	if ($editlib->isNewTranslationMode()) {

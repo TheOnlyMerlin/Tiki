@@ -5,7 +5,7 @@
 	{tab name="{tr}List tokens{/tr}"}
 		<h2>{tr}List tokens{/tr}</h2>
 		<div class="table-responsive">
-			<table class="table table-striped table-hover">
+			<table class="table normal table-striped table-hover">
 				<tr>
 					<th>{tr}Id{/tr}</th>
 					<th>{tr}Entry{/tr}</th>
@@ -17,8 +17,6 @@
 					<th>{tr}Email{/tr}</th>
 					<th>{tr}Parameters{/tr}</th>
 					<th>{tr}Groups{/tr}</th>
-					<th>{tr}Create Temp User{/tr}</th>
-					<th>{tr}Temp User Prefix{/tr}</th>
 					<th></th>
 				</tr>
 
@@ -38,8 +36,6 @@
 							{/foreach}
 						</td>
 						<td>{$token.groups}</td>
-						<td>{$token.createUser}</td>
-						<td>{$token.userPrefix}</td>
 						<td>
 							{self_link tokenId=$token.tokenId action='delete' _menu_text='y' _menu_icon='y' _icon_name='remove'}
 								{tr}Delete{/tr}
@@ -61,38 +57,30 @@
 			{/remarksbox}
 		{/if}
 
-		<form action="tiki-admin_tokens.php" method="post" class="form-horizontal">
+		<form action="tiki-admin_tokens.php" method="post">
 			<input type="hidden" name="action" value="add">
-            <div class="form-group">
-                <label class="col-sm-4 control-label">{tr}Full URL{/tr}</label>
-                <div class="col-sm-7 col-sm-offset-1">
-                    <input type="text" id='entry' name='entry' class="form-control">
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-4 control-label">{tr}Timeout in seconds (-1 for unlimited){/tr}</label>
-                <div class="col-sm-7 col-sm-offset-1">
-                    <input type="text" id='timeout' name='timeout' class="form-control">
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-4 control-label">{tr}Maximum number of hits (-1 for unlimited){/tr}</label>
-                <div class="col-sm-7 col-sm-offset-1">
-                    <input type="text" id='maxhits' name='maxhits' class="form-control">
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-4 control-label">{tr}Groups (separated by comma){/tr}</label>
-                <div class="col-sm-7 col-sm-offset-1">
-                    <input type="text" id='groups' name='groups' class="form-control">
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-sm-4 control-label"></label>
-                <div class="col-sm-7 col-sm-offset-1">
-                    <input type="submit" class="btn btn-default btn-sm" value="{tr}Add{/tr}">
-                </div>
-            </div>
+			<table class="formcolor">
+				<tr>
+					<td><label for='entry'>{tr}Full URL{/tr}</label></td>
+					<td><input type="text" id='entry' name='entry'></td>
+				</tr>
+				<tr>
+					<td><label for='timeout'>{tr}Timeout in seconds (-1 for unlimited){/tr}</label></td>
+					<td><input type="text" id='timeout' name='timeout'></td>
+				</tr>
+				<tr>
+					<td><label for='maxhits'>{tr}Maximum number of hits (-1 for unlimited){/tr}</label></td>
+					<td><input type="text" id='maxhits' name='maxhits'></td>
+				</tr>
+				<tr>
+					<td><label for='groups'>{tr}Groups (separated by comma){/tr}</label></td>
+					<td><input type="text" id='groups' name='groups'></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td><input type="submit" class="btn btn-default btn-sm" value="{tr}Add{/tr}"></td>
+				</tr>
+			</table>
 		</form>
 	{/tab}
 {/tabset}

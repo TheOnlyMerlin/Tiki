@@ -8,18 +8,8 @@
 		{if $listpages or $find neq ''}
 			{include file='find.tpl'}
 		{/if}
-		{* Use css menus as fallback for item dropdown action menu if javascript is not being used *}
-		{if $prefs.javascript_enabled !== 'y'}
-			{$js = 'n'}
-			{$libeg = '<li>'}
-			{$liend = '</li>'}
-		{else}
-			{$js = 'y'}
-			{$libeg = ''}
-			{$liend = ''}
-		{/if}
-		<div class="{if $js === 'y'}table-responsive{/if}"> {* table-responsive class cuts off css drop-down menus *}
-			<table class="table table-striped table-hover">
+		<div class="table-responsive">
+			<table class="table normal">
 				<tr>
 					<th>{self_link _sort_arg='sort_mode' _sort_field='contentId'}{tr}Id{/tr}{/self_link}</th>
 					<th>{self_link _sort_arg='sort_mode' _sort_field='contentLabel'}{tr}Label{/tr}{/self_link}</th>
@@ -48,30 +38,24 @@
 						<td class="action">
 							{capture name=content_actions}
 								{strip}
-									{$libeg}{self_link _icon_name='edit' _menu_text='y' _menu_icon='y' edit=$listpages[changes].contentId cookietab=2}
+									{self_link _icon_name='edit' _menu_text='y' _menu_icon='y' edit=$listpages[changes].contentId cookietab=2}
 										{tr}Edit{/tr}
-									{/self_link}{$liend}
-									{$libeg}<a href="tiki-edit_programmed_content.php?contentId={$listpages[changes].contentId}" title="{tr}Program{/tr}">
+									{/self_link}
+									<a href="tiki-edit_programmed_content.php?contentId={$listpages[changes].contentId}" title="{tr}Program{/tr}">
 										{icon name='cog' _menu_text='y' _menu_icon='y' alt="{tr}Program{/tr}"}
-									</a>{$liend}
-									{$libeg}{self_link _icon_name='remove' _menu_text='y' _menu_icon='y' _template='confirm.tpl' remove=$listpages[changes].contentId}
+									</a>
+									{self_link _icon_name='remove' _menu_text='y' _menu_icon='y' _template='confirm.tpl' remove=$listpages[changes].contentId}
 										{tr}Remove{/tr}
-									{/self_link}{$liend}
+									{/self_link}
 								{/strip}
 							{/capture}
-							{if $js === 'n'}<ul class="cssmenu_horiz"><li>{/if}
-							<a
-								class="tips"
-								title="{tr}Actions{/tr}"
-								href="#"
-								{if $js === 'y'}{popup delay="0|2000" fullhtml="1" center=true text=$smarty.capture.content_actions|escape:"javascript"|escape:"html"}{/if}
-								style="padding:0; margin:0; border:0"
-							>
+							<a class="tips"
+							   title="{tr}Actions{/tr}"
+							   href="#" {popup delay="0|2000" fullhtml="1" center=true text=$smarty.capture.content_actions|escape:"javascript"|escape:"html"}
+							   style="padding:0; margin:0; border:0"
+									>
 								{icon name='wrench'}
 							</a>
-							{if $js === 'n'}
-								<ul class="dropdown-menu" role="menu">{$smarty.capture.content_actions}</ul></li></ul>
-							{/if}
 						</td>
 					</tr>
 				{sectionelse}
@@ -94,29 +78,29 @@
 		{if $contentId ne ''}
 			<div class="t_navbar">{button href="tiki-list_contents.php" class="btn btn-default" _text="{tr}Create New Block{/tr}"}</div>
 		{/if}
-		<br>
-		<form action="tiki-list_contents.php" method="post" class="form-horizontal">
+		<form action="tiki-list_contents.php" method="post">
 			{query _type='form_input'}
 			<input type="hidden" name="contentId" value="{$contentId|escape}">
-
-			<div class="form-group">
-				<label class="col-sm-3 control-label">{tr}Label{/tr}</label>
-				<div class="col-sm-7">
-			      	<input type="text" name="contentLabel" style="width:40%" value="{$contentLabel|escape}" class="form-control">
-			    </div>
-		    </div>
-		    <div class="form-group">
-				<label class="col-sm-3 control-label">{tr}Description{/tr}</label>
-				<div class="col-sm-7">
-			      	<textarea rows="5" cols="40" name="description" style="width:95%" class="form-control">{$description|escape}</textarea>
-			    </div>
-		    </div>
-		    <div class="form-group">
-				<label class="col-sm-3 control-label"></label>
-				<div class="col-sm-7">
-			      	<input type="submit" class="btn btn-primary btn-sm" name="save" value="{tr}Save{/tr}">
-			    </div>
-		    </div>
+			<table class="formcolor">
+				<tr>
+					<td>{tr}Label:{/tr}</td>
+					<td>
+						<input type="text" name="contentLabel" style="width:40%" value="{$contentLabel|escape}">
+					</td>
+				</tr>
+				<tr>
+					<td>{tr}Description:{/tr}</td>
+					<td>
+						<textarea rows="5" cols="40" name="description" style="width:95%">{$description|escape}</textarea>
+					</td>
+				</tr>
+				<tr>
+					<td>&nbsp;</td>
+					<td>
+						<input type="submit" class="btn btn-primary btn-sm" name="save" value="{tr}Save{/tr}">
+					</td>
+				</tr>
+			</table>
 		</form>
 	{/tab}
 {/tabset}

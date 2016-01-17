@@ -1256,22 +1256,8 @@ function wikiplugin_img( $data, $params )
 				$imgtarget = ' target="_blank"';
 			}
 		}
-		// rel or data-box
-		if (!empty($imgdata['rel'])) {
-			$box = ['box', 'type=', 'slideshow', 'zoom'];
-			foreach ($box as $btype) {
-				if (strpos($imgdata['rel'], $btype) !== false) {
-					$attr = 'data-box';
-					break;
-				}
-			}
-			if (!isset($attr)) {
-				$attr = 'rel';
-			}
-			$linkrel = ' ' . $attr . '="'.$imgdata['rel'].'"';
-		} else {
-			$linkrel = '';
-		}
+		// rel
+		!empty($imgdata['rel']) ? $linkrel = ' rel="'.$imgdata['rel'].'"' : $linkrel = '';
 		// title
 		!empty($imgtitle) ? $linktitle = $imgtitle : $linktitle = '';
 
@@ -1352,7 +1338,7 @@ function wikiplugin_img( $data, $params )
 					if (!empty($imgdata['fileId']) && $imgdata['button'] != 'download') {
 						$link_button = $browse_full_image . '&display';
 					} elseif (!empty($imgdata['attId']) && $imgdata['thumb'] == 'download') {
-						$link_button = $browse_full_image . '&download=y';
+						$link = $browse_full_image . '&download=y';
 					} else {
 						$link_button = $browse_full_image;
 					}
@@ -1362,21 +1348,7 @@ function wikiplugin_img( $data, $params )
 				$link_button = $link;
 			}
 			//Set button rel
-			if (!empty($imgdata['rel'])) {
-				$box = ['box', 'type=', 'slideshow', 'zoom'];
-				foreach ($box as $btype) {
-					if (strpos($imgdata['rel'], $btype) !== false) {
-						$attr = 'data-box';
-						break;
-					}
-				}
-				if (!isset($attr)) {
-					$attr = 'rel';
-				}
-				$linkrel_button = ' ' . $attr . '="'.$imgdata['rel'].'"';
-			} else {
-				$linkrel_button = '';
-			}
+			!empty($imgdata['rel']) ? $linkrel_button = ' rel="'.$imgdata['rel'].'"' : $linkrel_button = '';
 			//Set button target
 			if (empty($imgtarget) && (empty($imgdata['thumb']) || !empty($javaset))) {
 				if (($imgdata['button'] == 'popup') || ($imgdata['button'] == 'browsepopup')) {
@@ -1478,6 +1450,8 @@ function wikiplugin_img( $data, $params )
 		case 'both':
 			$repl = "\n\r<br style=\"clear:both\" />\r" . $repl . "\n\r<br style=\"clear:both\" />\r";
     		break;
+		case 'top':
+    		break;
 		}
 	}
 	// Mobile
@@ -1519,8 +1493,8 @@ function wikiplugin_img( $data, $params )
 				. '</a>';
 		}
 	}
-	$repl = str_replace('&', '&amp;', $repl);
-	return '~np~' . $repl . "\r" . '~/np~';
+
+	return '~np~' . $repl. "\r" . '~/np~';
 }
 
 function getMetadataArray($imageObj, $dbinfo = false)

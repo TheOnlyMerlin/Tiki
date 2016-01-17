@@ -112,8 +112,8 @@ if (isset($attributes['tiki.content.url'])) {
 	session_write_close();
 
 	$client = $tikilib->get_http_client($src);
-	$response = $client->send();
-	header('Content-Type: ' . $response->getHeaders()->get('Content-Type'));
+	$response = $client->request();
+	header('Content-Type: ' . $response->getHeader('Content-Type'));
 	echo $response->getBody();
 	exit();
 }
@@ -135,7 +135,7 @@ if ( ! isset($_GET['thumbnail']) && ! isset($_GET['icon']) ) {
 
 	if ( ! empty($_REQUEST['lock']) ) {
 		if (!empty($info['lockedby']) && $info['lockedby'] != $user) {
-			$access->display_error('', tra(sprintf('The file has been locked by %s', $info['lockedby'])), 401);
+			$access->display_error('', tra(sprintf('The file is locked by %s', $info['lockedby'])), 401);
 		}
 		$filegallib->lock_file($info['fileId'], $user);
 	}
@@ -388,8 +388,6 @@ $file = basename($info['filename']);
 // If the content has not changed, ask the browser to download it (instead of displaying it)
 if ( ! $content_changed and !isset($_GET['display']) ) {
 	header("Content-Disposition: attachment; filename=\"$file\"");
-} else {
-	header("Content-Disposition: filename=\"$file\"");
 }
 
 if ( !empty($filepath) and !$content_changed ) {

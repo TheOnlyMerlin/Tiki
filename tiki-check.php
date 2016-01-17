@@ -784,13 +784,13 @@ if ($s) {
 	$php_properties['intl'] = array(
 		'fitness' => tra('good'),
 		'setting' => 'Loaded',
-		'message' => tra("intl extension is required for Tiki 15 onwards.")
+		'message' => tra("intl extension will be needed in future versions of Tiki.")
 	);
 } else {
 	$php_properties['intl'] = array(
-		'fitness' => tra('bad'),
+		'fitness' => tra('info'),
 		'setting' => 'Not available',
-		'message' => tra("intl extension is required for Tiki 15 onwards.")
+		'message' => tra("intl extension will be needed in future versions of Tiki.")
 	);
 }
 
@@ -985,21 +985,6 @@ if ($s) {
 		'fitness' => tra('info'),
 		'setting' => 'Not available',
 		'message' => tra('This extension can be used to speed up your Tiki by saving sessions as well as wiki and forum data on a memcached server.')
-	);
-}
-
-$s = extension_loaded('ssh2');
-if ($s) {
-	$php_properties['SSH2'] = array(
-		'fitness' => tra('good'),
-		'setting' => 'Loaded',
-		'message' => tra('This extension is needed for the show.tiki.org tracker field type.')
-	);
-} else {
-	$php_properties['SSH2'] = array(
-		'fitness' => tra('info'),
-		'setting' => 'Not available',
-		'message' => tra('This extension is needed for the show.tiki.org tracker field type.')
 	);
 }
 
@@ -1271,7 +1256,7 @@ if ($connection || !$standalone) {
 		$s = tra('OFF');
 	} else {
 		$msg = tra('MySQL Server does not have SSL activated');
-		$s = 'OFF';
+		$s = '';
 	}
 	$fitness = tra('info');
 	if ($s == tra('ON')) {
@@ -1669,7 +1654,6 @@ if ($s == 1) {
 		'application/x-msexcel' => array('xls2csv %1'),
 		'application/x-pdf' => array('pstotext %1', 'pdftotext %1 -'),
 		'application/x-troff-man' => array('man -l %1'),
-		'application/zip' => array('unzip -l %1'),
 		'text/enriched' => array('col -b %1', 'strings %1'),
 		'text/html' => array('elinks -dump -no-home %1'),
 		'text/richtext' => array('col -b %1', 'strings %1'),
@@ -1757,8 +1741,7 @@ if (!$standalone) {
 	function deack_on_state_change(&$check_group, $check_group_name) {
 		global $last_state;
 		foreach ( $check_group as $key => $value ) {
-			if (! empty($last_state["$check_group_name"]["$key"]))
-			{
+			if (! empty($last_state["$check_group_name"]["$key"])) {
 				$check_group["$key"]['ack'] = $last_state["$check_group_name"]["$key"]['ack'];
 				if (isset($check_group["$key"]['setting']) && isset($last_state["$check_group_name"]["$key"]['setting']) &&
 							$check_group["$key"]['setting'] != $last_state["$check_group_name"]["$key"]['setting']) {

@@ -6,6 +6,7 @@
 // $Id$
 
 require_once('lib/wizard/wizard.php');
+include_once('lib/userprefs/scrambleEmail.php');
 $userprefslib = TikiLib::lib('userprefs');
 
 /**
@@ -103,8 +104,7 @@ class UserWizardPreferencesParams extends Wizard
 		$llist = $tikilib->list_styles();
 		$smarty->assign_by_ref('styles', $llist);
 		$languages = array();
-		$langLib = TikiLib::lib('language');
-		$languages = $langLib->list_languages();
+		$languages = $tikilib->list_languages();
 		$smarty->assign_by_ref('languages', $languages);
 		$user_pages = $tikilib->get_user_pages($userwatch, -1);
 		$smarty->assign_by_ref('user_pages', $user_pages);
@@ -117,12 +117,7 @@ class UserWizardPreferencesParams extends Wizard
 		$smarty->assign_by_ref('user_items', $user_items);
 		$scramblingMethods = array("n", "strtr", "unicode", "x", 'y'); // email_isPublic utilizes 'n'
 		$smarty->assign_by_ref('scramblingMethods', $scramblingMethods);
-		$scramblingEmails = array(
-				tra("no"),
-				TikiMail::scrambleEmail($userinfo['email'], 'strtr'),
-				TikiMail::scrambleEmail($userinfo['email'], 'unicode') . "-" . tra("unicode"),
-				TikiMail::scrambleEmail($userinfo['email'], 'x'), $userinfo['email'],
-			);
+		$scramblingEmails = array(tra("no"), scrambleEmail($userinfo['email'], 'strtr'), scrambleEmail($userinfo['email'], 'unicode') . "-" . tra("unicode"), scrambleEmail($userinfo['email'], 'x'), $userinfo['email']);
 		$smarty->assign_by_ref('scramblingEmails', $scramblingEmails);
 		$mailCharsets = array('utf-8', 'iso-8859-1');
 		$smarty->assign_by_ref('mailCharsets', $mailCharsets);
@@ -206,8 +201,7 @@ class UserWizardPreferencesParams extends Wizard
 			}
 		}
 		if (isset($_REQUEST["userbreadCrumb"])) $tikilib->set_user_preference($userwatch, 'userbreadCrumb', $_REQUEST["userbreadCrumb"]);
-		$langLib = TikiLib::lib('language');
-		if (isset($_REQUEST["language"]) && $langLib->is_valid_language($_REQUEST['language'])) {
+		if (isset($_REQUEST["language"]) && $tikilib->is_valid_language($_REQUEST['language'])) {
 			if ($tiki_p_admin || $prefs['change_language'] == 'y') {
 				$tikilib->set_user_preference($userwatch, 'language', $_REQUEST["language"]);
 			}
@@ -225,8 +219,7 @@ class UserWizardPreferencesParams extends Wizard
 				$tok = strtok(' ');
 			}
 			$list = array_unique($list);
-			$langLib = TikiLib::lib('language');
-			$list = array_filter($list, array($langLib, 'is_valid_language'));
+			$list = array_filter($list, array($tikilib, 'is_valid_language'));
 			$list = implode(' ', $list);
 			$tikilib->set_user_preference($userwatch, 'read_language', $list);
 		}

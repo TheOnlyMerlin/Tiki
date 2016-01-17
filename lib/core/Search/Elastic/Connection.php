@@ -291,12 +291,11 @@ class Search_Elastic_Connection
 		try {
 			$client = $this->getClient($path);
 			if ($data) {
-				$client->setRawBody($data);
+				$client->setRawData($data);
 			}
-			$client->setMethod(Zend\Http\Request::METHOD_GET);
-			$response = $client->send();
+			$response = $client->request('GET');
 			return $this->handleResponse($response);
-		} catch (Zend\Http\Exception\ExceptionInterface $e) {
+		} catch (Zend_Http_Exception $e) {
 			throw new Search_Elastic_TransportException($e->getMessage());
 		}
 	}
@@ -305,12 +304,11 @@ class Search_Elastic_Connection
 	{
 		try {
 			$client = $this->getClient($path);
-			$client->getRequest()->setMethod(Zend\Http\Request::METHOD_PUT);
-			$client->getRequest()->setContent($data);
-			$response = $client->send();
+			$client->setRawData($data);
+			$response = $client->request('PUT');
 
 			return $this->handleResponse($response);
-		} catch (Zend\Http\Exception\ExceptionInterface $e) {
+		} catch (Zend_Http_Exception $e) {
 			throw new Search_Elastic_TransportException($e->getMessage());
 		}
 	}
@@ -319,12 +317,11 @@ class Search_Elastic_Connection
 	{
 		try {
 			$client = $this->getClient($path);
-			$client->getRequest()->setMethod(Zend\Http\Request::METHOD_POST);
-			$client->getRequest()->setContent($data);
-			$response = $client->send();
+			$client->setRawData($data);
+			$response = $client->request('POST');
 
 			return $this->handleResponse($response);
-		} catch (Zend\Http\Exception\ExceptionInterface $e) {
+		} catch (Zend_Http_Exception $e) {
 			throw new Search_Elastic_TransportException($e->getMessage());
 		}
 	}
@@ -333,11 +330,10 @@ class Search_Elastic_Connection
 	{
 		try {
 			$client = $this->getClient($path);
-			$client->getRequest()->setMethod(Zend\Http\Request::METHOD_DELETE);
-			$response = $client->send();
+			$response = $client->request('DELETE');
 
 			return $this->handleResponse($response);
-		} catch (Zend\Http\Exception\ExceptionInterface $e) {
+		} catch (Zend_Http_Exception $e) {
 			throw new Search_Elastic_TransportException($e->getMessage());
 		}
 	}
@@ -346,7 +342,7 @@ class Search_Elastic_Connection
 	{
 		$content = json_decode($response->getBody());
 
-		if ($response->isSuccess()) {
+		if ($response->isSuccessful()) {
 			return $content;
 		} elseif (isset($content->exists) && $content->exists === false) {
 			throw new Search_Elastic_NotFoundException($content->_type, $content->_id);
@@ -368,7 +364,7 @@ class Search_Elastic_Connection
 			} elseif (preg_match('/QueryParsingException\[\[[^\]]*\] \[[^\]]*\] ([^\]]*)\]/', $message, $parts)) {
 				throw new Search_Elastic_QueryParsingException($parts[1]);
 			} else {
-				throw new Search_Elastic_Exception($message->reason, $content->status);
+				throw new Search_Elastic_Exception($message, $content->status);
 			}
 		} else {
 			return $content;
@@ -382,7 +378,7 @@ class Search_Elastic_Connection
 		$tikilib = TikiLib::lib('tiki');
 		try {
 			return $tikilib->get_http_client($full);
-		} catch (\Zend\Http\Exception\ExceptionInterface $e) {
+		} catch (Zend_Exception $e) {
 			throw new Search_Elastic_TransportException($e->getMessage());
 		}
 	}

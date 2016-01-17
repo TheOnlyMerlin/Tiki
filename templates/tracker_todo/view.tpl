@@ -6,7 +6,7 @@
 
 {block name="content"}
 <div class="table-responsive">
-<table class="table">
+<table class="table normal">
 	<tr>
 		<th>{tr}From{/tr}</th>
 		<th>{tr}To{/tr}</th>

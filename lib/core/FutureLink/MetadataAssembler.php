@@ -417,9 +417,7 @@ class FutureLink_MetadataAssembler
 	{
 		if (empty($this->language)) {
             //TODO: abstract
-			$langLib = TikiLib::lib('language');
-			$languages = $langLib->list_languages();
-			foreach ($languages as $listLanguage) {
+			foreach (TikiLib::lib("tiki")->list_languages() as $listLanguage) {
 				if ($listLanguage['value'] == $this->lang) {
 					$this->language = urlencode($listLanguage['name']);
 					break;

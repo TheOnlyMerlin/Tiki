@@ -1,14 +1,9 @@
 {* $Id$ *}
 
 <div class="t_navbar btn-group form-group">
-	<a role="link" class="btn btn-link" href="tiki-admingroups.php" title="{tr}Admin groups{/tr}">
-		{icon name="group"} {tr}Admin Groups{/tr}
-	</a>
-	<a role="link" class="btn btn-link" href="tiki-adminusers.php" title="{tr}Admin users{/tr}">
-		{icon name="user"} {tr}Admin Users{/tr}
-	</a>
-
-	{permission_link mode=link label="{tr}Manage permissions{/tr}" icon_name="key" addclass="btn btn-link"}
+	{button href="tiki-admingroups.php" class="btn btn-default" _text="{tr}Admin Groups{/tr}"}
+	{button href="tiki-adminusers.php" class="btn btn-default" _text="{tr}Admin Users{/tr}"}
+	{permission_link mode=button label="{tr}Manage permissions{/tr}"}
 </div>
 
 {remarksbox type="tip" title="{tr}Tip{/tr}"}
@@ -33,13 +28,13 @@
 			<div class="adminoptionboxchild" id="smarty_security_childcontainer">
 			{if $haveMySQLSSL}
 				{if $mysqlSSL === true}
-					<p class="mysqlsslstatus">{icon name="lock" iclass="text-success"} {tr}MySQL SSL connection is active{/tr}
+					<p class="mysqlsslstatus"><img src="img/icons/lock.png" style="outline:lightgreen solid thin"/> {tr}MySQL SSL connection is active{/tr}
 					<a class="tikihelp" title="MySQL SSL" target="tikihelp" href="http://doc.tiki.org/MySQL SSL">
 						{icon name="help"}
 					</a>
 					</p>
 				{else}
-					<p class="mysqlsslstatus">{icon name="unlock"} {tr}MySQL connection is not encrypted{/tr}<br>
+					<p class="mysqlsslstatus"><img src="img/icons/lock_open.png" style="outline:pink solid thin"/> {tr}MySQL connection is not encrypted{/tr}<br>
 					{tr}To activate SSL, copy the keyfiles (.pem) til db/cert folder. The filenames must end with "-key.pem", "-cert.pem", "-ca.pem"{/tr}
 					<a class="tikihelp" title="MySQL SSL" target="tikihelp" href="http://doc.tiki.org/MySQL SSL">
 						{icon name="help"}
@@ -47,7 +42,7 @@
 					</p>
 				{/if}
 			{else}
-				<p>{icon name="lock" iclass="text-warning"} {tr}MySQL Server does not have SSL activated{/tr}
+				<p><img src="img/icons/lock_gray.png" style="outline:pink solid thin"/> {tr}MySQL Server does not have SSL activated{/tr}
 				<a class="tikihelp" title="MySQL SSL" target="tikihelp" href="http://doc.tiki.org/MySQL SSL">
 					{icon name="help"}
 				</a>
@@ -62,6 +57,10 @@
 			</div>
 			{preference name=feature_purifier}
 			{preference name=feature_htmlpurifier_output}
+			{preference name=menus_item_names_raw_teaser}
+			<div class="adminoptionboxchild" id="menus_item_names_raw_teaser_childcontainer">
+				{preference name=menus_item_names_raw}
+			</div>
 
 			{preference name=session_protected}
 			{preference name=login_http_basic}
@@ -78,7 +77,7 @@
 				{if isset($no_mcrypt)}
 					{remarksbox type="warning" title="{tr}Mcrypt is not loaded{/tr}"}
 					{tr}User Encryption requires the PHP extension Mcrypt for encryption.
-						You should activate Mcrypt before activating User Encryption{/tr}.
+						You should activate Mcrypt before activating User Encryption{/tr}</a>.
 					{/remarksbox}
 				{else}
 					Requires the Mcrypt PHP extension for encryption. <u>You have Mcrypt installed</u>.<br>
@@ -105,7 +104,7 @@
 				{tr}You can additionally protect from spam enabling the "<a href="http://doc.tiki.org/Forum+Admin#Forum_moderation" target="_blank">moderation queue on forums</a>", or through <strong>banning</strong> multiple ip's from the "<a href="tiki-admin_actionlog.php" target="_blank">Action log</a>", from "<a href="tiki-adminusers.php" target="_blank">Users registration</a>", or from the "<a href="tiki-list_comments.php" target="_blank">Comments moderation queue</a>" itself{/tr}.
 			{/remarksbox}
 			<fieldset>
-				<legend>{tr}CAPTCHA{/tr}</legend>
+				<legend>{tr}Captcha{/tr}</legend>
 				{preference name=feature_antibot}
 				<div class="adminoptionboxchild" id="feature_antibot_childcontainer">
 					{preference name=captcha_wordLen}
@@ -167,14 +166,13 @@
 		{tab name="{tr}Tokens{/tr}"}
 			<h2>{tr}Tokens{/tr}</h2>
 			{remarksbox type="tip" title="{tr}Tip{/tr}"}
-				{tr}To manage tokens go to <a href="tiki-admin_tokens.php">Admin Tokens</a> page. Tokens are also used for the Temporary Users feature (see <a href="tiki-adminusers.php">Admin Users</a>).{/tr}
+				{tr}To manage tokens go to <a href="tiki-admin_tokens.php">Admin Tokens</a> page{/tr}
 			{/remarksbox}
 			{preference name=auth_token_access}
 			{preference name=auth_token_access_maxtimeout}
 			{preference name=auth_token_access_maxhits}
 			{preference name=auth_token_tellafriend}
 			{preference name=auth_token_share}
-			{preference name=auth_token_preserve_tempusers}
 		{/tab}
 
 		{tab name="{tr}OpenPGP{/tr}"}

@@ -58,7 +58,6 @@ class Search_Formatter_Plugin_SmartyTemplate implements Search_Formatter_Plugin_
 		}
 
 		$smarty->assign('prefs', $GLOBALS['prefs']);
-		$smarty->assign('user', $GLOBALS['user']);
 		$smarty->assign('results', $entries);
 		$smarty->assign(
 			'facets',
@@ -79,8 +78,6 @@ class Search_Formatter_Plugin_SmartyTemplate implements Search_Formatter_Plugin_
 		$smarty->assign('offsetplusone', $entries->getOffset() + 1);
 		$smarty->assign('offsetplusmaxRecords', $entries->getOffset() + $entries->getMaxRecords());
 		$smarty->assign('maxRecords', $entries->getMaxRecords());
-		$smarty->assign('id', $entries->getId());
-		$smarty->assign('tsOn', $entries->getTsOn());
 
 		return $smarty->fetch($this->templateFile);
 	}

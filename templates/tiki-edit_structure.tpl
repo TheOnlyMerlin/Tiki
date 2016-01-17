@@ -173,21 +173,18 @@
 		</form>
 	</div>
 	<div id="newpage_dialog" style="display: none;">
-		<form action="tiki-edit_structure.php" method="post" class="form-horizontal">
+		<form action="tiki-edit_structure.php" method="post">
 			<input type="hidden" name="page_ref_id" value="{$page_ref_id}">
-			<div class="form-group">
-				<label class="col-sm-3 control-label">{tr}Create Page{/tr}</label>
-				<div class="col-sm-7">
-		      		<input type="text" name="name" id="name" class="form-control">
-					{autocomplete element='#name' type='pagename'}
-	      		</div>
-		    </div>
-		    <div class="form-group">
-				<label class="col-sm-3 control-label"></label>
-				<div class="col-sm-7">
-		      		<input type="submit" class="btn btn-primary btn-sm" name="create" value="{tr}Update{/tr}">
-	      		</div>
-		    </div>
+			<table class="formcolor">
+				<tr>
+					<td>
+						<label for="name">{tr}Create Page:{/tr}</label>
+						<input type="text" name="name" id="name">
+						{autocomplete element='#name' type='pagename'}
+						<input type="submit" class="btn btn-primary btn-sm" name="create" value="{tr}Update{/tr}">
+					</td>
+				</tr>
+			</table>
 		</form>
 	</div>
 {/if}{* end of if structure editable *}

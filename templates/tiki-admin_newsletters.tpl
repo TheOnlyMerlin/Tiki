@@ -2,11 +2,9 @@
 {title help="Newsletters"}{tr}Admin newsletters{/tr}{/title}
 
 <div class="t_navbar btn-group form-group">
-	{button  href="tiki-admin_newsletters.php?cookietab=2" _icon_name="create" _text="{tr}Create{/tr}"}
-	<a role="link" href="tiki-newsletters.php" class="btn btn-link" title="{tr}List{/tr}">{icon name="list"} {tr}List{/tr}</a>
-	<a role="link" href="tiki-send_newsletters.php" class="btn btn-link" title="{tr}Send{/tr}">{icon name="envelope"} {tr}Send{/tr}</a>
-{*	{button href="tiki-newsletters.php" _class="btn btn-default" _icon_name="list" _text="{tr}List{/tr}"}
-	{button href="tiki-send_newsletters.php" _class="btn btn-default" _icon_name="envelope" _text="{tr}Send{/tr}"} *}
+	{button href="tiki-admin_newsletters.php?cookietab=2" _class="btn btn-default" _icon_name="create" _text="{tr}Create{/tr}"}
+	{button href="tiki-newsletters.php" _class="btn btn-default" _icon_name="list" _text="{tr}List{/tr}"}
+	{button href="tiki-send_newsletters.php" _class="btn btn-default" _icon_name="envelope" _text="{tr}Send{/tr}"}
 </div>
 
 {tabset}
@@ -18,18 +16,8 @@
 			{include file='find.tpl'}
 		{/if}
 
-		{* Use css menus as fallback for item dropdown action menu if javascript is not being used *}
-		{if $prefs.javascript_enabled !== 'y'}
-			{$js = 'n'}
-			{$libeg = '<li>'}
-			{$liend = '</li>'}
-		{else}
-			{$js = 'y'}
-			{$libeg = ''}
-			{$liend = ''}
-		{/if}
-		<div class="{if $js === 'y'}table-responsive{/if}"> {* table-responsive class cuts off css drop-down menus *}
-			<table class="table table-striped table-hover">
+		<div class="table-responsive">
+			<table class="table normal">
 				<tr>
 					<th>{self_link _sort_arg='sort_mode' _sort_field='nlId'}{tr}ID{/tr}{/self_link}</th>
 					<th>{self_link _sort_arg='sort_mode' _sort_field='name'}{tr}Newsletter{/tr}{/self_link}</th>
@@ -56,37 +44,31 @@
 						<td class="action">
 							{capture name=newsletters_actions}
 								{strip}
-									{$libeg}{permission_link mode=text type=newsletter permType=newsletters id=$channels[user].nlId title=$channels[user].name}{$liend}
-									{$libeg}<a href="tiki-admin_newsletter_subscriptions.php?nlId={$channels[user].nlId}">
+									{permission_link mode=text type=newsletter permType=newsletters id=$channels[user].nlId title=$channels[user].name}
+									<a href="tiki-admin_newsletter_subscriptions.php?nlId={$channels[user].nlId}">
 										{icon name='group' _menu_text='y' _menu_icon='y' alt="{tr}Subscriptions{/tr}"}
-									</a>{$liend}
-									{$libeg}<a href="tiki-send_newsletters.php?nlId={$channels[user].nlId}">
+									</a>
+									<a href="tiki-send_newsletters.php?nlId={$channels[user].nlId}">
 										{icon name='envelope' _menu_text='y' _menu_icon='y' alt="{tr}Send newsletter{/tr}"}
-									</a>{$liend}
-									{$libeg}<a href="tiki-newsletter_archives.php?nlId={$channels[user].nlId}">
+									</a>
+									<a href="tiki-newsletter_archives.php?nlId={$channels[user].nlId}">
 										{icon name='file-archive' _menu_text='y' _menu_icon='y' alt="{tr}Archives{/tr}"}
-									</a>{$liend}
-									{$libeg}{self_link _icon_name='edit' _menu_text='y' _menu_icon='y' cookietab='2' _anchor='anchor2' nlId=$channels[user].nlId}
+									</a>
+									{self_link _icon_name='edit' _menu_text='y' _menu_icon='y' cookietab='2' _anchor='anchor2' nlId=$channels[user].nlId}
 										{tr}Edit{/tr}
-									{/self_link}{$liend}
-									{$libeg}{self_link _icon_name='remove' _menu_text='y' _menu_icon='y' remove=$channels[user].nlId}
+									{/self_link}
+									{self_link _icon_name='remove' _menu_text='y' _menu_icon='y' remove=$channels[user].nlId}
 										{tr}Remove{/tr}
-									{/self_link}{$liend}
+									{/self_link}
 								{/strip}
 							{/capture}
-							{if $js === 'n'}<ul class="cssmenu_horiz"><li>{/if}
-							<a
-								class="tips"
-								title="{tr}Actions{/tr}"
-								href="#"
-								{if $js === 'y'}{popup delay="0|2000" fullhtml="1" center=true text=$smarty.capture.newsletters_actions|escape:"javascript"|escape:"html"}{/if}
-								style="padding:0; margin:0; border:0"
-							>
+							<a class="tips"
+							   title="{tr}Actions{/tr}"
+							   href="#" {popup delay="0|2000" fullhtml="1" center=true text=$smarty.capture.newsletters_actions|escape:"javascript"|escape:"html"}
+							   style="padding:0; margin:0; border:0"
+									>
 								{icon name='wrench'}
 							</a>
-							{if $js === 'n'}
-								<ul class="dropdown-menu" role="menu">{$smarty.capture.newsletters_actions}</ul></li></ul>
-							{/if}
 						</td>
 					</tr>
 				{sectionelse}
@@ -114,9 +96,9 @@
                 </div>
 			</div>
             <div class="form-group">
-                <label class="col-md-2 control-label" for="description">{tr}Description:{/tr}</label>
+                <label class="col-md-2 control-label">{tr}Description:{/tr}</label>
                 <div class="col-md-10">
-                    <textarea class="form-control" name="description" id="description">{$info.description|escape}</textarea>
+                    <textarea class="form-control" name="description">{$info.description|escape}</textarea>
 				</div>
 			</div>
             <div class="checkbox col-md-offset-2">
@@ -168,17 +150,17 @@
                 </label>
             </div>
             <div class="form-group">
-                <label class="col-md-5 control-label" for="articleClipRangeDays">
+                <label class="col-md-5 control-label">
                     {tr}Clip articles published in the past number of days{/tr}</label>
                 <div class="col-md-4">
-				    <input type="text" class="form-control" name="articleClipRangeDays" id="articleClipRangeDays" value="{$info.articleClipRangeDays|escape}">
+				    <input type="text" class="form-control" name="articleClipRangeDays" value="{$info.articleClipRangeDays|escape}">
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-md-5 control-label" for="articleClipTypes">
+                <label class="col-md-5 control-label">
 				    {tr}Article types to clip{/tr}</label>
                 <div class="col-md-4">
-					<select id="articleClipTypes" name="articleClipTypes[]" class="form-control" multiple="multiple">
+					<select name="articleClipTypes[]" class="form-control" multiple="multiple">
 						{section name=type loop=$articleTypes}
 							<option value="{$articleTypes[type]}" {if in_array($articleTypes[type], $info.articleClipTypes)}selected="selected"{/if}>{$articleTypes[type]|escape}</option>
 						{/section}

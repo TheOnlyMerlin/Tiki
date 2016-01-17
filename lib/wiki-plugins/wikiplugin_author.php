@@ -18,7 +18,7 @@ function wikiplugin_author_info()
 		'params' => array(
 			'author' => array(
 				'required' => true,
-				'name' => tra('Username'),
+				'name' => tra('User Name'),
 				'description' => tra('User name of the user who wrote the text.'),
 				'since' => '6.0',
 				'default' => '',

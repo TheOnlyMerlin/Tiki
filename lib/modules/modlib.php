@@ -125,7 +125,6 @@ class ModLib extends TikiLib
 			$this->query($query, array($name, $position, (int)$order, $params));
 			$query = "insert into `tiki_modules`(`name`,`title`,`position`,`ord`,`cache_time`,`rows`,`groups`,`params`,`type`) values(?,?,?,?,?,?,?,?,?)";
 			$result = $this->query($query, array($name,$title,$position,(int) $order,(int) $cache_time,(int) $rows,$groups,$params,$type));
-			$moduleId = $this->lastInsertId(); //to return the recently created module
 			if ($type == "D" || $type == "P") {
 				$query = 'select `moduleId` from `tiki_modules` where `name`=? and `title`=? and `position`=? and `ord`=? and `cache_time`=? and `rows`=? and `groups`=? and `params`=? and `type`=?';
 				$moduleId = $this->getOne($query, array($name,$title,$position,(int) $order,(int) $cache_time,(int) $rows,$groups,$params,$type));
@@ -135,7 +134,7 @@ class ModLib extends TikiLib
 			$usermoduleslib = TikiLib::lib('usermodules');
 			$usermoduleslib->add_module_users($moduleId, $name, $title, $position, $order, $cache_time, $rows, $groups, $params, $type);
 		}
-		return $moduleId;
+		return true;
 	}
 
 	/* Returns the requested module assignation. A module assignation is represented by an array similar to a tiki_modules record. The groups field is unserialized in the module_groups key, a spaces-separated list of groups. */
@@ -848,7 +847,7 @@ class ModLib extends TikiLib
 				),
 				'category' => array(
 					'name' => tra('Category'),
-					'description' => tra('Module displayed depending on category. Separate multiple category IDs or names by semi-colons.'),
+					'description' => tra('Module displayed depending on category. Multiple category ids or names can be separated by semi-colons.'),
 					'section' => 'visibility',
 					'separator' => ';',
 					'filter' => 'alnum',
@@ -856,7 +855,7 @@ class ModLib extends TikiLib
 				),
 				'nocategory' => array(
 					'name' => tra('No Category'),
-					'description' => tra('Module is hidden depending on category. Separate multiple category IDs or names by semi-colons. This takes precedence over the category parameter above.'),
+					'description' => tra('Module hidden depending on category. Multiple category ids or names can be separated by semi-colons. This takes precedence over the category parameter above.'),
 					'section' => 'visibility',
 					'separator' => ';',
 					'filter' => 'alnum',
@@ -864,13 +863,13 @@ class ModLib extends TikiLib
 				),
 				'subtree' => array(
 					'name' => tra('Category subtrees'),
-					'description' => tra('Consider child categories of the categories listed in "category" and "no category" to be part of those categories. (0 or 1)'),
+					'description' => tra('Consider children categories of the categories listed in category and no category to be part of those categories. (0 or 1)'),
 					'section' => 'visibility',
 					'filter' => 'int',
 				),
 				'perspective' => array(
 					'name' => tra('Perspective'),
-					'description' => tra('Module is displayed only in the listed perspective ID(s). Separate multiple perspective IDs by semi-colons.'),
+					'description' => tra('Only display the module if in one of the listed perspective IDs. Semi-colon separated.'),
 					'separator' => ';',
 					'filter' => 'digits',
 					'section' => 'visibility',
@@ -878,21 +877,21 @@ class ModLib extends TikiLib
 				),
 				'lang' => array(
 					'name' => tra('Language'),
-					'description' => tra('Module is displayed only when the specified language(s) in use. Designate languages by two-character language codes. Separate multiple languages by semi-colons.'),
+					'description' => tra('Module only applicable for the specified languages. Languages are defined as two character language codes. Multiple values can be separated by semi-colons.'),
 					'separator' => ';',
 					'filter' => 'lang',
 					'section' => 'visibility',
 				),
 				'section' => array(
 					'name' => tra('Section'),
-					'description' => tra('Module is displayed only in the specified sections. Separate multiple sections by semi-colons. Choose from: blogs; calendar; categories; cms (for "articles"); contacts; directory; faqs; featured_links; file_galleries; forums; galleries (for "image galleries"); gmaps; html_pages; maps; mytiki; newsletters; poll; quizzes; surveys; trackers; user_messages; webmail; wiki page'),
+					'description' => tra('Module only applicable for the specified sections. Multiple values can be separated by semi-colons. Choose values from: blogs; calendar; categories; cms (for "articles"); contacts; directory; faqs; featured_links; file_galleries; forums; galleries (for "image galleries"); gmaps; html_pages; maps; mytiki; newsletters; poll; quizzes; surveys; trackers; user_messages; webmail; wiki page'),
 					'separator' => ';',
 					'filter' => 'striptags',
 					'section' => 'visibility',
 				),
 				'page' => array(
 					'name' => tra('Page Filter'),
-					'description' => tra('Module is displayed only on the specified page(s). Separate multiple page names by semi-colons.'),
+					'description' => tra('Module only applicable on the specified page names. Multiple values can be separated by semi-colons.'),
 					'separator' => ';',
 					'filter' => 'pagename',
 					'section' => 'visibility',
@@ -900,7 +899,7 @@ class ModLib extends TikiLib
 				),
 				'nopage' => array(
 					'name' => tra('No Page'),
-					'description' => tra('Module is not displayed on the specified page(s). Separate multiple page names by semi-colons.'),
+					'description' => tra('Module not applicable on the specified page names. Multiple values can be separated by semi-colons.'),
 					'separator' => ';',
 					'filter' => 'pagename',
 					'section' => 'visibility',
@@ -908,7 +907,7 @@ class ModLib extends TikiLib
 				),
 				'theme' => array(
 					'name' => tra('Theme'),
-					'description' => tra('Module is displayed or not displayed depending on the theme. (Enter the theme\'s file name, for example, "thenews.css".) Prefix the theme name with "!" for the module to not display. Separate multiple theme names by semi-colons.'),
+					'description' => tra('Module enabled or disabled depending on the theme file name (e.g. "thenews.css"). Specified themes can be either included or excluded. Theme names prefixed by "!" are in the exclusion list. Multiple values can be separated by semi-colons.'),
 					'separator' => ';',
 					'filter' => 'themename',
 					'section' => 'visibility',
@@ -927,13 +926,13 @@ class ModLib extends TikiLib
 				),
 				'flip' => array(
 					'name' => tra('Flip'),
-					'description' => tra('Users can open and close the module.'),
+					'description' => tra('Users can shade module.'),
 					'filter' => 'alpha',
 					'section' => 'appearance',
 				),
 				'style' => array(
 					'name' => tra('Style'),
-					'description' => tra('CSS style for positioning the module, etc.'),
+					'description' => tra('CSS styling for positioning the module.'),
 					'section' => 'appearance',
 				),
 				'class' => array(
@@ -943,7 +942,7 @@ class ModLib extends TikiLib
 				),
 				'topclass' => array(
 					'name' => tra('Containing Class'),
-					'description' => tra('Custom CSS class of div around the module.'),
+					'description' => tra('Custom CSS class around.'),
 					'section' => 'appearance',
 				),
 			)
@@ -952,7 +951,7 @@ class ModLib extends TikiLib
 		if ($prefs['cookie_consent_feature'] === 'y') {
 			$info['params']['cookie_consent'] = array(
 				'name' => tra('Cookie Consent'),
-				'description' => 'n|y '.tra('Show only if consent to accept cookies has been granted.'),
+				'description' => 'n|y '.tra('Show only if consent for cookies has been granted.'),
 				'filter' => 'alpha',
 				'section' => 'visibility',
 			);

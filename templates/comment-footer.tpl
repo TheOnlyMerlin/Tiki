@@ -9,7 +9,7 @@
 		</span>
 	{/if}
 	{if $forum_info.vote_threads eq 'y' and ($tiki_p_ratings_view_results eq 'y' or $tiki_p_admin eq 'y')}
-		<span class="ratingResultAvg">{tr}Users rating: {/tr}</span>{rating_result_avg type=comment id=$comment.threadId }
+		<span class="ratingResultAvg">{tr}Users Rating: {/tr}</span>{rating_result_avg type=comment id=$comment.threadId }
 	{/if}
 	{if $forum_info.vote_threads eq 'y' and $tiki_p_forum_vote eq 'y'}
 		<span class="score">
@@ -54,7 +54,7 @@
 				{button href="#form" _onclick="show('`$postclass`open');" _text="{tr}Reply{/tr}"}
 			{elseif $comments_grandParentId}
 				{button href="?post_reply=1&comments_threshold=`$comments_threshold`&comments_reply_threadId=`$comment.threadId`&comments_offset=`$comments_offset`&thread_sort_mode=`$thread_sort_mode`&comments_per_page=`$comments_per_page`&comments_grandParentId=`$comment_grandParentId`&comments_parentId=`$comments_grandParentId`&thread_style=`$thread_style`#form" _auto_args='*' _text="{tr}Reply{/tr}"}
-			{elseif $forum_info.is_flat neq 'y' or $prefs.feature_forum_allow_flat_forum_quotes eq 'y'}
+			{elseif $forum_info.is_flat neq 'y'}
 				{button href="?post_reply=1&comments_threshold=`$comments_threshold`&comments_reply_threadId=`$comment.threadId`&comments_offset=`$comments_offset`&thread_sort_mode=`$thread_sort_mode`&comments_per_page=`$comments_per_page`&comments_grandParentId=`$comment.parentId`&comments_parentId=`$comment.parentId`&thread_style=`$thread_style`#form" _auto_args='*' _text="{tr}Reply{/tr}"}
 			{/if}
 		{/if}

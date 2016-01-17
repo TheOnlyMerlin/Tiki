@@ -32,6 +32,7 @@ class Report_Builder
 		$me = new self();
 		$data = $me->fromWikiSyntax($data);
 		return (json_encode($data));
+		return $me;
 	}
 
 	static function listDefinitions()

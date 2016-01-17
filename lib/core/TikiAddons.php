@@ -24,8 +24,6 @@ abstract class TikiAddons
 				self::initializeGroupApi($package);
 				self::initializeNavbarApi($package);
 				self::initializeFileGalleryApi($package);
-				self::initializeEventsApi($package);
-				self::initializeSearchApi($package);
 			} catch (InvalidArgumentException $e) {
 				// Do nothing, absence of tikiaddon.json
 			}
@@ -60,20 +58,6 @@ abstract class TikiAddons
 			TikiAddons_Api_FileGallery::setParents($package, $parent);
 			$tracker = self::$installed[$package]->api->filegallery->tracker;
 			TikiAddons_Api_FileGallery::setTrackers($package, $tracker);
-		}
-	}
-
-	private static function initializeEventsApi($package) {
-		if (!empty(self::$installed[$package]->api->eventmap)) {
-			$eventMap = self::$installed[$package]->api->eventmap;
-			TikiAddons_Api_Events::setEventMap($package, $eventMap);
-		}
-	}
-
-	private static function initializeSearchApi($package) {
-		if (!empty(self::$installed[$package]->api->search->addonSources)) {
-			$sources = self::$installed[$package]->api->search->addonSources;
-			TikiAddons_Api_Search::setAddonSources($package, $sources);
 		}
 	}
 

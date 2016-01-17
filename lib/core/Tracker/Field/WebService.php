@@ -39,7 +39,7 @@ class Tracker_Field_WebService extends Tracker_Field_Abstract
 					),
 					'params' => array(
 						'name' => tr('Parameters'),
-						'description' => tr('URL-encoded list of parameters to send to the webservice. %field_name% can be used in the string to be replaced with the values in the tracker item by field permName, Id or Name.'),
+						'description' => tr('URL-encoded list of parameters to send to the webservice. %field_name% can be used in the string to be replaced with the values in the tracker item.'),
 						'filter' => 'url',
 						'legacy_index' => 2,
 					),

@@ -67,7 +67,7 @@ class Services_User_FavoriteController
 				$relationId = $relationlib->add_relation('tiki.user.favorite', 'user', $user, $type, $object);
 				$relations[$relationId] = "$type:$object";
 
-				$item_user = $this->getItemUser($type, $object);
+				$this->handleScore($type, $object);
 
 				TikiLib::events()->trigger(
 					'tiki.social.favorite.add',
@@ -76,7 +76,6 @@ class Services_User_FavoriteController
 						'object' => $object,
 						'parentobject' => $parentobject,
 						'user' => $user,
-						'item_user' => $item_user,
 					)
 				);
 			}
@@ -112,9 +111,13 @@ class Services_User_FavoriteController
 		}
 	}
 
-	private function getItemUser($type, $object)
+	private function handleScore($type, $object)
 	{
-		global $user;
+		global $user, $prefs;
+
+		if ($prefs['feature_score'] != 'y') {
+			return;
+		}
 
 		$item_user = null;
 
@@ -130,7 +133,12 @@ class Services_User_FavoriteController
 			$item_user = $res['author'];
 		}
 
-		return $item_user;
+		$tikilib = TikiLib::lib('tiki');
+		$tikilib->score_event($user, 'item_favorited', "$type:$object");
+
+		if ($item_user) {
+			$tikilib->score_event($item_user, 'item_is_favorited', "$user:$type:$object");
+		}
 	}
 }
 

@@ -188,7 +188,7 @@ class TikiSheet
 		return array(
 			'TikiSheetSerializeHandler',
 			'TikiSheetCSVHandler',
-            'TikiSheetCSVExcelHandler'//,
+            'TikiSheetCSVExcelHandler',
 			//'TikiSheetExcelHandler'
 		);
 	}

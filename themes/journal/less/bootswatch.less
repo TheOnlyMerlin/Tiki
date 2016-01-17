@@ -1,13 +1,7 @@
-// Journal 3.3.5
+// Journal 3.1.1
 // Bootswatch
 // -----------------------------------------------------
-
-@web-font-path: "https://fonts.googleapis.com/css?family=News+Cycle:400,700";
-
-.web-font(@path) {
-	@import url("@{path}");
-}
-.web-font(@web-font-path);
+@import url("//fonts.googleapis.com/css?family=News+Cycle:400,700");
 
 // Navbar =====================================================================
 
@@ -34,7 +28,7 @@
 }
 
 .navbar-brand {
-	font-size: inherit;
+	font-size: 18px;
 	font-weight: @headings-font-weight;
 	text-transform: uppercase;
 }
@@ -50,14 +44,6 @@
 .has-warning {
 	.help-block,
 	.control-label,
-	.radio,
-	.checkbox,
-	.radio-inline,
-	.checkbox-inline,
-	&.radio label,
-	&.checkbox label,
-	&.radio-inline label,
-	&.checkbox-inline label,
 	.form-control-feedback {
 		color: @brand-danger;
 	}
@@ -71,14 +57,6 @@
 .has-error {
 	.help-block,
 	.control-label,
-	.radio,
-	.checkbox,
-	.radio-inline,
-	.checkbox-inline,
-	&.radio label,
-	&.checkbox label,
-	&.radio-inline label,
-	&.checkbox-inline label,
 	.form-control-feedback {
 		color: @brand-primary;
 	}
@@ -92,14 +70,6 @@
 .has-success {
 	.help-block,
 	.control-label,
-	.radio,
-	.checkbox,
-	.radio-inline,
-	.checkbox-inline,
-	&.radio label,
-	&.checkbox label,
-	&.radio-inline label,
-	&.checkbox-inline label,
 	.form-control-feedback {
 		color: @brand-success;
 	}
@@ -144,6 +114,5 @@
 			color: #fff;
 		}
 	}
-
 
 }

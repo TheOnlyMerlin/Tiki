@@ -30,17 +30,12 @@ class Services_File_Controller
 			'galleryId' => $gal_info['galleryId'],
 			'limit' => abs($input->limit->int()),
 			'typeFilter' => $input->type->text(),
-			'uploadInModal' => $input->uploadInModal->int(),
 			'files' => $this->getFilesInfo((array) $input->file->int()),
 		);
 	}
 
 	function action_upload($input)
 	{
-		if ($input->files->array()) {
-			return;
-		}
-
 		$gal_info = $this->checkTargetGallery($input);
 
 		$fileId = $input->fileId->int();
@@ -69,10 +64,6 @@ class Services_File_Controller
 
 		$mimelib = TikiLib::lib('mime');
 		$type = $mimelib->from_content($name, $data);
-
-		if (empty($name) || $size == 0 || empty($data)) {
-			throw new Services_Exception(tr('File could not be uploaded. File empty.'), 406);
-		}
 
 		if ($fileId) {
 			$this->utilities->updateFile($gal_info, $name, $size, $type, $data, $fileId, $asuser);
@@ -160,7 +151,7 @@ class Services_File_Controller
 								$file['syntax'] = tr('Batch file processed: "%0"', $file['name']);	// cheeky?
 							}
 						} else {
-							$errorreportlib->report(tra('You don\'t have permission to upload zipped file packages'));
+							$errorreportlib->report(tra('No permission to upload zipped file packages'));
 						}
 					}
 

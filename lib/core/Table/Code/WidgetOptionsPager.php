@@ -47,26 +47,15 @@ class Table_Code_WidgetOptionsPager extends Table_Code_WidgetOptions
 			$p[] = $pre . 'savePages: false';
 
 			//ajax processing - this part grabs the html, usually from the smarty template file
-			//first prepare code to add a row total column using the math widget if set
-			if (!empty(parent::$s['math']['totals']['row'])) {
-				foreach(parent::$s['math']['totals']['row'] as $total) {
-					$filter = !empty($total['filter']) ? '.attr(\'data-tsmath-filter\', \'' . $total['filter'] . '\');'
-						: '';
-					$addcol[] = '$(r.rows).each(function(){$(this).append(\'<td data-tsmath ="row-' . $total['formula']
-							. '"></td >\')' . $filter . '});';
-				}
-				$addcol = implode($this->nt, $addcol);
-			}
 			$ap = array(
 				//parse HTML string from entire page
-				'var parsedpage = $.parseHTML(data), table = $(parsedpage).find(\'' . parent::$tid . '\'), r = {};',
+				'var parsedpage = $.parseHTML(data), r = {};',
 				//extract table body rows from html returned by smarty template file
-				'r.rows = $(table).find(\'tbody tr\');',
-				!empty($addcol) ? $addcol : null,
-				//tablesorter needs total rows
+				'r.rows = $(parsedpage).find(\'' . parent::$tid . ' tbody tr\');',
+				//tablesorter needs total rows returned
 				'r.total = \'' . parent::$s['total'] . '\';',
 				//extract number of filtered rows for use in row count display
-				'r.filteredRows = $(table).data(\'count\');',
+				'r.filteredRows = parseInt($(parsedpage).find(\'#' . parent::$s['ajax']['servercount']['id'] . '\').val());',
 				'r.headers = null;',
 				//return object
 				'return r;'

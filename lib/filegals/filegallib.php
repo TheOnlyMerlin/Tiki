@@ -64,7 +64,7 @@ class FileGalLib extends TikiLib
 		}
 	}
 
-	protected function find_unique_name($directory, $start)
+	private function find_unique_name($directory, $start)
 	{
 		$fhash = md5($start);
 
@@ -363,6 +363,10 @@ class FileGalLib extends TikiLib
 
 		$galleriesTable->update(array('lastModif' => $this->now), array('galleryId' => $galleryId));
 
+		if ($prefs['feature_score'] == 'y') {
+		    $this->score_event($user, 'fgallery_new_file');
+		}
+
 		if ($prefs['feature_actionlog'] == 'y') {
 			$logslib = TikiLib::lib('logs');
 			$logslib->add_action('Uploaded', $galleryId, 'file gallery', "fileId=$fileId&amp;add=$size");
@@ -523,10 +527,11 @@ class FileGalLib extends TikiLib
 				}
 			}
 			//if no archives allowed by user, then replace certain original file information with
-			//information from the validated draft
+			//informtion from the validated draft
 			if ($archives == -1) {
 				$filesTable->update(
 					array(
+						'path' => $newPath,
 						'filename' => $draft['filename'],
 						'filesize' => $draft['filesize'],
 						'filetype' => $draft['filetype'],
@@ -845,6 +850,10 @@ class FileGalLib extends TikiLib
 
 			$galleryId = $galleriesTable->insert($fgal_info);
 
+			if ($prefs['feature_score'] == 'y') {
+				global $user;
+			    $this->score_event($user, 'fgallery_new');
+			}
 			$finalEvent = 'tiki.filegallery.create';
 		}
 
@@ -1297,17 +1306,17 @@ class FileGalLib extends TikiLib
 			};
 		case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
 			return function (FileWrapper $wrapper) {
-				$document = ZendSearch\Lucene\Document\Docx::loadDocxFile($wrapper->getReadableFile(), true);
+				$document = Zend_Search_Lucene_Document_Docx::loadDocxFile($wrapper->getReadableFile(), true);
 				return $document->getField('body')->getUtf8Value();
 			};
 		case 'application/vnd.openxmlformats-officedocument.presentationml.presentation':
 			return function (FileWrapper $wrapper) {
-				$document = ZendSearch\Lucene\Document\Pptx::loadPptxFile($wrapper->getReadableFile(), true);
+				$document = Zend_Search_Lucene_Document_Pptx::loadPptxFile($wrapper->getReadableFile(), true);
 				return $document->getField('body')->getUtf8Value();
 			};
 		case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
 			return function (FileWrapper $wrapper) {
-				$document = ZendSearch\Lucene\Document\Xlsx::loadXlsxFile($wrapper->getReadableFile(), true);
+				$document = Zend_Search_Lucene_Document_Xlsx::loadXlsxFile($wrapper->getReadableFile(), true);
 				return $document->getField('body')->getUtf8Value();
 			};
 		}
@@ -1338,7 +1347,6 @@ class FileGalLib extends TikiLib
 				'application/x-msexcel' => array('xls2csv %1'),
 				'application/x-pdf' => array('pstotext %1', 'pdftotext %1 -'),
 				'application/x-troff-man' => array('man -l %1'),
-				'application/zip' => array('unzip -l %1'),
 				'text/enriched' => array('col -b %1', 'strings %1'),
 				'text/html' => array('elinks -dump -no-home %1'),
 				'text/richtext' => array('col -b %1', 'strings %1'),
@@ -1992,7 +2000,7 @@ class FileGalLib extends TikiLib
 		if (!empty($prefs['fgal_quota'])) {
 			$use = $this->getUsedSize();
 			if ($use + $size > $prefs['fgal_quota']*1024*1024) {
-				$error = tra('The upload was not completed.') . ' ' . tra('Reason: The global quota has been reached');
+				$error = tra('The upload has not been done.') . ' ' . tra('Reason: The global quota has been reached');
 				$diff = $use + $size - $prefs['fgal_quota']*1024*1024;
 			}
 		}
@@ -2001,7 +2009,7 @@ class FileGalLib extends TikiLib
 			//echo '<pre>';print_r($list);echo '</pre>';
 			foreach ($list as $fgal) {
 				if (!empty($fgal['quota']) && $fgal['size'] + $size > $fgal['quota']*1024*1024) {
-					$error = tra('The upload was not completed.') . ' ' . sprintf(tra('Reason: The quota has been reached in "%s"'), $fgal['name']);
+					$error = tra('The upload has not been done.') . ' ' . sprintf(tra('Reason: The quota has been reached in "%s"'), $fgal['name']);
 					$smarty->assign('mail_fgal', $fgal);
 					$diff = $fgal['size'] + $size - $fgal['quota']*1024*1024;
 					break;
@@ -2548,23 +2556,14 @@ class FileGalLib extends TikiLib
 			$files->update(array('lastDownload' => $this->now), array('fileId' => (int) $id));
 		}
 
-		if ($prefs['feature_score'] == 'y' && $prefs['fgal_prevent_negative_score'] == 'y') {
-			$score = TikiLib::lib('score')->get_user_score($user);
-			if ($score < 0) {
+		if ($prefs['feature_score'] == 'y') {
+			if ( ! $this->score_event($user, 'fgallery_download', $id) )
 				return false;
-			}
+
+			$owner = $files->fetchOne('user', array('fileId' => (int) $id));
+			if ( ! $this->score_event($owner, 'fgallery_is_downloaded', "$user:$id") )
+				return false;
 		}
-
-		$owner = $files->fetchOne('user', array('fileId' => (int) $id));
-
-		TikiLib::events()->trigger('tiki.file.download',
-			array(
-				'type' => 'file',
-				'object' => $id,
-				'user' => $user,
-				'owner' => $owner,
-			)
-		);
 
 		return true;
 	}
@@ -2997,23 +2996,19 @@ class FileGalLib extends TikiLib
 				if ($prefs['auth_token_access'] == 'y') {
 					$query = 'select email, sum((maxhits - hits)) as visit, sum(maxhits) as maxhits  from tiki_auth_tokens where `parameters`=? group by email';
 					$share_result = $this->fetchAll($query, array('{"fileId":"'.$res['id'].'"}'));
-					if ($share_result) {
-						$res['share']['data'] = $share_result;
-						$tmp = array();
-						if (is_array($res['share']['data'])) {
-							foreach ($res['share']['data'] as $data) {
-								$tmp[] = $data['email'];
-							}
+					$res['share']['data'] = $share_result;
+					$tmp = array();
+					if (is_array($res['share']['data'])) {
+						foreach ($res['share']['data'] as $data) {
+							$tmp[] = $data['email'];
 						}
-						$string_share = implode(', ', $tmp);
-						$res['share']['string'] = substr($string_share, 0, 40);
-						if (strlen($string_share) > 40) {
-							$res['share']['string'] .= '...';
-						}
-						$res['share']['nb'] = count($share_result);
-					} else {
-						$res['share'] = null;
 					}
+					$string_share = implode(', ', $tmp);
+					$res['share']['string'] = substr($string_share, 0, 40);
+					if (strlen($string_share) >40) {
+						$res['share']['string'] .= '...';
+					}
+					$res['share']['nb'] = count($share_result);
 				}
 			} else {	// a gallery
 
@@ -3228,7 +3223,7 @@ class FileGalLib extends TikiLib
 
 			if ( isset( $_POST['daconfirm'] ) && ! empty( $backlinks ) ) {
 				$smarty->assign_by_ref('backlinks', $backlinks);
-				$smarty->assign('file_backlinks_title', 'Warning: The file is used in:');//get_strings tra('Warning: The file is used in:')
+				$smarty->assign('file_backlinks_title', 'WARNING: The file is used in:');//get_strings tra('WARNING: The file is used in:')
 				$smarty->assign('confirm_detail', $smarty->fetch('file_backlinks.tpl')); ///FIXME
 			}
 
@@ -3355,7 +3350,7 @@ class FileGalLib extends TikiLib
 							$this->print_msg(tra('Batch file processed') . " $name", true);
 							continue;
 						} else {
-							$errors[] = tra('You don\'t have permission to upload zipped file packages');
+							$errors[] = tra('No permission to upload zipped file packages');
 							continue;
 						}
 					}
@@ -3439,7 +3434,7 @@ class FileGalLib extends TikiLib
 					}
 
 					if (!$size) {
-						$errors[] = tra('Warning: Empty file:') . '  ' . $name . '. ' . tra('Please re-upload the file');
+						$errors[] = tra('Warning: Empty file:') . '  ' . $name . '. ' . tra('Please re-upload your file');
 					}
 
 					if (empty($params['name'][$key])) $params['name'][$key] = $name;
@@ -3477,7 +3472,7 @@ class FileGalLib extends TikiLib
 							);
 						}
 						if (!$fileId) {
-							$errors[] = tra('The upload was not successful due to duplicate file content') . ': ' . $name;
+							$errors[] = tra('Upload was not successful. Duplicate file content') . ': ' . $name;
 							if (false !== $savedir) {
 								@unlink($savedir . $fhash);
 							}
@@ -3714,7 +3709,7 @@ class FileGalLib extends TikiLib
 		if (! is_uploaded_file($file['tmp_name'])) {
 			$msg = array('error' => tra('Upload was not successful') . ': ' . $this->uploaded_file_error($file['error']));
 		} elseif (! $file['size']) {
-			$msg = tra('Warning: Empty file:') . '  ' . htmlentities($file['name']) . '. ' . tra('Please re-upload the file');
+			$msg = tra('Warning: Empty file:') . '  ' . htmlentities($file['name']) . '. ' . tra('Please re-upload your file');
 		} elseif (empty($file['name']) || !preg_match('/^upfile(\d+)$/', $fileKey, $regs) || !($fileInfo = $this->get_file_info($regs[1]))) {
 			$msg = tra('Could not upload the file') . ': ' . htmlentities($file['name']);
 		} elseif (! $this->is_filename_valid($file['name'])) {
@@ -3723,7 +3718,7 @@ class FileGalLib extends TikiLib
 			$msg = tra('Could not find the file requested');
 		} elseif (!empty($fileInfo['lockedby']) && $fileInfo['lockedby'] != $user && $tiki_p_admin_file_galleries != 'y') {
 			// if locked, user must be the locker
-			$msg = sprintf(tra('The file has been locked by %s'), $fileInfo['lockedby']);
+			$msg = sprintf(tra('The file is locked by %s'), $fileInfo['lockedby']);
 		} elseif (!($tiki_p_edit_gallery_file == 'y' || (!empty($user) && ($user == $fileInfo['user'] || $user == $fileInfo['lockedby'])))) {
 			// must be the owner or the locker or have the perms
 			$smarty->assign('errortype', 401);
@@ -3768,6 +3763,37 @@ class FileGalLib extends TikiLib
 			'type' => preg_match('/.flv$/', $file['name']) ? 'video/x-flv' : $file['type'],
 			'size' => $file['size'],
 			'metadata' => isset($filemeta) && count($filemeta) > 0 ? $filemeta : null,
+		);
+	}
+
+	function handle_batch_upload($galleryId, $info, $ext = '')
+	{
+		$savedir = $this->get_gallery_save_dir($galleryId);
+
+		$fhash = null;
+		$data = null;
+
+		if ($savedir) {
+			$fhash = $this->find_unique_name($savedir, $info['name']);
+
+			if (in_array($ext, array("m4a", "mp3", "mov", "mp4", "m4v", "pdf"))) {
+				$fhash.= "." . $ext;
+			}
+
+			if (! rename($info['source'], $savedir . $fhash)) {
+				return array('error' => tra('Cannot write to this file:') . $savedir . $fhash);
+			}
+		} else {
+			$data = file_get_contents($info['source']);
+
+			if (false === $data) {
+				return array('error' => tra('Cannot read file on disk.'));
+			}
+		}
+
+		return array(
+			'data' => $data,
+			'fhash' => $fhash,
 		);
 	}
 
@@ -3846,28 +3872,23 @@ class FileGalLib extends TikiLib
 		try {
 			$client = TikiLib::lib('tiki')->get_http_client($url);
 
-			$http_headers = array();
 			if ($lastCheck) {
-				$http_headers['If-Modified-Since'] = gmdate('D, d M Y H:i:s T', $lastCheck);
+				$client->setHeaders('If-Modified-Since', gmdate('D, d M Y H:i:s T', $lastCheck));
 			}
 
 			if ($eTag) {
-				$http_headers['If-None-Match'] = $eTag;
-			}
-
-			if(count($http_headers)){
-				$client->setHeaders($http_headers);
+				$client->setHeaders('If-None-Match', $eTag);
 			}
 
 			$response = TikiLib::lib('tiki')->http_perform_request($client);
 
-			if ($response->isClientError()) {
-				TikiLib::lib('logs')->add_action($action, $url, 'url', 'error=' . $response->getStatusCode());
+			if ($response->isError()) {
+				TikiLib::lib('logs')->add_action($action, $url, 'url', 'error=' . $response->getStatus());
 				return false;
 			}
 
 			// 300 code, likely not modified or other non-critical error
-			if (! $response->isSuccess()) {
+			if (! $response->isSuccessful()) {
 				return false;
 			}
 
@@ -3875,7 +3896,7 @@ class FileGalLib extends TikiLib
 			$expiryDate = time();
 
 			$result = $response->getBody();
-			if ($disposition = $response->getHeaders()->get('Content-Disposition')) {
+			if ($disposition = $response->getHeader('Content-Disposition')) {
 				if (preg_match('/filename=[\'"]?([^;\'"]+)[\'"]?/i', $disposition, $parts)) {
 					$name = $parts[1];
 				}
@@ -3883,13 +3904,13 @@ class FileGalLib extends TikiLib
 
 			$name = rawurldecode($name);
 			// Check expires
-			if ($expires = $response->getHeaders()->get('Expires')) {
+			if ($expires = $response->getHeader('Expires')) {
 				$potential = strtotime($expires);
 				$expiryDate = max($expiryDate, $potential);
 			}
 
 			// Check cache-control for max-age, which has priority
-			if ($cacheControl = $response->getHeaders()->get('Cache-Control')) {
+			if ($cacheControl = $response->getHeader('Cache-Control')) {
 				if (preg_match('/max-age=(\d+)/', $cacheControl, $parts)) {
 					$expiryDate = time() + $parts[1];
 				}
@@ -3904,16 +3925,16 @@ class FileGalLib extends TikiLib
 				$name = tr('unknown');
 			}
 
-			TikiLib::lib('logs')->add_action($action, $url, 'url', 'success=' . $response->getStatusCode());
+			TikiLib::lib('logs')->add_action($action, $url, 'url', 'success=' . $response->getStatus());
 			return array(
 				'data' => $result,
 				'size' => $size,
 				'type' => $type,
 				'name' => $name,
 				'expires' => $expiryDate,
-				'etag' => $response->getHeaders()->get('Etag'),
+				'etag' => $response->getHeader('Etag'),
 			);
-		} catch (Zend\Http\Exception\ExceptionInterface $e) {
+		} catch (Zend_Http_Exception $e) {
 			TikiLib::lib('logs')->add_action($action, $url, 'url', 'error=' . $e->getMessage());
 			return false;
 		}

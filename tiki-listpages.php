@@ -412,8 +412,7 @@ if (!empty($multiprint_pages)) {
 
 	if ($prefs['feature_multilingual'] == 'y') {
 		$languages = array();
-		$langLib = TikiLib::lib('language');
-		$languages = $langLib->list_languages(false, 'y');
+		$languages = $tikilib->list_languages(false, 'y');
 		$smarty->assign_by_ref('languages', $languages);
 	}
 
@@ -455,6 +454,14 @@ if (!empty($multiprint_pages)) {
 		}
 	}
 
+	if ($tsOn) {
+		$ts_countid = $ts_tableid . '-count';
+		$ts_offsetid = $ts_tableid . '-offset';
+		$smarty->assign('ts_countid', $ts_countid);
+		$smarty->assign('ts_offsetid', $ts_offsetid);
+	}
+
+
 	if ($tsOn && !$tsAjax) {
 		//create dropdown lists for category name and path filters
 		$cnames = array();
@@ -486,6 +493,14 @@ if (!empty($multiprint_pages)) {
 			'total' 	=> $listpages['cant'],
 			'vars'	=> array(
 				'show_actions' => $show_actions,
+			),
+			'ajax' => array(
+				'servercount' => array(
+					'id' => $ts_countid,
+				),
+				'serveroffset' => array(
+					'id' => $ts_offsetid,
+				),
 			),
 			'columns'	=> array(
 				'#language'	=> array(

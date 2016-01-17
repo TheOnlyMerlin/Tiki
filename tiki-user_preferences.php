@@ -11,6 +11,7 @@
 $section = 'mytiki';
 require_once ('tiki-setup.php');
 $modlib = TikiLib::lib('mod');
+include_once ('lib/userprefs/scrambleEmail.php');
 $userprefslib = TikiLib::lib('userprefs');
 // User preferences screen
 if ($prefs['feature_userPreferences'] != 'y' && $prefs['change_password'] != 'y' && $tiki_p_admin_users != 'y') {
@@ -89,8 +90,7 @@ if ($prefs['feature_userPreferences'] == 'y' && isset($_REQUEST["new_prefs"])) {
 		}
 	}
 	if (isset($_REQUEST["userbreadCrumb"])) $tikilib->set_user_preference($userwatch, 'userbreadCrumb', $_REQUEST["userbreadCrumb"]);
-	$langLib = TikiLib::lib('language');
-	if (isset($_REQUEST["language"]) && $langLib->is_valid_language($_REQUEST['language'])) {
+	if (isset($_REQUEST["language"]) && $tikilib->is_valid_language($_REQUEST['language'])) {
 		if ($tiki_p_admin || $prefs['change_language'] == 'y') {
 			$tikilib->set_user_preference($userwatch, 'language', $_REQUEST["language"]);
 		}
@@ -108,8 +108,7 @@ if ($prefs['feature_userPreferences'] == 'y' && isset($_REQUEST["new_prefs"])) {
 			$tok = strtok(' ');
 		}
 		$list = array_unique($list);
-		$langLib = TikiLib::lib('language');
-		$list = array_filter($list, array($langLib, 'is_valid_language'));
+		$list = array_filter($list, array($tikilib, 'is_valid_language'));
 		$list = implode(' ', $list);
 		$tikilib->set_user_preference($userwatch, 'read_language', $list);
 	}
@@ -379,10 +378,8 @@ $smarty->assign_by_ref('userwatch_theme', $userwatch_theme);
 $smarty->assign_by_ref('userwatch_themeOption', $userwatch_themeOption);
 //user language
 $languages = array();
-$langLib = TikiLib::lib('language');
-$languages = $langLib->list_languages();
+$languages = $tikilib->list_languages();
 $smarty->assign_by_ref('languages', $languages);
-
 $user_pages = $tikilib->get_user_pages($userwatch, -1);
 $smarty->assign_by_ref('user_pages', $user_pages);
 $bloglib = TikiLib::lib('blog');
@@ -396,12 +393,7 @@ $flags = $tikilib->get_flags('','','', true);
 $smarty->assign_by_ref('flags', $flags);
 $scramblingMethods = array("n", "strtr", "unicode", "x", 'y'); // email_isPublic utilizes 'n'
 $smarty->assign_by_ref('scramblingMethods', $scramblingMethods);
-$scramblingEmails = array(
-		tra("no"),
-		TikiMail::scrambleEmail($userinfo['email'], 'strtr'),
-		TikiMail::scrambleEmail($userinfo['email'], 'unicode') . "-" . tra("unicode"),
-		TikiMail::scrambleEmail($userinfo['email'], 'x'), $userinfo['email'],
-	);
+$scramblingEmails = array(tra("no"), scrambleEmail($userinfo['email'], 'strtr'), scrambleEmail($userinfo['email'], 'unicode') . "-" . tra("unicode"), scrambleEmail($userinfo['email'], 'x'), $userinfo['email']);
 $smarty->assign_by_ref('scramblingEmails', $scramblingEmails);
 $avatar = $tikilib->get_user_avatar($userwatch);
 $smarty->assign_by_ref('avatar', $avatar);
@@ -416,7 +408,7 @@ if ($prefs['userTracker'] == 'y') {
 	$re = $userlib->get_usertracker($userinfo["userId"]);
 	if (isset($re['usersTrackerId']) and $re['usersTrackerId']) {
 		$trklib = TikiLib::lib('trk');
-		$info = $trklib->get_item_id($re['usersTrackerId'], $re['usersFieldId'], $userwatch);
+		$info = $trklib->get_item_id($re['usersTrackerId'], $trklib->get_field_id($re['usersTrackerId'], 'Login'), $userwatch);
 		$usertrackerId = $re['usersTrackerId'];
 		$useritemId = $info;
 	}
@@ -434,7 +426,46 @@ if ($prefs['feature_messages'] == 'y' && $tiki_p_messages == 'y') {
 }
 $smarty->assign('timezones', TikiDate::getTimeZoneList());
 
-$tikilib->set_display_timezone($user);
+// Manage time zone data for the user, in a similar way as in lib/setup/user_prefs.php
+if ($prefs['users_prefs_display_timezone'] == 'Site'
+			|| (isset($user_preferences[$user]['display_timezone'])
+			&& $user_preferences[$user]['display_timezone'] == 'Site')
+) {
+	// Stay in the time zone of the server
+	$prefs['display_timezone'] = $prefs['server_timezone'];
+} elseif ( !isset($prefs['display_timezone']) and ! isset($user_preferences[$user]['display_timezone'])
+					|| $user_preferences[$user]['display_timezone'] == ''
+					|| $user_preferences[$user]['display_timezone'] == 'Local'
+) {
+	// If the display timezone is not known ...
+	if ( isset($_COOKIE['local_tz'])) {
+		//   ... we try to use the timezone detected by javascript and stored in cookies
+		if (TikiDate::TimezoneIsValidId($_COOKIE['local_tz'])) {
+			$prefs['timezone_offset'] = isset($_COOKIE['local_tzoffset']) ? $_COOKIE['local_tzoffset'] : '';
+			if (isset($_COOKIE['local_tzoffset'])) {
+				$tzname = timezone_name_from_abbr($_COOKIE['local_tz'], $_COOKIE['local_tzoffset'] * 60 * 60);
+				$prefs['timezone_offset'] = $_COOKIE['local_tzoffset'];
+			} else {
+				$tzname = timezone_name_from_abbr($_COOKIE['local_tz']);
+				$prefs['timezone_offset'] = '';
+			}
+			if (TikiDate::TimezoneIsValidId($tzname)) {
+				$prefs['display_timezone'] = $tzname;
+			} else {
+				$prefs['display_timezone'] = $_COOKIE['local_tz'];
+			}
+		} elseif ( $_COOKIE['local_tz'] == 'HAEC' ) {
+			// HAEC, returned by Safari on Mac, is not recognized as a DST timezone (with daylightsavings)
+			//  ... So use one equivalent timezone name
+			$prefs['display_timezone'] = 'Europe/Paris';
+		} else {
+			$prefs['display_timezone'] = $prefs['server_timezone'];
+		}
+	} else {
+		// ... and we fallback to the server timezone if the cookie value is not available
+		$prefs['display_timezone'] = $prefs['server_timezone'];
+	}
+}
 
 if (isset($prefs['display_timezone'])) {
 	$smarty->assign('display_timezone', $prefs['display_timezone']);

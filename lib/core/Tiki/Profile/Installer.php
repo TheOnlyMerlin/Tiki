@@ -356,17 +356,6 @@ class Tiki_Profile_Installer
 		$tikilib = TikiLib::lib('tiki');
 
 		try {
-
-			// Apply directives, note Directives should be and are a runtime thing
-			$yamlDirectives = new Yaml_Directives(new Yaml_Filter_ReplaceUserData($profile, $this->userData), $profile->getPath());
-			$data = $profile->getData();
-			$yamlDirectives->process($data);
-			$profile->setData($data);
-			$profile->fetchExternals(); // there might be new externals as a result of the directives processing
-
-
-			$profile->getObjects(); // need to be refreshed before installation in case any have changed due to replacements
-
 			if ( ! $profiles = $this->getInstallOrder($profile) ) {
 				return false;
 			}
@@ -376,7 +365,7 @@ class Tiki_Profile_Installer
 			}
 			
 			if (count($this->getFeedback()) == count($profiles)) {
-				$this->setFeedback(tra('Nothing was changed. Please check the profile for errors'));
+				$this->setFeedback(tra('Nothing was changed, please check profile for errors'));
 			}
 			$cachelib->empty_cache($empty_cache, 'profile');
 			return true;
@@ -439,11 +428,8 @@ class Tiki_Profile_Installer
 		tiki_setup_events();
 
 		foreach ( $profile->getObjects() as $object ) {
-			$installer = $this->getInstallHandler($object);
-			$installer->install();
-			$description = $object->getDescription();
-			$installer->replaceReferences($description);
-			$this->setFeedback(tra('Added (or modified)').': '.$description);
+			$this->getInstallHandler($object)->install();
+			$this->setFeedback(tra('Added (or modified)').': '.$object->getDescription());
 		}
 		$groupMap = $profile->getGroupMap();
 		$profile->replaceReferences($groupMap, $this->userData);

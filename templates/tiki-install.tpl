@@ -159,7 +159,7 @@
 							{icon name="ok"} {tr}Tiki has detected your PHP memory_limit at:{/tr}<strong>{$php_memory_limit|kbsize:true:0}</strong>.
 						{/remarksbox}
 					{/if}
-					<h2>{tr}Mail{/tr}</h2><a id="mail"> </a>
+					<h2>{tr}Mail{/tr}</h2><a name="mail"> </a>
 					<p>{tr}Tiki uses the PHP <strong>mail</strong> function to send email notifications and messages.{/tr}</p>
 					{if $mail_test_performed ne 'y'}
 						<p>{tr}To test your system configuration, Tiki will attempt to send a test message to you.{/tr}</p>
@@ -553,26 +553,13 @@
 								<legend>{tr}General{/tr} <a href="https://doc.tiki.org/general+admin" target="_blank" title="{tr}Help{/tr}">{icon name="help"}</a></legend>
 								<div style="padding:5px; clear:both">
 									<label for="browsertitle">{tr}Browser title:{/tr}</label>
-									<div style="margin-left:1em"><input class="form-control" type="text" size="40" name="browsertitle" id="browsertitle" onclick="if (this.value=="{tr}My Tiki{/tr}") this.value='';" onfocus="origval=this.value;" onblur="if (this.value=='') this.value=origval;" value="{if $prefs.browsertitle eq ''}{tr}My Tiki{/tr}{else}{$prefs.browsertitle|escape}{/if}">
+									<div style="margin-left:1em"><input class="form-control" type="text" size="40" name="browsertitle" id="browsertitle" onclick="if (this.value=='{tr}My Tiki{/tr}') this.value='';" onfocus="origval=this.value;" onblur="if (this.value=='') this.value=origval;" value="{if $prefs.browsertitle eq ''}{tr}My Tiki{/tr}{else}{$prefs.browsertitle|escape}{/if}">
 										<br><em>{tr}This will appear in the browser title bar.{/tr}</em>
 									</div>
 								</div>
 								<div style="padding:5px; clear:both"><label for="sender_email">{tr}Sender email:{/tr}</label>
 									<div style="margin-left:1em"><input type="text" class="form-control" size="40" name="sender_email" id="sender_email" value="{$prefs.sender_email|escape}">
 										<br><em>{tr}Email sent by your site will use this address.{/tr}</em>
-									</div>
-								</div>
-								<div style="padding:5px; clear:both">
-									<div style="padding:5px; clear:both">
-										<label for="network_proxy">{tr}Network Proxy?{/tr}</label> <a href="#" onclick="$('#use_proxy_childcontainer').toggle();return false;">{tr}Toggle section display{/tr}</a>
-										<div id="use_proxy_childcontainer"{if $prefs.use_proxy neq 'y'} style="display:none;"{/if}>
-											<div style="margin-left:1em"><label for="use_proxy">{tr}Use proxy{/tr}</label> <input type="checkbox" name="use_proxy" id="use_proxy"{if $prefs.use_proxy eq 'y'} checked="checked"{/if}><a href="https://doc.tiki.org/General+Settings" target="_blank" title="{tr}Help{/tr}">{icon name="help"}</a></div>
-											<div style="margin-left:1em"><label for="proxy_host">{tr}Proxy host name{/tr}</label><input type="text" class="form-control" size="40" name="proxy_host" id="proxy_host" value="{$prefs.proxy_host|escape}"></div>
-											<div style="margin-left:1em"><label for="proxy_port">{tr}Port{/tr}</label><input type="text" class="form-control" size="40" name="proxy_port" id="proxy_port" value="{$prefs.proxy_port|escape}"></div>
-											<div style="margin-left:1em"><label for="proxy_user">{tr}Proxy username{/tr}</label><input type="text" class="form-control" size="40" name="proxy_user" id="proxy_user" value="{$prefs.proxy_user|escape}"></div>
-											<div style="margin-left:1em"><label for="proxy_pass">{tr}Proxy password{/tr}</label><input type="text" class="form-control" size="40" name="proxy_pass" id="proxy_pass" value="{$prefs.proxy_pass|escape}"></div>
-											</div>
-										</div>
 									</div>
 								</div>
 							</fieldset>
@@ -584,15 +571,15 @@
 									</a>
 								</legend>
 								{remarksbox type=info title="{tr}Tip{/tr}" close="n"}
-									{tr}It is recommended to choose the "Require secure (HTTPS) login" option for better security. A security certificate and dedicated IP address are required to implement a secure login.{/tr}
+									{tr}It is recommended to choose the "Require secure (https) login" option for better security. A security certificate and dedicated IP address are required to implement a secure login.{/tr}
 								{/remarksbox}
 								<div style="padding:5px; clear:both"><label for="https_login">{tr}HTTPS login:{/tr}</label>
 									<select class="form-control" name="https_login" id="https_login" onchange="hidedisabled('httpsoptions',this.value);">
 										<option value="disabled"{if $prefs.https_login eq 'disabled'} selected="selected"{/if}>{tr}Disabled{/tr}</option>
-										<option value="allowed"{if $prefs.https_login eq 'allowed'} selected="selected"{/if}>{tr}Allow secure (HTTPS) login{/tr}</option>
-										<option value="encouraged"{if $prefs.https_login eq 'encouraged' or ($prefs.https_login eq '' and $detected_https eq 'on' )} selected="selected"{/if}>{tr}Encourage secure (HTTPS) login{/tr}</option>
+										<option value="allowed"{if $prefs.https_login eq 'allowed'} selected="selected"{/if}>{tr}Allow secure (https) login{/tr}</option>
+										<option value="encouraged"{if $prefs.https_login eq 'encouraged' or ($prefs.https_login eq '' and $detected_https eq 'on' )} selected="selected"{/if}>{tr}Encourage secure (https) login{/tr}</option>
 										<option value="force_nocheck"{if $prefs.https_login eq 'force_nocheck'} selected="selected"{/if}>{tr}Consider we are always in HTTPS, but do not check{/tr}</option>
-										<option value="required"{if $prefs.https_login eq 'required'} selected="selected"{/if}>{tr}Require secure (HTTPS) login{/tr}</option>
+										<option value="required"{if $prefs.https_login eq 'required'} selected="selected"{/if}>{tr}Require secure (https) login{/tr}</option>
 									</select>
 								</div>
 								<div id="httpsoptions" style="display:{if $prefs.https_login eq 'disabled' or ( $prefs.https_login eq '' and $detected_https eq '')}none{else}block{/if};">
@@ -619,7 +606,7 @@
 										<option value="2047" {if $prefs.error_reporting_level eq 2047}selected="selected"{/if}>{tr}Report all PHP errors except strict{/tr}</option>
 										<option value="-1" {if $prefs.error_reporting_level eq -1}selected="selected"{/if}>{tr}Report all PHP errors{/tr}</option>
 										<option value="2039" {if $prefs.error_reporting_level eq 2039 or $prefs.error_reporting_level eq ''}selected="selected"{/if}>{tr}Report all errors except notices{/tr}</option>
-										<option value="1" {if $prefs.error_reporting_level eq 1039}selected="selected"{/if}>{tr}According to the PHP configuration{/tr}</option>
+										<option value="1" {if $prefs.error_reporting_level eq 1039}selected="selected"{/if}>{tr}According to PHP configuration{/tr}</option>
 									</select>
 									<div style="padding:5px;clear:both">
 										<div style="padding:5px;clear:both">
@@ -631,7 +618,7 @@
 											<input type="checkbox" id="smarty_notice_reporting" name="smarty_notice_reporting"{if $prefs.smarty_notice_reporting eq 'y'} checked="checked"{/if}>
 										</div>
 										<div style="padding:5px;clear:both">
-											<label for="log_tpl">{tr}Add HTML comment at start and end of each Smarty template (.tpl file){/tr}.</label>
+											<label for="log_tpl">{tr}Add HTML comment at start and end of each Smarty template (TPL){/tr}.</label>
 											<input type="checkbox" id="log_tpl" name="log_tpl"{if $prefs.log_tpl eq 'y'} checked="checked"{/if}>
 											{remarksbox type=warning title="{tr}Warning{/tr}" close="n"}
 												{tr}Use only for development, not in production because these warnings are added to emails as well, and visible to the users{/tr}
@@ -706,10 +693,10 @@
 					<h1 class="pagetitle">{tr}Enter Your Tiki{/tr}</h1>
 					<p>{tr}The installation is complete!{/tr} {tr}Your database has been configured and Tiki is ready to run.{/tr} </p>
 					{remarksbox type='tip' title="{tr}Join us!{/tr}" close="n"}
-						{tr}Tiki is an open source project, you can <a href='https://tiki.org/Join' target='_blank' class="alert-link">join the community</a> and help <a href='https://dev.tiki.org' target='_blank' class="alert-link">develop Tiki</a>.{/tr}
+						{tr}Tiki is an open source project, you can <a href='https://info.tiki.org/Join+the+Community' target='_blank' class="alert-link">join the community</a> and help <a href='https://info.tiki.org/Develop+Tiki' target='_blank' class="alert-link">develop Tiki</a>.{/tr}
 					{/remarksbox}
 					{remarksbox type='tip' title="{tr}Stay up-to-date{/tr}" close="n"}
-						{tr}Subscribe to the <a href="https://tiki.org/Newsletter" title="Subscribe" target="_blank" class="alert-link">Tiki newsletter</a> or <a href="https://tiki.org/tiki-articles_rss.php" title="RSS" target="_blank" class="alert-link">RSS feed</a> to learn about new releases, security updates, and community news.{/tr}
+						{tr}Subscribe to the <a href="https://tiki.org/Newsletter" title="Subscribe" target="_blank" class="alert-link">Tiki newsletter</a> or <a href="https://info.tiki.org/tiki-articles_rss.php" title="RSS" target="_blank" class="alert-link">RSS feed</a> to learn about new releases, security updates, and community news.{/tr}
 					{/remarksbox}
 
 					{if isset($htaccess_error) and $htaccess_error eq 'y'}
@@ -727,11 +714,11 @@
 						{tr}You can now log in into Tiki as user <strong>admin</strong> and start configuring the application.{/tr}
 					</p>
 					{if isset($smarty.post.scratch)}
-						<h3>{icon name='information'} {tr}Installation{/tr}</h3>
+						<h3><img src="img/icons/information.png" alt="{tr}Note{/tr}" style="vertical-align:middle"> {tr}Installation{/tr}</h3>
 						<p>{tr}If this is a first time installation, go to <strong>tiki-admin.php</strong> after login to start configuring your new Tiki installation.{/tr}</p>
 					{/if}
 					{if isset($smarty.post.update)}
-						<h3>{icon name='information'} {tr}Upgrade{/tr}</h3>
+						<h3><img src="img/icons/information.png" alt="{tr}Note{/tr}" style="vertical-align:middle"> {tr}Upgrade{/tr}</h3>
 						<p>{tr}If this is an upgrade, clean the Tiki caches manually (the <strong>templates_c</strong> directory) or by using the <strong>Admin &gt; System</strong> option from the Admin menu.{/tr}</p>
 					{/if}
 					{if $tikidb_is20}
@@ -758,56 +745,54 @@
 						{if $double_encode_fix_attempted eq 'y'}
 							<p>{tr}You can now access the site normally. Report back any issues that you might find (if any) to the Tiki forums or bug tracker{/tr}</p>
 						{elseif not isset($legacy_collation)}
-							<form method="post" action="#" onsubmit="return confirm("{tr}Are you sure you want to attempt to fix the encoding of your entire database?{/tr}");" style="padding-top: 100px;">
+							<form method="post" action="#" onsubmit="return confirm('{tr}Are you sure you want to attempt to fix the encoding of your entire database?{/tr}');" style="padding-top: 100px;">
 								<fieldset>
 									<legend>{tr}Upgrading and running into encoding issues?{/tr}</legend>
 									<p>{tr}We can try to fix it, but <strong>make sure you have backups, and can restore them</strong>.{/tr}</p>
 									{if $client_charset_in_file eq 'utf8'}
-										<div class="form-group">
-											<div class="input-group col-sm-8">
-												<span class="input-group-addon">{tr}Previous table encoding:{/tr}</span>
-												<select class="form-control" name="previous_encoding" id="previous_encoding">
-													<option value="">{tr}Please select{/tr}</option>
-													<option value="armscii8" title="Armenian, Binary">armscii8</option>
-													<option value="ascii" title="West European (multilingual), Binary">ascii</option>
-													<option value="big5" title="Traditional Chinese, Binary">big5</option>
-													<option value="binary" title="Binary">binary</option>
-													<option value="cp1250" title="Central European (multilingual), Binary">cp1250</option>
-													<option value="cp1251" title="Cyrillic (multilingual), Binary">cp1251</option>
-													<option value="cp1256" title="Arabic, Binary">cp1256</option>
-													<option value="cp1257" title="Baltic (multilingual), Binary">cp1257</option>
-													<option value="cp850" title="West European (multilingual), Binary">cp850</option>
-													<option value="cp852" title="Central European (multilingual), Binary">cp852</option>
-													<option value="cp866" title="Russian, Binary">cp866</option>
-													<option value="cp932" title="Japanese, Binary">cp932</option>
-													<option value="dec8" title="West European (multilingual), Binary">dec8</option>
-													<option value="eucjpms" title="Japanese, Binary">eucjpms</option>
-													<option value="euckr" title="Korean, Binary">euckr</option>
-													<option value="gb2312" title="Simplified Chinese, Binary">gb2312</option>
-													<option value="gbk" title="Simplified Chinese, Binary">gbk</option>
-													<option value="geostd8" title="Georgian, Binary">geostd8</option>
-													<option value="greek" title="Greek, Binary">greek</option>
-													<option value="hebrew" title="Hebrew, Binary">hebrew</option>
-													<option value="hp8" title="West European (multilingual), Binary">hp8</option>
-													<option value="keybcs2" title="Czech-Slovak, Binary">keybcs2</option>
-													<option value="koi8r" title="Russian, Binary">koi8r</option>
-													<option value="koi8u" title="Ukrainian, Binary">koi8u</option>
-													<option value="latin1" title="West European (multilingual), Binary">latin1</option>
-													<option value="latin2" title="Central European (multilingual), Binary">latin2</option>
-													<option value="latin5" title="Turkish, Binary">latin5</option>
-													<option value="latin7" title="Baltic (multilingual), Binary">latin7</option>
-													<option value="macce" title="Central European (multilingual), Binary">macce</option>
-													<option value="macroman" title="West European (multilingual), Binary">macroman</option>
-													<option value="sjis" title="Japanese, Binary">sjis</option>
-													<option value="swe7" title="Swedish, Binary">swe7</option>
-													<option value="tis620" title="Thai, Binary">tis620</option>
-													<option value="ucs2" title="Unicode (multilingual), Binary">ucs2</option>
-													<option value="ujis" title="Japanese, Binary">ujis</option>
-												</select>
-												<span class="input-group-btn"><input type="submit" class="btn btn-danger btn-sm" name="fix_double_encoding" value="{tr}Click to fix double encoding (dangerous){/tr}"></span>
-											</div>
+										<p>
+											{tr}Previous table encoding:{/tr}
+											<select name="previous_encoding" id="previous_encoding">
+												<option value="">{tr}Please select{/tr}</option>
+												<option value="armscii8" title="Armenian, Binary">armscii8</option>
+												<option value="ascii" title="West European (multilingual), Binary">ascii</option>
+												<option value="big5" title="Traditional Chinese, Binary">big5</option>
+												<option value="binary" title="Binary">binary</option>
+												<option value="cp1250" title="Central European (multilingual), Binary">cp1250</option>
+												<option value="cp1251" title="Cyrillic (multilingual), Binary">cp1251</option>
+												<option value="cp1256" title="Arabic, Binary">cp1256</option>
+												<option value="cp1257" title="Baltic (multilingual), Binary">cp1257</option>
+												<option value="cp850" title="West European (multilingual), Binary">cp850</option>
+												<option value="cp852" title="Central European (multilingual), Binary">cp852</option>
+												<option value="cp866" title="Russian, Binary">cp866</option>
+												<option value="cp932" title="Japanese, Binary">cp932</option>
+												<option value="dec8" title="West European (multilingual), Binary">dec8</option>
+												<option value="eucjpms" title="Japanese, Binary">eucjpms</option>
+												<option value="euckr" title="Korean, Binary">euckr</option>
+												<option value="gb2312" title="Simplified Chinese, Binary">gb2312</option>
+												<option value="gbk" title="Simplified Chinese, Binary">gbk</option>
+												<option value="geostd8" title="Georgian, Binary">geostd8</option>
+												<option value="greek" title="Greek, Binary">greek</option>
+												<option value="hebrew" title="Hebrew, Binary">hebrew</option>
+												<option value="hp8" title="West European (multilingual), Binary">hp8</option>
+												<option value="keybcs2" title="Czech-Slovak, Binary">keybcs2</option>
+												<option value="koi8r" title="Russian, Binary">koi8r</option>
+												<option value="koi8u" title="Ukrainian, Binary">koi8u</option>
+												<option value="latin1" title="West European (multilingual), Binary">latin1</option>
+												<option value="latin2" title="Central European (multilingual), Binary">latin2</option>
+												<option value="latin5" title="Turkish, Binary">latin5</option>
+												<option value="latin7" title="Baltic (multilingual), Binary">latin7</option>
+												<option value="macce" title="Central European (multilingual), Binary">macce</option>
+												<option value="macroman" title="West European (multilingual), Binary">macroman</option>
+												<option value="sjis" title="Japanese, Binary">sjis</option>
+												<option value="swe7" title="Swedish, Binary">swe7</option>
+												<option value="tis620" title="Thai, Binary">tis620</option>
+												<option value="ucs2" title="Unicode (multilingual), Binary">ucs2</option>
+												<option value="ujis" title="Japanese, Binary">ujis</option>
+											</select>
+											<input type="submit" class="btn btn-danger btn-sm" name="fix_double_encoding" value="{tr}Dangerous: Fix double encoding{/tr}">
 											<input type="hidden" name="install_step" value="7">
-										</div>
+										</p>
 									{else}
 										<p>{tr}Oops. You need to make sure client charset is forced to UTF-8. Reset the database connection to continue.{/tr}</p>
 									{/if}
@@ -823,7 +808,7 @@
 				{if $virt}
 					<div class="box-shadow">
 						<div class="box">
-							<h3 class="box-title">{tr}MultiTiki Setup{/tr} <a title="{tr}Help{/tr}" href="https://doc.tiki.org/MultiTiki" target="help">{icon name='help'}</h3>
+							<h3 class="box-title">{tr}MultiTiki Setup{/tr} <a title="{tr}Help{/tr}" href="https://doc.tiki.org/MultiTiki" target="help"><img style="border:0" src="img/icons/help.png" alt="{tr}Help{/tr}"></a></h3>
 							<div class="clearfix box-data">
 								{if !empty({$multi})}
 									<div><a href="#" onclick="$('#multi').submit();return false;">{tr}Default Installation{/tr}</a></div>

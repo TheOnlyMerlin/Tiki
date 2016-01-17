@@ -99,7 +99,7 @@
 				</ul>
 			{else}
 				<div class="table-responsive">
-					<table class="table">
+					<table class="table normal">
 						<tr>
 							{cycle name=table values=',,,,</tr><tr>' print=false advance=false}
 							{section name=back loop=$likepages}
@@ -331,7 +331,7 @@
 								<div class="col-sm-10 checkbox">
 									<input type="checkbox" name="allowhtml" {if $allowhtml eq 'y'}checked="checked"{/if}>
 									{remarksbox type=tip title="{tr}Tip{/tr}"}
-										{tr }Per-page option: HTML tags are used to create elements of the wiki page, instead of being displayed as code.{/tr}
+										{tr }Per-page option: HTML in Wiki Pages is parsed by the browser, instead of HTML tags being displayed as typed.{/tr}
 									{/remarksbox}
 								</div>
 							</div>
@@ -623,7 +623,7 @@
 							<div class="form-group">
 								<label for="" class="col-sm-2 control-label">{tr}Geolocation{/tr}</label>
 								<div class="col-sm-10">
-									<div class="map-container form-control" data-geo-center="{$defaultmapcenter}" data-target-field="geolocation" style="height: 250px;"></div>
+									<div class="map-container form-control" data-geo-center="{defaultmapcenter}" data-target-field="geolocation" style="height: 250px;"></div>
 									<input type="hidden" name="geolocation" value="{$geolocation_string}">
 								</div>
 							</div>
@@ -634,32 +634,22 @@
 								<div class="col-sm-10">
 									<ul class="list-unstyled">
 										{if $prefs.wiki_auto_toc eq 'y'}
-											<li>
-												<div class="col-sm-3">
-													{tr}Automatic table of contents{/tr}
-												</div>
-												<div class="col-sm-2">
-													<select name="pageAutoToc" class="form-control">
-														<option value="0" {if $pageAutoToc == 0}selected{/if}>{tr}Default{/tr}</option>
-														{*<option value="1" {if $pageAutoToc == 1}selected{/if}>{tr}On{/tr}</option>*}
-														<option value="-1" {if $pageAutoToc == -1}selected{/if}>{tr}Off{/tr}</option>
-													</select>
-												</div>
+											<li>{tr}Automatic Table of Contents generation{/tr}
+												<select name="pageAutoToc">
+													<option value="0" {if $pageAutoToc == 0}selected{/if}>{tr}Default{/tr}</option>
+													{*<option value="1" {if $pageAutoToc == 1}selected{/if}>{tr}On{/tr}</option>*}
+													<option value="-1" {if $pageAutoToc == -1}selected{/if}>{tr}Off{/tr}</option>
+												</select>
 											</li>
 										{/if}
 
 										{if $prefs.wiki_page_hide_title eq 'y' && ($prefs.wiki_page_name_above eq 'y' or $prefs.feature_page_title eq 'y')}
-											<li>
-												<div class="col-sm-2">
-													{tr}Show page title{/tr}
-												</div>
-												<div class="col-sm-2">
-													<select name="page_hide_title" class="form-control">
-														<option value="0" {if $page_hide_title == 0}selected{/if}>{tr}Default{/tr}</option>
-														{*<option value="1" {if $page_hide_title == 1}selected{/if}>{tr}On{/tr}</option>*}
-														<option value="-1" {if $page_hide_title == -1}selected{/if}>{tr}Off{/tr}</option>
-													</select>
-												</div>
+											<li>{tr}Show page title{/tr}
+												<select name="page_hide_title">
+													<option value="0" {if $page_hide_title == 0}selected{/if}>{tr}Default{/tr}</option>
+													{*<option value="1" {if $page_hide_title == 1}selected{/if}>{tr}On{/tr}</option>*}
+													<option value="-1" {if $page_hide_title == -1}selected{/if}>{tr}Off{/tr}</option>
+												</select>
 											</li>
 										{/if}
 									</ul>

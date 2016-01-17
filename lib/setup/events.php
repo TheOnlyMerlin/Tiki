@@ -62,6 +62,10 @@ function tiki_setup_events()
 			$events->bind('tiki.trackeritem.save', $defer('trk', 'sync_user_realname'));
 		}
 
+		if ($prefs['user_trackersync_groups'] == 'y') {
+			$events->bind('tiki.trackeritem.save', $defer('trk', 'sync_user_groups'));
+		}
+
 		if ($prefs['user_trackersync_geo'] == 'y') {
 			$events->bind('tiki.trackeritem.save', $defer('trk', 'sync_user_geo'));
 		}
@@ -69,10 +73,6 @@ function tiki_setup_events()
 		if ($prefs['groupTracker'] == 'y') {
 			$events->bind('tiki.trackeritem.create', $defer('trk', 'group_tracker_create'));
 		}
-
-		$events->bind('tiki.trackeritem.create', $defer('trk', 'setup_wiki_fields'));
-		$events->bind('tiki.trackeritem.update', $defer('trk', 'update_wiki_fields'));
-		$events->bind('tiki.trackeritem.delete', $defer('trk', 'delete_wiki_fields'));
 
 		if ($prefs['userTracker'] == 'y') {
 			$events->bind('tiki.trackeritem.save', $defer('trk', 'update_user_account'));
@@ -95,25 +95,6 @@ function tiki_setup_events()
 
 		if ($prefs['trackerfield_icon'] == 'y') {
 			$events->bind('tiki.trackeritem.save', array('Tracker_Field_Icon', 'updateIcon'));
-		}
-
-		// Certain non-read only fields that can be edited outside of using the tracker field do store a value in the
-		// tiki_tracker_item_fields database, and therefore need updates of the tracker field value to be in sync, when
-		// edited elsewhere. Completely read-only fields don't have this problem as they don't save anything anyway.
-		//
-		// A possible solution could have been to avoid storing the value in the database altogether and get the value
-		// from the canonical source, but there is code that currently could dependd on it and also it might actually
-		// be argued in favor of for performance reasons to have the value in the tiki_tracker_item_fields db as well.
-		//
-		// TODO: freetags field. There is already handling for the Freetags field in wikiplugin_addfreetag.php which
-		// is the most likely place it would be edited outside of tracker field but an event would be cleaner.
-		//
-		if ($prefs['trackerfield_relation'] == 'y') {
-			$events->bind('tiki.social.relation.add', array('Tracker_Field_Relation', 'syncRelationAdded'));
-			$events->bind('tiki.social.relation.remove', array('Tracker_Field_Relation', 'syncRelationRemoved'));
-		}
-		if ($prefs['trackerfield_category'] == 'y') {
-			$events->bind('tiki.object.categorized', array('Tracker_Field_Category', 'syncCategoryFields'));
 		}
 
 		$events->bind('tiki.trackeritem.save', $defer('trk', 'update_tracker_summary'));
@@ -190,10 +171,6 @@ function tiki_setup_events()
 		$events->bind('tiki.user.create', ['Services_MustRead_Controller', 'handleUserCreation']);
 	}
 
-	if ($prefs['feature_score'] == 'y') {
-		TikiLib::lib('score')->bindEvents($events);
-	}
-
 	// If the parameter is supplied by the web server, Tiki will expose the username as a response header
 	if (! empty($_SERVER['TIKI_HEADER_REPORT_USER'])) {
 		$events->bind('tiki.process.render', function () {
@@ -214,38 +191,16 @@ function tiki_setup_events()
 	}
 
 	// Chain events
-	$events->bind('tiki.object.categorized', 'tiki.save');
-
-	$events->bind('tiki.user.login', 'tiki.view');
-	$events->bind('tiki.user.view', 'tiki.view');
-	$events->bind('tiki.user.avatar', 'tiki.save');
-
 	$events->bind('tiki.wiki.update', 'tiki.wiki.save');
 	$events->bind('tiki.wiki.create', 'tiki.wiki.save');
 	$events->bind('tiki.wiki.save', 'tiki.save');
 	$events->bind('tiki.wiki.view', 'tiki.view');
-	$events->bind('tiki.wiki.attachfile', 'tiki.save');
-
-	$events->bind('tiki.article.create', 'tiki.article.save');
-	$events->bind('tiki.article.save', 'tiki.save');
-	$events->bind('tiki.article.delete', 'tiki.save');
-	$events->bind('tiki.article.view', 'tiki.view');
-
-	$events->bind('tiki.blog.create', 'tiki.blog.save');
-	$events->bind('tiki.blog.save', 'tiki.save');
-	$events->bind('tiki.blog.delete', 'tiki.save');
-	$events->bind('tiki.blog.view', 'tiki.view');
-
-	$events->bind('tiki.blogpost.create', 'tiki.blogpost.save');
-	$events->bind('tiki.blogpost.save', 'tiki.save');
-	$events->bind('tiki.blogpost.delete', 'tiki.save');
 
 	$events->bind('tiki.trackeritem.update', 'tiki.trackeritem.save');
 	$events->bind('tiki.trackeritem.create', 'tiki.trackeritem.save');
 	$events->bind('tiki.trackeritem.save', 'tiki.save');
 	$events->bind('tiki.trackeritem.delete', 'tiki.save');
 	$events->bind('tiki.trackeritem.rating', 'tiki.rating');
-	$events->bind('tiki.trackeritem.view', 'tiki.view');
 
 	$events->bind('tiki.trackerfield.update', 'tiki.trackerfield.save');
 	$events->bind('tiki.trackerfield.create', 'tiki.trackerfield.save');
@@ -266,22 +221,11 @@ function tiki_setup_events()
 	$events->bind('tiki.file.create', 'tiki.file.save');
 	$events->bind('tiki.file.delete', 'tiki.file.save');
 	$events->bind('tiki.file.save', 'tiki.save');
-	$events->bind('tiki.file.download', 'tiki.view');
 
 	$events->bind('tiki.filegallery.update', 'tiki.filegallery.save');
 	$events->bind('tiki.filegallery.create', 'tiki.filegallery.save');
 	$events->bind('tiki.filegallery.delete', 'tiki.filegallery.save');
 	$events->bind('tiki.filegallery.save', 'tiki.save');
-
-	$events->bind('tiki.image.create', 'tiki.image.save');
-	$events->bind('tiki.image.delete', 'tiki.image.save');
-	$events->bind('tiki.image.save', 'tiki.save');
-	$events->bind('tiki.image.view', 'tiki.view');
-
-	$events->bind('tiki.imagegallery.create', 'tiki.imagegallery.save');
-	$events->bind('tiki.imagegallery.delete', 'tiki.imagegallery.save');
-	$events->bind('tiki.imagegallery.save', 'tiki.save');
-	$events->bind('tiki.imagegallery.view', 'tiki.view');
 
 	$events->bind('tiki.forum.update', 'tiki.forum.save');
 	$events->bind('tiki.forum.create', 'tiki.forum.save');
@@ -292,7 +236,6 @@ function tiki_setup_events()
 	$events->bind('tiki.forumpost.reply', 'tiki.forumpost.save');
 	$events->bind('tiki.forumpost.update', 'tiki.forumpost.save');
 	$events->bind('tiki.forumpost.save', 'tiki.save');
-	$events->bind('tiki.forumpost.view', 'tiki.view');
 
 	$events->bind('tiki.group.update', 'tiki.group.save');
 	$events->bind('tiki.group.create', 'tiki.group.save');
@@ -312,7 +255,6 @@ function tiki_setup_events()
 	$events->bind('tiki.user.follow.add', 'tiki.user.network');
 	$events->bind('tiki.user.follow.incoming', 'tiki.user.network');
 	$events->bind('tiki.user.friend.add', 'tiki.user.network');
-	$events->bind('tiki.user.message', 'tiki.user.network');
 
 	$events->bind('tiki.social.like.add', 'tiki.social.save');
 	$events->bind('tiki.social.like.remove', 'tiki.social.save');
@@ -320,8 +262,6 @@ function tiki_setup_events()
 	$events->bind('tiki.social.favorite.remove', 'tiki.social.save');
 	$events->bind('tiki.social.relation.add', 'tiki.social.save');
 	$events->bind('tiki.social.relation.remove', 'tiki.social.save');
-	$events->bind('tiki.social.rating.add', 'tiki.social.save');
-	$events->bind('tiki.social.rating.remove', 'tiki.social.save');
 
 	$events->bind('tiki.query.critical', 'tiki.query.hit');
 	$events->bind('tiki.query.high', 'tiki.query.hit');
@@ -338,16 +278,6 @@ function tiki_setup_events()
 		// If available, try to send everything to the user at this point
 		$events->bindPriority(-10, 'tiki.process.shutdown', 'fastcgi_finish_request');
 	}
-
-	// if article indexing is on as part of the rss article generator bind the categorization of objects to ensure
-	// that the trackeritem and article are always in sync category-wise
-	if (isset($prefs['tracker_article_indexing']) && $prefs['tracker_article_indexing'] == 'y') {
-		$events->bind('tiki.object.categorized', $defer('trk','sync_tracker_article_categories'));
-	}
-
-	//Check the Addons to see if there are any events to bind
-	$api = new TikiAddons_Api_Events();
-	$api->bindEvents($events);
 }
 
 function tiki_save_refresh_index($args)

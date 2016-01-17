@@ -244,7 +244,7 @@ function wikiplugin_mediaplayer($data, $params)
 		if ($params['type'] === 'pdf') {
 			if ($prefs['fgal_viewerjs_feature'] === 'y') {
 
-				$src = \ZendOpenId\OpenId::absoluteUrl($params['src']);
+				$src = Zend_OpenId::absoluteUrl($params['src']);
 				$src = $prefs['fgal_viewerjs_uri'] . '#' . $src;
 
 				$out = "<iframe width=\"{$params['width']}\" height=\"{$params['height']}\" src=\"{$src}\"></iframe>";

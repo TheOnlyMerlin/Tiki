@@ -12,24 +12,24 @@ class TikiFilter
 	 * can be passed or a name.
 	 * 
 	 * @param mixed
-	 * @return \Zend\Filter\FilterInterface
+	 * @return Zend_Filter_Interface
 	 */
 	public static function get( $filter )
 	{
-		if ( $filter instanceof \Zend\Filter\FilterInterface ) {
+		if ( $filter instanceof Zend_Filter_Interface ) {
 			return $filter;
 		}
 
 		switch( $filter )
 		{
 		case 'alpha':
-			return new Zend\I18n\Filter\Alpha;
+			return new Zend_Filter_Alpha;
 		case 'alnum':
-			return new Zend\I18n\Filter\Alnum;
+			return new Zend_Filter_Alnum;
 		case 'digits':
-			return new Zend\Filter\Digits;
+			return new Zend_Filter_Digits;
 		case 'int':
-			return new Zend\Filter\ToInt;
+			return new Zend_Filter_Int;
 		case 'isodate':
 			return new TikiFilter_IsoDate;
 		case 'isodatetime':
@@ -47,7 +47,7 @@ class TikiFilter
 		case 'datetime':
 			// Use striptags
 		case 'striptags':
-			return new Zend\Filter\StripTags;
+			return new Zend_Filter_StripTags;
 		case 'word':
 			return new TikiFilter_Word;
 		case 'xss':
@@ -60,9 +60,9 @@ class TikiFilter
 		case 'none':
 			return new TikiFilter_RawUnsafe;
 		case 'lang':
-			return new Zend\Filter\PregReplace('/^.*([a-z]{2})(\-[a-z]{2}).*$/', '$1$2');
+			return new Zend_Filter_PregReplace('/^.*([a-z]{2})(\-[a-z]{2}).*$/', '$1$2');
 		case 'imgsize':
-			return new Zend\Filter\PregReplace('/^.*(\d+)\s*(%?).*$/', '$1$2');
+			return new Zend_Filter_PregReplace('/^.*(\d+)\s*(%?).*$/', '$1$2');
 		case 'attribute_type':
 			return new TikiFilter_AttributeType;
 		default:

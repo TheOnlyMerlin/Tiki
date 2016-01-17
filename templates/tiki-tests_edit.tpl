@@ -29,7 +29,7 @@
 			<fieldset>
 				<legend>{tr}Recorded Links{/tr}</legend>
 				<div class="table-responsive">
-					<table class="table">
+					<table class="table normal">
 						{foreach from=$result item=r name=url}
 							<tr>
 								<th style="width:10%">{tr}Request:{/tr}&nbsp;{$r.method}</td><td>{$r.url}</th>
@@ -56,7 +56,7 @@
 											<tr>
 												<td colspan="2">
 													<div class="table-responsive">
-														<table class="table">
+														<table class="table normal">
 															<tr>
 																	<td colspan="2" width="50%"><pre>{$r.ref_error_msg|escape:"html"}</pre></td>
 															</tr>

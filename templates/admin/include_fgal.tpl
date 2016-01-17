@@ -29,8 +29,8 @@
 
 	<div class="row">
 		<div class="form-group col-lg-12 clearfix">
-			<a role="link" class="btn btn-link" href="tiki-list_file_gallery.php" title="{tr}List{/tr}">
-				{icon name="list"} {tr}File Galleries{/tr}
+			<a role="button" class="btn btn-link" href="tiki-list_file_gallery.php" title="{tr}List{/tr}">
+				{icon name="list"} {tr}Files{/tr}
 			</a>
 			<div class="pull-right">
 				<input type="submit" class="btn btn-primary btn-sm" name="filegalhandlers" title="{tr}Apply Changes{/tr}" value="{tr}Apply{/tr}">
@@ -74,9 +74,9 @@
 				{preference name='fgal_prevent_negative_score'}
 
 				{preference name='fgal_allow_duplicates'}
+				{preference name='feature_file_galleries_batch'}
 				{preference name='file_galleries_use_jquery_upload'}
 
-				{preference name='feature_file_galleries_batch'}
 				<div class="adminoptionboxchild" id="feature_file_galleries_batch_childcontainer">
 					{remarksbox title="Note"}
 						{tr}You are highly recommended to use a file directory as the File Gallery storage, when using this feature{/tr}
@@ -273,7 +273,6 @@
 										<input name="newCmd" type="text" size="30"/>
 									</td>
 								</tr>
-								</tbody>
 							</table>
 						</div>
 					</div>
@@ -302,7 +301,7 @@
 					{preference name='fgal_viewerjs_uri'}
 					{if $viewerjs_err}
 						<div class="col-sm-8 pull-right">
-							{remarksbox type='errors' title="{tr}Warning{/tr}"}{$viewerjs_err}{/remarksbox}
+							{remarksbox type='errors' title='{tr}Warning{/tr}'}{$viewerjs_err}{/remarksbox}
 						</div>
 					{/if}
 				</div>

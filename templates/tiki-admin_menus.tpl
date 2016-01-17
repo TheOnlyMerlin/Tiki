@@ -10,17 +10,7 @@
 	</div>
 {/if}
 {include file='find.tpl'}
-{* Use css menus as fallback for item dropdown action menu if javascript is not being used *}
-{if $prefs.javascript_enabled !== 'y'}
-	{$js = 'n'}
-	{$libeg = '<li>'}
-	{$liend = '</li>'}
-{else}
-	{$js = 'y'}
-	{$libeg = ''}
-	{$liend = ''}
-{/if}
-<div class="{if $js === 'y'}table-responsive{/if}"> {* table-responsive class cuts off css drop-down menus *}
+<div class="table-responsive">
 	<table class="table table-hover">
 		<tr>
 			<th>{self_link _sort_arg='sort_mode' _sort_field='menuId'}{tr}ID{/tr}{/self_link}</th>
@@ -50,46 +40,40 @@
 						{strip}
 							{if $channels[user].menuId neq 42}
 								{if $tiki_p_edit_menu eq 'y'}
-									{$libeg}<a href="{bootstrap_modal controller=menu action=manage_menu menuId=$channels[user].menuId}">
+									<a href="{bootstrap_modal controller=menu action=manage_menu menuId=$channels[user].menuId}">
 										{icon name='edit' _menu_text='y' _menu_icon='y' alt="{tr}Edit{/tr}"}
-									</a>{$liend}
+									</a>
 								{/if}
 								{if $tiki_p_edit_menu_option eq 'y'}
-									{$libeg}<a href="tiki-admin_menu_options.php?menuId={$channels[user].menuId}">
+									<a href="tiki-admin_menu_options.php?menuId={$channels[user].menuId}">
 										{icon name="list" _menu_text='y' _menu_icon='y' alt="{tr}Menu options{/tr}"}
-									</a>{$liend}
+									</a>
 								{/if}
 								{if $tiki_p_edit_menu eq 'y'}
-									{$libeg}{self_link remove=$channels[user].menuId _menu_text='y' _menu_icon='y' _icon_name="remove"}
+									{self_link remove=$channels[user].menuId _menu_text='y' _menu_icon='y' _icon_name="remove"}
 										{tr}Delete{/tr}
-									{/self_link}{$liend}
+									{/self_link}
 								{/if}
 							{else}
 								{if $tiki_p_admin eq 'y'}
-									{$libeg}{button reset="y" menuId=$channels[user].menuId _text="{tr}RESET{/tr}" _auto_args="reset,menuId" _class="btn btn-warning btn-sm"}{$liend}
+									{button reset="y" menuId=$channels[user].menuId _text="{tr}RESET{/tr}" _auto_args="reset,menuId" _class="btn btn-warning btn-sm"}
 									<hr>
 								{/if}
 							{/if}
 							{if $tiki_p_edit_menu eq 'y'}
-								{$libeg}<a href="{bootstrap_modal controller=menu action=clone_menu menuId=$channels[user].menuId}">
+								<a href="{bootstrap_modal controller=menu action=clone_menu menuId=$channels[user].menuId}">
 									{icon name="copy" _menu_text='y' _menu_icon='y' alt="{tr}Clone{/tr}"}
-								</a>{$liend}
+								</a>
 							{/if}
 						{/strip}
 					{/capture}
-					{if $js === 'n'}<ul class="cssmenu_horiz"><li>{/if}
-					<a
-						class="tips"
-						title="{tr}Actions{/tr}"
-						href="#"
-						{if $js === 'y'}{popup delay="0|2000" fullhtml="1" center=true text=$smarty.capture.menu_actions|escape:"javascript"|escape:"html"}{/if}
-						style="padding:0; margin:0; border:0"
-					>
+					<a class="tips"
+					   title="{tr}Actions{/tr}"
+					   href="#" {popup delay="0|2000" fullhtml="1" center=true text=$smarty.capture.menu_actions|escape:"javascript"|escape:"html"}
+					   style="padding:0; margin:0; border:0"
+							>
 						{icon name='wrench'}
 					</a>
-					{if $js === 'n'}
-						<ul class="dropdown-menu" role="menu">{$smarty.capture.menu_actions}</ul></li></ul>
-					{/if}
 				</td>
 			</tr>
 		{sectionelse}

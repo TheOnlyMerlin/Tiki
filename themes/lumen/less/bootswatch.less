@@ -1,13 +1,7 @@
-// Lumen 3.3.5
+// Lumen 3.1.1
 // Bootswatch
 // -----------------------------------------------------
-
-@web-font-path: "https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,400italic";
-
-.web-font(@path) {
-	@import url("@{path}");
-}
-.web-font(@web-font-path);
+@import url("//fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,400italic");
 
 .shadow (@width: 4px) {
 	border-width: 0 1px @width 1px;
@@ -15,14 +9,14 @@
 
 // Navbar =====================================================================
 
-.navbar  {
+.navbar {
 	.shadow();
 }
 
 // Buttons ====================================================================
 
 .btn {
-	padding: (@padding-base-vertical + 2) @padding-base-horizontal @padding-base-vertical;
+	padding: 8px @padding-base-horizontal 7px;
 	.shadow();
 	font-size: 12px;
 	font-weight: bold;
@@ -41,18 +35,18 @@
 
 	&-lg,
 	&-group-lg > .btn {
-		padding: (@padding-large-vertical + 2) @padding-large-horizontal @padding-large-vertical;
+		padding: 14px @padding-large-horizontal 13px;
 		line-height: 15px;
 	}
 
 	&-sm,
 	&-group-sm > .btn {
-		padding: (@padding-small-vertical + 2) @padding-small-horizontal @padding-small-vertical;
+		padding: 4px @padding-small-horizontal;
 	}
 
 	&-xs,
 	&-group-xs > .btn {
-		padding: (@padding-xs-vertical + 2) @padding-xs-horizontal @padding-xs-vertical;
+		padding: @padding-xs-vertical @padding-xs-horizontal;
 	}
 
 	&-default:hover,
@@ -132,18 +126,6 @@
 	}
 }
 
-.btn-group-vertical {
-	.btn + .btn {
-		&:hover {
-			border-top-width: 1px;
-		}
-
-		&:active {
-			border-top-width: 2px;
-		}
-	}
-}
-
 // Typography =================================================================
 
 .text-primary,
@@ -176,12 +158,8 @@
 table,
 .table {
 
-	a:not(.btn) {
+	a {
 		text-decoration: underline;
-	}
-
-	.dropdown-menu a {
-		text-decoration: none;
 	}
 
 	.success,
@@ -190,20 +168,18 @@ table,
 	.info {
 		color: #fff;
 
-		a:not(.btn) {
+		a {
 			color: #fff;
 		}
 	}
 
-	&:not(.table-bordered) {
-		> thead > tr > th,
-		> tbody > tr > th,
-		> tfoot > tr > th,
-		> thead > tr > td,
-		> tbody > tr > td,
-		> tfoot > tr > td {
-			border-color: transparent;
-		}
+	> thead > tr > th,
+	> tbody > tr > th,
+	> tfoot > tr > th,
+	> thead > tr > td,
+	> tbody > tr > td,
+	> tfoot > tr > td {
+		border-color: transparent;
 	}
 }
 
@@ -220,14 +196,6 @@ label {
 .has-warning {
 	.help-block,
 	.control-label,
-	.radio,
-	.checkbox,
-	.radio-inline,
-	.checkbox-inline,
-	&.radio label,
-	&.checkbox label,
-	&.radio-inline label,
-	&.checkbox-inline label,
 	.form-control-feedback {
 		color: @brand-warning;
 	}
@@ -237,23 +205,11 @@ label {
 		border: 1px solid @brand-warning;
 		.box-shadow(inset 0 2px 0 rgba(0, 0, 0, 0.075));
 	}
-
-	.input-group-addon {
-		border: 1px solid @brand-warning;
-	}
 }
 
 .has-error {
 	.help-block,
 	.control-label,
-	.radio,
-	.checkbox,
-	.radio-inline,
-	.checkbox-inline,
-	&.radio label,
-	&.checkbox label,
-	&.radio-inline label,
-	&.checkbox-inline label,
 	.form-control-feedback {
 		color: @brand-danger;
 	}
@@ -263,23 +219,11 @@ label {
 		border: 1px solid @brand-danger;
 		.box-shadow(inset 0 2px 0 rgba(0, 0, 0, 0.075));
 	}
-
-	.input-group-addon {
-		border: 1px solid @brand-danger;
-	}
 }
 
 .has-success {
 	.help-block,
 	.control-label,
-	.radio,
-	.checkbox,
-	.radio-inline,
-	.checkbox-inline,
-	&.radio label,
-	&.checkbox label,
-	&.radio-inline label,
-	&.checkbox-inline label,
 	.form-control-feedback {
 		color: @brand-success;
 	}
@@ -288,10 +232,6 @@ label {
 	.form-control:focus {
 		border: 1px solid @brand-success;
 		.box-shadow(inset 0 2px 0 rgba(0, 0, 0, 0.075));
-	}
-
-	.input-group-addon {
-		border: 1px solid @brand-success;
 	}
 }
 
@@ -322,7 +262,8 @@ label {
 	.open > a,
 	.open > a:hover,
 	.open > a:focus {
-		padding-bottom: (@padding-large-vertical + 3);
+		padding-top: @padding-large-vertical + 3px;
+		padding-bottom: @padding-large-vertical + 3px;
 		margin-top: 0;
 	}
 
@@ -334,13 +275,9 @@ label {
 
 	> li.disabled > a:hover,
 	> li.disabled > a:focus {
-		padding-top: 10px;
-		padding-bottom: 10px;
+		padding-top: @padding-large-vertical;
+		padding-bottom: @padding-large-vertical;
 		margin-top: 6px;
-	}
-
-	&.nav-justified > li {
-		vertical-align: bottom;
 	}
 }
 
@@ -414,25 +351,26 @@ label {
 
 // Indicators =================================================================
 
-.close {
-	color: #fff;
-	text-decoration: none;
-	opacity: 0.4;
-
-	&:hover,
-	&:focus {
-		color: #fff;
-		opacity: 1;
-	}
-}
-
 .alert {
 	.shadow();
 
+	a,
 	.alert-link {
 		font-weight: normal;
 		color: #fff;
 		text-decoration: underline;
+	}
+
+	.close {
+		color: #fff;
+		text-decoration: none;
+		opacity: 0.4;
+
+		&:hover,
+		&:focus {
+			color: #fff;
+			opacity: 1;
+		}
 	}
 }
 
@@ -458,48 +396,6 @@ label {
 	.box-shadow(inset 0 2px 0 rgba(0, 0, 0, 0.05));
 }
 
-a.list-group-item {
-
-	&.active,
-	&.active:hover,
-	&.active:focus {
-		border-color: @list-group-border;
-	}
-
-	&-success {
-		&.active {
-			background-color: @state-success-bg;
-		}
-
-		&.active:hover,
-		&.active:focus {
-			background-color: darken(@state-success-bg, 5%);
-		}
-	}
-
-	&-warning {
-		&.active {
-			background-color: @state-warning-bg;
-		}
-
-		&.active:hover,
-		&.active:focus {
-			background-color: darken(@state-warning-bg, 5%);
-		}
-	}
-
-	&-danger {
-		&.active {
-			background-color: @state-danger-bg;
-		}
-
-		&.active:hover,
-		&.active:focus {
-			background-color: darken(@state-danger-bg, 5%);
-		}
-	}
-}
-
 .jumbotron {
 	border: 1px solid @navbar-default-border;
 	.box-shadow(inset 0 2px 0 rgba(0, 0, 0, 0.05));
@@ -508,20 +404,4 @@ a.list-group-item {
 .panel {
 	border: 1px solid @navbar-default-border;
 	.shadow();
-
-	&-default {
-		.close {
-			color: @text-color;
-		}
-	}
-}
-
-.modal {
-	.close {
-		color: @text-color;
-	}
-}
-
-.popover {
-	color: @text-color;
 }

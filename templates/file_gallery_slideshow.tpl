@@ -5,19 +5,16 @@
 	</head>
 	<body class="file_gallery slideshow">
 		{jq}
-	$("a[data-box*='shadowbox']").colorbox({
-		rel: function(){
-			return $(this).attr('data-box');
-		},
-		open: true,
-		slideshowStart: "{tr}Start the Slideshow{/tr}",
-		slideshowStop: "{tr}Pause the Slideshow{/tr}",
-		{{if ($slideshow_noclose)}
-			slideshowAuto: false,
-			overlayClose: false,
-			close: ''
-		{/if}}
-	});
+$("a[rel*='shadowbox']").colorbox({
+	open: true,
+	slideshowStart: "{tr}Start the Slideshow{/tr}",
+	slideshowStop: "{tr}Pause the Slideshow{/tr}",
+	{{if ($slideshow_noclose)}
+		slideshowAuto: false,
+		overlayClose: false,
+		close: ''
+	{/if}}
+});
 		{/jq}
 
 {if (!$slideshow_noclose)}
@@ -34,7 +31,7 @@
 					{foreach from=$file key=i item=f name=files}
 						<li>
 							<a id="id{$i}" href="tiki-download_file.php?preview&fileId={$f.id}"
-								data-box="shadowbox[slideshow];type=img"
+								rel="shadowbox[slideshow];type=img"
 								{if ($caption)}
 									{if ($caption eq 'd')}
 										{assign var="itemcaption" value="{$f.description}"}

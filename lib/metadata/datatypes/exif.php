@@ -686,7 +686,7 @@ class Exif
 	 */
 	function processRawData($exifraw)
 	{
-		$filter   = new Zend\Filter\Word\CamelCaseToSeparator();
+		$filter   = new Zend_Filter_Word_CamelCaseToSeparator();
 		//array of tags to match exif array from file
 		foreach ($exifraw as $group => $fields) {
 			foreach ($fields as $name => $field) {

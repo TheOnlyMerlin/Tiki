@@ -2,11 +2,9 @@
 {title help="System+Log"}{tr}Tiki Logs{/tr}{/title}
 
 <div class="t_navbar margin-bottom-md">
-	<a href="tiki-sqllog.php" class="btn btn-link" title="{tr}Log SQL{/tr}">{icon name=""} {tr}Log SQL{/tr}</a>
-	<a href="tiki-admin_actionlog.php#Report" class="btn btn-link" title="{tr}Export through Action Log{/tr}">{icon name=""} {tr}Export through Action Log{/tr}</a>
-{*	{button class="btn btn-default" _text="{tr}Log SQL{/tr}" href="tiki-sqllog.php"}
+	{button class="btn btn-default" _text="{tr}Log SQL{/tr}" href="tiki-sqllog.php"}
 	{button class="btn btn-default" _text="{tr}Export through Action Log{/tr}" href="tiki-admin_actionlog.php#Report"}
-*}</div>
+</div>
 
 {if $tikifeedback}
 	<br>
@@ -26,7 +24,7 @@
 {pagination_links cant=$cant step=$maxRecords offset=$offset}{/pagination_links}
 
 <div class="table-responsive syslog-table">
-	<table class="table">
+	<table class="table normal">
 		<tr>
 			<th>{self_link _sort_arg="sort_mode" _sort_field="actionid"}{tr}Id{/tr}{/self_link}</th>
 			<th>{self_link _sort_arg="sort_mode" _sort_field="action"}{tr}Type{/tr}{/self_link}</th>

@@ -152,7 +152,7 @@
 					<td align="center" {if ((($key +$num_subgals) / $rowImages) % 2)}class="oddthumb"{else}class="eventhumb"{/if}>
 						&nbsp;&nbsp;<br>
 						{if $prefs.feature_shadowbox eq 'y'}
-							<a href="show_image.php?id={$item.imageId}&amp;scalesize={$defaultscale}" data-box="lightbox[gallery];type=img" title="{if $item.description neq ''}{$item.description}{elseif $item.name neq ''}{$item.name}{else}{$item.filename}{/if}" {if $prefs.gal_image_mouseover neq 'n'}{popup fullhtml="1" text=$over_info.$key|escape:"javascript"|escape:"html"}{/if} class="linkmenu tips">
+							<a href="show_image.php?id={$item.imageId}&amp;scalesize={$defaultscale}" rel="lightbox[gallery];type=img" title="{if $item.description neq ''}{$item.description}{elseif $item.name neq ''}{$item.name}{else}{$item.filename}{/if}" {if $prefs.gal_image_mouseover neq 'n'}{popup fullhtml="1" text=$over_info.$key|escape:"javascript"|escape:"html"}{/if} class="linkmenu tips">
 								<img class="athumb" src="show_image.php?id={$item.imageId}&amp;thumb=1">
 							</a>
 						{else}
@@ -199,14 +199,14 @@
 											</a>{$liend}
 										{/if}
 										{if $imagerotate}
-											{$libeg}<a class="gallink" href="{$galleryId|sefurl:gallery:with_next}&amp;rotateright={$item.imageId}" title="{tr}rotate right{/tr}">
+											{$libeg}<a class="gallink" href="{$galleryId|sefurl:gallery:with_next}rotateright={$item.imageId}" title="{tr}rotate right{/tr}">
 												{icon name='repeat' _menu_text='y' _menu_icon='y' alt="{tr}Rotate{/tr}"}
 											</a>{$liend}
 										{/if}
 										{$libeg}<a class="gallink" href="tiki-edit_image.php?galleryId={$galleryId}&amp;edit={$item.imageId}">
 											{icon name='edit' _menu_text='y' _menu_icon='y' alt="{tr}Edit{/tr}"}
 										</a>{$liend}
-										{$libeg}<a class="gallink" href="{$galleryId|sefurl:gallery:with_next}&amp;remove={$item.imageId}">
+										{$libeg}<a class="gallink" href="{$galleryId|sefurl:gallery:with_next}remove={$item.imageId}">
 											{icon name='remove' _menu_text='y' _menu_icon='y' alt="{tr}Remove{/tr}"}
 										</a>{$liend}
 									{/if}
@@ -258,7 +258,7 @@
 {/if}
 
 <div class="table-responsive">
-	<table class="table noslideshow">
+	<table class="table normal noslideshow">
 		<tr>
 			<td class="even" colspan="2" style="border:0px; font-size:x-small">
 				{tr}You can view this gallery's configured image (first, random, etc.) in your browser using:{/tr}

@@ -39,11 +39,7 @@
 				{/foreach}
 			</select>
 		</p>
-		<p id="ws_postbody">
-			{tr}Body of POST request{/tr}<br>
-			<textarea name="postbody">{$postbody|escape}</textarea><br>
-			{tr}Parameters (%name%):{/tr}
-		</p>
+		<p id="ws_postbody">{tr}Parameters (%name%):{/tr}<textarea name="postbody">{$postbody|escape}</textarea></p>
 		<p id="ws_operation" style="display: none;">{tr}Operation:{/tr}<input type="text" name="operation" size="30" value="{$operation|escape}" /></p>
 		<p><input type="submit" class="btn btn-default btn-sm" name="parse" value="{tr}Lookup{/tr}"/></p>
 	{/if}
@@ -67,7 +63,7 @@
 	{if $data}
 		<h3>{tr}Response Information{/tr}</h3>
 		<div class="table-responsive">
-			<table class="table">
+			<table class="table normal">
 				<tr>
 					<th>{tr}OIntegrate Version{/tr}</th>
 					<td>{if $response->version}{$response->version|escape}{else}<em>{tr}Not supported{/tr}</em>{/if}
@@ -92,7 +88,7 @@
 					<th colspan="2">{tr}Returned Data{/tr}</th>
 				</tr>
 				<tr>
-					<td colspan="2"><pre style="max-height: 40em; max-width: 60em; overflow: auto;">{$data|escape}</pre></td>
+					<td colspan="2"><pre>{$data|escape}</pre></td>
 				</tr>
 				<tr>
 					<th colspan="2">{tr}Proposed Templates{/tr}</th>

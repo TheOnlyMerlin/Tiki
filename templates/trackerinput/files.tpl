@@ -28,13 +28,7 @@
 				{wikiplugin _name='vimeo' fromFieldId=$field.fieldId|escape fromItemId=$item.itemId|escape galleryId=$field.galleryId|escape}{/wikiplugin}
 			</fieldset>
 		{else}
-			{if $field.options_map.uploadInModal neq 'n'}
-			<a href="{service controller=file action=uploader uploadInModal=1 galleryId=$field.galleryId limit=$limit|default:100 type=$field.filter}" class="btn btn-default upload-files">{tr}Upload Files{/tr}</a>
-			{else}
-						<div class="upload-files-inline-form"></div>
-
-			<a href="{service controller=file action=uploader uploadInModal=0 galleryId=$field.galleryId limit=$limit|default:100 type=$field.filter}" class="btn btn-default upload-files-inline">{tr}Upload Files{/tr}</a>
-			{/if}
+			<a href="{service controller=file action=uploader galleryId=$field.galleryId limit=$limit|default:100 type=$field.filter}" class="btn btn-default upload-files">{tr}Upload File(s){/tr}</a>
 		{/if}
 	{/if}
 	{if $prefs.fgal_tracker_existing_search eq 'y'}
@@ -119,15 +113,7 @@
 				$.closeModal();
 			}
 		});
-		$self.find('.btn.upload-files-inline').clickInline(
-			$self.find('.btn.upload-files-inline').prev(),
-			{
-				success: function (data) {
-					$.each(data.files, function (k, file) {
-						addFile(file.fileId, file.type, file.name);
-					});
-				}
-			});
+
 		$self.find('.btn.browse-files').on('click', function () {
 			if (! $(this).data('initial-href')) {
 				$(this).data('initial-href', $(this).attr('href'));
@@ -246,8 +232,8 @@
 {if $prefs.vimeo_upload eq 'y' and $field.options_map.displayMode eq 'vimeo' and $prefs.feature_jquery_validation eq 'y'}
 	{jq}
 		$.validator.addMethod("isVimeoUrl", function(value, element) {
-			return this.optional(element) || value.match(/http[s]?\:\/\/(?:www\.)?vimeo\.com.*\/\d{4}/);
-		}, tr("* URL format is incorrect. It should start with 'https://vimeo.com/' and contain a video id of at least 4 digits '\nnnnnnn'"));
+			return this.optional(element) || value.match(/http[s]?\:\/\/(?:www\.)?vimeo\.com\/\d+$/);
+		}, tr("* URL should be in the format: https://vimeo.com/nnnnnnn"));
 		$.validator.addClassRules({
 			vimeourl : { isVimeoUrl : true }
 		});

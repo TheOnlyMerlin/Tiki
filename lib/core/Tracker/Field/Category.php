@@ -19,7 +19,7 @@ class Tracker_Field_Category extends Tracker_Field_Abstract implements Tracker_F
 		return array(
 			'e' => array(
 				'name' => tr('Category'),
-				'description' => tr('Allows the tracker item to be categorized in one or more categories under the specified main category.'),
+				'description' => tr('Allows for one or multiple categories under the specified main category to be affected to the tracker item.'),
 				'help' => 'Category Tracker Field',
 				'prefs' => array('trackerfield_category', 'feature_categories'),
 				'tags' => array('advanced'),
@@ -38,10 +38,10 @@ class Tracker_Field_Category extends Tracker_Field_Abstract implements Tracker_F
 						'default' => 'd',
 						'filter' => 'alpha',
 						'options' => array(
-							'd' => tr('Dropdown'),
+							'd' => tr('Drop Down'),
 							'radio' => tr('Radio buttons'),
 							'm' => tr('List box'),
-							'checkbox' => tr('Multiple-selection checkboxes'),
+							'checkbox' => tr('Multiple-selection check-boxes'),
 						),
 						'legacy_index' => 1,
 					),
@@ -81,15 +81,15 @@ class Tracker_Field_Category extends Tracker_Field_Abstract implements Tracker_F
 						'description' => tr(''),
 						'filter' => 'word',
 						'options' => array(
-							'' => tr('Plain list with items separated by line breaks (default)'),
-							'links' => tr('Links separated by line breaks'),
+							'' => tr('Plain list separate by line breaks (default)'),
+							'links' => tr('Links separate by line breaks'),
 							'ul' => tr('Unordered list of labels'),
 							'ulinks' => tr('Unordered list of links'),
 						),
 					),
 					'doNotInheritCategories' => array(
 						'name' => tr('Do not Inherit Categories'),
-						'description' => tr("Tracker items will inherit their tracker's categories unless this option is set."),
+						'description' => tr("Tracker items will inherit the parent tracker's categories by default, unless you set this option."),
 						'filter' => 'int',
 						'options' => array(
 							0 => tr('Inherit (default)'),
@@ -659,55 +659,13 @@ class Tracker_Field_Category extends Tracker_Field_Abstract implements Tracker_F
 					$prefs['unified_incremental_update'] = $incPref;
 				}
 			}
-		}
-		// Indexing the value of the field anyway as it could be different from the 'categories' field if
-		// you need to be more specific for filtering under a certain parent only.
-		//
-		// Warning to upgraders: older Tikis had no getDocumentPart so the comma-separated string was indexed
-		// in the past. It now indexes an array. Use {$baseKey}_text instead for a space delimited string.
-		$baseKey = $this->getBaseKey();
-		return array(
-			$baseKey => $typeFactory->multivalue($value),
-			"{$baseKey}_text" => $typeFactory->plaintext(implode(' ', $value)),
-		);
-	}
 
-	static public function syncCategoryFields($args)
-	{
-		if ($args['type'] == 'trackeritem') {
-			$itemId = $args['object'];
-			$trackerId = TikiLib::lib('trk')->get_tracker_for_item($itemId);
-			$definition = Tracker_Definition::get($trackerId);
-			if ($fieldIds = $definition->getCategorizedFields()) {
-				foreach ($fieldIds as $fieldId) {
-					$field = $definition->getField($fieldId);
-					$handler = TikiLib::lib('trk')->get_field_handler($field);
-					$data = $handler->getFieldData();
-					$applicable = array_keys($data['list']);
-					$value = $old_value = explode(",", TikiLib::lib('trk')->get_item_value($trackerId, $itemId, $fieldId));
-					foreach ($args['added'] as $added) {
-						if (!in_array($added, $applicable)) {
-							continue;
-						}
-						if (!in_array($added, $value)) {
-							$value[] = $added;
-						}
-					}
-					foreach ($args['removed'] as $removed) {
-						if (!in_array($removed, $applicable)) {
-							continue;
-						}
-						if (in_array($removed, $value)) {
-							$value = array_diff($value, [$removed]);
-						}
-					}
-					if ($value != $old_value) {
-						$value = implode(",", $value);
-						TikiLib::lib('trk')->modify_field($itemId, $fieldId, $value);
-					}
-				}
-			}
 		}
+
+		// Preserve previous behaviour in indexing the basic comma-separated value
+		// N.B. This will be different from Tiki 15 onwards, see r56096
+
+		return parent::getDocumentPart($typeFactory);
 	}
 }
 

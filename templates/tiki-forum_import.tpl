@@ -3,8 +3,8 @@
 {title help="Forums" admpage="forums"}{tr}Forum Importer{/tr}{/title}
 
 <div class="t_navbar margin-bottom-md form-group">
-	{button href="tiki-admin_forums.php" _type="text" class="btn btn-link" _icon_name="wrench" _text="{tr}Admin{/tr}"}
-	{button href="tiki-forums.php" _type="text" class="btn btn-link" _icon_name="list" _text="{tr}List{/tr}"}
+	{button href="tiki-admin_forums.php" class="btn btn-default" _icon_name="wrench" _text="{tr}Admin{/tr}"}
+	{button href="tiki-forums.php" class="btn btn-default" _icon_name="list" _text="{tr}List{/tr}"}
 </div>
 {*
  * If this is a new import, start by selecting the import method and we'll
@@ -16,31 +16,34 @@
 	<div class="panel panel-default">
 		<div class="panel-heading">{tr}Import Forum Contents from Tiki's DB and Server{/tr}</div>
 		<div class="panel-body">
-			<form action="tiki-forum_import.php" method="post" class="form-horizontal">
+			<form action="tiki-forum_import.php" method="post">
 				<input type="hidden" name="step1" value="true">
 				<input type="hidden" name="import" value="same">
-			    <div class="form-group">
-					<label class="col-sm-3 control-label">{tr}Forum Type{/tr}</label>
-					<div class="col-sm-7">
-			      		<select name="forum" class="form-control">
-							{section name=ftype loop=$fi_types}
-								<option value="{$fi_types[ftype]}">{$fi_types[ftype]}</option>
-							{/section}
-						</select>
-		      		</div>
-			    </div>
-			    <div class="form-group">
-					<label class="col-sm-3 control-label">{tr}DB Prefix:{/tr}</label>
-					<div class="col-sm-7">
-			      		<input type="text" name="prefix" value="{$fi_prefixes[0]}" class="form-control">
-		      		</div>
-			    </div>
-			    <div class="form-group">
-					<label class="col-sm-3 control-label"></label>
-					<div class="col-sm-7">
-			      		<input type="submit" class="btn btn-default btn-sm" value="{tr}Get Forum List{/tr}">>
-		      		</div>
-			    </div>
+				<table class="formcolor">
+					<tr>
+						<td>{tr}Forum Type:{/tr}</td>
+						<td>
+							<select name="forum">
+
+								{section name=ftype loop=$fi_types}
+									<option value="{$fi_types[ftype]}">{$fi_types[ftype]}</option>
+								{/section}
+
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>{tr}DB Prefix:{/tr}</td>
+						<td>
+						<input type="text" name="prefix" value="{$fi_prefixes[0]}">
+						</td>
+					</tr>
+				</table>
+				<br>
+				<div align="center">
+					<input type="submit" class="btn btn-default btn-sm" value="{tr}Get Forum List{/tr}">
+				</div>
+				<br>
 			</form>
 		</div>
 	</div>
@@ -49,54 +52,48 @@
 	<div class="cbox">
 		<div class="panel-heading">{tr}Import from Another DB or Server{/tr}</div>
 		<div class="panel-body">
-			<form action="tiki-forum_import.php" method="post" class="form-horizontal">
+			<form action="tiki-forum_import.php" method="post">
 				<input type="hidden" name="step1" value="true">
 				<input type="hidden" name="import" value="other">
-				<div class="form-group">
-					<label class="col-sm-3 control-label">{tr}Server{/tr}</label>
-					<div class="col-sm-7">
-			      		<select name="forum" class="form-control">
-							<input type="text" name="server" class="form-control">
-						</select>
-		      		</div>
-			    </div>
-			    <div class="form-group">
-					<label class="col-sm-3 control-label">{tr}DB Name{/tr}</label>
-					<div class="col-sm-7">
-			      		<input type="text" name="dbname" class="form-control">
-		      		</div>
-			    </div>
-			    <div class="form-group">
-					<label class="col-sm-3 control-label">{tr}Forum Type{/tr}</label>
-					<div class="col-sm-7">
-			      		<select name="forum">
-						</select>
-		      		</div>
-			    </div>
-			    <div class="form-group">
-					<label class="col-sm-3 control-label">{tr}DB Prefix{/tr}</label>
-					<div class="col-sm-7">
-			      		<input type="text" name="prefix" class="form-control">
-		      		</div>
-			    </div>
-			    <div class="form-group">
-					<label class="col-sm-3 control-label">{tr}Username{/tr}</label>
-					<div class="col-sm-7">
-			      		<input type="text" name="username" class="form-control">
-		      		</div>
-			    </div>
-			    <div class="form-group">
-					<label class="col-sm-3 control-label">{tr}Password{/tr}</label>
-					<div class="col-sm-7">
-						<input type="text" name="password" class="form-control">
-		      		</div>
-			    </div>
-			    <div class="form-group">
-					<label class="col-sm-3 control-label"></label>
-					<div class="col-sm-7">
-						<input type="submit" class="btn btn-default btn-sm" value="Test Connection">
-		      		</div>
-			    </div>
+				<table class="formcolor">
+					<tr>
+						<td>{tr}Server:{/tr}</td>
+						<td>
+							<input type="text" name="server">
+						</td>
+						<td>{tr}DB Name:{/tr}</td>
+						<td>
+							<input type="text" name="dbname">
+						</td>
+					</tr>
+					<tr>
+						<td>{tr}Forum Type:{/tr}</td>
+						<td>
+							<select name="forum">
+
+							</select>
+						</td>
+						<td>{tr}DB Prefix:{/tr}</td>
+						<td>
+							<input type="text" name="prefix">
+						</td>
+					</tr>
+					<tr>
+						<td>{tr}Username:{/tr}</td>
+						<td>
+							<input type="text" name="username">
+						</td>
+						<td>{tr}Password:{/tr}</td>
+						<td>
+							<input type="text" name="password">
+						</td>
+					</tr>
+				</table>
+				<br>
+				<div align="center">
+					<input type="submit" class="btn btn-default btn-sm" value="Test Connection">
+				</div>
+				<br>
 			</form>
 		</div>
 	</div>
@@ -109,41 +106,41 @@
 	<div class="panel panel-default">
 		<div class="panel-heading">{tr}Import from a Local SQL File{/tr}</div>
 		<div class="panel-body">
-			<form action="tiki-forum_import.php" method="post" class="form-horizontal">
+			<form action="tiki-forum_import.php" method="post">
 				<input type="hidden" name="step1" value="true">
 				<input type="hidden" name="import" value="sql">
-				<div class="form-group">
-					<label class="col-sm-3 control-label">{tr}Forum Type:{/tr}</label>
-					<div class="col-sm-7">
-						<select name="ftype" class="form-control">
-							{* List all forums that are supported. *}
-							{section name=ftype loop=$fi_types}
-								<option value="{$fi_types[ftype]}">{$fi_types[ftype]}</option>
-							{/section}
-						</select>
-		      		</div>
-			    </div>
-			    <div class="form-group">
-					<label class="col-sm-3 control-label">{tr}DB Prefix:{/tr}</label>
-					<div class="col-sm-7">
-						<input type="text" name="prefix" value="{$fi_prefixes[0]}" class="form-control">
-		      		</div>
-			    </div>
-			    <div class="form-group">
-					<label class="col-sm-3 control-label">{tr}Local SQL Filename on Server (path will be stripped):{/tr}</label>
-					<div class="col-sm-7">
-						<input type="text" name="server" class="form-control">
-						<div class="help-block">
-							<i>{tr}Must be in tikiroot/{$tmpdir} or tikiroot/img/wiki_up{/tr}</i>
-						</div>
-		      		</div>
-			    </div>
-			    <div class="form-group">
-					<label class="col-sm-3 control-label"></label>
-					<div class="col-sm-7">
-						<input type="submit" class="btn btn-default btn-sm" value="{tr}Get Forum List{/tr}">
-		      		</div>
-			    </div>
+				<table class="formcolor">
+					<tr>
+						<td>{tr}Forum Type:{/tr}</td>
+						<td>
+							<select name="ftype">
+
+								{* List all forums that are supported. *}
+								{section name=ftype loop=$fi_types}
+									<option value="{$fi_types[ftype]}">{$fi_types[ftype]}</option>
+								{/section}
+
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>{tr}DB Prefix:{/tr}</td>
+						<td>
+							<input type="text" name="prefix" value="{$fi_prefixes[0]}">
+						</td>
+					</tr>
+					<tr>
+						<td>{tr}Local SQL Filename on Server (path will be stripped):{/tr}<br>
+							<i>{tr}Must be in tikiroot/{$tmpdir} or tikiroot/img/wiki_up{/tr}</i></td>
+						<td>
+						<input type="text" name="server">
+					</td>
+					</tr>
+				</table>
+				<div align="center">
+					<input type="submit" class="btn btn-default btn-sm" value="{tr}Get Forum List{/tr}">
+				</div>
+				<br>
 			</form>
 		</div>
 	</div>
@@ -198,7 +195,7 @@
 				<input type="hidden" name="server" value="{$server}">
 
 				<div class="table-responsive">
-					<table class="table">
+					<table class="table normal">
 						<tr>
 							<th>Select</th>
 							<th>Forum Name</th>
@@ -224,7 +221,7 @@
 			<div class="panel-heading">{tr}Which Forum Do You Wish to Import this Into?{/tr}</div>
 			<div class="panel-body">
 				<div class="table-responsive">
-					<table class="table">
+					<table class="table normal">
 						<tr>
 							<th>Select</th>
 							<th>Forum Name</th>

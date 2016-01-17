@@ -84,8 +84,7 @@ if ($prefs['feature_freetags'] == 'y') {
 
 	if ($prefs['feature_multilingual'] == 'y') {
 		$languages = array();
-		$langLib = TikiLib::lib('language');
-		$languages = $langLib->list_languages();
+		$languages = $tikilib->list_languages();
 		$smarty->assign_by_ref('languages', $languages);
 		$smarty->assign('blog', 'y');
 	}

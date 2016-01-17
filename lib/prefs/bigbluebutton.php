@@ -33,7 +33,7 @@ function prefs_bigbluebutton_list()
 		),
 		'bigbluebutton_server_salt' => array(
 			'name' => tra('BigBlueButton server salt'),
-			'description' => tra('A salt key used to generate checksums for the BigBlueButton server to assure that requests are authentic.'),
+			'description' => tra('A salt key used to generate checksums for the BigBlueButton server to know the requests are authentic.'),
 			'keywords' => 'big blue button web conferencing audio video chat screensharing whiteboard',
 			'type' => 'text',
 			'size' => 40,
@@ -43,7 +43,7 @@ function prefs_bigbluebutton_list()
 		),
 		'bigbluebutton_recording_max_duration' => array(
 			'name' => tr('BigBlueButton recording maximum duration'),
-			'description' => tr('A maximum duration for the meetings must be submitted to BigBlueButton to prevent the recordings from being excessively long if a user leaves the conference window open.'),
+			'description' => tr('A maximum duration for the meetings must be provided to BigBlueButton to prevent the recordings to be excessively long if a user leaves the window open too long.'),
 			'shorthint' => tr('minutes'),
 			'keywords' => 'big blue button',
 			'type' => 'text',

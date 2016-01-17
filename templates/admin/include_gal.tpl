@@ -106,7 +106,7 @@
 			</tr>
 			{if $prefs.feature_categories eq 'y'}
 				<tr>
-					<td>{tr}Limit categorization to within the subtree of:{/tr}</td>
+					<td>{tr}Force and limit categorization to within subtree of:{/tr}</td>
 					<td>
 						<select name="feature_image_gallery_mandatory_category">
 							<option value="-1" {if $prefs.feature_image_gallery_mandatory_category eq -1 or $prefs.feature_image_gallery_mandatory_category eq ''}selected="selected"{/if}>{tr}None{/tr}</option>
@@ -283,7 +283,7 @@
 	</form>
 </fieldset>
 
-<fieldset>
+<fieldset class="table">
 	<legend>{tr}Image galleries comments settings{/tr}</legend>
 	<form method="post" action="tiki-admin.php?page=gal">
 		<input type="hidden" name="ticket" value="{$ticket|escape}">
@@ -295,7 +295,7 @@
 				</td>
 			</tr>
 			<tr>
-				<td><label>{tr}Default order of comments{/tr}</label></td>
+				<td><label>{tr}Comments default ordering{/tr}</label></td>
 				<td>
 					<select name="image_galleries_comments_default_order">
 						<option value="commentDate_desc" {if $prefs.image_galleries_comments_default_order eq 'commentDate_desc'}selected="selected"{/if}>{tr}Newest first{/tr}</option>

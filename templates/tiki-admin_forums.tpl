@@ -10,17 +10,22 @@
 			{button class="btn btn-default" href="tiki-admin_forums.php?dup_mode=y" _icon_name="copy" _text="{tr}Duplicate{/tr}"}
 		{/if}
 		{if $forumId > 0}
-			{button _type="text" class="btn btn-link" href="tiki-view_forum.php?forumId=$forumId" _icon_name="view" _text="{tr}View{/tr}"}
+			{button class="btn btn-default" href="tiki-view_forum.php?forumId=$forumId" _icon_name="view" _text="{tr}View{/tr}"}
 		{/if}
 		{if $tiki_p_admin_forum eq 'y'}
-			{button _type="text" class="btn btn-link" href="tiki-forum_import.php" _icon_name="import" _text="{tr}Import{/tr}"}
+			{button class="btn btn-default" href="tiki-forum_import.php" _icon_name="import" _text="{tr}Import{/tr}"}
 		{/if}
 		{if $tiki_p_forum_read eq 'y'}
-			{button _type="text" class="btn btn-link" href="tiki-forums.php" _icon_name="list" _text="{tr}List{/tr}"}
+			{button class="btn btn-default" href="tiki-forums.php" _icon_name="list" _text="{tr}List{/tr}"}
 		{/if}
 	</div>
 {/if}
-{include file='utilities/feedback.tpl'}
+<div id="ajax-feedback" style="display:none"></div>
+{if isset($ajaxfeedback) && $ajaxfeedback eq 'y'}
+	<div id="posted-ajax-feedback">
+		{include file="utilities/alert.tpl"}
+	</div>
+{/if}
 {tabset}
 
 	{tab name="{tr}Forums{/tr}"}
@@ -29,18 +34,12 @@
 		{if ($channels or ($find ne '')) && !$tsOn}
 			{include file='find.tpl'}
 		{/if}
-		{if $prefs.javascript_enabled !== 'y'}
-			{$js = 'n'}
-			{$libeg = '<li>'}
-			{$liend = '</li>'}
-		{else}
-			{$js = 'y'}
-			{$libeg = ''}
-			{$liend = ''}
-		{/if}
-		<form method='post' id="admin_forums">
-			<div id="{$ts_tableid}-div" class="{if $js === 'y'}table-responsive{/if} ts-wrapperdiv" {if $tsOn}style="visibility:hidden;"{/if}>
-				<table  id="{$ts_tableid}" class="table table-striped table-hover" data-count="{$cant|escape}">
+
+		<form action="#">
+			<div id="{$ts_tableid}-div" class="table-responsive ts-wrapperdiv" {if $tsOn}style="visibility:hidden;"{/if}>
+				<table  id="{$ts_tableid}" class="table table-striped table-hover ">
+					<input type="hidden" {if $tsOn}id="{$ts_offsetid|escape}" {/if}name="offset" value="{$offset|escape}">
+					<input type="hidden" {if $tsOn}id="{$ts_countid|escape}" {/if}name="count" value="{$cant|escape}">
 					{$numbercol = 0}
 					<thead>
 						<tr>
@@ -94,19 +93,19 @@
 								<td class="action">
 									{capture name=admin_forum_actions}
 										{strip}
-											{$libeg}<a href="{$channels[user].forumId|sefurl:'forum'}">
+											<a href="{$channels[user].forumId|sefurl:'forum'}">
 												{icon name='view' _menu_text='y' _menu_icon='y' alt="{tr}View{/tr}"}
-											</a>{$liend}
+											</a>
 											{* the tiki_p_forum_lock permission has not been implemented *}
 											{if isset($tiki_p_forum_lock) and $tiki_p_forum_lock eq 'y'}
 												{if $channels[user].is_locked eq 'y'}
-													{$libeg}{self_link _icon_name='unlock' _menu_text='y' _menu_icon='y' lock='n' forumId=$channels[user].forumId}
+													{self_link _icon_name='unlock' _menu_text='y' _menu_icon='y' lock='n' forumId=$channels[user].forumId}
 														{tr}Unlock{/tr}
-													{/self_link}{$liend}
+													{/self_link}
 												{else}
-													{$libeg}{self_link _icon_name='lock' _menu_text='y' _menu_icon='y' lock='y' forumId=$channels[user].forumId}
+													{self_link _icon_name='lock' _menu_text='y' _menu_icon='y' lock='y' forumId=$channels[user].forumId}
 														{tr}Lock{/tr}
-													{/self_link}{$liend}
+													{/self_link}
 												{/if}
 											{/if}
 
@@ -115,30 +114,27 @@
 											and ($tiki_p_admin_forum eq 'y'))
 											or ($channels[user].individual_tiki_p_admin_forum eq 'y')
 											}
-												{$libeg}{self_link _icon_name='edit' _menu_text='y' _menu_icon='y' cookietab='2' _anchor='anchor2' forumId=$channels[user].forumId}
+												{self_link _icon_name='edit' _menu_text='y' _menu_icon='y' cookietab='2' _anchor='anchor2' forumId=$channels[user].forumId}
 													{tr}Edit{/tr}
-												{/self_link}{$liend}
-												{$libeg}{permission_link mode=text type=forum permType=forums id=$channels[user].forumId title=$channels[user].name}{$liend}
+												{/self_link}
+												{permission_link mode=text type=forum permType=forums id=$channels[user].forumId title=$channels[user].name}
 												{* go ahead and set action to delete_forum since that is the only action available in the multi selct dropdown *}
-												{$libeg}<a href="{bootstrap_modal controller=forum action=delete_forum checked={$channels[user].forumId}}">
+												<a href="#"
+													onclick="confirmModal(this, {ldelim}'data':'service'{rdelim});$('[data-toggle=popover]').popover('hide');"
+													data-service="{service controller=forum action=delete_forum params="checked[]={$channels[user].forumId}"}"
+												>
 													{icon name='remove' _menu_text='y' _menu_icon='y' alt="{tr}Delete{/tr}"}
-												</a>{$liend}
+												</a>
 											{/if}
 										{/strip}
 									{/capture}
-									{if $js === 'n'}<ul class="cssmenu_horiz"><li>{/if}
-									<a
-										class="tips"
-										title="{tr}Actions{/tr}"
-										href="#"
-										{if $js === 'y'}{popup delay="0|2000" fullhtml="1" center=true text=$smarty.capture.admin_forum_actions|escape:"javascript"|escape:"html"}{/if}
-										style="padding:0; margin:0; border:0"
-									>
+									<a class="tips"
+									   title="{tr}Actions{/tr}"
+									   href="#" {popup delay="0|2000" fullhtml="1" center=true text=$smarty.capture.admin_forum_actions|escape:"javascript"|escape:"html"}
+									   style="padding:0; margin:0; border:0"
+											>
 										{icon name='wrench'}
 									</a>
-									{if $js === 'n'}
-										<ul class="dropdown-menu" role="menu">{$smarty.capture.admin_forum_actions}</ul></li></ul>
-									{/if}
 								</td>
 							</tr>
 						{sectionelse}
@@ -155,23 +151,25 @@
 				{if $channels}
 					<div class="text-left form-group">
 						<br>
-						<label for="action" class="col-lg"></label>
-						<div class="col-sm-6 input-group">
-							<select name="action" class="form-control" onchange="show('groups');">
+						<label for="batchaction" class="col-lg"></label>
+						<div class="col-lg-9 input-group">
+							<select name="batchaction" class="form-control" onchange="show('groups');">
 								<option value="no_action">
-									{tr}Select action to perform with checked{/tr}...
+									{tr}Select action to perform with checked forums...{/tr}
 								</option>
 								{if $tiki_p_admin_forum eq 'y'}
 									<option value="delete_forum">{tr}Delete{/tr}</option>
 								{/if}
 							</select>
+							{*
+							Currently only set up to handle delete action. Will need to change to be like
+							Will need to be changed to be like tiki-adminusers.php if more actions are added
+							*}
 							<span class="input-group-btn">
 							<button
-								type="submit"
-								form='admin_forums'
-								formaction="{bootstrap_modal controller=forum}"
-								class="btn btn-primary confirm-submit"
-							>
+								type="button"
+								onclick="confirmModal(this, {ldelim}'controller':'forum','action':'delete_forum','closest':'form'{rdelim});"
+								class="btn btn-primary">
 								{tr}OK{/tr}
 							</button>
 						</span>
@@ -235,7 +233,7 @@
 									<select name="forumLanguage" id="forumLanguage" class="checkbox-inline">
 										<option value="">{tr}Unknown{/tr}</option>
 										{section name=ix loop=$languages}
-											<option value="{$languages[ix].value|escape}"{if $forumLanguage eq $languages[ix].value or (empty($data.page_id) and $forumLanguage eq '' and $languages[ix].value eq $prefs.language)} selected="selected"{/if}>{$languages[ix].name}</option>
+											<option value="{$languages[ix].value|escape}"{if $forumLanguage eq $languages[ix].value or (!($data.page_id) and $forumLanguage eq '' and $languages[ix].value eq $prefs.language)} selected="selected"{/if}>{$languages[ix].name}</option>
 										{/section}
 									</select>
 								</div>

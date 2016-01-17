@@ -63,7 +63,7 @@ function batchImportUsers()
 	$fields = fgetcsv($fhandle, 1000);
 
 	if (!$fields[0]) {
-		$smarty->assign('msg', tra('The file has incorrect syntax or is not a CSV file'));
+		$smarty->assign('msg', tra('The file is not a CSV file or has not a correct syntax'));
 		$smarty->display('error.tpl');
 		die;
 	}
@@ -163,7 +163,7 @@ function batchImportUsers()
 				$apass = '';
 			}
 
-			$u['login'] = $userlib->add_user(
+			$userlib->add_user(
 				$u['login'],
 				$u['password'],
 				$u['email'],
@@ -230,7 +230,7 @@ function batchImportUsers()
 
 	if (count($errors)) {
 		array_unique($errors);
-		$smarty->assign_by_ref('batcherrors', $errors);
+		$smarty->assign_by_ref('errors', $errors);
 	}
 }
 
@@ -265,7 +265,7 @@ if (isset($_REQUEST['batch']) && is_uploaded_file($_FILES['csvlist']['tmp_name']
 		);
 		$AddUser=false;
 	}
-	if ($_REQUEST['pass'] != $_REQUEST['passAgain']) {
+	if ($_REQUEST['pass'] != $_REQUEST['pass2']) {
 		$errors[] = array(
 			'num' => 1,
 			'mes' => tra('The passwords do not match')
@@ -325,7 +325,7 @@ if (isset($_REQUEST['batch']) && is_uploaded_file($_FILES['csvlist']['tmp_name']
 				$apass = '';
 			}
 
-			if ($_REQUEST['login'] = $userlib->add_user(
+			if ($userlib->add_user(
 				$_REQUEST['login'],
 				$newPass,
 				$_REQUEST['email'],
@@ -357,7 +357,7 @@ if (isset($_REQUEST['batch']) && is_uploaded_file($_FILES['csvlist']['tmp_name']
 
 				if ($prefs['userTracker'] === 'y' && !empty($_REQUEST['insert_user_tracker_item'])) {
 					TikiLib::lib('header')->add_jq_onready('setTimeout(function () { $(".insert-usertracker").click(); });');
-					$_REQUEST['user'] = $userlib->get_user_id($_REQUEST['login']);
+					$_REQUEST['user'] = $_REQUEST['login'];
 					$cookietab = '2';
 				} else {
 					$cookietab = '1';
@@ -495,7 +495,7 @@ if (isset($_REQUEST['user']) and $_REQUEST['user']) {
 
 		$pass_first_login = (isset($_REQUEST['pass_first_login']) && $_REQUEST['pass_first_login'] == 'on');
 		if ((isset($_POST['pass']) && $_POST["pass"]) || $pass_first_login || (isset($_POST['genepass']) && $_POST['genepass'])) {
-			if ($_POST['pass'] != $_POST['passAgain']) {
+			if ($_POST['pass'] != $_POST['pass2']) {
 				$smarty->assign('msg', tra('The passwords do not match'));
 				$smarty->display('error.tpl');
 				die;
@@ -614,6 +614,12 @@ static $iid = 0;
 $ts_tableid = 'adminusers' . $iid;
 $smarty->assign('ts_tableid', $ts_tableid);
 
+if ($tsOn) {
+	$ts_countid = $ts_tableid . '-count';
+	$ts_offsetid = $ts_tableid . '-offset';
+	$smarty->assign('ts_countid', $ts_countid);
+	$smarty->assign('ts_offsetid', $ts_offsetid);
+}
 if (!$tsOn || ($tsOn && $tsAjax)) {
 	$users = $userlib->get_users(
 		$offset,
@@ -649,6 +655,14 @@ if ($tsOn && !$tsAjax) {
 				 	)
 				)
 			 ),
+			'ajax' => array(
+				'servercount' => array(
+					'id' => $ts_countid,
+				),
+				'serveroffset' => array(
+					'id' => $ts_offsetid,
+				),
+			),
 		)
 	);
 }
@@ -677,6 +691,8 @@ if (isset($_POST['ajaxtype'])) {
 	$smarty->assign($ajaxpost);
 }
 $smarty->assign_by_ref('all_groups', $all_groups);
+// replace single quote marks and ampersands in the group names as these chars break the service
+$smarty->assign('all_groups_encoded', str_replace(['\'','&'], ['%39;','%26'], json_encode($all_groups)));
 $smarty->assign('userinfo', $userinfo);
 $smarty->assign('userId', $_REQUEST['user']);
 $smarty->assign('username', $username);

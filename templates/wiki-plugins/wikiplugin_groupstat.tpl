@@ -1,6 +1,6 @@
 {* $Id$ *}
 <div class="table-responsive">
-<table class="table">
+<table class="table normal">
 <tr>
 <th>{tr}Group Name{/tr}</th>
 <th>{tr}Number of Users{/tr}</th>

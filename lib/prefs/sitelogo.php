@@ -23,14 +23,14 @@ function prefs_sitelogo_list()
 			'tags' => array('basic'),
 		),
 		'sitelogo_title' => array(
-			'name' => tra('Logo title (on mouseover)'),
+			'name' => tra('Logo title (on mouse over)'),
 			'type' => 'text',
 			'size' => '50',
 			'default' => 'Tiki powered site',
 			'tags' => array('basic'),
 		),
 		'sitelogo_alt' => array(
-			'name' => tra('HTML "alt" tag description (for text browsers, screen readers, etc.)'),
+			'name' => tra('Alt. description (e.g. for text browsers)'),
 			'type' => 'text',
 			'size' => '50',
 			'default' => 'Site Logo',

@@ -9,7 +9,7 @@ function prefs_webmail_list()
 {
 	return array(
 		'webmail_view_html' => array(
-			'name' => tra('Allow viewing HTML emails?'),
+			'name' => tra('Allow viewing HTML mails?'),
 			'type' => 'flag',
 			'default' => 'y',
 		),
@@ -28,7 +28,7 @@ function prefs_webmail_list()
 			'default' => 1500000,
 		),
 		'webmail_quick_flags' => array(
-			'name' => tra('Include a flag by all messages to quickly flag/unflag them?'),
+			'name' => tra('Include a flag by each email to quickly flag/un-flag them?'),
 			'type' => 'flag',
 			'default' => 'n',
 		),

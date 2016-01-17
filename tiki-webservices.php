@@ -65,14 +65,12 @@ class Tiki_WebServices
 }
 
 if (is_null($_GET['wsdl'])) {
-	$protocol = isset($_SERVER['HTTPS']) ? 'https' : 'http';
-	$server = new Zend\Soap\Server($protocol . '://' . $_SERVER['SERVER_NAME'] . $_SERVER['SCRIPT_NAME'] . '?wsdl');
+	$server = new Zend_Soap_Server($_SERVER['SCRIPT_URI'] . '?wsdl');
 	$server->setClass('Tiki_WebServices');
 	$server->handle();
 
 } else {
-	$wsdl = new Zend\Soap\AutoDiscover();
-	$wsdl->setUri($_SERVER['SCRIPT_NAME']);
+	$wsdl = new Zend_Soap_AutoDiscover();
 	$wsdl->setClass('Tiki_WebServices');
 	$wsdl->handle();
 }

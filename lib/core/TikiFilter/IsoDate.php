@@ -5,7 +5,7 @@
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
-class TikiFilter_IsoDate implements Zend\Filter\FilterInterface
+class TikiFilter_IsoDate implements Zend_Filter_Interface
 {
 	function __construct($format = 'Y-m-d')
 	{

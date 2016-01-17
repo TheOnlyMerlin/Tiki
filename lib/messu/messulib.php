@@ -126,13 +126,6 @@ class Messu extends TikiLib
 		$machine = $this->httpPrefix(true) . $foo['path'];
 		$machine = str_replace('messu-compose', 'messu-mailbox', $machine);
 		$machine = str_replace('messu-broadcast', 'messu-mailbox', $machine);
-		// For non-sefurl calls, replace tiki-ajax_services with messu-mailbox if
-		// service called is user > send_message
-		if ($foo['query'] == "controller=user&action=send_message") {
-			$machine = str_replace('tiki-ajax_services', 'messu-mailbox', $machine);
-		}
-		//For sefurl service call user > send_message, redirect to messu-mailbox.php
-		$machine = str_replace('tiki-user-send_message', 'messu-mailbox.php', $machine);
 
 		if ($this->get_user_preference($user, 'minPrio', 6) <= $priority) {
 			if (!isset($_SERVER['SERVER_NAME'])) {
@@ -191,7 +184,7 @@ class Messu extends TikiLib
 						return false; //TODO echo $mail->errors;
 					}
 
-				} catch (Zend\Mail\Exception\ExceptionInterface $e) {
+				} catch (Zend_Mail_Exception $e) {
 					TikiLib::lib('errorreport')->report($e->getMessage());
 					return false;
 				}
@@ -504,8 +497,6 @@ class Messu extends TikiLib
 		$query = 'select * from `messu_' . $dbsource . "` where `user`=? $mid";
 
 		$result = $this->query($query, $bindvars);
-		$ret = [];
-
 		while ($res = $result->fetchRow()) {
 			$res['parsed'] = $this->parse_data($res['body']);
 			$res['len'] = strlen($res['parsed']);
@@ -517,3 +508,4 @@ class Messu extends TikiLib
 	}
 
 }
+$messulib = new Messu;

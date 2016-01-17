@@ -10,12 +10,10 @@
 	{* WARNING: when previewing a new reply to a forum post, $parent_com is also set *}
 
 	{if $comments_cant gt 0}
-		<form method="get" id="comment-form" class="comments">
+		<form method="get" action="{$comments_father}" class="comments">
 			{section name=i loop=$comments_request_data}
 				<input type="hidden" name="{$comments_request_data[i].name|escape}" value="{$comments_request_data[i].value|escape}">
 			{/section}
-			{*for the forum service button when js is not enabled*}
-			<input type="hidden" name="controller" value="forum">
 			<input type="hidden" name="comments_parentId" value="{$comments_parentId|escape}">
 			<input type="hidden" name="comments_grandParentId" value="{$comments_grandParentId|escape}">
 			<input type="hidden" name="comments_reply_threadId" value="{$comments_reply_threadId|escape}">
@@ -31,7 +29,7 @@
 			{if $tiki_p_admin_forum eq 'y'}
 				<div class="panel panel-primary form-group">
 					<div class="panel-heading">
-						{tr}Moderator actions for selected topics{/tr}
+						{tr}Moderator actions{/tr}
 					</div>
 					<div class="panel-body form-inline">
 						<span class="infos pull-right">
@@ -44,17 +42,31 @@
 						</span>
 						{if $topics|@count > 1}
 							<button
-								type="submit" formaction="{bootstrap_modal controller=forum action=merge_topic}" title=":{tr}Merge{/tr}"
-								form="comment-form"
-								class="btn btn-default btn-sm tips confirm-submit"
+								type="button"
+								id="merge-topic"
+								class="btn btn-default btn-sm tips"
+								title=":{tr}Merge selected topics{/tr}"
+								onclick="confirmModal(this,
+									{ldelim}
+										'controller':'forum',
+										'action':'merge_topic',
+										'closest':'form'
+									{rdelim});"
 							>
-								{icon name="merge"}
+									{icon name="merge"}
 							</button>
 						{/if}
 						<button
-							type="submit" formaction="{bootstrap_modal controller=forum action=delete_topic}" title=":{tr}Delete{/tr}"
-							form="comment-form"
-							class="btn btn-default btn-sm tips confirm-submit"
+							type="button"
+							id="delete-topic"
+							class="btn btn-default btn-sm tips"
+							title=":{tr}Delete selected posts{/tr}"
+							onclick="confirmModal(this,
+								{ldelim}
+									'controller':'forum',
+									'action':'delete_topic',
+									'closest':'form'
+								{rdelim});"
 						>
 							{icon name="remove"}
 						</button>
@@ -85,7 +97,7 @@
 									<select name="thread_style" id="comments-style">
 										<option value="commentStyle_plain" {if $thread_style eq 'commentStyle_plain'}selected="selected"{/if}>{tr}Plain{/tr}</option>
 										<option value="commentStyle_threaded" {if $thread_style eq 'commentStyle_threaded'}selected="selected"{/if}>{tr}Threaded{/tr}</option>
-										<option value="commentStyle_headers" {if $thread_style eq 'commentStyle_headers'}selected="selected"{/if}>{tr}Headers only{/tr}</option>
+										<option value="commentStyle_headers" {if $thread_style eq 'commentStyle_headers'}selected="selected"{/if}>{tr}Headers Only{/tr}</option>
 									</select>
 								{/if}
 
@@ -160,7 +172,7 @@
 		</div>
 	{/if}
 {/if} {* end read comment *}
-{if $section eq 'forums'}<a id="comments"></a>{/if}
+{if $section eq 'forums'}<a name="comments"></a>{/if}
 {if !empty($errors)}
 	{remarksbox type="warning" title="{tr}Errors{/tr}"}
 		{foreach from=$errors item=error name=error}
@@ -251,12 +263,8 @@
 						{else}
 							{$forum_wysiwyg = 'n'}
 						{/if}
-						{textarea rows="10" codemirror='true' syntax='tiki' id="editpost2" class="form-control" name="comments_data" _wysiwyg=$forum_wysiwyg}{strip}
-							{*If set to reply not empty, if you are editing a post, or previewing, put the contents in the text area.*}
-							{if ($prefs.feature_forum_replyempty ne 'y') || $edit_reply > 0 || $comment_preview eq 'y' || !empty($errors)}
-								{$comment_data}
-							{/if}
-						{/strip}{/textarea}
+						{textarea codemirror='true' syntax='tiki' id="editpost2" class="form-control" name="comments_data" _wysiwyg=$forum_wysiwyg}{if ($prefs.feature_forum_replyempty ne 'y') || $edit_reply > 0 || $comment_preview eq 'y' || !empty($errors)}{$comment_data}{/if}{/textarea}
+
 						{if $user and $prefs.feature_user_watches eq 'y'}
 							<div id="watch_thread_on_reply">
 								<input id="watch_thread" type="checkbox" name="watch" value="y"{if $user_watching_topic eq 'y' or $smarty.request.watch eq 'y'} checked="checked"{/if}> <label for="watch_thread">{tr}Send me an email when someone replies{/tr}</label>

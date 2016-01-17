@@ -26,10 +26,10 @@ class TikiAddons_Utilities extends TikiDb_Bridge
 		}
 		foreach ($depends as $depend) {
 			if (!in_array($depend->package, $installed)) {
-				throw new Exception($package . tra(' cannot load because the following dependency is missing: ') . $depend->package);
+				throw new Exception($package . tra(' cannot load because it is missing the following dependency: ') . $depend->package);
 			}
 			if (!$this->checkVersionMatch($versions[$depend->package], $depend->version)) {
-				throw new Exception($package . tra(' cannot load because a required version of a dependency is missing: ') . $depend->package . ' version ' . $depend->version);
+				throw new Exception($package . tra(' cannot load because it is missing a required version of a dependency: ') . $depend->package . ' version ' . $depend->version);
 			}
 			$this->checkProfilesInstalled($depend->package, $depend->version);
 		}
@@ -47,7 +47,7 @@ class TikiAddons_Utilities extends TikiDb_Bridge
 		foreach (glob(TIKI_PATH . '/addons/' . $folder . '/profiles/*.yml') as $file) {
 			$profileName = str_replace('.yml', '', basename($file));
 			if (!array_key_exists($profileName, $profiles)) {
-				throw new Exception(tra('This profile for this addon has not yet been installed: ') . $package . ' - ' . $profileName);
+				throw new Exception(tra('This profile for this addon have not yet been installed: ') . $package . ' - ' . $profileName);
 			} else {
 				$versionok = false;
 				foreach ($profiles[$profileName] as $versionInstalled) {
@@ -56,7 +56,7 @@ class TikiAddons_Utilities extends TikiDb_Bridge
 					}
 				}
 				if (!$versionok) {
-					throw new Exception(tra('This profile for this version of the addon has not yet been installed: ') . $package . ' version ' . $version . ' - ' . $profileName);
+					throw new Exception(tra('This profile for this version of addon have not yet been installed: ') . $package . ' version ' . $version . ' - ' . $profileName);
 				}
 			}
 		}
@@ -148,51 +148,43 @@ class TikiAddons_Utilities extends TikiDb_Bridge
 		return true;
 	}
 
-	function removeObject($objectId, $type) {
-		if (empty($objectId) || empty($type)) {
-			return;
-		}
+	function removeObject($folder, $type, $ref, $profile = '') {
 		// TODO add other types
 		if ($type == 'wiki_page' || $type == 'wiki' || $type == 'wiki page' || $type == 'wikipage') {
-			TikiLib::lib('tiki')->remove_all_versions($objectId);
+			if ($pageName = $this->getObjectId($folder, $ref, $profile)) {
+				TikiLib::lib('tiki')->remove_all_versions($pageName);
+			}
 		}
 		if ($type == 'tracker' || $type == 'trk') {
-			TikiLib::lib('trk')->remove_tracker($objectId);
+			if ($trackerId = $this->getObjectId($folder, $ref, $profile)) {
+				TikiLib::lib('trk')->remove_tracker($trackerId);
+			}
 		}
 		if ($type == 'category' || $type == 'cat') {
-			TikiLib::lib('categ')->remove_category($objectId);
+			if ($catId = $this->getObjectId($folder, $ref, $profile)) {
+				TikiLib::lib('categ')->remove_category($catId);
+			}
 		}
 		if ($type == 'file_gallery' || $type == 'file gallery' || $type == 'filegal' || $type == 'fgal' || $type == 'filegallery') {
-			TikiLib::lib('filegal')->remove_file_gallery($objectId);
+			if ($galId = $this->getObjectId($folder, $ref, $profile)) {
+				TikiLib::lib('filegal')->remove_file_gallery($galId);
+			}
 		}
 		if ($type == 'activity' || $type == 'activitystream' || $type == 'activity_stream' || $type == 'activityrule' || $type == 'activity_rule') {
-			TikiLib::lib('activity')->deleteRule($objectId);
-		}
-		if ($type == 'forum' || $type == 'forums') {
-			TikiLib::lib('comments')->remove_forum($objectId);
-		}
-		if ($type == 'trackerfield' || $type == 'trackerfields' || $type == 'tracker field') {
-			$trklib = TikiLib::lib('trk');
-			$res = $trklib->get_tracker_field($objectId);
-			$trklib->remove_tracker_field($objectId, $res['trackerId']);
-		}
-		if ($type == 'module' || $type == 'modules') {
-			$modlib = TikiLib::lib('mod');
-			$modlib->unassign_module($objectId);
+			if ($ruleId = $this->getObjectId($folder, $ref, $profile)) {
+				TikiLib::lib('activity')->deleteRule($ruleId);
+			}
 		}
 	}
 
-	function getObjectId($folder, $ref, $profile = '', $domain = '') {
+	function getObjectId($folder, $ref, $profile = '') {
 		if (strpos($folder, '/') !== false && strpos($folder, '_') === false) {
 			$folder = str_replace('/', '_', $folder);
 		}
-		if (empty($domain)) {
-			$domain = 'file://addons/' . $folder . '/profiles';
-		}
-
+		$domain = 'file://addons/' . $folder . '/profiles';
 		if (!$profile) {
 			if ($this->table('tiki_profile_symbols')->fetchCount(array('domain' => $domain, 'object' => $ref)) > 1) {
-				return $this->table('tiki_profile_symbols')->fetchColumn('value', array('domain' => $domain, 'object' => $ref));
+				return false;
 			} else {
 				return $this->table('tiki_profile_symbols')->fetchOne('value', array('domain' => $domain, 'object' => $ref));
 			}
@@ -222,14 +214,5 @@ class TikiAddons_Utilities extends TikiDb_Bridge
 		$folder = str_replace('file://addons/', '', $domain);
 		$folder = str_replace('/profiles', '', $folder);
 		return $folder;
-	}
-
-	function getAddonFilePath($filepath) {
-		foreach (TikiAddons::getPaths() as $path) {
-			if (file_exists($path."/".$filepath)) {
-				return $path."/".$filepath;
-			}
-		}
-		return false;
 	}
 }

@@ -38,7 +38,7 @@ if (isset($_REQUEST['cas']) && $_REQUEST['cas'] == 'y' && $prefs['auth_method'] 
 $smarty->assign('errortype', 'login'); // to avoid any redirection to the login box if error
 // Alert user if cookies are switched off
 if (ini_get('session.use_cookies') == 1 && !isset($_COOKIE[ session_name() ]) && $prefs['session_silent'] != 'y') {
-	$smarty->assign('msg', tra('Cookies must be enabled to log in to this site'));
+	$smarty->assign('msg', tra('You have to enable cookies to be able to login to this site'));
 	$smarty->display('error.tpl');
 	exit;
 }
@@ -329,7 +329,7 @@ if ($isvalid) {
 					}
 				}
 				// Go to the group page instead of the referer url if we are in one of those cases :
-				//   - pref 'Go to the group homepage only if logging in from the default homepage' (limitedGoGroupHome) is disabled,
+				//   - pref 'Go to group homepage only if login from default homepage' (limitedGoGroupHome) is disabled,
 				//   - referer url (e.g. http://example.com/tiki/tiki-index.php?page=Homepage ) is the homepage (tikiIndex),
 				//   - referer url complete path ( e.g. /tiki/tiki-index.php?page=Homepage ) is the homepage,
 				//   - referer url relative path ( e.g. tiki-index.php?page=Homepage ) is the homepage
@@ -455,10 +455,6 @@ if ($isvalid) {
 			$error = tra('You are already logged in.');
         		break;
 
-		case EMAIL_AMBIGUOUS:
-			$error = tra("There is more than one user account with this email. Please contact the administrator.");
-			break;
-
 		default:
 			$error = tra('Invalid username or password');
 	}
@@ -471,14 +467,8 @@ if ($isvalid) {
 	exit;
 }
 
-if ( isset($user) ) {
-	TikiLib::events()->trigger('tiki.user.login',
-		array(
-			'type' => 'user',
-			'object' => $user,
-			'user' => $user,
-		)
-	);
+if ( isset($user) and $prefs['feature_score'] == 'y' ) {
+	$tikilib->score_event($user, 'login');
 }
 // RFC 2616 defines that the 'Location' HTTP headerconsists of an absolute URI
 if ( !preg_match('/^https?\:/i', $url) ) {

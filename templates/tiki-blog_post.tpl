@@ -3,7 +3,7 @@
 
 <div class="t_navbar btn-group form-group">
 	{if $postId > 0}
-		{button href=$postId|sefurl:blogpost class="btn btn-default" _text="{tr}View post{/tr}"} 
+		{button href=$postId|sefurl:blogpost class="btn btn-default" _text="{tr}View post{/tr}"}
 	{/if}
 
 	{if $blogId gt 0}
@@ -68,7 +68,7 @@
 		<div class="form-group">
 			<label class="col-sm-1 control-label" for="blogedit">{tr}Body{/tr}</label>
 		</div>
-        <div class="form-group">
+		<div class="form-group">
 			<div class="col-sm-12">
 				{textarea id='blogedit' class="form-control wikiedit" name="data"}{if isset($data)}{$data}{/if}{/textarea}
 			</div>

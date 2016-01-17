@@ -1,13 +1,7 @@
-// Yeti 3.3.5
+// Yeti 3.1.1
 // Bootswatch
 // -----------------------------------------------------
-
-@web-font-path: "https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,700";
-
-.web-font(@path) {
-	@import url("@{path}");
-}
-.web-font(@web-font-path);
+@import url("//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,700");
 
 // Navbar =====================================================================
 
@@ -28,16 +22,6 @@
 	.btn {
 		padding-top: 6px;
 		padding-bottom: 6px;
-	}
-
-	&-form {
-		margin-top: 7px;
-		margin-bottom: 5px;
-
-		.form-control {
-			height: auto;
-			padding: @padding-xs-vertical @padding-xs-horizontal;
-		}
 	}
 
 	.dropdown {
@@ -99,18 +83,18 @@
 // Buttons ====================================================================
 
 .btn {
-	padding: @padding-base-vertical @padding-base-horizontal;
+	padding: 14px 28px;
 
 	&-lg {
-		padding: @padding-large-vertical @padding-large-horizontal;
+		padding: 16px 32px;
 	}
 
 	&-sm {
-		padding: @padding-small-vertical @padding-small-horizontal;
+		padding: 8px 16px;
 	}
 
 	&-xs {
-		padding: @padding-xs-vertical @padding-xs-horizontal;
+		padding: 4px 8px;
 	}
 }
 
@@ -245,6 +229,11 @@ table {
 
 // Forms ======================================================================
 
+input,
+.form-control {
+	padding: 7px;
+}
+
 label,
 .control-label,
 .help-block,
@@ -254,9 +243,10 @@ label,
 	font-weight: normal;
 }
 
-input[type="radio"],
-input[type="checkbox"] {
-	margin-top: 1px;
+.input-group-addon,
+.input-group-btn .btn {
+	padding: 8px 14px;
+	font-size: @font-size-small;
 }
 
 // Navs =======================================================================
@@ -322,14 +312,12 @@ input[type="checkbox"] {
 		}
 	}
 
-	&-lg > li > a,
-	&-lg > li > span {
+	&-lg > li > a {
 		padding-left: 22px;
 		padding-right: 22px;
 	}
 
-	&-sm > li > a,
-	&-sm > li > span {
+	&-sm > li > a {
 		padding: 0 5px;
 	}
 }
@@ -349,8 +337,6 @@ input[type="checkbox"] {
 
 .close {
 	opacity: 0.4;
-	text-decoration: none;
-	text-shadow: none;
 
 	&:hover,
 	&:focus {
@@ -362,10 +348,21 @@ input[type="checkbox"] {
 	font-size: @font-size-small;
 	font-weight: 300;
 
+	a,
 	.alert-link {
 		font-weight: normal;
 		color: #fff;
 		text-decoration: underline;
+	}
+
+	.close {
+		color: #fff;
+		text-decoration: none;
+
+		&:hover,
+		&:focus {
+			color: #fff;
+		}
 	}
 }
 
@@ -428,17 +425,5 @@ input[type="checkbox"] {
 	&-footer {
 		border-top-right-radius: 0;
 		border-top-left-radius: 0;
-	}
-
-	&-default {
-		.close {
-			color: @text-color;
-		}
-	}
-}
-
-.modal {
-	.close {
-		color: @text-color;
 	}
 }

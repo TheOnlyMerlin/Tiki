@@ -92,10 +92,7 @@
 	{if $available_states|@count > 0}
 		{tab name="{tr}Transitions{/tr}"}
 			<h2>{tr}Transitions{/tr}</h2>
-			{* former add_dracula() *}
-			{$headerlib->add_jsfile('lib/dracula/raphael-min.js', true)}
-			{$headerlib->add_jsfile('lib/dracula/graffle.js', true)}
-			{$headerlib->add_jsfile('lib/dracula/graph.js', true)}
+			{$headerlib->add_dracula()}
 			<div id="graph-canvas" class="graph-canvas" data-graph-nodes="{$graph_nodes|escape}" data-graph-edges="{$graph_edges|escape}"></div>
 			<a href="#" id="graph-draw" class="button">{tr}Draw Transition Diagram{/tr}</a>
 			{jq}
@@ -105,18 +102,8 @@
 				return false;
 			} );
 			{/jq}
-			{* Use css menus as fallback for item dropdown action menu if javascript is not being used *}
-			{if $prefs.javascript_enabled !== 'y'}
-				{$js = 'n'}
-				{$libeg = '<li>'}
-				{$liend = '</li>'}
-			{else}
-				{$js = 'y'}
-				{$libeg = ''}
-				{$liend = ''}
-			{/if}
-			<div class="{if $js === 'y'}table-responsive{/if}"> {* table-responsive class cuts off css drop-down menus *}
-				<table class="table table-striped table-hover">
+			<div class="table-responsive">
+				<table class="table normal table-striped table-hover">
 					<thead>
 						<tr>
 							<th>{tr}Label{/tr}</th>
@@ -136,28 +123,22 @@
 								<td class="action">
 									{capture name=transition_actions}
 										{strip}
-											{$libeg}{permission_link mode=text type=transition id=$trans.transitionId title=$trans.name}{$liend}
-											{$libeg}{self_link transitionId=$trans.transitionId action=edit cookietab=3 _menu_text='y' _menu_icon='y' _icon_name='edit'}
+											{permission_link mode=text type=transition id=$trans.transitionId title=$trans.name}
+											{self_link transitionId=$trans.transitionId action=edit cookietab=3 _menu_text='y' _menu_icon='y' _icon_name='edit'}
 												{tr}Edit{/tr}
-											{/self_link}{$liend}
-											{$libeg}{self_link transitionId=$trans.transitionId action=remove _icon_name="remove" _menu_text='y' _menu_icon='y'}
+											{/self_link}
+											{self_link transitionId=$trans.transitionId action=remove _icon_name="remove" _menu_text='y' _menu_icon='y'}
 												{tr}Remove{/tr}
-											{/self_link}{$liend}
+											{/self_link}
 										{/strip}
 									{/capture}
-									{if $js === 'n'}<ul class="cssmenu_horiz"><li>{/if}
-									<a
-										class="tips"
-										title="{tr}Actions{/tr}"
-										href="#"
-										{if $js === 'y'}{popup delay="0|2000" fullhtml="1" center=true text=$smarty.capture.transition_actions|escape:"javascript"|escape:"html"}{/if}
-										style="padding:0; margin:0; border:0"
-									>
+									<a class="tips"
+									   title="{tr}Actions{/tr}"
+									   href="#" {popup delay="0|2000" fullhtml="1" center=true text=$smarty.capture.transition_actions|escape:"javascript"|escape:"html"}
+									   style="padding:0; margin:0; border:0"
+											>
 										{icon name='wrench'}
 									</a>
-									{if $js === 'n'}
-										<ul class="dropdown-menu" role="menu">{$smarty.capture.transition_actions}</ul></li></ul>
-									{/if}
 								</td>
 							</tr>
 						{foreachelse}
@@ -232,7 +213,7 @@
 			{tab name="{tr}Guards{/tr}"}
 				<h2>{tr}Guards{/tr}</h2>
 				<div class="table-responsive">
-					<table class="table">
+					<table class="table normal">
 						<thead>
 							<tr>
 								<th>{tr}Type{/tr}</th>

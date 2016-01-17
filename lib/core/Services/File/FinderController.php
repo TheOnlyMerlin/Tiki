@@ -209,7 +209,7 @@ class Services_File_FinderController
 							($info['filetype'] === 'application/pdf' or
 									strpos($info['filetype'], 'application/vnd.oasis.opendocument.') !== false)) {
 
-						$url = \ZendOpenId\OpenId::absoluteUrl($prefs['fgal_viewerjs_uri']) . '#' . $url;
+						$url = Zend_OpenId::absoluteUrl($prefs['fgal_viewerjs_uri']) . '#' . $url;
 					}
 				}
 

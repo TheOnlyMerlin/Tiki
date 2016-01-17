@@ -10,7 +10,7 @@ function prefs_page_list()
 	return array(
 		'page_bar_position' => array(
 			'name' => tra('Wiki buttons'),
-			'description' => tra('Page description, icons, backlinks....'),
+			'description' => tra('Page description, icons, backlinks, ...'),
 			'type' => 'list',
 			'options' => array(
 				'top' => tra('Top '),
@@ -20,15 +20,14 @@ function prefs_page_list()
 			'default' => 'bottom',
 		),
 		'page_n_times_in_a_structure' => array(
-			'name' => tra('Pages can reoccur in structure'),
-			'description' => tra('A page can be listed multiple times in a structure'),
+			'name' => tra('Pages can re-occur in structure'),
+			'description' => tra('A page can occur multiple times in a structure'),
 			'type' => 'flag',
 			'default' => 'n',
 		),
 		'page_content_fetch' => array(
 			'name' => tra('Fetch page content from incoming feeds'),
 			'description' => tra('Page content from the source will be fetched before sending the content to the generators'),
-			'dependencies' => array('page_content_fetch_readability'),
 			'type' => 'flag',
 			'default' => 'n',
 		),
@@ -38,6 +37,6 @@ function prefs_page_list()
 			'type' => 'text',
 			'size' => 20,
 			'default' => '',
-		),
+		),	
 	);
 }

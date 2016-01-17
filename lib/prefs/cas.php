@@ -9,7 +9,7 @@ function prefs_cas_list()
 {
 	return array(
 		'cas_create_user_tiki' => array(
-			'name' => tra('Create user if not already a registered user'),
+			'name' => tra('Create user if not in Tiki'),
             'description' => tra(''),
 			'type' => 'flag',
 			'perspective' => false,
@@ -37,7 +37,7 @@ function prefs_cas_list()
 			'default' => 'n',
 			),
 		'cas_show_alternate_login' => array(
-			'name' => tra('Show alternate log-in method in header'),
+			'name' => tra('Show Alternate Login Method in Header'),
             'description' => tra(''),
 			'type' => 'flag',
 			'perspective' => false,
@@ -58,6 +58,7 @@ function prefs_cas_list()
 		'cas_hostname' => array(
 			'name' => tra('Hostname'),
 			'description' => tra('Hostname of the CAS server.'),
+            'description' => tra(''),
 			'type' => 'text',
 			'size' => 50,
 			'filter' => 'striptags',

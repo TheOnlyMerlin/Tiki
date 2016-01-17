@@ -10,13 +10,13 @@
 	<input type="hidden" name="categorysetup" />
 	<div class="row">
 		<div class="form-group col-lg-12 clearfix">
-			<a role="link" class="btn btn-link" href="tiki-browse_categories.php" title="{tr}List{/tr}">
+			<a role="button" class="btn btn-link" href="tiki-browse_categories.php" title="{tr}List{/tr}">
 				{icon name="list"} {tr}Browse Categories{/tr}
 			</a>
-			<a role="link" class="btn btn-link" href="tiki-admin_categories.php" title="{tr}Administration{/tr}">
+			<a role="button" class="btn btn-link" href="tiki-admin_categories.php" title="{tr}Administration{/tr}">
 				{icon name="cog"} {tr}Administer Categories{/tr}
 			</a>
-			<a role="link" class="btn btn-link" href="tiki-edit_categories.php" title="{tr}Organize Objects{/tr}">
+			<a role="button" class="btn btn-link" href="tiki-edit_categories.php" title="{tr}Organize Objects{/tr}">
 				{icon name="sort"} {tr}Organize Objects{/tr}
 			</a>
 			<div class="pull-right">
@@ -60,9 +60,6 @@
 
 		{preference name=feature_category_transition}
 		{preference name=categories_used_in_tpl}
-		{preference name=categories_add_class_to_body_tag}
-		{preference name=categories_cache_refresh_on_object_cat}
-		
 		<div class="adminoptionboxchild" id="categories_used_in_tpl_childcontainer">
 			{preference name=feature_areas}
 			{preference name=areas_root}

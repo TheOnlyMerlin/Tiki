@@ -92,8 +92,8 @@ class Table_Code_MainOptions extends Table_Code_Manager
 					if ($attr == 'addClass') {
 						$args = implode(' ',$val);
 					} else {
-						foreach($info[$attr] as $type => $val2) {
-							$args = $type . '\',\'' . $val2;
+						foreach($info[$attr] as $type => $val) {
+							$args = $type . '\',\'' . $val;
 						}
 					}
 					$orh[$col] .= '.' . $attr . '(\'' . $args . '\')';
@@ -124,11 +124,7 @@ class Table_Code_MainOptions extends Table_Code_Manager
 		/*** widgets ***/
 		//standard ones
 		$w[] = 'stickyHeaders';
-		//only fancytable uses this and it is set in wikiplugin_fancytable.php
-		//other tables don't show up full width due to use of table-responsive class in wrapper div
-		if (isset(parent::$s['resizable']) && parent::$s['resizable']) {
-			$w[] = 'resizable';
-		}
+		$w[] = 'resizable';
 		if (parent::$group) {
 			$w[] = 'group';
 		}
@@ -148,16 +144,10 @@ class Table_Code_MainOptions extends Table_Code_Manager
 		if (parent::$s['colselect']) {
 			$w[] = 'columnSelector';
 		}
-		//math
-		if (parent::$math || parent::$mathcol) {
-			$w[] = 'math';
-		}
 		if (count($w) > 0) {
 			$mo[] = $this->iterate($w, 'widgets : [', ']', '\'', '\'', ',');
 		}
 		/*** end widget section ***/
-		//debug - uncomment the line below to show log of events in the browser console
-//		$mo[] = 'debug: true';
 
 		//server side sorting
 		if (parent::$sorts && parent::$ajax) {
@@ -174,7 +164,7 @@ class Table_Code_MainOptions extends Table_Code_Manager
 			$sl = '';
 			$i = 0;
 			foreach (parent::$s['columns'] as $col => $info) {
-				$info = !empty($info['sort']) ? $info['sort'] : [];
+				$info = $info['sort'];
 				$colpointer =  parent::$usecolselector ? $i : $col;
 				if (!empty($info['dir'])) {
 					if ($info['dir'] === 'asc') {

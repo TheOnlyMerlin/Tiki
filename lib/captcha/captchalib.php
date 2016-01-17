@@ -12,22 +12,22 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) != FALSE) {
 }
 
 /**
- * A simple class to switch between Zend\Captcha\Image and
- * Zend\Captcha\ReCaptcha based on admin preference
+ * A simple class to switch between Zend_Captcha_Image and
+ * Zend_Captcha_ReCaptcha based on admin preference
  */
 class Captcha
 {
 
 	/**
-	 * The type of the captch ('default' when using Zend\Captcha\Image
-	 * or 'recaptcha' when using Zend\Captcha\ReCaptcha)
+	 * The type of the captch ('default' when using Zend_Captcha_Image
+	 * or 'recaptcha' when using Zend_Captcha_ReCaptcha)
 	 *
 	 * @var string
 	 */
 	public $type = '';
 
 	/**
-	 * An instance of Zend\Captcha\Image or Zend\Captcha\ReCaptcha
+	 * An instance of Zend_Captcha_Image or Zend_Captcha_ReCaptcha
 	 * depending on the value of $this->type
 	 *
 	 * @var object
@@ -36,7 +36,7 @@ class Captcha
 
 	/**
 	 * Class constructor: decides whether to create an instance of
-	 * Zend\Captcha\Image or Zend\Captcha\ReCaptcha or Captcha_Question
+	 * Zend_Captcha_Image or Zend_Captcha_ReCaptcha or Captcha_Question
 	 *
 	 * @param string $type recaptcha|questions|default|dumb
 	 */
@@ -61,13 +61,13 @@ class Captcha
 		}
 
 		if ($type === 'recaptcha') {
-			$this->captcha = new Zend\Captcha\ReCaptcha(
+			$this->captcha = new Zend_Captcha_ReCaptcha(
 				array(
-					'private_key' => $prefs['recaptcha_privkey'],
-					'public_key' => $prefs['recaptcha_pubkey'],
+					'privkey' => $prefs['recaptcha_privkey'],
+					'pubkey' => $prefs['recaptcha_pubkey'],
+					'theme' => isset($prefs['recaptcha_theme']) ? $prefs['recaptcha_theme'] : 'clean',
 				)
 			);
-			$this->captcha->getService()->setOption('theme', isset($prefs['recaptcha_theme']) ? $prefs['recaptcha_theme'] : 'clean');
 
 			$this->captcha->setOption('ssl', true);
 
@@ -92,7 +92,7 @@ class Captcha
 
 			$this->recaptchaCustomTranslations();
 		} else if ($type === 'default') {
-			$this->captcha = new Zend\Captcha\Image(
+			$this->captcha = new Zend_Captcha_Image(
 				array(
 					'wordLen' => $prefs['captcha_wordLen'],
 					'timeout' => 600,
@@ -124,7 +124,7 @@ class Captcha
 
 
 		} else {		// implied $type==='dumb'
-			$this->captcha = new Zend\Captcha\Dumb;
+			$this->captcha = new Zend_Captcha_Dumb;
 			$this->captcha->setWordlen($prefs['captcha_wordLen']);
 			$this->captcha->setLabel(tra('Please type this word backwards'));
 			$this->type = 'dumb';
@@ -150,7 +150,7 @@ class Captcha
 				$this->captcha->setSession($session);
 				$this->captcha->setKeepSession(false);
 			}
-		} catch (Zend\Captcha\Exception\ExceptionInterface $e) {
+		} catch (Zend_Exception $e) {
 		}
 		return $key;
 	}
@@ -188,7 +188,7 @@ Recaptcha.create("' . $this->captcha->getPubKey() . '",
 		} else {
 			if ($this->captcha instanceof Captcha_ReCaptcha20) {
 				return $this->captcha->render();
-			} else if ($this->captcha instanceof Zend\Captcha\ReCaptcha){
+			} else if ($this->captcha instanceof Zend_Captcha_ReCaptcha){
 				return $this->captcha->getService()->getHtml();
 			}
 			return $this->captcha->render();
@@ -207,15 +207,7 @@ Recaptcha.create("' . $this->captcha->getPubKey() . '",
 			$input = $_REQUEST;
 		}
 		if ($this->type == 'recaptcha' || $this->type == 'recaptcha20') {
-			// Temporary workaround of zend/http client uses arg_separator.output for making POST request body
-			// which fails with Google recaptcha services if used with '&amp;' value
-			// should be fixed in zend/http (pull request submitted)
-			// or remove ini_get('arg_separator.output', '&amp;') we have in tiki code tiki-setup_base.php:31
-			$oldVal = ini_get('arg_separator.output');
-			ini_set('arg_separator.output', '&');
-			$result = $this->captcha->isValid($input);
-			ini_set('arg_separator.output', $oldVal);
-			return $result;
+			return $this->captcha->isValid($input);
 		}	else {
 			return $this->captcha->isValid($input['captcha']);
 		}
@@ -232,7 +224,7 @@ Recaptcha.create("' . $this->captcha->getPubKey() . '",
 	}
 
 	/**
-	 * Translate Zend\Captcha\Image, Zend\Captcha\Dumb and Zend\Captcha\ReCaptcha
+	 * Translate Zend_Captcha_Image, Zend_Captcha_Dumb and Zend_Captcha_ReCaptcha
 	 * default error messages
 	 *
 	 * @return void
@@ -240,14 +232,14 @@ Recaptcha.create("' . $this->captcha->getPubKey() . '",
 	function setErrorMessages()
 	{
 		$errors = array(
-			'missingValue' => tra('Empty CAPTCHA value'),
+			'missingValue' => tra('Empty captcha value'),
 			'badCaptcha' => tra('You have mistyped the anti-bot verification code. Please try again.')
 		);
 
 		if ($this->type == 'recaptcha' || $this->type == 'recaptcha20')
 			$errors['errCaptcha'] = tra('Failed to validate CAPTCHA');
 		else
-			$errors['missingID'] = tra('CAPTCHA ID field is missing');
+			$errors['missingID'] = tra('Captcha ID field is missing');
 
 		$this->captcha->setMessages($errors);
 	}
@@ -280,7 +272,7 @@ Recaptcha.create("' . $this->captcha->getPubKey() . '",
 				'instructions_audio' => tra('Type what you hear'),
 				'help_btn' => tra('Help'),
 				'play_again' => tra('Play sound again'),
-				'cant_hear_this' => tra('Download audio as an MP3 file'),
+				'cant_hear_this' => tra('Download sound as MP3'),
 				'incorrect_try_again' => tra('Incorrect. Try again.')
 			)
 		);

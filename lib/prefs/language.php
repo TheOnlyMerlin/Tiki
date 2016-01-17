@@ -10,8 +10,8 @@ function prefs_language_list($partial = false)
 	$map = array();
 
 	if (! $partial) {
-		$langLib = TikiLib::lib('language');
-		$languages = $langLib->list_languages(false, null, true);
+		$languages = TikiLib::lib('tiki')->list_languages(false, null, true);
+
 		foreach ( $languages as $lang ) {
 			$map[ $lang['value'] ] = $lang['name'];
 		}
@@ -21,7 +21,7 @@ function prefs_language_list($partial = false)
 	return array(
 		'language' => array(
 			'name' => tra('Default language'),
-			'description' => tra('The site language is used when no other language is specified by the user.'),
+			'description' => tra('Site language used when no other language is specified by the user.'),
 			'filter' => 'lang',
 			'help' => 'I18n',
 			'type' => 'list',

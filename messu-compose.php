@@ -10,7 +10,7 @@
 
 $section = 'user_messages';
 require_once ('tiki-setup.php');
-$messulib = TikiLib::lib('message');
+include_once ('lib/messu/messulib.php');
 $access->check_user($user);
 $access->check_feature('feature_messages');
 $access->check_permission('tiki_p_messages');
@@ -209,13 +209,10 @@ if (isset($_REQUEST['send'])) {
 		// 										//
 		//////////////////////////////////////////////////////////////////////////////////
 		if ($result) {
-			TikiLib::events()->trigger('tiki.user.message',
-				array(
-					'type' => 'user',
-					'object' => $a_user,
-					'user' => $user,
-				)
-			);
+			if ($prefs['feature_score'] == 'y') {
+				$tikilib->score_event($user, 'message_send');
+				$tikilib->score_event($a_user, 'message_receive');
+			}
 			// if this is a reply flag the original messages replied to
 			if ($_REQUEST['replyto_hash'] <> '') {
 				$messulib->mark_replied($a_user, $_REQUEST['replyto_hash']);

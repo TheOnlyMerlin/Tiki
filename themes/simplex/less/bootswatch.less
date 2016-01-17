@@ -1,13 +1,6 @@
-// Simplex 3.3.5
+// Simplex 3.1.1
 // Bootswatch
 // -----------------------------------------------------
-
-@web-font-path: "https://fonts.googleapis.com/css?family=Open+Sans:400,700";
-
-.web-font(@path) {
-	@import url("@{path}");
-}
-.web-font(@web-font-path);
 
 .btn-shadow(@color) {
 	#gradient > .vertical-three-colors(lighten(@color, 3%), @color, 6%, darken(@color, 3%));
@@ -82,22 +75,9 @@ legend {
 	color: @headings-color;
 }
 
-label {
-	font-weight: normal;
-}
-
 .has-warning {
 	.help-block,
-	.control-label,
-	.radio,
-	.checkbox,
-	.radio-inline,
-	.checkbox-inline,
-	&.radio label,
-	&.checkbox label,
-	&.radio-inline label,
-	&.checkbox-inline label,
-	.form-control-feedback {
+	.control-label {
 		color: @brand-danger;
 	}
 
@@ -109,16 +89,7 @@ label {
 
 .has-error {
 	.help-block,
-	.control-label,
-	.radio,
-	.checkbox,
-	.radio-inline,
-	.checkbox-inline,
-	&.radio label,
-	&.checkbox label,
-	&.radio-inline label,
-	&.checkbox-inline label,
-	.form-control-feedback {
+	.control-label {
 		color: @brand-primary;
 	}
 
@@ -130,16 +101,7 @@ label {
 
 .has-success {
 	.help-block,
-	.control-label,
-	.radio,
-	.checkbox,
-	.radio-inline,
-	.checkbox-inline,
-	&.radio label,
-	&.checkbox label,
-	&.radio-inline label,
-	&.checkbox-inline label,
-	.form-control-feedback {
+	.control-label {
 		color: @brand-success;
 	}
 
@@ -157,7 +119,7 @@ label {
 	}
 
 	a:hover,
-	.active > a {
+	.active > a, {
 		border-color: @brand-primary;
 		color: #fff;
 	}

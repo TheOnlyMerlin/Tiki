@@ -19,8 +19,8 @@ class Tracker_Field_Email extends Tracker_Field_Abstract implements Tracker_Fiel
 		return array(
 			'm' => array(
 				'name' => tr('Email'),
-				'description' => tr('Allows an email address to be input with the option of making it active.'),
-				'help' => 'Email Tracker Field',
+				'description' => tr('Allows an email address to be input with options of making it active.'),
+				'help' => 'Email Tracker Field',				
 				'prefs' => array('trackerfield_email'),
 				'tags' => array('basic'),
 				'default' => 'y',
@@ -56,7 +56,7 @@ class Tracker_Field_Email extends Tracker_Field_Abstract implements Tracker_Fiel
 						),
 						'legacy_index' => 2,
 					),
-					'watchclosed' => array(
+					'watchopen' => array(
 						'name' => tr('Watch Closed'),
 						'description' => tr('Notify this address every time the status changes to closed.'),
 						'filter' => 'alpha',

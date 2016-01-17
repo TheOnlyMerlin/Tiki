@@ -258,9 +258,7 @@ class WikiMetadataLookup
 	{
 		if (empty($this->language)) {
 			//TODO: abstract
-			$langLib = TikiLib::lib('language');
-			$languages = $langLib->list_languages();
-			foreach ($languages as $listLanguage) {
+			foreach (TikiLib::lib("tiki")->list_languages() as $listLanguage) {
 				if ($listLanguage['value'] == $this->_language) {
 					$this->language = urlencode($listLanguage['name']);
 					break;

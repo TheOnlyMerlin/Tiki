@@ -32,9 +32,6 @@
 		<service id="tiki.lib.attribute" class="AttributeLib">
 			<file>%kernel.root_dir%/lib/attributes/attributelib.php</file>
 		</service>
-		<service id="tiki.lib.avatar" class="AvatarLib">
-			<file>%kernel.root_dir%/lib/avatarlib.php</file>
-		</service>
 		<service id="tiki.lib.banner" class="BannerLib">
 			<file>%kernel.root_dir%/lib/banners/bannerlib.php</file>
 		</service>
@@ -102,9 +99,6 @@
 		<service id="tiki.lib.filegal" class="FileGalLib">
 			<file>%kernel.root_dir%/lib/filegals/filegallib.php</file>
 		</service>
-		<service id="tiki.lib.filegalbatch" class="FileGalBatchLib">
-			<file>%kernel.root_dir%/lib/filegals/filegalbatchlib.php</file>
-		</service>
 		<service id="tiki.lib.freetag" class="FreetagLib">
 			<file>%kernel.root_dir%/lib/freetag/freetaglib.php</file>
 		</service>
@@ -143,12 +137,6 @@
 			<file>%kernel.root_dir%/lib/videogals/kalturalib.php</file>
 			<argument type="string">0</argument> <!-- KalturaLib::SESSION_USER -->
 		</service>
-		<service id="tiki.lib.language" class="Language">
-			<file>%kernel.root_dir%/lib/language/Language.php</file>
-		</service>
-		<service id="tiki.lib.languagetranslations" class="LanguageTranslations">
-			<file>%kernel.root_dir%/lib/language/LanguageTranslations.php</file>
-		</service>
 		<service id="tiki.lib.ldap" class="LdapLib">
 			<file>%kernel.root_dir%/lib/ldap/ldaplib.php</file>
 		</service>
@@ -166,9 +154,6 @@
 		</service>
 		<service id="tiki.lib.memcache" class="Memcachelib">
 			<file>%kernel.root_dir%/lib/cache/memcachelib.php</file>
-		</service>
-		<service id="tiki.lib.message" class="Messu">
-			<file>%kernel.root_dir%/lib/messu/messulib.php</file>
 		</service>
 		<service id="tiki.lib.menu" class="MenuLib">
 			<file>%kernel.root_dir%/lib/menubuilder/menulib.php</file>
@@ -286,9 +271,6 @@
 		<service id="tiki.lib.symbols" class="Tiki_Profile_SymbolLoader" />
 		<service id="tiki.lib.tabular" class="Tracker\Tabular\Manager">
 			<argument type="service" id="tiki.lib.db"/>
-		</service>
-		<service id="tiki.lib.template" class="TemplatesLib">
-			<file>%kernel.root_dir%/lib/templates/templateslib.php</file>
 		</service>
 		<service id="tiki.lib.theme" class="ThemeLib">
 			<file>%kernel.root_dir%/lib/theme/themelib.php</file>

@@ -26,13 +26,6 @@ class Services_Utilities_Controller
 		return $this->alert($input);
 	}
 
-	function action_alert_button($input)
-	{
-		$alert = $this->alert($input);
-		$alert['ajaxhref'] = $input->ajaxhref->url();
-		$alert['ajaxbuttonname'] = $input->ajaxbuttonname->text();
-		return $alert;
-	}
 
 	private function alert($input)
 	{
@@ -50,19 +43,8 @@ class Services_Utilities_Controller
 			'ajaxtoList' => $toList,
 			'ajaxtimeoutMsg' => $input->offsetGet('ajaxtimeoutMsg'),
 			'ajaxtimer' => $input->offsetGet('ajaxtimer'),
-			'ajaxdismissible' => $input->offsetGet('ajaxdismissible'),
 		];
 	}
 
-	static function noJsPath ()
-	{
-		global $prefs;
-		if ($prefs['javascript_enabled'] !== 'y') {
-			global $base_url;
-			$referer = substr($_SERVER['HTTP_REFERER'], strlen($base_url));
-		} else {
-			$referer = '';
-		}
-		return $referer;
-	}
+
 }

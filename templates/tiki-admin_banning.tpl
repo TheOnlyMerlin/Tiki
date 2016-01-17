@@ -76,7 +76,7 @@
 	{if isset($mass_ban_ip)}
 		<div class="form-group">
 			<label class="col-sm-4 control-label" for="banning-ipregex">{tr}Multiple IP regex matching{/tr}</label>
-			<div class="col-sm-8 alert-warning">
+			<div class="col-sm-8">
 				<input type="radio" name="mode" value="mass_ban_ip" {if $info.mode eq 'mass_ban_ip'}checked="checked"{/if}>
 				<br>
 				<input type="checkbox" name="checkmultiip" checked="checked" onclick="CheckMultiIP();">
@@ -181,22 +181,12 @@
 	</form>
 {/if}
 <h2>{tr}Current rules{/tr}</h2>
-{* Use css menus as fallback for item dropdown action menu if javascript is not being used *}
-{if $prefs.javascript_enabled !== 'y'}
-	{$js = 'n'}
-	{$libeg = '<li>'}
-	{$liend = '</li>'}
-{else}
-	{$js = 'y'}
-	{$libeg = ''}
-	{$liend = ''}
-{/if}
 <form method="post" action="tiki-admin_banning.php">
 	<input type="hidden" name="offset" value="{$offset|escape}">
 	<input type="hidden" name="find" value="{$find|escape}">
 	<input type="hidden" name="sort_mode" value="{$sort_mode|escape}">
-	<div class="{if $js === 'y'}table-responsive{/if}"> {* table-responsive class cuts off css drop-down menus *}
-		<table class="table table-striped table-hover">
+	<div class="table-responsive">
+		<table class="table normal table-striped table-hover">
 			<tr>
 				<th>
 					{if $items|count > 0}
@@ -232,27 +222,21 @@
 					<td>
 						{capture name=banning_actions}
 							{strip}
-								{$libeg}<a href="tiki-admin_banning.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;find={$find}&amp;banId={$items[user].banId}">
+								<a href="tiki-admin_banning.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;find={$find}&amp;banId={$items[user].banId}">
 									{icon name='edit' _menu_text='y' _menu_icon='y' alt="{tr}Edit{/tr}"}
-								</a>{$liend}
-								{$libeg}<a href="tiki-admin_banning.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;find={$find}&amp;remove={$items[user].banId}">
+								</a>
+								<a href="tiki-admin_banning.php?offset={$offset}&amp;sort_mode={$sort_mode}&amp;find={$find}&amp;remove={$items[user].banId}">
 									{icon name='remove' _menu_text='y' _menu_icon='y' alt="{tr}Remove{/tr}"}
-								</a>{$liend}
+								</a>
 							{/strip}
 						{/capture}
-						{if $js === 'n'}<ul class="cssmenu_horiz"><li>{/if}
-						<a
-							class="tips"
-							title="{tr}Actions{/tr}"
-							href="#"
-							{if $js === 'y'}{popup delay="0|2000" fullhtml="1" center=true text=$smarty.capture.banning_actions|escape:"javascript"|escape:"html"}{/if}
-							style="padding:0; margin:0; border:0"
-						>
+						<a class="tips"
+						   title="{tr}Actions{/tr}"
+						   href="#" {popup delay="0|2000" fullhtml="1" center=true text=$smarty.capture.banning_actions|escape:"javascript"|escape:"html"}
+						   style="padding:0; margin:0; border:0"
+								>
 							{icon name='wrench'}
 						</a>
-						{if $js === 'n'}
-							<ul class="dropdown-menu" role="menu">{$smarty.capture.banning_actions}</ul></li></ul>
-						{/if}
 					</td>
 				</tr>
 			{sectionelse}

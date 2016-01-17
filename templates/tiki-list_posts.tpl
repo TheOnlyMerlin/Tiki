@@ -3,9 +3,9 @@
 {title help="Blogs"}{if isset($blogTitle)}{tr _0=$blogTitle}Blog: %0{/tr}{else}{tr}Blog Posts{/tr}{/if}{/title}
 
 <div class="t_navbar margin-bottom-md">
-	{button href="tiki-edit_blog.php" _type="text" class="btn btn-link" _icon_name="add" _text="{tr}Create Blog{/tr}"}
-	{button href="tiki-blog_post.php" _type="text" class="btn btn-link" _icon_name="create" _text="{tr}New Blog Post{/tr}"}
-	{button href="tiki-list_blogs.php" _type="text" class="btn btn-link" _icon_name="list" _text="{tr}List Blogs{/tr}"}
+	{button href="tiki-edit_blog.php" class="btn btn-default" _text="{tr}Create Blog{/tr}"}
+	{button href="tiki-blog_post.php" class="btn btn-default" _text="{tr}New Blog Post{/tr}"}
+	{button href="tiki-list_blogs.php" class="btn btn-default" _text="{tr}List Blogs{/tr}"}
 	{if $posts or ($find ne '')}
 		<div class="col-md-6 row-sidemargins-zero pull-right">
 			{include file='find.tpl'}
@@ -16,18 +16,8 @@
 	<form name="checkboxes_on" method="post" action="tiki-list_posts.php" role="form" class="form">
 	{query _type='form_input'}
 {/if}
-{* Use css menus as fallback for item dropdown action menu if javascript is not being used *}
-{if $prefs.javascript_enabled !== 'y'}
-	{$js = 'n'}
-	{$libeg = '<li>'}
-	{$liend = '</li>'}
-{else}
-	{$js = 'y'}
-	{$libeg = ''}
-	{$liend = ''}
-{/if}
-<div class="{if $js === 'y'}table-responsive{/if}"> {* table-responsive class cuts off css drop-down menus *}
-	<table class="table">
+<div class="table-responsive">
+	<table class="table normal">
 		<tr>
 			{if $posts and $tiki_p_blog_admin eq 'y'}
 				<th>
@@ -68,27 +58,21 @@
 				<td class="action">
 					{capture name=post_actions}
 						{strip}
-							{$libeg}<a href="tiki-blog_post.php?blogId={$posts[changes].blogId}&postId={$posts[changes].postId}">
+							<a href="tiki-blog_post.php?blogId={$posts[changes].blogId}&postId={$posts[changes].postId}">
 								{icon name="edit" _menu_text='y' _menu_icon='y' alt="{tr}Edit{/tr}"}
-							</a>{$liend}
-							{$libeg}<a href="tiki-list_posts.php?{if isset($blogId)}blogId={$blogId}&amp;{/if}offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$posts[changes].postId}" title=":{tr}Delete{/tr}">
+							</a>
+							<a href="tiki-list_posts.php?{if isset($blogId)}blogId={$blogId}&amp;{/if}offset={$offset}&amp;sort_mode={$sort_mode}&amp;remove={$posts[changes].postId}" title=":{tr}Delete{/tr}">
 								{icon name="remove" _menu_text='y' _menu_icon='y' alt="{tr}Remove{/tr}"}
-							</a>{$liend}
+							</a>
 						{/strip}
 					{/capture}
-					{if $js === 'n'}<ul class="cssmenu_horiz"><li>{/if}
-					<a
-						class="tips"
-						title="{tr}Actions{/tr}"
-						href="#"
-						{if $js === 'y'}{popup delay="0|2000" fullhtml="1" center=true text=$smarty.capture.post_actions|escape:"javascript"|escape:"html"}{/if}
-						style="padding:0; margin:0; border:0"
-					>
+					<a class="tips"
+					   title="{tr}Actions{/tr}"
+					   href="#" {popup delay="0|2000" fullhtml="1" center=true text=$smarty.capture.post_actions|escape:"javascript"|escape:"html"}
+					   style="padding:0; margin:0; border:0"
+							>
 						{icon name='wrench'}
 					</a>
-					{if $js === 'n'}
-						<ul class="dropdown-menu" role="menu">{$smarty.capture.post_actions}</ul></li></ul>
-					{/if}
 				</td>
 			</tr>
 		{sectionelse}

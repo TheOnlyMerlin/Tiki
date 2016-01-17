@@ -105,8 +105,7 @@ BODY;
 
 	// Language
 	if ($prefs['feature_multilingual'] == 'y') {
-		$langLib = TikiLib::lib('language');
-		$languages = $langLib->list_languages();
+		$languages = $tikilib->list_languages();
 		$smarty->assign('filter_languages', $languages);
 		$smarty->assign('filter_language_unspecified', isset($filter['language_unspecified']));
 		$smarty->assign('filter_language', isset($filter['language']) ? $filter['language'] : '');

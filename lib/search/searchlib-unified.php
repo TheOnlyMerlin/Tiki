@@ -477,9 +477,9 @@ class UnifiedSearchLib
 		$logWriter = null;
 
 		if ((int) $loggit == 1) {
-			$logWriter = new Zend\Log\Writer\Stream($prefs['tmpDir'] . '/Search_Indexer.log', 'w');
+			$logWriter = new Zend_Log_Writer_Stream($prefs['tmpDir'] . '/Search_Indexer.log', 'w');
 		} elseif ((int) $loggit == 2) {
-			$logWriter = new Zend\Log\Writer\Stream($prefs['tmpDir'] . '/Search_Indexer_console.log', 'w');
+			$logWriter = new Zend_Log_Writer_Stream($prefs['tmpDir'] . '/Search_Indexer_console.log', 'w');
 		}
 
 		$indexer = new Search_Indexer($index, $logWriter);
@@ -632,7 +632,7 @@ class UnifiedSearchLib
 
 		switch ($prefs['unified_engine']) {
 		case 'lucene':
-			ZendSearch\Lucene\Lucene::setTermsPerQueryLimit($prefs['unified_lucene_terms_limit']);
+			Zend_Search_Lucene::setTermsPerQueryLimit($prefs['unified_lucene_terms_limit']);
 			$index = new Search_Lucene_Index($this->getIndexLocation($indexType), $prefs['language'], $prefs['unified_lucene_highlight'] == 'y');
 			$index->setCache(TikiLib::lib('cache'));
 			$index->setMaxResults($prefs['unified_lucene_max_result']);
@@ -976,7 +976,7 @@ class UnifiedSearchLib
 		if ($prefs['feature_multilingual'] == 'y') {
 			$facets[] = Search_Query_Facet_Term::fromField('language')
 				->setLabel(tr('Language'))
-				->setRenderMap(TikiLib::lib('language')->get_language_map());
+				->setRenderMap(TikiLib::lib('tiki')->get_language_map());
 		}
 
 		$provider = new Search_FacetProvider;

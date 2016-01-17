@@ -27,7 +27,6 @@ define('USER_AMBIGOUS', -7);
 define('USER_NOT_VALIDATED', -8);
 define('USER_PREVIOUSLY_VALIDATED', -10);
 define('USER_ALREADY_LOGGED', -11);
-define('EMAIL_AMBIGUOUS', -12);
 
 //added for Auth v1.3 support
 define('AUTH_LOGIN_OK', 0);
@@ -43,7 +42,6 @@ class UsersLib extends TikiLib
 	public $userobjectperm_cache; // used to cache queries in object_has_one_permission()
 	public $get_object_permissions_for_user_cache;
 	static $cas_initialized = false;
-	static $userexists_cache = array();
 
 	function __construct()
 	{
@@ -209,12 +207,13 @@ class UsersLib extends TikiLib
 
 	function user_exists($user)
 	{
-		if (!isset($userexists_cache[$user])) {
+		static $rv = array();
+		if (!isset($rv[$user])) {
 			$query = 'select count(*) from `users_users` where upper(`login`) = ?';
 			$result = $this->getOne($query, array(TikiLib::strtoupper($user)));
-			$userexists_cache[$user] = $result;
+			$rv[$user] = $result;
 		}
-		return $userexists_cache[$user];
+		return $rv[$user];
 	}
 	function get_user_real_case($user)
 	{
@@ -343,23 +342,6 @@ class UsersLib extends TikiLib
 		);
 	}
 
-	/**
-	 * Force a logout for the specified user
-	 * @param $user
-	 */
-	function force_logout($user)
-	{
-		if (!empty($user)) {
-			// Clear the timestamp for the existing session,
-			//	which will force a logout next time the user accesses the session
-			$this->query('delete from `tiki_sessions` where `user`=?', array($user));
-
-			// Add a log entry
-			$logslib = TikiLib::lib('logs');
-			$logslib->add_log("login", "logged out", $user, '', '', $this->now);
-		}
-	}
-
 	// For each auth method, validate user in auth, if valid, verify tiki user exists and create if necessary (as configured)
 	// Once complete, update_lastlogin and return result, username and login message.
 	function validate_user($user, $pass, $challenge = '', $response = '', $validate_phase=false)
@@ -418,15 +400,9 @@ class UsersLib extends TikiLib
 		// If preference login_multiple_forbidden is set, don't let user login if already logged in
 		if ($result == USER_VALID && $prefs['login_multiple_forbidden'] == 'y' && $user != 'admin' ) {
 			$tikilib = TikiLib::lib('tiki');
-			$grabSessionOnAlreadyLoggedIn = !empty($prefs['login_grab_session']) ? $prefs['login_grab_session'] : 'n';
-			if ($grabSessionOnAlreadyLoggedIn === 'y') {
-				// Log out first, then proceed to log in again
-				$this->force_logout($user);
-			} else {
-				$tikilib->update_session();
-				if ( $tikilib->is_user_online($user) ) {
-					$result = USER_ALREADY_LOGGED;
-				}
+			$tikilib->update_session();
+			if ( $tikilib->is_user_online($user) ) {
+				$result = USER_ALREADY_LOGGED;
 			}
 		}
 
@@ -716,11 +692,6 @@ class UsersLib extends TikiLib
 			// start off easy
 			// if the user is in Tiki and password is verified in LDAP, log in
 			if ($userLdap && $userTikiPresent) {
-				if ($userLdapPresent) {
-					# Sync again user attributes from LDAP (such as the RealName, mail and country) with user data in Tiki to prevent un-sync'ing them in a later stage
-					$this->init_ldap($user, $pass);
-					$this->ldap_sync_user_data($user, $this->ldap->get_user_attributes());
-				}
 				return array($this->_ldap_sync_and_update_lastlogin($user, $pass), $user, $result);
 			} elseif (!$userTikiPresent && !$userLdapPresent) {
 			// if the user wasn't found in either system, just fail
@@ -758,8 +729,6 @@ class UsersLib extends TikiLib
 				// see if we are allowed to create a new account
 				if ($ldap_create_tiki) {
 					$ldap_user_attr = $this->ldap->get_user_attributes();
-					// Get user attributes such as the real name, email and country from the data received by the ldap auth
-					$this->ldap_sync_user_data($user, $ldap_user_attr);
 					// Use what was configured in ldap admin config, otherwise assume the attribute name is "mail" as is usual
 					$email = $ldap_user_attr[empty($prefs['auth_ldap_emailattr'])?'mail':$prefs['auth_ldap_emailattr']];
 					$result = $this->add_user($user, $pass, $email);
@@ -1559,16 +1528,6 @@ class UsersLib extends TikiLib
 
 			switch ($result->numRows()) {
 				case 0:
-					if ($prefs['login_allow_email']) {
-						//if users can login with email
-						$query = 'select * from `users_users` where upper(`email`) = ?';
-						$result = $this->query($query, array(TikiLib::strtoupper($user)));
-						if ($result->numRows() > 1) {
-							return array(EMAIL_AMBIGUOUS, $user);	
-						} elseif ($result->numRows() > 0) {
-							break;
-						}
-					}
 					return array(USER_NOT_FOUND, $user);
 
 				case 1:
@@ -2041,6 +2000,10 @@ class UsersLib extends TikiLib
 		$query = 'update `users_users` set `default_group`=? where `login`=? and `default_group`=?';
 		$this->query($query, array('Registered', $user, $group));
 
+		if ($prefs['user_trackersync_groups'] == 'y') {
+			$this->uncategorize_user_tracker_item($user, $group);
+		}
+
 		if ($prefs['feature_community_send_mail_leave'] == 'y') {
 			$api = new TikiAddons_Api_Group;
 			if ($api->isOrganicGroup($group)) {
@@ -2077,6 +2040,12 @@ class UsersLib extends TikiLib
 	function remove_user_from_all_groups($user)
 	{
 		global $prefs;
+		if ($prefs['user_trackersync_groups'] == 'y') {
+			$groups = $this->get_user_groups($user);
+			foreach ($groups as $group) {
+				$this->uncategorize_user_tracker_item($user, $group);
+			}
+		}
 		$userid = $this->get_user_id($user);
 		$query = 'delete from `users_usergroups` where `userId` = ?';
 		$result = $this->query($query, array($userid));
@@ -2218,8 +2187,6 @@ class UsersLib extends TikiLib
 
 		if ( $user == 'admin' ) return false;
 
-		$userexists_cache[$user] = NULL;
-
 		$userId = $this->getOne('select `userId` from `users_users` where `login` = ?', array($user));
 
 		$groupTracker = $this->get_tracker_usergroup($user);
@@ -2264,12 +2231,9 @@ class UsersLib extends TikiLib
 
 	function change_login($from,$to)
 	{
-		global $user;
 		$cachelib = TikiLib::lib('cache');
 
 		if ( $from == 'admin' ) return false;
-
-		$userexists_cache[$user] = NULL;
 
 		$userId = $this->getOne('select `userId` from `users_users` where `login` = ?', array($from));
 
@@ -2687,12 +2651,12 @@ class UsersLib extends TikiLib
 		$url = filter_out_sefurl($url);
 		$extra = '';
 		if ($prefs['feature_community_mouseover'] == 'y' && ($this->get_user_preference($auser, 'show_mouseover_user_info', 'y') == 'y' || $prefs['feature_friends'] == 'y')) {
-			$data = TikiLib::lib('service')->getUrl(array(
+			$rel = TikiLib::lib('service')->getUrl(array(
 				'controller' => 'user',
 				'action' => 'info',
 				'username' => $auser,
 			));
-			$extra .= ' data-ajaxtips="' . htmlspecialchars($data, ENT_QUOTES) . '"';
+			$extra .= ' rel="' . htmlspecialchars($rel, ENT_QUOTES) . '"';
 			$class .= ' ajaxtips';
 
 			if ($auser === $user) {
@@ -2701,11 +2665,9 @@ class UsersLib extends TikiLib
 				$title = tra('User Information');
 			}
 		} else if ($prefs['user_show_realnames'] == 'y') {
-			$class .= ' tips';
-			$title = tr('User') . ':' . $realn;
+			$title = $realn;
 		} else {
-			$class .= ' tips';
-			$title = tr('User') . ':' . $auser;
+			$title = $auser;
 		}
 
 		if (empty($prefs['urlOnUsername'])) {
@@ -3671,7 +3633,7 @@ class UsersLib extends TikiLib
 				'type' => 'content templates',
 				'admin' => true,
 				'prefs' => array('feature_wiki_templates', 'feature_cms_templates'),
-				'scope' => 'object',
+				'scope' => 'global',
 			),
 			array(
 				'name' => 'tiki_p_edit_content_templates',
@@ -3680,7 +3642,7 @@ class UsersLib extends TikiLib
 				'type' => 'content templates',
 				'admin' => false,
 				'prefs' => array('feature_wiki_templates', 'feature_cms_templates'),
-				'scope' => 'object',
+				'scope' => 'global',
 			),
 			array(
 				'name' => 'tiki_p_use_content_templates',
@@ -3689,7 +3651,7 @@ class UsersLib extends TikiLib
 				'type' => 'content templates',
 				'admin' => false,
 				'prefs' => array('feature_wiki_templates', 'feature_cms_templates'),
-				'scope' => 'object',
+				'scope' => 'global',
 			),
 			array(
 				'name' => 'tiki_p_admin_contribution',
@@ -6024,12 +5986,6 @@ class UsersLib extends TikiLib
 
 	function assign_user_to_group($user, $group, $bulk = false)
 	{
-		if (!$this->group_exists($group)) {
-			throw new Exception(tr('Cannot add user %0 to nonexistent group %1', $user, $group));
-		}
-		if (!$this->user_exists($user)) {
-			throw new Exception(tr('Cannot add nonexistent user %0 to group %1', $user, $group));
-		}
 		global $prefs, $tiki_p_admin, $page;
 		$cachelib = TikiLib::lib('cache');
 		$tikilib = TikiLib::lib('tiki');
@@ -6056,6 +6012,9 @@ class UsersLib extends TikiLib
 			$query = "insert ignore into `users_usergroups`(`userId`,`groupName`, `created`) values(?,?,?)";
 			$result = $this->query($query, array($userid, $group, $tikilib->now), -1, -1, false);
 			$group_ret = true;
+			if ($prefs['user_trackersync_groups'] == 'y') {
+				$this->categorize_user_tracker_item($user, $group);
+			}
 		}
 		$this->update_group_expiries();
 
@@ -6252,19 +6211,11 @@ class UsersLib extends TikiLib
 	 * @param pass: password (may be an empty string)
 	 * @param email: email
 	 */
-	function add_user($user, $pass, $email, $provpass = '', $pass_first_login = false, $valid = NULL, $openid_url = NULL, $waiting=NULL, $groups = array())
+	function add_user($user, $pass, $email, $provpass = '', $pass_first_login = false, $valid = NULL, $openid_url = NULL, $waiting=NULL)
 	{
 		global $prefs;
 		$cachelib = TikiLib::lib('cache');
 		$tikilib = TikiLib::lib('tiki');
-
-		$autogenerate_uname = false;
-		if ($prefs['login_autogenerate'] == 'y' && $user == '') {
-			// only autogenerate if no username is provided (as many features might want to create real user name)
-			// need to create as tmp uname first before replacing with user ID based number
-			$user = "tmp" . md5((string) rand());
-			$autogenerate_uname = true;
-		}
 
 		$user = trim($user);
 
@@ -6276,21 +6227,6 @@ class UsersLib extends TikiLib
 		) {
 			return false;
 		}
-
-		if ($prefs['user_unique_email'] == 'y' && $this->get_user_by_email($email)) {
-			if ($autogenerate_uname) {
-				// If the user to be added is to be autogenerated and the email already exists it means the user
-				// is already created, for example in the 2nd pass in the registration process. To silently exit.
-				return false;
-			}
-			$smarty = TikiLib::lib('smarty');
-			$smarty->assign('errortype', 'login');
-			$smarty->assign('msg', tra('We were unable to create your account because this email is already in use.'));
-			$smarty->display('error.tpl');
-			die;
-		}
-
-		$userexists_cache[$user] = NULL;
 
 		// Generate a unique hash; this is also done below in set_user_fields()
 		$lastLogin = null;
@@ -6332,30 +6268,7 @@ class UsersLib extends TikiLib
 			)
 		);
 
-		if ($autogenerate_uname) {
-			// only autogenerate if no username is provided (as many features might want to create real user name)
-			$user = $this->autogenerate_login($userId);
-			$userTable->update(
-				array(
-					'login' => $user,
-				),
-				array(
-					'userId' => $userId,
-				)
-			);
-		}
-
-		if (empty($groups)) {
-			$this->assign_user_to_group($user, 'Registered');
-		} else {
-			if (is_array($groups)) {
-				foreach ($groups as $grp) {
-					$this->assign_user_to_group($user, $grp);
-				}
-			} else {
-				$this->assign_user_to_group($user, 'Registered');
-			}
-		}
+		$this->assign_user_to_group($user, 'Registered');
 
 		if ( $prefs['eponymousGroups'] == 'y' ) {
 			// Create a group just for this user, for permissions
@@ -6380,13 +6293,7 @@ class UsersLib extends TikiLib
 			'userId' => $userId,
 		));
 
-		return $user;
-	}
-
-	function autogenerate_login($userId, $digits=6) {
-		//create unique hash based on $userId, between 0 and 999999 (if digits = 6)
-		$userHash = $userId*pow(9,$digits) % (pow(10,$digits));
-		return sprintf('%0'.  $digits . 'd', $userHash); //add leading 0's
+		return true;
 	}
 
 	function set_user_default_preferences($user, $force=true)
@@ -6408,32 +6315,14 @@ class UsersLib extends TikiLib
 			$this->set_user_preference($user, 'language', $prefs['language']);
 		}
 	}
-
 	function change_user_email_only($user, $email)
 	{
-		global $prefs;
-		if ($prefs['user_unique_email'] == 'y' && $this->other_user_has_email($user, $email)) {
-			$smarty = TikiLib::lib('smarty');
-			$smarty->assign('errortype', 'login');
-			$smarty->assign('msg', tra('Email cannot be set because this email is already in use by another user.'));
-			$smarty->display('error.tpl');
-			die;
-		}
 		$query = 'update `users_users` set `email`=? where binary `login`=?';
 		$result = $this->query($query, array($email, $user));
 	}
 
 	function change_user_email($user, $email, $pass=null)
 	{
-		global $prefs;
-		if ($prefs['user_unique_email'] == 'y' && $this->other_user_has_email($user, $email)) {
-			$smarty = TikiLib::lib('smarty');
-			$smarty->assign('errortype', 'login');
-			$smarty->assign('msg', tra('Email cannot be set because this email is already in use by another user.'));
-			$smarty->display('error.tpl');
-			die;    
-		}
-
 		// Need to change the email-address for notifications, too
 		$notificationlib = TikiLib::lib('notification');
 		$oldMail = $this->get_user_email($user);
@@ -6555,19 +6444,11 @@ class UsersLib extends TikiLib
 
 	function get_user_by_email($email)
 	{
-		$query = 'select `login` from `users_users` where upper(`email`)=?';
-		$pass = $this->getOne($query, array(TikiLib::strtoupper($email)));
+		$query = 'select `login` from `users_users` where `email`=?';
+		$pass = $this->getOne($query, array($email));
 
 		return $pass;
 	}
-
-	function other_user_has_email($user, $email)
-	{
-		$query = 'select `login` from `users_users` where upper(`email`)=? and `login`!=?';
-		$pass = $this->getOne($query, array(TikiLib::strtoupper($email), $user));
-
-		return $pass;	
-	}	
 
 	function is_due($user, $method=null)
 	{
@@ -6677,7 +6558,7 @@ class UsersLib extends TikiLib
 
 		if ($prefs['pass_chr_case'] == 'y') {
 			if (!preg_match_all('/[a-z]+/', $pass, $foo) || !preg_match_all('/[A-Z]+/', $pass, $foo)) {
-				$errors[] = tra('Password must contain at least one lowercase alphabetical character like "a" and one uppercase character like "A".');
+				$errors[] = tra('Password must contain at least one alphabetical character in lower case like a and one in upper case like A.');
 			}
 		}
 
@@ -6698,7 +6579,7 @@ class UsersLib extends TikiLib
 			$previous = '';
 			foreach ($chars as $char) {
 				if ($char == $previous) {
-					$errors[] = tra('Password must not contain a consecutive repetition of the same character such as "111" or "aab"');
+					$errors[] = tra('Password must contain no consecutive repetition of the same character as 111 or aab');
 					break;
 				}
 				$previous = $char;
@@ -6707,7 +6588,7 @@ class UsersLib extends TikiLib
 
 		if ($prefs['pass_diff_username'] == 'y') {
 			if (strtolower($user) == strtolower($pass)) {
-				$errors[] = tra('The password must be different from the user\'s log-in name.');
+				$errors[] = tra('Password must be different from the user login.');
 			}
 		}
 
@@ -6957,13 +6838,6 @@ class UsersLib extends TikiLib
 		}
 
 		if (isset($u['email'])) {
-			if ($prefs['user_unique_email'] == 'y' && $this->other_user_has_email($u['login'], $u['email'])) {
-				$smarty = TikiLib::lib('smarty');
-				$smarty->assign('errortype', 'login');
-				$smarty->assign('msg', tra('Email cannot be set because this email is already in use by another user.'));
-				$smarty->display('error.tpl');
-				die;
-			}
 			$q[] = '`email` = ?';
 			$bindvars[] = strip_tags($u['email']);
 		}
@@ -7008,7 +6882,7 @@ class UsersLib extends TikiLib
 
 		return $rv[$group];
 	}
-	
+
 	function count_users_consolidated($groups)
 	{
 		$groupset = implode("','",$groups);
@@ -7016,7 +6890,7 @@ class UsersLib extends TikiLib
 		$result = $this->fetchAll($query, array());
 		$resultcons = array_unique(array_column($result, 'userId'));
 		return count($resultcons);
-	}	
+	}
 
 	function related_users($user, $max = 10, $type = 'wiki')
 	{
@@ -7187,7 +7061,8 @@ class UsersLib extends TikiLib
 					return false;
 				}
 
-				TikiLib::lib('message')->post_message(
+				global $messulib; include_once('lib/messu/messulib.php');
+				$messulib->post_message(
 					$prefs['contact_user'],
 					$prefs['contact_user'],
 					$prefs['contact_user'],
@@ -7907,93 +7782,7 @@ class UsersLib extends TikiLib
 		return $ret;
 	}
 
-	/**
-	 * This is a function to automatically login a user programatically
-	 * @param $uname The user account name to log the user in as
-	 * @return bool true means that successfully logged in or already logged in. false means no such user.
-	 */
-	function autologin_user($uname)
-	{
-		global $user;
-		if ($user) {
-			// already logged in
-			return true;
-		}
-		if (!$this->user_exists($uname)) {
-			// no such user
-			return false;
-		}
-		// Conduct login
-		global $user_cookie_site;
-		$_SESSION[$user_cookie_site] = $uname;
-		$this->update_expired_groups();
-		$this->update_lastlogin($uname);
-		return true;
-	}
 
-	/**
-	 * This is a function to invite users to temporarily access the site via a token
-	 * @param array $emails Emails to send the invite to
-	 * @param array $groups Groups that the temporary user should have (Registered is not included unless explicitly added)
-	 * @param int $timeout How long the invitation is valid for, in seconds.
-	 * @param string $prefix Username of the created users will be the token ID prefixed with this
-	 * @param string $path Users will have to autologin using this path on the site using the token
-	 * @throws Exception
-	 */
-	function invite_tempuser($emails, $groups, $timeout, $prefix = 'guest', $path = 'tiki-index.php') {
-		global $smarty, $user, $prefs;
-		include_once ('lib/webmail/tikimaillib.php');
-
-		$mail = new TikiMail();
-		foreach ($emails as $email) {
-			if (!validate_email($email)) {
-				throw new Exception(tra('Invalid email address %1.', $email));
-			}
-		}
-		$foo = parse_url($_SERVER['REQUEST_URI']);
-		$machine = $this->httpPrefix(true) . dirname($foo['path']);
-		$machine = preg_replace('!/$!', '', $machine); // just in case
-		$smarty->assign_by_ref('mail_machine', $machine);
-		$smarty->assign('mail_sender', $user);
-		$smarty->assign('expiry', $user);
-		$mail->setBcc($this->get_user_email($user));
-		$smarty->assign('token_expiry', $this->get_long_datetime($this->now + $timeout));
-		require_once 'lib/auth/tokens.php';
-
-		foreach ($emails as $email) {
-			$tokenlib = AuthTokens::build( $prefs );
-			$token_url = $tokenlib->includeToken( $machine . "/$path", $groups, $email, $timeout, -1, true, $prefix);
-			include_once('tiki-sefurl.php');
-			$token_url = filter_out_sefurl($token_url);
-			$smarty->assign('token_url', $token_url);
-			$mail->setUser($user);
-			$mail->setSubject($smarty->fetch('mail/invite_tempuser_subject.tpl'));
-			$mail->setHtml($smarty->fetch('mail/invite_tempuser.tpl'));
-
-			if (!$mail->send($email)) {
-				$errormsg = tra('Unable to send mail');
-				if (Perms::get()->admin) {
-					$mailerrors = print_r($mail->errors, true);
-					$errormsg .= $mailerrors;
-				}
-				throw new Exception($errormsg);
-			}
-			$smarty->assign_by_ref('user', $user);
-		}
-	}
-
-	/**
-	 * @param $uname The username of the temporary user to remove (or disable depending on the pref)
-	 *
-	 */
-	function remove_temporary_user($uname) {
-		global $prefs;
-		if ($prefs['auth_token_preserve_tempusers'] == 'y') {
-			$this->remove_user_from_all_groups($uname);
-		} else {
-			$this->remove_user($uname);
-		}
-	}
 }
 
 /* For the emacs weenies in the crowd.

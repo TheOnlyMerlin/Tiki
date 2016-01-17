@@ -52,13 +52,9 @@ if (is_file($local_php) || TikiInit::getEnvironmentCredentials()) {
 	require_once 'db/tiki-db.php';
 	$console->add(new Tiki\Command\InstallCommand);
 	$console->add(new Tiki\Command\UpdateCommand);
-	$console->add(new Tiki\Command\MultiTikiListCommand);
-	$console->add(new Tiki\Command\MultiTikiMoveCommand);
 } else {
 	$console->add(new Tiki\Command\UnavailableCommand('database:install'));
 	$console->add(new Tiki\Command\UnavailableCommand('database:update'));
-	$console->add(new Tiki\Command\UnavailableCommand('multitiki:list'));
-	$console->add(new Tiki\Command\UnavailableCommand('multitiki:move'));
 }
 
 $installer = $installer = new Installer;
@@ -101,8 +97,6 @@ if ($isInstalled && ! $installer->requiresUpdate()) {
 	$console->add(new Tiki\Command\AddonUpgradeCommand);
 	$console->add(new Tiki\Command\DailyReportSendCommand);
 	$console->add(new Tiki\Command\GoalCheckCommand);
-	$console->add(new Tiki\Command\FilesBatchuploadCommand);
-	$console->add(new Tiki\Command\FilesDeleteoldCommand);
 	$console->add(new Tiki\Command\IndexRebuildCommand);
 	$console->add(new Tiki\Command\IndexOptimizeCommand);
 	$console->add(new Tiki\Command\IndexCatchUpCommand);
@@ -122,8 +116,6 @@ if ($isInstalled && ! $installer->requiresUpdate()) {
 	$console->add(new Tiki\Command\UnavailableCommand('addon:upgrade'));
 	$console->add(new Tiki\Command\UnavailableCommand('daily-report:send'));
 	$console->add(new Tiki\Command\UnavailableCommand('goal:check'));
-	$console->add(new Tiki\Command\UnavailableCommand('files:batchupload'));
-	$console->add(new Tiki\Command\UnavailableCommand('files:deleteold'));
 	$console->add(new Tiki\Command\UnavailableCommand('index:rebuild'));
 	$console->add(new Tiki\Command\UnavailableCommand('index:optimize'));
 	$console->add(new Tiki\Command\UnavailableCommand('index:catch-up'));

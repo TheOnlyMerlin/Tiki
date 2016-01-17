@@ -2,8 +2,8 @@
 {title admpage="articles" help="Articles"}{tr}Article Topics{/tr}{/title}
 <div class="t_navbar margin-bottom-md">
 	{if $tiki_p_admin eq 'y' or $tiki_p_admin_cms eq 'y'}
-		{button href="tiki-list_articles.php" _type="link" _icon_name="list" _text="{tr}List Articles{/tr}"}
-		{button href="tiki-article_types.php" _type="link" _icon_name="structure" _text="{tr}Article Types{/tr}"}
+		{button href="tiki-list_articles.php" class="btn btn-default btn-sm" _icon_name="list" _text="{tr}List Articles{/tr}"}
+		{button href="tiki-article_types.php" class="btn btn-default btn-sm" _icon_name="structure" _text="{tr}Article Types{/tr}"}
 	{/if}
 </div>
 <form enctype="multipart/form-data" action="tiki-admin_topics.php" method="post" class="form-horizontal" role="form">
@@ -36,18 +36,8 @@
 	</div>
 </form>
 <h2>{tr}Topics{/tr}</h2>
-{* Use css menus as fallback for item dropdown action menu if javascript is not being used *}
-{if $prefs.javascript_enabled !== 'y'}
-	{$js = 'n'}
-	{$libeg = '<li>'}
-	{$liend = '</li>'}
-{else}
-	{$js = 'y'}
-	{$libeg = ''}
-	{$liend = ''}
-{/if}
-<div class="{if $js === 'y'}table-responsive{/if}"> {* table-responsive class cuts off css drop-down menus *}
-	<table class="table table-striped table-hover">
+<div class="table-responsive">
+	<table class="table normal table-striped table-hover">
 		<tr>
 			<th>{tr}ID{/tr}</th>
 			<th>{tr}Name{/tr}</th>
@@ -76,40 +66,34 @@
 				<td class="action">
 					{capture name=topic_actions}
 						{strip}
-							{$libeg}{permission_link mode=text type=topic permType=articles id=$topics[user].topicId title=$topics[user].name}{$liend}
+							{permission_link mode=text type=topic permType=articles id=$topics[user].topicId title=$topics[user].name}
 							{if $topics[user].active eq 'n'}
-								{$libeg}<a href="tiki-admin_topics.php?activate={$topics[user].topicId}">
+								<a href="tiki-admin_topics.php?activate={$topics[user].topicId}">
 									{icon name="toggle-on" _menu_text='y' _menu_icon='y' alt="{tr}Activate{/tr}"}
-								</a>{$liend}
+								</a>
 							{else}
-								{$libeg}<a href="tiki-admin_topics.php?deactivate={$topics[user].topicId}">
+								<a href="tiki-admin_topics.php?deactivate={$topics[user].topicId}">
 									{icon name="toggle-off" _menu_text='y' _menu_icon='y' alt="{tr}De-activate{/tr}"}
-								</a>{$liend}
+								</a>
 							{/if}
-							{$libeg}<a href="tiki-edit_topic.php?topicid={$topics[user].topicId}">
+							<a href="tiki-edit_topic.php?topicid={$topics[user].topicId}">
 								{icon name='edit' _menu_text='y' _menu_icon='y' alt="{tr}Edit{/tr}"}
-							</a>{$liend}
-							{$libeg}<a href="tiki-admin_topics.php?remove={$topics[user].topicId}">
+							</a>
+							<a href="tiki-admin_topics.php?remove={$topics[user].topicId}">
 								{icon name='remove' _menu_text='y' _menu_icon='y' alt="{tr}Remove{/tr}"}
-							</a>{$liend}
-							{$libeg}<a href="tiki-admin_topics.php?removeall={$topics[user].topicId}">
+							</a>
+							<a href="tiki-admin_topics.php?removeall={$topics[user].topicId}">
 								{icon name='remove' _menu_text='y' _menu_icon='y' alt="{tr}Remove with articles{/tr}"}
-							</a>{$liend}
+							</a>
 						{/strip}
 					{/capture}
-					{if $js === 'n'}<ul class="cssmenu_horiz"><li>{/if}
-					<a
-						class="tips"
-						title="{tr}Actions{/tr}"
-						href="#"
-						{if $js === 'y'}{popup delay="0|2000" fullhtml="1" center=true text=$smarty.capture.topic_actions|escape:"javascript"|escape:"html"}{/if}
-						style="padding:0; margin:0; border:0"
-					>
+					<a class="tips"
+					   title="{tr}Actions{/tr}"
+					   href="#" {popup delay="0|2000" fullhtml="1" center=true text=$smarty.capture.topic_actions|escape:"javascript"|escape:"html"}
+					   style="padding:0; margin:0; border:0"
+							>
 						{icon name='wrench'}
 					</a>
-					{if $js === 'n'}
-						<ul class="dropdown-menu" role="menu">{$smarty.capture.topic_actions}</ul></li></ul>
-					{/if}
 				</td>
 			</tr>
 		{sectionelse}

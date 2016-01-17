@@ -167,11 +167,10 @@ class MultilingualLib extends TikiLib
 
 		$result = $this->query($query, array($type, $objId));
 		$ret = array();
-		$langLib = TikiLib::lib('language');
-		$l = $langLib->format_language_list(array($objLang), $long ? 'n' : 'y');
+		$l = $this->format_language_list(array($objLang), $long ? 'n' : 'y');
 		$ret0 = array('objId'=>$objId, 'objName'=>$objName, 'lang'=> $objLang, 'langName'=>empty($l)?'':$l[0]['name']);
 		while ($res = $result->fetchRow()) {
-			$l = $langLib->format_language_list(array($res['lang']), $long ? 'n' : 'y');
+			$l = $this->format_language_list(array($res['lang']), $long ? 'n' : 'y');
 			$res['langName'] = $l[0]['name'];
 			$ret[] = $res;
 		}
@@ -1003,8 +1002,7 @@ class MultilingualLib extends TikiLib
 		$userLangIDs = $this->preferredLangs();
 
 		// Get information about ALL languages supported by Tiki
-		$langLib = TikiLib::lib('language');
-		$allLangsInfo = $langLib->list_languages(false, 'y');
+		$allLangsInfo = $tikilib->list_languages(false, 'y');
 
 		// Create a map of language ID (ex: 'en') to language info
 		$langIDs2Info = array();
@@ -1034,7 +1032,8 @@ class MultilingualLib extends TikiLib
      */
     function getTemplateIDInLanguage($section, $template_name, $language)
 	{
-		$templateslib = TikiLib::lib('template');
+		global $templateslib;
+		require_once 'lib/templates/templateslib.php';
 
 		$all_templates = $templateslib->list_templates($section, 0, -1, 'name_asc', '');
 		$looking_for_templates_named = array("$template_name-$language");
@@ -1233,10 +1232,10 @@ class MultilingualLib extends TikiLib
 			// Some languages need BiDi support. Add their code names here ...
 			if (Language::isRTL()) {
 				$prefs['feature_bidi'] =  'y';
-				TikiLib::lib('header')->add_cssfile('vendor/morteza/bootstrap-rtl/dist/css/bootstrap-rtl.min.css', 99); // 99 is high rank order as it should load after all other css files
+				TikiLib::lib('header')->add_cssfile('themes/base_files/other/BiDi/BiDi.css');
 			} else {
 				$prefs['feature_bidi'] =  'n';
-				TikiLib::lib('header')->drop_cssfile('vendor/morteza/bootstrap-rtl/dist/css/bootstrap-rtl.min.css');
+				TikiLib::lib('header')->drop_cssfile('themes/base_files/other/BiDi/BiDi.css');
 			}
 		}
 	}

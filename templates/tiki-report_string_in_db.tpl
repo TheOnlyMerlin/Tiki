@@ -38,7 +38,7 @@
 	{/if}
 
 	{if isset($tableHeaders)}
-	<table class="table">
+	<table class="table normal">
 		<tr>
 		{foreach from=$tableHeaders item=hdr}
 			<th>{$hdr}</th>

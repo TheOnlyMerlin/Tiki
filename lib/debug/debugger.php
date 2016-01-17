@@ -30,10 +30,10 @@ class Debugger extends ResultType
   var $dmsgs;
 
   /// Constructor
-  function __construct()
+  function Debugger()
   {
     // Call base constructor
-    parent::__construct();
+    $this->ResultType();
     // Init data members
     $this->noname_cmd_idx = 0;
     $this->dmsgs = array();

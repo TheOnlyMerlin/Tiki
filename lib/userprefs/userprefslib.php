@@ -17,18 +17,16 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 class UserPrefsLib extends TikiLib
 {
 
-	/**
-	 * @param $user
-	 * @param $type
-	 * @param $avatarLibName
-	 * @param $avatarName
-	 * @param $avatarSize
-	 * @param $avatarType
-	 * @param $avatarData
-	 * @param bool $sendToIntertiki
-	 * @throws Exception
-	 */
-	function set_user_avatar($user, $type, $avatarLibName, $avatarName, $avatarSize, $avatarType, $avatarData, $sendToIntertiki = true)
+    /**
+     * @param $user
+     * @param $type
+     * @param $avatarLibName
+     * @param $avatarName
+     * @param $avatarSize
+     * @param $avatarType
+     * @param $avatarData
+     */
+    function set_user_avatar($user, $type, $avatarLibName, $avatarName, $avatarSize, $avatarType, $avatarData, $sendToIntertiki = true)
 	{
 		global $prefs, $tikidomainslash;
 		$userlib = TikiLib::lib('user');
@@ -44,11 +42,11 @@ class UserPrefsLib extends TikiLib
 		}
 	}
 
-	/**
-	 * @param $user
-	 * @return bool
-	 */
-	function get_user_avatar_img($user)
+    /**
+     * @param $user
+     * @return bool
+     */
+    function get_user_avatar_img($user)
 	{
 		$query = "select * from `users_users` where `login`=?";
 		$result = $this->query($query, array($user));
@@ -62,6 +60,7 @@ class UserPrefsLib extends TikiLib
 		global $prefs, $tikidomainslash;
 
 		if ( $prefs['users_serve_avatar_static'] == 'y' ) {
+			$domain = '';
 			$hash = md5($user);
 			$files = glob("temp/public/{$tikidomainslash}avatar_$hash.{jpg,jpeg,gif,png}", GLOB_BRACE);
 
@@ -98,19 +97,14 @@ class UserPrefsLib extends TikiLib
 			return 'img/noavatar.png';
 		}
 
-		global $mimetypes;
-		require_once('lib/mime/mimetypes.php');
+		global $mimeextensions;
+		require_once('lib/mime/mimeextensions.php');
 
-		if (! in_array($type, $mimetypes)) {
+		if (! isset($mimeextensions[$type])) {
 			return 'img/noavatar.png';
 		}
-		$filename = pathinfo($info['avatarName']);
-		if (!empty($filename['extension']) && $mimetypes[$filename['extension']] == $type) {
-			$ext = $filename['extension'];
-		} else {
-			$ext = array_search($type, $mimetypes);
-		}
 
+		$ext = $mimeextensions[$type];
 		$hash = md5($user);
 		$image = "temp/public/{$tikidomainslash}avatar_{$hash}.$ext";
 
@@ -120,14 +114,14 @@ class UserPrefsLib extends TikiLib
 		return $image;
 	}
 
-	/**
-	 * @param $u
-	 * @param $filename
-	 * @param $size
-	 * @param $type
-	 * @param $data
-	 * @return bool|int|null
-	 */
+    /**
+     * @param $u
+     * @param $filename
+     * @param $size
+     * @param $type
+     * @param $data
+     * @return bool|int|null
+     */
 	function set_file_gallery_image($u, $filename, $size, $type, $data)
 	{
 		global $prefs;
@@ -147,12 +141,13 @@ class UserPrefsLib extends TikiLib
 		return $user_image_id;
 	}
 
-	/**
-	 * @param $u
-	 * @return bool
-	 */
-	function remove_file_gallery_image($u)
+    /**
+     * @param $u
+     * @return bool
+     */
+    function remove_file_gallery_image($u)
 	{
+		global $prefs;
 		$tikilib = TikiLib::lib('tiki');
 		$filegallib = TikiLib::lib('filegal');
 		if ($user_image_id = $tikilib->get_user_preference($u, 'user_fg_image_id')) {
@@ -165,21 +160,21 @@ class UserPrefsLib extends TikiLib
 		}
 	}
 
-	/**
-	 * @param $u
-	 * @return null
-	 */
-	function get_user_picture_id($u)
+    /**
+     * @param $u
+     * @return null
+     */
+    function get_user_picture_id($u)
 	{
 		$tikilib = TikiLib::lib('tiki');
 		return $tikilib->get_user_preference($u, 'user_fg_image_id');		
 	}
 
-	/**
-	 * @param $user
-	 * @return array
-	 */
-	function get_userprefs($user)
+    /**
+     * @param $user
+     * @return array
+     */
+    function get_userprefs($user)
 	{
 		$query = "select * from `tiki_user_preferences` where `user`=?";
 		$result = $this->query($query, array($user));
@@ -192,12 +187,12 @@ class UserPrefsLib extends TikiLib
 		return $ret;
 	}
 
-	/**
-	 * @param $usersrc
-	 * @param $userdst
-	 * @return float|null
-	 */
-	function get_userdistance($usersrc, $userdst)
+    /**
+     * @param $usersrc
+     * @param $userdst
+     * @return float|null
+     */
+    function get_userdistance($usersrc, $userdst)
 	{
 		if ($usersrc == $userdst)
 			return null;
@@ -220,11 +215,11 @@ class UserPrefsLib extends TikiLib
 		}
 	}
 
-	/**
-	 * @param $user
-	 * @return bool
-	 */
-	function get_user_clock_pref($user)
+    /**
+     * @param $user
+     * @return bool
+     */
+    function get_user_clock_pref($user)
 	{
 		global $prefs;
 		$tikilib = TikiLib::lib('tiki');
