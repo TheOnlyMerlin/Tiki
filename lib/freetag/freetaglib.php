@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -204,7 +204,8 @@ class FreetagLib extends ObjectLib
 
 																		)
 	{
-		global $tiki_p_admin, $user, $prefs;
+
+		global $tiki_p_admin, $user, $smarty, $prefs;
 		$objectIds = explode(':',$objectId);
 		if (!isset($tagArray) || !is_array($tagArray)) {
 			return false;
@@ -327,8 +328,6 @@ class FreetagLib extends ObjectLib
 				if (!empty($objectId) && !in_array($post_info['blogId'],$objectIds) ) {
 				} elseif ($tiki_p_admin == 'y' || $this->user_has_perm_on_object($user, $post_info['blogId'], 'blog', 'tiki_p_read_blog')) {
 					$ok = true;
-					$row['parent_object_id'] = $post_info['blogId'];
-					$row['parent_object_type'] = 'blog';
 				}
 			} elseif ($tiki_p_admin == 'y') {
                                 $ok = true;
@@ -1464,8 +1463,7 @@ class FreetagLib extends ObjectLib
 	 */
 	function set_tag_language( $tagId, $lang )
 	{
-		$langLib = TikiLib::lib('language');
-		if ( ! $langLib->is_valid_language($lang) )
+		if ( ! $this->is_valid_language($lang) )
 			return;
 
 		$result = $this->query(
@@ -1535,7 +1533,9 @@ class FreetagLib extends ObjectLib
 	 */
 	function translate_tag( $srcLang, $srcTagId, $dstLang, $content )
 	{
-		$multilinguallib = TikiLib::lib('multilingual');
+		global $multilinguallib;
+		if ( !$multilinguallib )
+			die('Internal error: Multilingual library not imported.');
 
 		if ( empty( $content ) )
 			return;
@@ -1636,7 +1636,7 @@ class FreetagLib extends ObjectLib
 	}
 
     /**
-     * @return Zend\Tag\Cloud
+     * @return Zend_Tag_Cloud
      */
     function get_cloud()
 	{
@@ -1647,7 +1647,8 @@ class FreetagLib extends ObjectLib
 			$row['params'] = array('url' => $row['tagId']);
 		}
 
-		return new Zend\Tag\Cloud(array('tags' => $result));
+		return new Zend_Tag_Cloud(array('tags' => $result));
 	}
 }
 
+$freetaglib = new FreetagLib;

@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -16,7 +16,7 @@ $access->check_feature('feature_user_bookmarks', '', 'community');
 $access->check_user($user);
 
 if (!isset($_REQUEST['urlid'])) {
-	$smarty->assign('msg', tra('No URL indicated'));
+	$smarty->assign('msg', tra('No url indicated'));
 	$smarty->display('error.tpl');
 	die;
 }

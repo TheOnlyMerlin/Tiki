@@ -1,212 +1,195 @@
-{* $Id$ *}
-{title admpage="i18n"}{tr}Edit languages{/tr}{/title}
-<div class="t_navbar margin-bottom-md">
+{title admpage="i18n"}{tr}Edit or export languages{/tr}{/title}
+
+<div class="navbar">
 	{if $smarty.session.interactive_translation_mode eq 'on'}
 		{button href="tiki-interactive_trans.php?interactive_translation_mode=off" _text="{tr}Toggle interactive translation off{/tr}" _ajax="n"}
 	{else}
 		{button href="tiki-interactive_trans.php?interactive_translation_mode=on" _text="{tr}Toggle interactive translation on{/tr}" _ajax="n"}
 	{/if}
-	<a class="btn btn-link tips" href="{service controller=language action=manage_custom_php_translations}" title="{tr}Customized String Translation{/tr}:{tr}Manage local translations in a custom.php file{/tr}">
-		{icon name="file-code-o"} {tr}Custom Translations{/tr}
-	</a>
-	<a class="btn btn-link tips" href="{service controller=language action=upload language={$edit_language}}" title="{tr}Upload Translations{/tr}:{tr}Upload a file with translations for the selected language.{/tr}">
-		{icon name="upload"} {tr}Upload Translations{/tr}
-	</a>
 </div>
-<form action="tiki-edit_languages.php" id="select_action" method="post" class="form-horizontal">
-	{if isset($find)}
-		<input type="hidden" name="find" value="{$find}">
-	{/if}
-	{if isset($maxRecords)}
-		<input type="hidden" name="maxRecords" value="{$maxRecords}">
-	{/if}
-	<div class="form-group">
-		<div class="adminoptionbox">
-			<label for="edit_language" class="col-md-4 control-label">{tr}Language{/tr}</label>
-			<div class="col-md-6">
-				<select id="edit_language" class="translation_action form-control" name="edit_language">
+
+{tabset}
+	{tab name="{tr}Edit languages{/tr}"}
+		<form action="tiki-edit_languages.php" id="select_action" method="post">
+			{if isset($find)}
+				<input type="hidden" name="find" value="{$find}">
+			{/if}
+			{if isset($maxRecords)}
+				<input type="hidden" name="maxRecords" value="{$maxRecords}">
+			{/if}
+			<div class="adminoptionbox">
+				<label for="edit_language">{tr}Select the language to edit:{/tr}</label>
+				<select id="edit_language" class="translation_action" name="edit_language">
 					{section name=ix loop=$languages}
 						<option value="{$languages[ix].value|escape}" {if $edit_language eq $languages[ix].value}selected="selected"{/if}>{$languages[ix].name}</option>
 					{/section}
 				</select>
 			</div>
-			<div class="col-md-2">
-				<a class="btn btn-link tips" href="{service controller=language action=download language={$edit_language} file_type=language_php}" title="{tr}Download{/tr}:{tr}Download language.php file for the selected language.{/tr}">
-					{icon name="download"}
-				</a>
-				<a class="btn btn-link tips" href="{service controller=language action=download_db_translations language={$edit_language}}" title="{tr}Download Database Translations{/tr}:{tr}Download a file with all the translations in the database for the selected language.{/tr}">
-					{icon name="file-text-o"}
-				</a>
-				<a class="btn btn-link tips" href="{bootstrap_modal controller=language action=write_to_language_php language={$edit_language}}" title="{tr}Write to language.php{/tr}:{tr}Translations in the database will be merged with the other translations in language.php for the selected language.{/tr}">
-					{icon name="flash"}
-				</a>				
+			<div class="adminoptionbox">
+				<input id="add_tran_sw" class="translation_action" align="right" type="radio" name="action" value="add_tran_sw" {if $action eq 'add_tran_sw'}checked="checked"{/if}>
+				<label for="add_tran_sw">{tr}Add a translation{/tr}</label>
 			</div>
-		</div>
-	</div>
-	<div class="form-group">
-		<div class="adminoptionbox">
-			<label for="add_tran_sw" class="col-md-4 control-label">{tr}Add a translation{/tr}</label>
-			<div class="col-md-8">
-				<label class="radio-inline"><input id="add_tran_sw" class="translation_action" type="radio" name="action" value="add_tran_sw" {if $action eq 'add_tran_sw'}checked="checked"{/if}>{tr}Add{/tr}</label>
-			</div>
-		</div>
-	</div>
-	<div class="form-group">
-		<div class="adminoptionbox">
-			<label for="add_tran_sw" class="col-md-4 control-label">{tr}Edit translations{/tr}</label>
-			<div class="col-md-8">
-				<label class="radio-inline"><input id="edit_tran_sw" class="translation_action" align="right" type="radio" name="action" value="edit_tran_sw" {if $action eq 'edit_tran_sw'}checked="checked"{/if}>{tr}Edit{/tr}</label>
+			<div class="adminoptionbox">
+				<input id="edit_tran_sw" class="translation_action" align="right" type="radio" name="action" value="edit_tran_sw" {if $action eq 'edit_tran_sw'}checked="checked"{/if}>
+				<label for="edit_tran_sw">{tr}Edit translations{/tr}</label>
 				<div class="adminoptionboxchild">
-					<label class="checkbox-inline"><input id="only_db_translations" class="translation_action" type="checkbox" name="only_db_translations" {if $only_db_translations eq 'y'}checked="checked"{/if}>{tr}Show only database stored translations{/tr}</label>
+					<input id="only_db_translations" class="translation_action" type="checkbox" name="only_db_translations" {if $only_db_translations eq 'y'}checked="checked"{/if}>
+					<label for="only_db_translations">{tr}Show only database stored translations{/tr}</label>
 				</div>
 			</div>
-		</div>
-	</div>
-	<div class="form-group">
-		<div class="adminoptionbox">
-			<label for="add_tran_sw" class="col-md-4 control-label">{tr}Unstranslated strings{/tr}</label>
-			<div class="col-md-8">
-				<label class="radio-inline"><input id="edit_rec_sw" class="translation_action" align="right" type="radio" name="action" value="edit_rec_sw" {if $action eq 'edit_rec_sw'}checked="checked"{/if}>{tr}Untranslated{/tr}</label>
+
+			<div class="adminoptionbox">
+				<input id="edit_rec_sw" class="translation_action" align="right" type="radio" name="action" value="edit_rec_sw" {if $action eq 'edit_rec_sw'}checked="checked"{/if}>
+				<label for="edit_rec_sw">{tr}Untranslated strings{/tr}</label>
 				{if $prefs.record_untranslated eq 'y'}
-				<div class="adminoptionboxchild">
-					<label class="checkbox-inline"><input id="only_db_untranslated" class="translation_action" type="checkbox" name="only_db_untranslated" {if $only_db_untranslated eq 'y'}checked="checked"{/if}>{tr}Show only database stored untranslated strings{/tr}</label>
-				</div>
+					<div class="adminoptionboxchild">
+						<input id="only_db_untranslated" class="translation_action" type="checkbox" name="only_db_untranslated" {if $only_db_untranslated eq 'y'}checked="checked"{/if}>
+						<label for="only_db_untranslated">{tr}Show only database stored untranslated strings{/tr}</label>
+					</div>
 				{/if}
 			</div>
-		</div>
-	</div>
-</form>
-<form action="tiki-edit_languages.php" method="post" class="form-horizontal">
-	<input type="hidden" name="edit_language" value="{$edit_language}">
-	<input type="hidden" name="action" value="{$action}">
-	{if $only_db_translations eq 'y'}
-		<input type="hidden" name="only_db_translations" value="{$only_db_translations}">
-	{/if}
-	{if $only_db_untranslated eq 'y'}
-		<input type="hidden" name="only_db_untranslated" value="{$only_db_untranslated}">
-	{/if}
-	{if $action eq 'add_tran_sw'}
-		<div class="panel panel-default">
-			<div class="panel-heading">
-				{tr}Add a translation{/tr}
-			</div>
-			<div class="panel-body">
-				<div class="form-group">
-					<label class="col-md-4 control-label">{tr}Original:{/tr}</label>
-					<div class="col-md-8">
-						<input name="add_tran_source" maxlength="255" class="form-control">
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-md-4 control-label">{tr}Translation:{/tr}</label>
-					<div class="col-md-8">
-						<input name="add_tran_tran" maxlength="255" class="form-control">
-					</div>
-				</div>
-			</div>
-			<div class="panel-footer text-center">
-				<input type="submit" class="btn btn-primary btn-sm" name="add_tran" value="{tr}Add{/tr}">
-			</div>
-		</div>
-	{/if}
-	{if $action eq 'edit_tran_sw' || $action eq 'edit_rec_sw'}
-		<div class="panel panel-default">
-			<div class="panel-heading">
-				{if $action eq 'edit_tran_sw'}
-					{tr}Edit translations{/tr}
-				{else}
-					{tr}Untranslated strings{/tr}
-				{/if}
-			</div>
-			<div class="panel-body">
-				<table class="table table-condensed table-hover" id="edit_translations">
-					<thead>
+		</form>
+
+		<form action="tiki-edit_languages.php" method="post">
+			<input type="hidden" name="edit_language" value="{$edit_language}">
+			<input type="hidden" name="action" value="{$action}">
+			{if $only_db_translations eq 'y'}
+				<input type="hidden" name="only_db_translations" value="{$only_db_translations}">
+			{/if}
+			{if $only_db_untranslated eq 'y'}
+				<input type="hidden" name="only_db_untranslated" value="{$only_db_untranslated}">
+			{/if}
+			{if $action eq 'add_tran_sw'}
+				<div class="simplebox">
+					<h4>{tr}Add a translation:{/tr}</h4>
+					<table class="formcolor">
 						<tr>
-							<div class="col-md-8">
-								{include file='find.tpl' find_show_num_rows='y'}
-							</div>
-						</tr>					
-						<tr>
-							<th>
-								{tr}Original string{/tr}
-							</th>
-							<th>
-								{tr}Original translation{/tr}
-							</th>
-							<th>
-								{tr}Translation{/tr}
-							</th>
-							<th></th>								
+							<td>{tr}Original:{/tr}</td>
+							<td><input name="add_tran_source" size=20 maxlength=255></td>
+							<td>{tr}Translation:{/tr}</td>
+							<td><input name="add_tran_tran" size=20 maxlength=255></td>
+							<td align="center"><input type="submit" class="btn btn-default" name="add_tran" value="{tr}Add{/tr}"></td>
 						</tr>
-					</thead>
-					<tbody>					
+					</table>
+				</div>
+			{/if}
+			{if $action eq 'edit_tran_sw' || $action eq 'edit_rec_sw'}
+				<div class="simplebox">
+					<h4>{if $action eq 'edit_tran_sw'}{tr}Edit translations:{/tr}{else}{tr}Untranslated strings:{/tr}{/if}</h4>
+					<table class="formcolor" id="edit_translations">
+						<tr>
+							<td align="center" colspan=3>
+								{include file='find.tpl' find_show_num_rows='y'}
+								<hr>
+							</td>
+						</tr>
 						{foreach from=$translations name=translations item=item}
 							<tr>
-								<td class="col-md-3">
-									<textarea id="source_{$smarty.foreach.translations.index}" name="source_{$smarty.foreach.translations.index}" class="form-control" rows="2" readonly="readonly">{$item.source|escape}</textarea>
-								</td>
-								<td class="col-md-3">
-									{if isset($item.originalTranslation)}
-										<textarea id="original_tran_{$smarty.foreach.translations.index}" name="original_tran_{$smarty.foreach.translations.index}" class="form-control" rows="2" readonly="readonly">{$item.originalTranslation|escape}</textarea>
-									{/if}
-								</td>
-								<td class="col-md-3">
-									<textarea id="tran_{$smarty.foreach.translations.index}" name="tran_{$smarty.foreach.translations.index}" class="form-control" rows="2">{$item.tran|escape}</textarea>
-								</td>
-								<td class="col-md-3 text-center">
-									<button type="submit" class="btn btn-primary btn-sm tips" name="edit_tran_{$smarty.foreach.translations.index}" title=":{tr}Save translation in the database{/tr}">
-										{tr}Translate{/tr}
-									</button>
+								<td><label for="source_{$smarty.foreach.translations.index}">{tr}Original:{/tr}</label></td>
+								<td><input id="source_{$smarty.foreach.translations.index}" name="source_{$smarty.foreach.translations.index}" value="{$item.source|escape}" size=65 readonly="readonly">
+								<td align="center" align="center" rowspan="{if isset($item.originalTranslation)}5{else}3{/if}">
+									<input type="submit" class="btn btn-default" name="edit_tran_{$smarty.foreach.translations.index}" value="{tr}Translate{/tr}">
 									{if $action eq 'edit_tran_sw' && isset($item.changed)}
-										<button type="submit" class="btn btn-warning btn-sm tips" name="del_tran_{$smarty.foreach.translations.index}" title=":{tr}Delete translation from the database{/tr}">
-											{tr}Delete{/tr}
-										</button>
+										<input type="submit" class="btn btn-default" name="del_tran_{$smarty.foreach.translations.index}" value="{tr}Delete{/tr}">
 									{/if}
 									{assign var=itemIndex value=$smarty.foreach.translations.index}
 									{if isset($item.originalTranslation)}
-										{button _flip_id="diff_$itemIndex" _flip_hide_text="n" _text="{tr}Compare{/tr}" _title=":{tr}Compare the origional translation with the database translation{/tr}" _class="btn btn-default btn-sm tips"}
-									{/if}
-									{if isset($item.user) && isset($item.lastModif)}
-										<span class="help-block">
-											<small>{tr _0=$item.user|userlink _1=$item.lastModif|tiki_short_date}Last changed by %0 on %1{/tr}</small>
-										</span>
+										{button _flip_id="diff_$itemIndex" _flip_hide_text=n _text="{tr}Diff{/tr}"}
 									{/if}
 								</td>
 							</tr>
 							{if isset($item.originalTranslation)}
 								<tr>
-									<td colspan="4">
-										<div class="col-md-6 col-md-push-3">
-											<table class="table" id="diff_{$smarty.foreach.translations.index}" style="display: none;">
-												{$item.diff}
-											</table>
-										</div>
-									</td>
+									<td><label for="original_tran_{$smarty.foreach.translations.index}">{tr}Original translation:{/tr}</label></td>
+									<td><input id="original_tran_{$smarty.foreach.translations.index}" name="original_tran_{$smarty.foreach.translations.index}" value="{$item.originalTranslation|escape}" size="65" readonly="readonly"></td>
 								</tr>
 							{/if}
+							<tr>
+								<td><label for="tran_{$smarty.foreach.translations.index}">{tr}Translation:{/tr}</label></td>
+								<td><input id="tran_{$smarty.foreach.translations.index}" name="tran_{$smarty.foreach.translations.index}" value="{$item.tran|escape}" size="65"></td>
+							</tr>
+							<tr>
+								<td colspan="2">
+									{if isset($item.originalTranslation)}
+										<table class="formcolor" id="diff_{$smarty.foreach.translations.index}" style="display: none;">{$item.diff}</table>
+									{/if}
+								</td>
+							</tr>
+							<tr class="last">
+								<td colspan="2">
+									{if isset($item.user) && isset($item.lastModif)}
+										{tr _0=$item.user|userlink _1=$item.lastModif|tiki_short_date}Last changed by %0 on %1{/tr}
+									{/if}
+								</td>
+							</tr>
 						{foreachelse}
 							{norecords _colspan=3}
 						{/foreach}
-					</tbody>
-				</table>
-				<div class="text-center">
+						<tr>
+							<td colspan="3">
+								{if !empty($translations)}
+									<input type="submit" class="btn btn-default" name="translate_all" value="{tr}Translate all{/tr}">
+									{if $action eq 'edit_rec_sw' && $hasDbTranslations == true && $only_db_untranslated eq 'y'}
+										<input type="submit" class="btn btn-default" name="tran_reset" value="{tr}Delete all{/tr}" onclick="return confirm('{tr}Are you sure you want to delete all untranslated strings from database?{/tr}')">
+									{/if}
+									{if $action eq 'edit_tran_sw' && $only_db_translations eq 'y' && $tiki_p_admin eq 'y'}
+										<input type="submit" class="btn btn-default" name="delete_all" value="{tr}Delete all{/tr}" onclick="return confirm('{tr}Are you sure you want to delete all translations from database?{/tr}')">
+									{/if}
+								{/if}								
+							</td>
+						</tr>
+					</table>
+					<input type="hidden" name="offset" value="{$offset|escape}">
+
 					{pagination_links cant=$total step=$maxRecords offset=$offset _ajax='n'}{strip}
-					tiki-edit_languages.php?edit_language={$edit_language}&action={$action}&maxRecords={$maxRecords}&only_db_translations={$only_db_translations}&only_db_untranslated={$only_db_untranslated}{if isset($find)}&find={$find}{/if}
+						tiki-edit_languages.php?edit_language={$edit_language}&action={$action}&maxRecords={$maxRecords}&only_db_translations={$only_db_translations}&only_db_untranslated={$only_db_untranslated}{if isset($find)}&find={$find}{/if}
 					{/strip}{/pagination_links}
 				</div>
-			</div>
-			<div class="panel-footer text-center">
-				<input type="hidden" name="offset" value="{$offset|escape}">
-				{if !empty($translations)}
-					<input type="submit" class="btn btn-primary btn-sm" name="translate_all" value="{tr}Translate all{/tr}">
-					{if $action eq 'edit_rec_sw' && $hasDbTranslations == true && $only_db_untranslated eq 'y'}
-						<input type="submit" class="btn btn-warning btn-sm" name="tran_reset" value="{tr}Delete all{/tr}" onclick="return confirm('{tr}Are you sure you want to delete all untranslated strings from database?{/tr}')">
+			{/if}
+		</form>
+	{/tab}
+
+	{tab name="{tr}Export languages{/tr}"}
+		<form action="tiki-edit_languages.php" method="post">
+			{if isset($expmsg)}
+			    {remarksbox type="note" title="{tr}Note:{/tr}"}
+					{$expmsg}
+				{/remarksbox}
+			{/if}
+			{if (empty($db_languages))}
+			    {remarksbox type="note" title="{tr}Note:{/tr}"}
+					{tr}No translations in the database available to export. First translate strings using interactive translation or "Edit languages" tab.{/tr}
+				{/remarksbox}
+			{else}
+				<div class="adminoptionbox">
+					<label for="exp_language">{tr}Select the language to Export:{/tr}</label>
+					<select id="exp_language" name="exp_language">
+						{section name=ix loop=$db_languages}
+							<option value="{$db_languages[ix].value|escape}"
+								{if $exp_language eq $db_languages[ix].value}selected="selected"{/if}>
+								{$db_languages[ix].name}
+							</option>
+						{/section}
+					</select>
+				</div>
+			    {remarksbox type="note" title="{tr}Note:{/tr}"}
+					{tr}If you click "Download database translations", you will download a file with all the translations in the database.{/tr}
+					{if $tiki_p_admin eq 'y' and $langIsWritable}
+						{tr}If you click "Write to language.php", the translations in the database will be merged with the other translations in language.php. Note that after writing translations to language.php they are removed from the database.{/tr}
 					{/if}
-					{if $action eq 'edit_tran_sw' && $only_db_translations eq 'y' && $tiki_p_admin eq 'y'}
-						<input type="submit" class="btn btn-warning btn-sm" name="delete_all" value="{tr}Delete all{/tr}" onclick="return confirm('{tr}Are you sure you want to delete all translations from database?{/tr}')">
-					{/if}
+				{/remarksbox}
+				{if !$langIsWritable}
+					{remarksbox type="note" title="{tr}Note:{/tr}"}
+						{tr}To be able to write your translations back to language.php make sure that the web server has write permission in the lang/ directory.{/tr}
+					{/remarksbox}
 				{/if}
-			</div>
-		</div>
-	{/if}
-</form>
+				<div class="adminoptionbox">
+					<input type="submit" class="btn btn-default" name="downloadFile" value="{tr}Download database translations{/tr}">
+					{if $tiki_p_admin eq 'y' and $langIsWritable}
+						<input type="submit" class="btn btn-default" name="exportToLanguage" value="{tr}Write to language.php{/tr}">
+					{/if}
+				</div>
+			{/if}
+		</form>
+	{/tab}
+{/tabset}

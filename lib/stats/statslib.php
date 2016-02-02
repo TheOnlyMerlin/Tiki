@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -16,14 +16,6 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
  */
 class StatsLib extends TikiLib
 {
-	/**
-	 *  Check if the prerequisites for recording a statistics hit are fulfilled
-	 */
-	public static function is_stats_hit() {
-		global $prefs, $user;
-		return $prefs['feature_stats'] === 'y' && ( $prefs['count_admin_pvs'] === 'y' || $user != 'admin' );
-	}
-
 	// obsolete, but keeped for compatibility purposes
 	// use Tikilib::list_pages() instead
     /**
@@ -224,7 +216,7 @@ class StatsLib extends TikiLib
      */
     public function site_stats()
 	{
-		$tikilib = TikiLib::lib('tiki');
+		global $tikilib;
 		$stats = array();
 		$rows = $this->getOne("select count(*) from `tiki_pageviews`", array());
 
@@ -275,7 +267,7 @@ class StatsLib extends TikiLib
 				}
 				if ($view['views'] == $minvar) {
 					$stats['worstday'] .= $tikilib->get_long_date($view['unixtime']) . ' (' . $minvar . ' ' . tra('pvs') . ')<br />';
-					$w > 0 ? $stats['worstdesc'] = tra('Days with the fewest pageviews') : $stats['worstdesc'] = tra('Day with the fewest pageviews');
+					$w > 0 ? $stats['worstdesc'] = tra('Days with the least pageviews') : $stats['worstdesc'] = tra('Day with the least pageviews');
 					$w++;
 				}
 			}
@@ -300,8 +292,9 @@ class StatsLib extends TikiLib
      */
     public function stats_hit($object, $type, $id = null)
 	{
-		if ( empty($object) || empty($type) || !StatsLib::is_stats_hit() ) {
-			return false;
+		if ( is_null($object) || is_null($type) ) {
+			$result = false;
+			return $result;
 		}
 
 		list($month, $day, $year) = explode(',', $this->date_format("%m,%d,%Y"));
@@ -456,8 +449,7 @@ class StatsLib extends TikiLib
 	 */
 	public function period2dates($when)
 	{
-		global $prefs;
-		$tikilib = TikiLib::lib('tiki');
+		global $tikilib, $prefs;
 		$now = $tikilib->now;
 		$sec = TikiLib::date_format("%s", $now);
 		$min = TikiLib::date_format("%i", $now);
@@ -480,7 +472,7 @@ class StatsLib extends TikiLib
 
 			case 'week':
 				$iweek = TikiLib::date_format("%w", $now);// 0 for Sunday...
-				$calendarlib = TikiLib::lib('calendar');
+				global $calendarlib; include_once('lib/calendar/calendarlib.php');
 				$firstDayofWeek = $calendarlib->firstDayofWeek();
 				$iweek -= $firstDayofWeek;
 				if ($iweek < 0) {
@@ -605,3 +597,5 @@ class StatsLib extends TikiLib
 		return $ret;
 	}
 }
+global $dbTiki;
+$statslib = new StatsLib;

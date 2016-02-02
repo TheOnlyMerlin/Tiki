@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -34,8 +34,5 @@ function module_locator($mod_reference, $module_params)
 	$headerlib = TikiLib::lib('header');
 
 	$headerlib->add_map();
-
-	// assign the default map centre from the prefs as a data attribute for the map-container div
-	TikiLib::lib('smarty')->assign('center', TikiLib::lib('geo')->get_default_center());
 }
 

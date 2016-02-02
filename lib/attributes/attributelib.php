@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -23,11 +23,9 @@ class AttributeLib extends TikiDb_Bridge
 	}
 
     /**
-	 * Get all attributes for an object
-	 *
-     * @param $type string      One of \ObjectLib::get_supported_types()
-     * @param $objectId mixed   Object id (or name for wiki pages)
-     * @return array            Array [attribute => value]
+     * @param $type
+     * @param $objectId
+     * @return mixed
      */
     function get_attributes( $type, $objectId )
 	{
@@ -35,22 +33,6 @@ class AttributeLib extends TikiDb_Bridge
 			'attribute',
 			'value',
 			array('type' => $type,'itemId' => $objectId,)
-		);
-	}
-
-	/**
-	 * Get a single attribute
-	 *
-	 * @param $type string          One of \ObjectLib::get_supported_types()
-	 * @param $objectId mixed       Object id (or name for wiki pages)
-	 * @param $attribute string     At least two dots and only lowercase letters
-	 * @return string|boolean       Contents of the attribute on the object or false if not present
-	 */
-	function get_attribute($type, $objectId, $attribute)
-	{
-		return $this->attributes->fetchOne(
-			'value',
-			array('type' => $type, 'itemId' => $objectId, 'attribute' => $attribute)
 		);
 	}
 
@@ -117,4 +99,7 @@ class AttributeLib extends TikiDb_Bridge
 		);
 	}
 }
+
+global $attributelib;
+$attributelib = new AttributeLib;
 

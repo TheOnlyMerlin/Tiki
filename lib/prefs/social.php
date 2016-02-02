@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -9,7 +9,7 @@ function prefs_social_list()
 {
 	return array(
 		'social_network_type' => array(
-			'name' => tra('Social network type'),
+			'name' => tra('Social Network Type'),
 			'description' => tra('Select how the friendship relations within the social network should be treated.'),
 			'type' => 'list',
 			'options' => array(

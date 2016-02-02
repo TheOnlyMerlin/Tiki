@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -134,7 +134,7 @@ if (isset($_REQUEST["remove"])) {
 	$nllib->remove_edition($_REQUEST["nlId"], $_REQUEST["remove"]);
 }
 
-$editlib = TikiLib::lib('edit');
+include_once ('lib/wiki/editlib.php');
 // wysiwyg decision
 include_once ('lib/setup/editmode.php');
 
@@ -171,9 +171,10 @@ if (isset($_REQUEST['is_html'])) {
 }
 
 if (isset($_REQUEST["templateId"]) && $_REQUEST["templateId"] > 0 && (!isset($_REQUEST['previousTemplateId']) || $_REQUEST['previousTemplateId'] != $_REQUEST['templateId'])) {
-	$template_data = TikiLib::lib('template')->get_template($_REQUEST["templateId"]);
+	global $templateslib; require_once 'lib/templates/templateslib.php';
+	$template_data = $templateslib->get_template($_REQUEST["templateId"]);
 	$_REQUEST["data"] = $template_data["content"];
-	if (TikiLib::lib('template')->template_is_in_section($_REQUEST['templateId'], 'wiki_html') ) {
+	if ($templateslib->template_is_in_section($_REQUEST['templateId'], 'wiki_html') ) {
 		$_REQUEST['is_html'] = 'on';
 		$_REQUEST['wysiwyg'] ='y';
 	}
@@ -293,9 +294,9 @@ if (isset($_REQUEST["preview"])) {
 	$smarty->assign_by_ref('info', $info);
 	$smarty->assign('previewdata', $previewdata);
 
-	$themelib = TikiLib::lib('theme');
-	$news_cssfile = $themelib->get_theme_path($prefs['theme'], '', 'newsletter.css');
-	$news_cssfile_option = $themelib->get_theme_path($prefs['theme'], $prefs['theme_option'], 'newsletter.css');
+	$tikilib = TikiLib::lib('tiki');
+	$news_cssfile = $tikilib->get_style_path($prefs['style'], '', 'newsletter.css');
+	$news_cssfile_option = $tikilib->get_style_path($prefs['style'], $prefs['style_option'], 'newsletter.css');
 
 	TikiLib::lib('header')->add_cssfile($news_cssfile)->add_cssfile($news_cssfile_option);
 }
@@ -317,7 +318,6 @@ if (isset($_REQUEST["save"])) {
 		$wikiparse = 'n';
 	}
 	$info['is_html'] = !empty($_REQUEST['is_html']);
-	$tikilib = TikiLib::lib('tiki');
 	if (!empty($_REQUEST["usedTpl"])) {
 		$smarty->assign('dataparsed', (($wikiparse == 'y') ? $tikilib->parse_data($_REQUEST["data"], array('absolute_links' => true, 'suppress_icons' => true)) : $_REQUEST['data']));
 		$smarty->assign('subject', $_REQUEST["subject"]);
@@ -416,11 +416,11 @@ if ( isset($_REQUEST["send"]) && ! empty($_REQUEST["sendingUniqId"]) || $resend 
 if (isset($_REQUEST['resume'])) {
 	$edition_info = $nllib->get_edition($_REQUEST['resume']);
 	$nl_info = $nllib->get_newsletter($edition_info['nlId']);
-	$nllib->send($nl_info, $edition_info, true, $sent, $errors, $logFileName);
+	$nllib->send($nl_info, $edition_info, true, $sent, $errors, $logFileName);#
 	
 	// use lib function to close the frame with the completion info
 	$nllib->closesendframe($sent, $errors, $logFileName);
-		
+	
 	exit; // Stop here since we are in an iframe and don't want to use smarty display
 }
 
@@ -517,9 +517,10 @@ $smarty->assign_by_ref('drafts', $drafts["data"]);
 $smarty->assign_by_ref('cant_editions', $editions["cant"]);
 $smarty->assign_by_ref('cant_drafts', $drafts["cant"]);
 $smarty->assign('url', "tiki-send_newsletters.php");
-
-$templates = TikiLib::lib('template')->list_templates('newsletters', 0, -1, 'name_asc', '');
-
+if (!empty($tiki_p_use_content_templates) && $tiki_p_use_content_templates == 'y') {
+	global $templateslib; require_once 'lib/templates/templateslib.php';
+	$templates = $templateslib->list_templates('newsletters', 0, -1, 'name_asc', '');
+}
 $smarty->assign_by_ref('templates', $templates["data"]);
 $tpls = $nllib->list_tpls();
 if (count($tpls) > 0) {
@@ -529,7 +530,8 @@ include_once ('tiki-section_options.php');
 setcookie('tab', $cookietab);
 $smarty->assign('cookietab', $_REQUEST['cookietab']);
 ask_ticket('send-newsletter');
-$wikilib = TikiLib::lib('wiki');
+global $wikilib;
+include_once ('lib/wiki/wikilib.php');
 $plugins = $wikilib->list_plugins(true, 'editwiki');
 $smarty->assign_by_ref('plugins', $plugins);
 // disallow robots to index page:

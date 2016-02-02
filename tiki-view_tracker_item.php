@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -152,18 +152,11 @@ if (!isset($_REQUEST["trackerId"]) || !$_REQUEST["trackerId"]) {
 	die;
 }
 
-if (isset($_REQUEST["itemId"])) {
+if ($prefs['feature_score'] == 'y' && isset($_REQUEST["itemId"])) {
     $item_info = $trklib->get_tracker_item($_REQUEST["itemId"]);
     $currentItemId = $_REQUEST["itemId"];
-
-	TikiLib::events()->trigger('tiki.trackeritem.view',
-		array(
-			'type' => 'trackeritem',
-			'object' => $currentItemId,
-			'owner' => $item_info['createdBy'],
-			'user' => $GLOBALS['user'],
-		)
-	);
+    $tikilib->score_event($user, 'trackeritem_read', $currentItemId);
+    $tikilib->score_event($item_info['createdBy'], 'trackeritem_is_read', "$user:$currentItemId");
 }
 
 $definition = Tracker_Definition::get($_REQUEST['trackerId']);
@@ -311,7 +304,7 @@ if (! $itemObject->canView()) {
 	$smarty->display("error.tpl");
 	die;
 }
-if (isset($tracker_info['adminOnlyViewEditItem']) && $tracker_info['adminOnlyViewEditItem'] === 'y') {
+if ($tracker_info['adminOnlyViewEditItem'] === 'y') {
 	$access->check_permission('tiki_p_admin_trackers', tra('Admin this tracker'), 'tracker', $tracker_info['trackerId']);
 }
 
@@ -407,9 +400,7 @@ if (! $itemObject->canView()) {
 if ($itemObject->canRemove()) {
 	if (isset($_REQUEST["remove"])) {
 		check_ticket('view-trackers-items');
-		$access->check_authenticity(tr('Are you sure you want to permantently delete this item?'));
 		$trklib->remove_tracker_item($_REQUEST["remove"]);
-		$access->redirect(filter_out_sefurl('tiki-view_tracker.php?trackerId=' . $_REQUEST['trackerId']));
 	}
 }
 $rateFieldId = $definition->getRateField();
@@ -623,12 +614,6 @@ if ($prefs['feature_user_watches'] == 'y' and $tiki_p_watch_trackers == 'y') {
 		}
 	}
 }
-
-if ($tracker_info['useComments'] == 'y') {
-	$comCount = $trklib->get_item_nb_comments($_REQUEST["itemId"]);
-	$smarty->assign("comCount", $comCount);
-}
-
 if ($tracker_info["useAttachments"] == 'y') {
 	if (isset($_REQUEST["removeattach"])) {
 		$_REQUEST["show"] = "att";
@@ -745,72 +730,17 @@ $smarty->assign('canView', $itemObject->canView());
 $smarty->assign('canModify', $itemObject->canModify());
 $smarty->assign('canRemove', $itemObject->canRemove());
 
-
-// Add view/edit template. Override an optional template defined in the tracker by a template passed via request
-// Note: Override is only allowed if a default template was set already in the tracker.
-
-// View
-$viewItemPretty = array(
-		'override' => false,
-		'value' => $tracker_info['viewItemPretty'],
-		'type' => 'wiki'
-);
-if (!empty($tracker_info['viewItemPretty'])) {
-	if (isset($_REQUEST['vi_tpl'])) {
-		$viewItemPretty['override'] = true;
-		$viewItemPretty['value'] = $_REQUEST['vi_tpl'];
-	}
-	// Need to check wether this is a wiki: or tpl: template, bc the smarty template needs to take care of this
-	if (strpos(strtolower($viewItemPretty['value']), 'wiki:') === false) {
-		$viewItemPretty['type'] = 'tpl';
-	}
-}
-$smarty->assign('viewItemPretty', $viewItemPretty);
-
-// Edit 
-$editItemPretty = array(
-	'override' => false,
-	'value' => $tracker_info['editItemPretty'],
-	'type' => 'wiki'
-); 
-if (!empty($tracker_info['editItemPretty'])) {
-	if (isset($_REQUEST['ei_tpl'])) {
-		$editItemPretty['override'] = true;
-		$editItemPretty['value'] = $_REQUEST['ei_tpl'];
-	}
-	if (strpos(strtolower($editItemPretty['value']), 'wiki:') === false) {
-		$editItemPretty['type'] = 'tpl';
-	}
-}
-$smarty->assign('editItemPretty', $editItemPretty);
-
-// add referer url to setup the back button in tpl
-// check wether we have been called from a different page than ourselfs to save a link to the referer for a back buttom.
-// this can be a wikipage with the trackerlist item and and view item temlate set using vi_tpl=wiki:mytemplate  
-// if we do anything on the current page (i.e. adding a comment) we need to keep that saved link. 
-$referer = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
-$temp = strtolower($referer);
-if (strpos($temp, 'vi_tpl=') || strpos($temp, 'ei_tpl=')) {
-	$referer = $_SESSION['item_tpl_referer'];
-} else {
-	$_SESSION['item_tpl_referer'] = $referer;
-}
-unset($temp);
-$smarty->assign('referer', $referer);
-
 // Display the template
 $smarty->assign('mid', 'tiki-view_tracker_item.tpl');
 
 try {
 	if (isset($_REQUEST['print'])) {
-		$smarty->assign('print_page', 'y');
 		$smarty->display('tiki-print.tpl');
+		$smarty->assign('print', 'y');
 	} else {
 		$smarty->display('tiki.tpl');
 	}
 } catch (SmartyException $e) {
-	//$message = tr('This element cannot be displayed correctly. One of the view/edit templates is missing or has errors (%0)/(%1). Contact the administrator.', $viewItemPretty['value'], $editItemPretty['value']);
-	$message = tr('This element cannot be displayed correctly. One of the view/edit templates is missing or has errors. Contact the administrator. (%0)', $e->getMessage());
-	$smarty->loadPlugin('smarty_modifier_sefurl');
+	$message = tr('This element cannot be displayed appropriately. Template not found (%0). Contact the administrator.', $tracker_info['viewItemPretty']);
 	$access->redirect(smarty_modifier_sefurl($info['trackerId'], 'tracker'), $message);
 }

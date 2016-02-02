@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -8,14 +8,11 @@
 /**
  * set some default params (mainly utf8 as tiki is utf8) + use the mailCharset pref from a user
  */
-$access = TikiLib::lib('access');
+global $access;
 $access->check_script($_SERVER["SCRIPT_NAME"], basename(__FILE__));
 
 class TikiMail
 {
-	/**
-	 * @var \Zend\Mail\Message
-	 */
 	private $mail;
 
 	/**
@@ -42,7 +39,7 @@ class TikiMail
 			$this->mail = tiki_get_basic_mail();
 			try {
 				$this->mail->setFrom($from);
-				$this->mail->setSender($from);
+				$this->mail->setReturnPath($from);
 			} catch (Exception $e) {
 				// was already set, then do nothing
 			}
@@ -60,88 +57,32 @@ class TikiMail
 
 	function setFrom($email, $name = null)
 	{
+		$this->mail->clearFrom();		// Zend mail throws an exception if from is set twice, Tiki does that quite a bit
 		$this->mail->setFrom($email, $name);
 	}
 
-	function setReplyTo($email, $name = null)
+	function setReplyTo($email)
 	{
-		$this->mail->setReplyTo($email, $name);
+		$this->mail->setReplyTo($email);
 	}
 
 	function setSubject($subject)
 	{
+		$this->mail->clearSubject();
 		$this->mail->setSubject($subject);
 	}
 
 	function setHtml($html, $text = null, $images_dir = null)
 	{
-		$body = $this->mail->getBody();
-		if ( !($body instanceof \Zend\Mime\Message) && !empty($body)){
-			$this->convertBodyToMime($body);
-			$body = $this->mail->getBody();
+		$this->mail->setBodyHtml($html);
+		if ($text) {
+			$this->mail->setBodyText($text);
 		}
-
-		if (! $body instanceof Zend\Mime\Message){
-			$body = new Zend\Mime\Message();
-		}
-
-		$partHtmlFound = false;
-		$partTextFound = false;
-
-		$parts = $body->getParts();
-		foreach($parts as $part){
-			/* @var $part Zend\Mime\Part */
-			if ($part->getType() == Zend\Mime\Mime::TYPE_HTML){
-				$partHtmlFound = true;
-				$part->setContent($html);
-			}
-			if ($part->getType() == Zend\Mime\Mime::TYPE_TEXT){
-				$partTextFound = true;
-				if ($text){
-					$part->setContent($text);
-				}
-			}
-		}
-
-		if (!$partHtmlFound){
-			$htmlPart = new Zend\Mime\Part($html);
-			$htmlPart->setType(Zend\Mime\Mime::TYPE_HTML);
-			$parts[] = $htmlPart;
-		}
-
-		if (!$partTextFound && $text){
-			$textPart = new Zend\Mime\Part($text);
-			$textPart->setType(Zend\Mime\Mime::TYPE_TEXT);
-			$parts[] = $textPart;
-		}
-
-		$body->setParts($parts);
-		$this->mail->setBody($body);
 	}
 
 	function setText($text = '')
 	{
-		$body = $this->mail->getBody();
-		if ( $body instanceof \Zend\Mime\Message ){
-			$parts = $body->getParts();
-			$textPartFound = false;
-			foreach($parts as $part){
-				/* @var $part Zend\Mime\Part */
-				if ($part->getType() == Zend\Mime\Mime::TYPE_TEXT){
-					$part->setContent($text);
-					$textPartFound = true;
-					break;
-				}
-			}
-			if (!$textPartFound){
-				$part = new Zend\Mime\Part($text);
-				$part->setType(Zend\Mime\Mime::TYPE_TEXT);
-				$parts[] = $part;
-			}
-			$body->setParts($parts);
-		} else {
-			$this->mail->setBody($text);
-		}
+		$this->mail->setBodyText($text);
 	}
 
 	function setCc($address)
@@ -161,9 +102,9 @@ class TikiMail
 	function setHeader($name, $value)
 	{
 		if ($name === 'Message-ID') {
-			$this->mail->getHeaders()->addHeader(Zend\Mail\Header\MessageId::fromString('Message-ID: ' . trim($value, "<>")));
+			$this->mail->setMessageId(trim($value, "<>"));
 		} else {
-			$this->mail->getHeaders()->addHeaderLine($name, $value);
+			$this->mail->addHeader($name, $value);
 		}
 	}
 
@@ -172,7 +113,7 @@ class TikiMail
 		global $tikilib, $prefs;
 		$logslib = TikiLib::lib('logs');
 
-		$this->mail->getHeaders()->removeHeader('to');
+		$this->mail->clearHeader('To');
 		foreach ((array) $recipients as $to) {
 			$this->mail->addTo($to);
 		}
@@ -183,11 +124,11 @@ class TikiMail
 			$tikilib->query($query, $bindvars, -1, 0);
             $title = 'mail';
         } else {
-    		try {
-					tiki_send_email($this->mail);
+        	try {
+    			$this->mail->send();
 
     			$title = 'mail';
-    		} catch (Zend\Mail\Exception\ExceptionInterface $e) {
+    		} catch (Zend_Mail_Exception $e) {
     			$title = 'mail error';
     		}
 
@@ -200,68 +141,10 @@ class TikiMail
 		return $title == 'mail';
 	}
 
-	protected function convertBodyToMime($text)
-	{
-		$textPart = new Zend\Mime\Part($text);
-		$textPart->setType(Zend\Mime\Mime::TYPE_TEXT);
-		$newBody = new Zend\Mime\Message();
-		$newBody->addPart($textPart);
-		$this->mail->setBody($newBody);
-	}
-
 	function addAttachment($data, $filename, $mimetype)
 	{
-		$body = $this->mail->getBody();
-		if (! ($body instanceof \Zend\Mime\Message) ){
-			$this->convertBodyToMime($body);
-			$body = $this->mail->getBody();
-		}
-
-		$attachment = new Zend\Mime\Part($data);
-		$attachment->setFileName($filename);
-		$attachment->setType($mimetype);
-		$attachment->setEncoding(Zend\Mime\Mime::ENCODING_BASE64);
-		$attachment->setDisposition(Zend\Mime\Mime::DISPOSITION_INLINE);
-		$body->addPart($attachment);
+		$this->mail->createAttachment($data, $mimetype, Zend_Mime::DISPOSITION_INLINE, Zend_Mime::ENCODING_BASE64, $filename);
 	}
-
-	/**
-	 *	scramble an email with a method
-	 *
-	 * @param string $email email address to be scrambled
-	 * @param string $method unicode or y: each character is replaced with the unicode value
-	 *                       strtr: mr@tw.org -> mr AT tw DOT org
-	 *                       x: mr@tw.org -> mr@xxxxxx
-	 *
-	 * @return string scrambled email
-	 */
-	static function scrambleEmail($email, $method='unicode')
-	{
-		switch ($method) {
-		case 'strtr':
-			$trans = array(	"@" => tra("(AT)"),
-							"." => tra("(DOT)")
-			);
-			return strtr($email, $trans);
-		case 'x' :
-			$encoded = $email;
-			for ($i = strpos($email, "@") + 1, $istrlen_email = strlen($email); $i < $istrlen_email; $i++) {
-				if ($encoded[$i]  != ".") $encoded[$i] = 'x';
-			}
-			return $encoded;
-		case 'unicode':
-		case 'y':// for previous compatibility
-			$encoded = '';
-			for ($i = 0, $istrlen_email = strlen($email); $i < $istrlen_email; $i++) {
-				$encoded .= '&#' . ord($email[$i]). ';';
-			}
-			return $encoded;
-		case 'n':
-		default:
-			return $email;
-		}
-	}
-
 }
 
 /**

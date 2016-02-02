@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,8 +10,8 @@
 
 $section = 'wiki page';
 require_once ('tiki-setup.php');
-$structlib = TikiLib::lib('struct');
-$categlib = TikiLib::lib('categ');
+include_once ('lib/structures/structlib.php');
+include_once ('lib/categories/categlib.php');
 include_once ("lib/ziplib.php");
 $access->check_feature(array('feature_wiki', 'feature_wiki_structure'));
 $access->check_permission('tiki_p_view');
@@ -139,14 +139,6 @@ if ($tiki_p_edit_structures == 'y') {
 		include_once ("categorize_list.php"); // needs to be up here to avoid picking up selection of cats from other existing sub-pages
 		$smarty->assign('just_created', $structure_id);
 		$smarty->assign('just_created_name', $_REQUEST['name']);
-
-		// Locking: only needed on new structures, ajax locks existing ones
-		if ($prefs['lock_wiki_structures'] === 'y') {
-			if (!empty($_REQUEST['locked'])) {
-				TikiLib::lib('attribute')->set_attribute('wiki structure', $structure_id, 'tiki.object.lock', $_REQUEST['locked']);
-			}
-		}
-
 		$parents[0] = $structure_id;
 		$last_pages[0] = null;
 		$tree_lines = explode("\n", $_REQUEST["tree"]);
@@ -264,8 +256,7 @@ if (isset($_REQUEST["exact_match"])) {
 }
 if ($prefs['feature_multilingual'] == 'y') {
 	$languages = array();
-	$langLib = TikiLib::lib('language');
-	$languages = $langLib->list_languages(false, 'y');
+	$languages = $tikilib->list_languages(false, 'y');
 	$smarty->assign_by_ref('languages', $languages);
 }
 $channels = $structlib->list_structures($offset, $maxRecords, $sort_mode, $find, $exact_match, $filter);

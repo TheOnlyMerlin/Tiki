@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -12,7 +12,7 @@ class Tracker_Field_JsCalendar extends Tracker_Field_DateTime
 		return array(
 			'j' => array(
 				'name' => tr('Date and Time (Date Picker)'),
-				'description' => tr('Provides a jQuery UI date picker to select a date and optionally time.'),
+				'description' => tr('Provides jQuery-UI date picker select a date and optionally time.'),
 				'prefs' => array('trackerfield_jscalendar'),
 				'tags' => array('advanced'),
 				'default' => 'y',

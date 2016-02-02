@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -12,19 +12,17 @@ function wikiplugin_cclite_info()
 	return array(
 		'name' => tra('Cclite'),
 		'documentation' => 'PluginCclite',
-		'description' => tra('Access and use your cclite social credit and alternative currency account'),
+		'description' => tra('General purpose cclite utility plugin'),
 //		'validate' => '',
 		'prefs' => array( 'wikiplugin_cclite', 'payment_feature' ),
-		'iconname' => 'money',
-		'introduced' => 6,
-		'tags' => array( 'experimental' ),
+		'icon' => 'img/icons/money.png',
+		'tags' => array( 'experimental' ),		
 		'params' => array(
 			'mode' => array(
 				'required' => false,
 				'name' => tra('Mode'),
-				'description' => tr('Mode of operation - summary or recent. Default: %0', '<code>summary</code>'),
-				'since' => '6.0',
-				'filter' => 'word',
+				'description' => tr('Mode of operation - summary or recent. Default: summary'),
+				'filter' => 'text',
 				'default' => 'summary',
 				'options' => array(
 					array('text' => '', 'value' => ''), 
@@ -36,7 +34,6 @@ function wikiplugin_cclite_info()
 				'required' => false,
 				'name' => tra('Registry'),
 				'description' => tr('Registry to query. Default: site preference (or first in list when more than one)'),
-				'since' => '6.0',
 				'filter' => 'text',
 				'default' => '',
 			),
@@ -46,10 +43,8 @@ function wikiplugin_cclite_info()
 
 function wikiplugin_cclite( $data, $params )
 {
-	global $prefs, $user;
-	$userlib = TikiLib::lib('user');
-	$smarty = TikiLib::lib('smarty');
-	$headerlib = TikiLib::lib('header');
+	global $smarty, $userlib, $prefs, $user, $headerlib;
+	//global $paymentlib; require_once 'lib/payment/paymentlib.php';
 	global $cclitelib;  require_once 'lib/payment/cclitelib.php';
 	
 	if (empty($user)) {

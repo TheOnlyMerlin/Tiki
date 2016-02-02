@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -17,7 +17,7 @@ if (!isset($_REQUEST['trackerId'])) {
 	$smarty->display('error.tpl');
 	die;
 }
-$trklib = TikiLib::lib('trk');
+include_once('lib/trackers/trackerlib.php');
 @ini_set('max_execution_time', 0); //will not work in safe_mode is on
 
 $tracker_info = $trklib->get_tracker($_REQUEST['trackerId']);
@@ -168,7 +168,7 @@ if (!empty($_REQUEST['debug'])) {
 		$tmpCsv = tempnam($prefs['tmpDir'], 'tracker_'.$_REQUEST['trackerId']) . '.csv';
 		/*debug*/$tmpCsv = $prefs['tmpDir'].'/'.'tracker_'.$_REQUEST['trackerId']. '.csv';
 		if (!($fp = fopen($tmpCsv, 'w'))) {
-			$smarty->assign('msg', tra('The file cannot be opened'). ' '.$tmpCsv);
+			$smarty->assign('msg', tra('Can not open the file'). ' '.$tmpCsv);
 			$smarty->display('error.tpl');
 			die;
 		}			
@@ -179,7 +179,7 @@ if (!empty($_REQUEST['debug'])) {
 		}
 		$tmpZip = $prefs['tmpDir'].'/'.$file;
 		if ( !($archive->open($tmpZip, ZIPARCHIVE::OVERWRITE)) ) {
-			$smarty->assign('msg', tra('The file cannot be opened'). ' '.$prefs['tmpDir'].'/'.$file);
+			$smarty->assign('msg', tra('Can not open the file'). ' '.$prefs['tmpDir'].'/'.$file);
 			$smarty->display('error.tpl');
 			die;
 		}

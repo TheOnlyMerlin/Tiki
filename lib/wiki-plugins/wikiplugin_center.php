@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -13,10 +13,9 @@ function wikiplugin_center_info()
 		'description' => tra('Center text'),
 		'prefs' => array('wikiplugin_center'),
 		'body' => tra('text'),
-		'iconname' => 'align-center',
+		'icon' => 'img/icons/text_align_center.png',
 		'filter' => 'wikicontent',
-		'tags' => array( 'basic' ),
-		'introduced' => 1,
+		'tags' => array( 'basic' ),		
 		'params' => array(
 		),
 	);
@@ -24,6 +23,9 @@ function wikiplugin_center_info()
 
 function wikiplugin_center($data, $params)
 {
-	$data = '<div style="text-align:center">' . trim($data). '</div>';
+	global $tikilib;
+
+	extract($params, EXTR_SKIP);
+	$data = '<div align="center">' . trim($data). '</div>';
 	return $data;
 }

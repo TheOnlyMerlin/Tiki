@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -8,7 +8,7 @@
 $section = 'mytiki';
 require_once ('tiki-setup.php');
 include_once ('lib/tasks/tasklib.php');
-$messulib = TikiLib::lib('message');
+include_once ('lib/messu/messulib.php');
 
 $access->check_feature('feature_tasks', '', 'community');
 $access->check_user($user);
@@ -70,10 +70,10 @@ if (isset($_REQUEST['update_tasks'])) {
 				$msg_from = $user;
 				$msg_to = $trashed_task['user'];
 			}
-			$msg_title = tra('Task') . ' "' . $trashed_task['title'] . '" ' . tra('was moved to the trash');
+			$msg_title = tra('Task') . ' "' . $trashed_task['title'] . '" ' . tra('was moved into trash');
 			$msg_body = '__' . tra('Task') . ':__';
 			$msg_body.= '^[tiki-user_tasks.php?taskId=' . $trashed_task['taskId'] . "|" . $trashed_task['title'] . "]^\n\n";
-			$msg_body.= tra('was moved to the trash by') . ': ' . $user;
+			$msg_body.= tra('trashed by') . ': ' . $user;
 			if ($userlib->user_has_permission($msg_from, 'tiki_p_messages') and $userlib->user_has_permission($msg_to, 'tiki_p_messages')) {
 				$messulib->post_message($msg_to, $msg_from, $msg_to, '', $msg_title, $msg_body, $trashed_task['priority']);
 			}
@@ -249,7 +249,7 @@ if (isset($_REQUEST['show_history'])) $show_history = $_REQUEST['show_history'];
 if (($_REQUEST['taskId']) && !isset($_REQUEST['preview'])) {
 	$info = $tasklib->get_task($user, $_REQUEST['taskId'], $show_history, $task_admin);
 	if (!(isset($info['user']))) {
-		$smarty->assign('msg', tra("Sorry, this task does not exist or you don't have permission to view this task"));
+		$smarty->assign('msg', tra("Sorry this task does not exist or you have no rights to view this task"));
 		$smarty->display("error.tpl");
 		die;
 	}
@@ -272,7 +272,8 @@ if (isset($_REQUEST['tiki_view_mode']) and $_REQUEST['tiki_view_mode'] == 'view'
 if (isset($_REQUEST['tiki_view_mode']) and $_REQUEST['tiki_view_mode'] == 'edit') {
 	$show_form = true;
 	$smarty->assign('show_form', $show_form);
-	$wikilib = TikiLib::lib('wiki');
+	global $wikilib;
+	include_once ('lib/wiki/wikilib.php');
 	$plugins = $wikilib->list_plugins(true, 'description');
 	$smarty->assign_by_ref('plugins', $plugins);
 }
@@ -482,7 +483,7 @@ if (isset($_REQUEST['save'])) {
 			$taskId = $tasklib->new_task($_REQUEST['task_user'], $user, $public_for_group, $rights_by_creator, $tikilib->now, $save);
 		} else {
 			unset($_REQUEST['taskId']);
-			$smarty->assign('msg', tra("Either you don't have permission to send tasks to other users, or the user doesn't have permission to receive tasks!"));
+			$smarty->assign('msg', tra("Sorry you are not allowed to send tasks to other users, or the user is not allowed to receive tasks!"));
 			$smarty->display("error.tpl");
 			die;
 		}
@@ -539,12 +540,12 @@ if (isset($_REQUEST['save'])) {
 		}
 		$mail_data.= ".\n\n";
 		if ($info['start'] !== NULL) {
-			$mail_data.= tra("You must start your work at least on") . ": " . $tikilib->date_format($prefs['short_date_format'] . ' ' . $prefs['short_time_format'], $info['end']) . "\n";
+			$mail_data.= tra("You've to start your work at least on") . ": " . $tikilib->date_format($prefs['short_date_format'] . ' ' . $prefs['short_time_format'], $info['end']) . "\n";
 		}
 		if ($info['end'] !== NULL) {
-			$mail_data.= tra("You must finish your work on") . ": " . $tikilib->date_format($prefs['short_date_format'] . ' ' . $prefs['short_time_format'], $info['end']) . "\n";
+			$mail_data.= tra("You've to finish your work on") . ": " . $tikilib->date_format($prefs['short_date_format'] . ' ' . $prefs['short_time_format'], $info['end']) . "\n";
 		}
-		$mail_data.= "\n" . tra("Log in and click the link below") . "\n";
+		$mail_data.= "\n" . tra("Login and click the link below") . "\n";
 		$mail_data.= "http://" . $_REQUEST['HTTP_HOST'] . $_REQUEST['REQUEST_URI'] . "?tiki_view_mode=view&taskId=" . $taskId . "\n\n";
 		$mail_data.= tra("Please read the task and work on it!");
 		$mail->setText($mail_data);
@@ -628,7 +629,7 @@ for ($i = 0; $i <= 100; $i+= 10) {
 	$percs[] = $i;
 }
 //Use 12- or 24-hour clock for $publishDate time selector based on admin and user preferences
-$userprefslib = TikiLib::lib('userprefs');
+include_once ('lib/userprefs/userprefslib.php');
 $smarty->assign('use_24hr_clock', $userprefslib->get_user_clock_pref($user));
 
 $smarty->assign_by_ref('percs', $percs);

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,46 +11,36 @@ function wikiplugin_cookieconsent_info()
 	return array(
 		'name' => tra('Cookie Consent'),
 		'documentation' => 'PluginCookieConsent',
-		'description' => tra('Display content based on whether cookie consent has been granted by the user'),
+		'description' => tra('Only displays the body markup if cookie consent has been granted by the user.'),
 		'prefs' => array('wikiplugin_cookieconsent', 'cookie_consent_feature'),
 		'body' => tra('Wiki syntax containing the content that can be hidden or shown.'),
 		'filter' => 'wikicontent',
-		'introduced' => 10,
-		'iconname' => 'information',
+		'icon' => 'img/icons/question.gif',
 		'params' => array(
 			'no_consent_message' => array(
 				'required' => false,
 				'name' => tra('No Cookie Message'),
 				'description' => tra('Message displayed if user has not consented to accepting cookies.'),
-				'since' => '10.0',
 				'default' => tra($prefs['cookie_consent_alert']),
-				'filter' => 'text',
 			),
 			'element' => array(
 				'required' => false,
 				'name' => tra('Containing Element'),
-				'description' => tr('DOM element to contain everything (DIV, SPAN etc). Default to %0,
-					set to %1 for no container.', '<code>div</code>', '<code>none</code>'),
-				'since' => '10.0',
+				'description' => tra('DOM element to contain everything (DIV, SPAN etc). Default to "div", set to "none" for no container.'),
 				'default' => 'div',
-				'filter' => 'word',
 			),
 			'element_class' => array(
 				'required' => false,
 				'name' => tra('Element CSS Class'),
 				'description' => tra('CSS class for above.'),
-				'since' => '10.0',
 				'default' => '',
-				'filter' => 'text',
 			),
 			'no_consent_class' => array(
 				'required' => false,
 				'name' => tra('No Consent CSS Class'),
-				'description' => tr('CSS class for no consent message. Default: %0', '<code>wp-cookie-consent-required</code>'),
-				'since' => '11.1',
+				'description' => tra('CSS class for no consent message. Default "wp-cookie-consent-required"'),
 				'default' => 'wp-cookie-consent-required',
-				'filter' => 'text',
-			),
+			),	
 		)
 	);
 }

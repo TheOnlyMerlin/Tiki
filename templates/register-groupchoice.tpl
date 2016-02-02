@@ -23,13 +23,13 @@
 		<input type="hidden" name="chosenGroup" value="{$theChoiceGroup|escape}">
 		{jq}
 $.getJSON('group_tracker_ajax.php', {chosenGroup:'{{$theChoiceGroup}}'}, function(data) {
-	$("#registerTracker").html(data['res']).tikiModal();
+	$("#registerTracker").html(data['res']).modal();
 });
 		{/jq}
 		<tr><td colspan="2"><div id="registerTracker"></div></td></tr>
 	{elseif isset($listgroups)}
 		<tr>
-			<td>{tr}Group{/tr}{if $prefs.user_must_choose_group eq 'y'} {if $trackerEditFormId}<strong class='mandatory_star'>*</strong>{/if}{/if}</td>
+			<td>{tr}Group{/tr}{if $prefs.user_must_choose_group eq 'y'}{if $trackerEditFormId}&nbsp;<strong class='mandatory_star'>*</strong>&nbsp;{/if}{/if}</td>
 			<td>
 				{foreach item=gr from=$listgroups}
 					{if $gr.registrationChoice eq 'y'}
@@ -51,13 +51,13 @@ $.getJSON('group_tracker_ajax.php', {chosenGroup:'{{$theChoiceGroup}}'}, functio
 		<tr><td colspan="2"><div id="registerTracker"><em class='mandatory_note'>{if $trackerEditFormId}{tr}Fields marked with an * are mandatory.{/tr}{/if}</em></div></td></tr>
 		{jq}
 $("input[name='chosenGroup']").change(function() {
-	$("#registerTracker").tikiModal("{tr}Loading...{/tr}");
+	$("#registerTracker").modal("{tr}Loading...{/tr}");
 	var gr = $("input[name='chosenGroup']:checked").val();
 	$.getJSON('group_tracker_ajax.php',{chosenGroup:gr}, function(data) {
 		if ($("#registerTracker").children().length === 0) {
 			$(".trackerplugindesc").parents("tr").remove();
 		}
-		$("#registerTracker").html(data['res']).tikiModal();
+		$("#registerTracker").html(data['res']).modal();
 		$("input[name^=captcha]").parents("tr").show();
 		$("input[name=register]").prop("disabled", false);
 		if (data['validation']) {

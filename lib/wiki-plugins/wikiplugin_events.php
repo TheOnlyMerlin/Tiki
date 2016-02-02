@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,37 +10,29 @@ function wikiplugin_events_info()
 	return array(
 		'name' => tra('Events'),
 		'documentation' => 'PluginEvents',
-		'description' => tra('Display events from calendars'),
+		'description' => tra('Display upcoming events from calendars'),
 		'prefs' => array( 'feature_calendar', 'wikiplugin_events' ),
-		'iconname' => 'calendar',
+		'icon' => 'img/icons/calendar_view_day.png',
 		'tags' => array( 'basic' ),
-		'introduced' => 2,
 		'params' => array(
 			'calendarid' => array(
 				'required' => true,
 				'name' => tra('Calendar IDs'),
-				'description' => tr('ID numbers for the site calendars whose events are to be displayed, separated by
-					vertical bars (%0)', '<code>|</code>'),
-				'since' => '2.0',
+				'description' => tra('ID numbers for the site calendars whose events are to be displayed, separated by vertical bars (|)'),
 				'default' => '',
-				'filter' => 'text',
 				'profile_reference' => 'calendar',
 			),
 			'maxdays' => array(
 				'required' => false,
 				'name' => tra('Maximum Days'),
-				'description' => tr('Events occurring within this number of days in the future from today will be
-					included in the list (unless limited by other parameter settings). Default is %0.', '<code>365</code>'),
-				'since' => '2.0',
+				'description' => tra('Events occurring within this number of days in the future from today will be included in the list (unless limited by other parameter settings). Default is 365 days.'),
 				'filter' => 'digits',
 				'default' => 365,
 			),
 			'max' => array(
 				'required' => false,
 				'name' => tra('Maximum Events'),
-				'description' => tr('Maximum number of events to display. Default is %0. Set to %1 to display all
-					(unless limited by other parameter settings)', '<code>10</code>', '<code>0</code>'),
-				'since' => '2.0',
+				'description' => tra('Maximum number of events to display. Default is 10. Set to 0 to display all (unless limited by other parameter settings)'),
 				'default' => 10,
 				'filter' => 'digits',
 			),
@@ -48,9 +40,7 @@ function wikiplugin_events_info()
 				'required' => false,
 				'name' => tra('Show Time'),
 				'description' => tra('Show the time along with the date (shown by default)'),
-				'since' => '2.0',
 				'default' => 1,
-				'filter' => 'digits',
 				'options' => array(
 					array('text' => '', 'value' => ''),
 					array('text' => tra('Yes'), 'value' => 1),
@@ -61,9 +51,7 @@ function wikiplugin_events_info()
 				'required' => false,
 				'name' => tra('Show Description'),
 				'description' => tra('Show the description of the event (shown by default)'),
-				'since' => '2.0',
 				'default' => 1,
-				'filter' => 'digits',
 				'options' => array(
 					array('text' => '', 'value' => ''),
 					array('text' => tra('Yes'), 'value' => 1),
@@ -73,23 +61,13 @@ function wikiplugin_events_info()
 			// Pagination
 			'timespan' => array(
 				'required' => false,
-				'name' => tra('Time Span'),
-				'description' => tra('Specify the time span.'),
-				'since' => '10.0',
-				'default' => 'future',
-				'filter' => 'word',
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('All'), 'value' => 'all'),
-					array('text' => tra('Past'), 'value' => 'past'),
-					array('text' => tra('Future'), 'value' => 'future')
-				),
+				'name' => tra('Timespan'),
+				'description' => tra('all, past, future (default)'),
 			),
 			'usePagination' => array(
 				'required' => false,
 				'name' => tra('Use Pagination'),
-				'description' => tr('Activate pagination when Events listing are long. Default is %0.', '<code>n</code>'),
-				'since' => '10.0',
+				'description' => tra('Activate pagination when Events listing are long. Default is n'),
 				'filter' => 'alpha',
 				'default' => 'n',
 				'options' => array(
@@ -104,11 +82,11 @@ function wikiplugin_events_info()
 
 function wikiplugin_events($data,$params)
 {
-	global $tiki_p_admin, $tiki_p_view_calendar, $user;
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
-	$calendarlib = TikiLib::lib('calendar');
+	global $calendarlib, $userlib, $tikilib, $tiki_p_admin, $tiki_p_view_calendar, $smarty, $user;
+
+	if (!isset($calendarlib)) {
+		include_once ('lib/calendar/calendarlib.php');
+	}
 
 	extract($params, EXTR_SKIP);
 
@@ -239,7 +217,7 @@ function wikiplugin_events($data,$params)
 	$repl="";
 	if (count($events)<$max) $max = count($events);
 
-	$repl .= '<table class="table-bordered">';
+	$repl .= '<table class="normal">';
 	$repl .= '<tr class="heading"><td colspan="2">'.tra("Upcoming Events").'</td></tr>';
 	for ($j = 0; $j < $max; $j++) {
 		if ($datetime!=1) {

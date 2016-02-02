@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -40,20 +40,8 @@ class Search_ContentSource_ForumPostSource implements Search_ContentSource_Inter
 		$commentslib->extras_enabled(false);
 		$comment = $commentslib->get_comment($objectId);
 
-		$root_thread_id = $commentslib->find_root($comment['parentId']);
-		if ($comment['parentId']) {
-			$root = $commentslib->get_comment($root_thread_id);
-			if (!$comment['title']) {
-				$comment['title'] = $root['title'];
-			}
-			$root_author = array($root['userName']);
-		} else {
-			$root_author = array();
-		}
-
 		$lastModification = $comment['commentDate'];
 		$content = $comment['data'];
-		$snippet = TikiLib::lib('tiki')->get_snippet($content);
 		$author = array($comment['userName']);
 
 		$thread = $commentslib->get_comments($comment['objectType'] . ':' . $comment['object'], $objectId, 0, 0);
@@ -77,57 +65,12 @@ class Search_ContentSource_ForumPostSource implements Search_ContentSource_Inter
 			'contributors' => $typeFactory->multivalue(array_unique($author)),
 
 			'forum_id' => $typeFactory->identifier($comment['object']),
-			'forum_section' => $typeFactory->identifier($forum_info['section']),
-
 			'post_content' => $typeFactory->wikitext($content),
-			'post_snippet' => $typeFactory->plaintext($snippet),
 			'parent_thread_id' => $typeFactory->identifier($comment['parentId']),
 
 			'parent_object_type' => $typeFactory->identifier($comment['objectType']),
 			'parent_object_id' => $typeFactory->identifier($comment['object']),
 			'parent_view_permission' => $typeFactory->identifier('tiki_p_forum_read'),
-			'parent_contributors' => $typeFactory->multivalue(array_unique($root_author)),
-			'hits' => $typeFactory->numeric($comment['hits']),
-			'root_thread_id' => $typeFactory->identifier($root_thread_id),
-		);
-
-		$forum_lastPost = $this->getForumLastPostData($objectId, $typeFactory);
-
-		$data = array_merge($data, $forum_lastPost);
-
-		return $data;
-	}
-
-	/**
-	 * Return data array of last post for thread
-	 *
-	 * @param $threadId
-	 * @param Search_Type_Factory_Interface $typeFactory
-	 * @return array
-	 * @throws Exception
-	 */
-	function getForumLastPostData($threadId, Search_Type_Factory_Interface $typeFactory)
-	{
-		$commentslib = TikiLib::lib('comments');
-		$commentslib->extras_enabled(false);
-
-		$comment = $commentslib->get_lastPost($threadId);
-
-		$lastModification = isset($comment['commentDate']) ? $comment['commentDate'] : 0;
-		$content = isset($comment['data']) ? $comment['data'] : '';
-		$snippet = TikiLib::lib('tiki')->get_snippet($content);
-		$author = array(isset($comment['userName']) ? $comment['userName'] : '');
-
-		$commentslib->extras_enabled(true);
-
-		$data = array(
-			'lastpost_title' => $typeFactory->sortable(isset($comment['title']) ? $comment['title'] : ''),
-			'lastpost_modification_date' => $typeFactory->timestamp($lastModification),
-			'lastpost_contributors' => $typeFactory->multivalue(array_unique($author)),
-			'lastpost_post_content' => $typeFactory->wikitext($content),
-			'lastpost_post_snippet' => $typeFactory->plaintext($snippet),
-			'lastpost_hits' => $typeFactory->numeric(isset($comment['hits']) ? $comment['hits'] : 0),
-			'lastpost_thread_id' => $typeFactory->identifier(isset($comment['thread_id']) ? $comment['thread_id'] : 0),
 		);
 
 		return $data;
@@ -142,26 +85,12 @@ class Search_ContentSource_ForumPostSource implements Search_ContentSource_Inter
 			'contributors',
 
 			'post_content',
-			'post_snippet',
 			'forum_id',
-			'forum_section',
 			'parent_thread_id',
 
 			'parent_view_permission',
 			'parent_object_id',
 			'parent_object_type',
-
-			'root_thread_id',
-			'parent_contributors',
-			'hits',
-
-			'lastpost_title',
-			'lastpost_modification_date',
-			'lastpost_contributors',
-			'lastpost_post_content',
-			'lastpost_post_snippet',
-			'lastpost_hits',
-			'lastpost_thread_id',
 		);
 	}
 

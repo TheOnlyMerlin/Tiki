@@ -1,49 +1,41 @@
-{extends 'layout_view.tpl'}
+{if $message}
+	{remarksbox type="info" title="{tr}Upload Successful{/tr}"}
+		{$message|escape}
+	{/remarksbox}
+{else}
+	<div id="kcwFlashObject" class="kcwFlashObject kcwUIConf"></div>
 
-{block name="title"}
-	{title}{$title|escape}{/title}
-{/block}
+	<form name="kcw_{$identifier|escape}" id="kcw_{$identifier|escape}" action="{service controller=kaltura action=upload}" method="post" enctype="multipart/form-data" style="margin:0px; padding:0px">
+		<input type="hidden" name="kcw" value="true">
+	</form>
 
-{block name="content"}
-	{if $message}
-		{remarksbox type="info" title="{tr}Upload Successful{/tr}"}
-			{$message|escape}
-		{/remarksbox}
-	{else}
-		<div id="kcwFlashObject" class="kcwFlashObject kcwUIConf"></div>
+	{jq notonready=true}
+function afterAddEntry_{{$identifier|escape}} (entries) {
 
-		<form name="kcw_{$identifier|escape}" id="kcw_{$identifier|escape}" action="{service controller=kaltura action=upload}" method="post" enctype="multipart/form-data" style="margin:0px; padding:0px">
-			<input type="hidden" name="kcw" value="true">
-		</form>
+	var $f = $("#kcw_{{$identifier|escape}}");
+	$.each(entries, function (k, item) {
+		$f.append($('<input type="hidden" name="entryId[]">').val(item.entryId));
+	});
+	if ($("input[name=from]", $f).val() === "picker") {
+		if (entries.length) {
+			$("#" + $("input[name=area]", $f).val()).val(entries[0].entryId).focus();
+		}
+		$f.parents(".ui-dialog").empty().dialog("close").dialog("destroy");	// doesn't seem to want to close ?
+		return true;
+	}
 
-		{jq notonready=true}
-			function afterAddEntry_{{$identifier|escape}} (entries) {
+	$f.submit();
+}
 
-				var $f = $("#kcw_{{$identifier|escape}}");
-				$.each(entries, function (k, item) {
-					$f.append($('<input type="hidden" name="entryId[]">').val(item.entryId));
-				});
-				if ($("input[name=from]", $f).val() === "picker") {
-					if (entries.length) {
-						$("#" + $("input[name=area]", $f).val()).val(entries[0].entryId).focus();
-					}
-					$f.parents(".ui-dialog").empty().dialog("close").dialog("destroy");	// doesn't seem to want to close ?
-					return true;
-				}
+var params = {
+	   allowScriptAccess: "always",
+	   allowNetworking: "all",
+	   wmode: "opaque"
+};
 
-				$f.submit();
-			}
+var flashVars = {{$flashVars}};
+swfobject.embedSWF("{{$prefs.kaltura_kServiceUrl}}kcw/ui_conf_id/{{$prefs.kaltura_kcwUIConf|escape}}", "kcwFlashObject", "680", "360", "9.0.0", "expressInstall.swf", flashVars, params);
 
-			var params = {
-				allowScriptAccess: "always",
-				allowNetworking: "all",
-				wmode: "opaque"
-			};
+	{/jq}
 
-			var flashVars = {{$flashVars}};
-			swfobject.embedSWF("{{$prefs.kaltura_kServiceUrl}}kcw/ui_conf_id/{{$prefs.kaltura_kcwUIConf|escape}}", "kcwFlashObject", "680", "360", "9.0.0", "expressInstall.swf", flashVars, params);
-
-		{/jq}
-
-	{/if}
-{/block}
+{/if}

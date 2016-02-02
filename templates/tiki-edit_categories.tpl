@@ -1,17 +1,17 @@
 {* $Id$ *}
 {title}{tr}Organizer{/tr}{/title}
 
-<div class="form-group">
-	{button href="tiki-browse_categories.php?parentId=$parentId" _class="btn-link" _icon_name="view" _text="{tr}Browse Categories{/tr}" _title="{tr}Browse the category system{/tr}"}
+<div class="categbar">
+	{button href="tiki-browse_categories.php?parentId=$parentId" _text="{tr}Browse Category{/tr}" _title="{tr}Browse the category system{/tr}"}
 	{if $tiki_p_admin_categories eq 'y'}
-		{button href="tiki-admin_categories.php?parentId=$parentId" _class="btn-link" _icon_name="administer" _text="{tr}Admin Categories{/tr}" _title="{tr}Admin the Category System{/tr}"}
+		{button href="tiki-admin_categories.php?parentId=$parentId" _text="{tr}Admin Category{/tr}" _title="{tr}Admin the Category System{/tr}"}
 	{/if}
 </div>
 
 {remarksbox title="{tr}Move objects between categories{/tr}"}
 	<ol>
-		<li>{tr}Click on the category name to display the list of objects in that category.{/tr}</li>
-		<li>{tr}Select the objects to affect. Controls will appear in the category browser.{/tr}</li>
+		<li>{tr}Click on the category name you want to list. The list of objects in that category will become visible.{/tr}</li>
+		<li>{tr}Select the objects you want to affect. Controls will appear in the category browser.{/tr}</li>
 		<li>{tr}Use the plus and minus signs to add or remove the categories on selected objects.{/tr}</li>
 	</ol>
 {/remarksbox}
@@ -31,7 +31,7 @@
 			{/foreach}
 		</ol>
 		{if $result->hasMore()}
-			<p>{tr}More results are available. Please refine the search criteria.{/tr}</p>
+			<p>{tr}More results available. Please refine the search criterias.{/tr}</p>
 		{/if}
 		<p>
 			<a class="select-all" href="#selectall">{tr}Select all{/tr}</a>

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -22,8 +22,9 @@ class Services_ContentTemplate_Controller
 		$access = TikiLib::lib('access');
 		$access->check_permission('tiki_p_use_content_templates');
 		
-		// Load the templates library
-		$templateslib =  TikiLib::lib('template');
+		// Load the templates
+		require_once ('lib/templates/templateslib.php');
+		$templatesLib = new TemplatesLib();
 		
 		$section = 'wiki';
 		$offset = 0;
@@ -31,7 +32,7 @@ class Services_ContentTemplate_Controller
 		$sort_mode = 'name_asc';
 		$find = null;
 		
-		$contentTmpl = $templateslib->list_templates($section, $offset, $maxRecords, $sort_mode, $find);
+		$contentTmpl = $templatesLib->list_templates($section, $offset, $maxRecords, $sort_mode, $find);
 		
 		// Build the result		
 		$result = array();
@@ -40,7 +41,7 @@ class Services_ContentTemplate_Controller
 		foreach ($contentTmpl['data'] as $val) {
 			if (count($contentTmpl) > 0) {
 				$templateId = $val['templateId'];
-				$templateData = $templateslib->get_template($templateId);
+				$templateData = $templatesLib->get_template($templateId);
 			
 				$name = $templateData['name'];
 				if (isset($templateData['content'])) {

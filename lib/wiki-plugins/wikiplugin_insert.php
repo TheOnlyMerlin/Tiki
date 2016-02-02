@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -12,8 +12,6 @@ function wikiplugin_insert_info()
 		'description' => tr('Creates a tracker item when the plugin is inserted in the page. The plugin is removed and replaced by a link to the newly created item.'),
 		'prefs' => array('wikiplugin_insert', 'feature_trackers', 'wikiplugin_objectlink'),
 		'tags' => array('basic'),
-		'iconname' => 'add',
-		'introduced' => 10,
 		'extraparams' => true,
 		'defaultfilter' => 'text',
 	);

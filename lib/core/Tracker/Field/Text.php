@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,7 +11,7 @@
  * Letter key: ~t~
  *
  */
-class Tracker_Field_Text extends Tracker_Field_Abstract implements Tracker_Field_Synchronizable, Tracker_Field_Exportable, Tracker_Field_Filterable
+class Tracker_Field_Text extends Tracker_Field_Abstract implements Tracker_Field_Synchronizable
 {
 	public static function getTypes()
 	{
@@ -38,7 +38,7 @@ class Tracker_Field_Text extends Tracker_Field_Abstract implements Tracker_Field
 					),
 					'size' => array(
 						'name' => tr('Display Size'),
-						'description' => tr('Visible size of the field, in characters.'),
+						'description' => tr('Visible size of the field in characters.'),
 						'filter' => 'int',
 						'legacy_index' => 1,
 					),
@@ -305,8 +305,10 @@ class Tracker_Field_Text extends Tracker_Field_Abstract implements Tracker_Field
 		return 'sortable';
 	}
 
-	function isValid($ins_fields_data)
+	function isValid()
 	{
+		global $prefs;
+
 		$value = $this->getValue();
 
 		$validation = $this->getConfiguration('validation');
@@ -317,197 +319,16 @@ class Tracker_Field_Text extends Tracker_Field_Abstract implements Tracker_Field
 			return true;
 		}
 
+		if ($prefs['feature_jquery_validation'] === 'y' && $validation === 'regex' &&
+				(strpos($param, '\\') !== false || strpos($param, '\"') !== false)) {	// work around for legacy patterns pre r52254
+
+			$param = stripslashes($param);
+		}
+
 		$validators = TikiLib::lib('validators');
 		$validators->setInput($value);
 		$ret = $validators->validateInput($validation, $param);
 		return $ret;
-	}
-
-	function getTabularSchema()
-	{
-		global $prefs;
-		$schema = new Tracker\Tabular\Schema($this->getTrackerDefinition());
-		$permName = $this->getConfiguration('permName');
-		$baseKey = $this->getBaseKey();
-		$name = $this->getConfiguration('name');
-
-		$renderLink = function ($lang) {
-			return function ($value, $extra) use ($lang) {
-				$smarty = TikiLib::lib('smarty');
-				$smarty->loadPlugin('smarty_function_object_link');
-
-				if (isset($extra['text'])) {
-					$value = $extra['text'];
-				} elseif ($lang && isset($value[$lang])) {
-					$value = $lang;
-				}
-
-				if ($value) {
-					return smarty_function_object_link([
-						'type' => 'trackeritem',
-						'id' => $extra['itemId'],
-						'title' => $value,
-					], $smarty);
-				} else {
-					return '';
-				}
-			};
-		};
-
-		if ('y' !== $this->getConfiguration('isMultilingual', 'n')) {
-			$schema->addNew($permName, 'default')
-				->setLabel($name)
-				->setRenderTransform(function ($value) {
-					return $value;
-				})
-				->setParseIntoTransform(function (& $info, $value) use ($permName) {
-					$info['fields'][$permName] = $value;
-				})
-				;
-			$schema->addNew($permName, 'link')
-				->setLabel($name)
-				->setPlainReplacement('default')
-				->addQuerySource('itemId', 'object_id')
-				->addIncompatibility($permName, 'default')
-				->setRenderTransform($renderLink(null))
-				;
-		} else {
-			$lang = $prefs['language'];
-			$schema->addNew($permName, 'current')
-				->setLabel(tr('%0 (%1)', $name, $lang))
-				->setReadOnly(true)
-				->addQuerySource('text', "{$baseKey}_{$lang}")
-				->setRenderTransform(function ($value, $extra) use ($lang) {
-					if (isset($extra['text'])) {
-						return $extra['text'];
-					} elseif ($lang && isset($value[$lang])) {
-						return $value[$lang];
-					}
-				})
-				;
-			$schema->addNew($permName, "link-current")
-				->setLabel($name)
-				->setReadOnly(true)
-				->setPlainReplacement($lang)
-				->addQuerySource('itemId', 'object_id')
-				->addQuerySource('text', "{$baseKey}_{$lang}")
-				->setRenderTransform($renderLink($lang))
-				;
-
-			foreach ($prefs['available_languages'] as $lang) {
-				$schema->addNew($permName, $lang)
-					->setLabel(tr('%0 (%1)', $name, $lang))
-					->addQuerySource('text', "{$baseKey}_{$lang}")
-					->setRenderTransform(function ($value, $extra) use ($lang) {
-						if (isset($extra['text'])) {
-							return $extra['text'];
-						} elseif ($lang && isset($value[$lang])) {
-							return $value[$lang];
-						}
-					})
-					->setParseIntoTransform(function (& $info, $value) use ($permName, $lang) {
-						$info['fields'][$permName][$lang] = $value;
-					})
-					;
-				$schema->addNew($permName, "link-$lang")
-					->setLabel($name)
-					->setPlainReplacement($lang)
-					->addQuerySource('itemId', 'object_id')
-					->addQuerySource('text', "{$baseKey}_{$lang}")
-					->addIncompatibility($permName, 'default')
-					->addIncompatibility($permName, $lang)
-					->setRenderTransform($renderLink($lang))
-					;
-			}
-		}
-
-		return $schema;
-	}
-
-	function getFilterCollection()
-	{
-		global $prefs;
-
-		$filters = new Tracker\Filter\Collection($this->getTrackerDefinition());
-		$permName = $this->getConfiguration('permName');
-		$name = $this->getConfiguration('name');
-		$baseKey = $this->getBaseKey();
-
-		$generateFulltext = function ($field) {
-			return function ($control, Search_Query $query) use ($field) {
-				$value = $control->getValue();
-
-				if ($value) {
-					$query->filterContent($value, $field);
-				}
-			};
-		};
-
-		if ('y' !== $this->getConfiguration('isMultilingual', 'n')) {
-			$filters->addNew($permName, 'fulltext')
-				->setLabel($name)
-				->setHelp(tr('Full-text search of the content of the field.'))
-				->setControl(new Tracker\Filter\Control\TextField("tf_{$permName}_ft"))
-				->setApplyCondition($generateFulltext($baseKey))
-				;
-
-			$filters->addNew($permName, 'initial')
-				->setLabel($name)
-				->setHelp(tr('Search for a value prefix.'))
-				->setControl(new Tracker\Filter\Control\TextField("tf_{$permName}_init"))
-				->setApplyCondition(function ($control, Search_Query $query) use ($baseKey) {
-					$value = $control->getValue();
-
-					if ($value) {
-						$query->filterInitial($value, $baseKey);
-					}
-				})
-				;
-			if ('y' === $this->getOption('exact', 'n')) {
-				$filters->addNew($permName, 'exact')
-					->setLabel($name)
-					->setHelp(tr('Search for a precise value.'))
-					->setControl(new Tracker\Filter\Control\TextField("tf_{$permName}_em"))
-					->setApplyCondition(function ($control, Search_Query $query) use ($baseKey) {
-						$value = $control->getValue();
-
-						if ($value) {
-							$query->filterIdentifier($value, $baseKey . '_exact');
-						}
-					})
-					;
-			}
-		} else {
-			$language = $prefs['language'];
-			$filters->addNew($permName, "fulltext-current")
-				->setLabel($name)
-				->setHelp(tr('Full-text search in the current language.'))
-				->setControl(new Tracker\Filter\Control\TextField("tf_{$permName}_current_ft"))
-				->setApplyCondition($generateFulltext("{$baseKey}_{$language}"))
-				;
-
-			$fields = [];
-			foreach ($prefs['available_languages'] as $lang) {
-				$field = "{$baseKey}_{$lang}";
-				$fields[] = $field;
-
-				$filters->addNew($permName, "fulltext-$lang")
-					->setLabel(tr('%0 (%1)', $name, $lang))
-					->setHelp(tr('Full-text search in a specific language (%0).', $lang))
-					->setControl(new Tracker\Filter\Control\TextField("tf_{$permName}_{$lang}_ft"))
-					->setApplyCondition($generateFulltext($field))
-					;
-			}
-
-			$filters->addNew($permName, "fulltext")
-				->setLabel(tr('%0 (any language)', $name))
-				->setHelp(tr('Full-text search in any language.'))
-				->setControl(new Tracker\Filter\Control\TextField("tf_{$permName}_ft"))
-				->setApplyCondition($generateFulltext(implode(',', $fields)))
-				;
-		}
-
-		return $filters;
 	}
 }
 

@@ -6,7 +6,7 @@
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
-// $Id$
+// $Id: tiki-gdgraph.php 54078 2015-02-24 04:46:03Z nkoth $
 
 require_once('tiki-setup.php'); // this seems to be needed ?
 require_once('lib/graph-engine/gd.php');

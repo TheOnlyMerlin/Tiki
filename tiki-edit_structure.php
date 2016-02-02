@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -12,7 +12,7 @@ $section = 'wiki page';
 $auto_query_args = array('page_ref_id');
 require_once ('tiki-setup.php');
 
-$structlib = TikiLib::lib('struct');
+include_once ('lib/structures/structlib.php');
 $access->check_feature(array('feature_wiki','feature_wiki_structure'));
 if (!isset($_REQUEST["page_ref_id"])) {
 	$smarty->assign('msg', tra("No structure indicated"));
@@ -43,21 +43,10 @@ if ( ! $perms->view ) {
 	die;
 }
 
-if ($perms->edit_structures) {
-	if ($prefs['lock_wiki_structures'] === 'y') {
-		$lockedby = TikiLib::lib('attribute')->get_attribute('wiki structure', $_REQUEST['page_ref_id'], 'tiki.object.lock');
-		if ($lockedby && $lockedby === $user && $perms->lock_structures || ! $lockedby || $perms->admin_structures) {
-			$editable = 'y';
-		} else {
-			$editable = 'n';
-		}
-
-	} else {
-		$editable = 'y';
-	}
-} else {
+if ($perms->edit_structures)
+	$editable = 'y';
+else
 	$editable = 'n';
-}
 $smarty->assign('editable', $editable);
 	
 
@@ -67,7 +56,7 @@ $alert_to_remove_cats = array();
 $alert_to_remove_extra_cats = array();
 
 // start security hardened section
-if ($editable === 'y') {
+if ($perms->edit_structures) {
 	$smarty->assign('remove', 'n');
 	
 	if (isset($_REQUEST["remove"])) {
@@ -141,7 +130,7 @@ if ($editable === 'y') {
 		}
 
 		if ($prefs['feature_wiki_categorize_structure'] == 'y') {
-			$categlib = TikiLib::lib('categ');
+			global $categlib; include_once('lib/categories/categlib.php');
 			$pages_added = array();
 			if (!(empty($_REQUEST['name']))) {
 				$pages_added[] = $_REQUEST['name'];
@@ -217,7 +206,7 @@ foreach ($subtree as $i=>$s) { // dammed recursivite - acn not do a left join
 $smarty->assign('subtree', $subtree);
 
 // Re-categorize
-if ($editable === 'y') {
+if ($perms->edit_structures) {
 	$all_editable = 'y';
 	foreach ($subtree as $k => $st) {
 		if ($st['editable'] != 'y' && $k > 0) {
@@ -311,7 +300,7 @@ if ($prefs['feature_wiki_categorize_structure'] == 'y' && $all_editable == 'y') 
  	$cat_type='wiki page'; 		
 	include_once("categorize_list.php");
 } elseif ($prefs['feature_categories'] == 'y') {
-	$categlib = TikiLib::lib('categ');
+	global $categlib; include_once('lib/categories/categlib.php');
 	$categories = $categlib->getCategories();
 	$smarty->assign_by_ref('categories', $categories);
 }
@@ -323,7 +312,7 @@ include_once ('tiki-section_options.php');
 if ($prefs['feature_jquery_ui'] === 'y') {
 	$headerlib->add_jsfile('lib/structures/tiki-edit_structure.js');
 	$headerlib->add_jsfile('vendor/jquery/plugins/nestedsortable/jquery.ui.nestedSortable.js');
-	$structlib = TikiLib::lib('struct');
+	global $structlib; include_once('lib/structures/structlib.php');
 
 	$structure_id = $structure_info['structure_id'];
 	if (!$structure_id) {

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -28,7 +28,7 @@ function prefs_memcache_list()
 			'description' => tra('Server list which may be accessed. For each server, the address, port and weight must be specified.'),
 			'type' => 'textarea',
 			'filter' => 'striptags',
-			'hint' => tra('One per line, with format of address:port (weight); for example, "localhost:11211 (1)"'),
+			'hint' => tra('One per line. address:port (weight) e.g. "localhost:11211 (1)"'),
 			'serialize' => 'prefs_memcache_serialize_servers',
 			'unserialize' => 'prefs_memcache_unserialize_servers',
 			'size' => 10,
@@ -37,7 +37,7 @@ function prefs_memcache_list()
 		),
 		'memcache_prefix' => array(
 			'name' => tra('Memcache key prefix'),
-			'description' => tra('When the memcache cluster is used by multiple applications, using unique prefixes for each of them helps avoid conflicts.'),
+			'description' => tra('When the memcache cluster is used by multiple applications, using unique prefixes for each of them helps avoiding conflicts.'),
 			'filter' => 'word',
 			'size' => 10,
 			'type' => 'text',

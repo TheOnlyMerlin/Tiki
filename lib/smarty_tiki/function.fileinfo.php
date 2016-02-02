@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -43,7 +43,7 @@ function smarty_function_fileinfo($params, $smarty)
 		$key_type = substr($infos['filetype'], 0, 9);
 		$tmp = '<a href="'.$url_path.'tiki-download_file.php?fileId='.$params['_id'].'&amp;display"';
 		if ( $prefs['feature_shadowbox'] == 'y' ) {
-			$tmp .= ' data-box="shadowbox['.htmlentities($params['_link']).'];type=' . ( in_array($key_type, array('image/png', 'image/jpe', 'image/gif')) ? 'img' : 'iframe' ) . '"';
+			$tmp .= ' rel="shadowbox['.htmlentities($params['_link']).'];type=' . ( in_array($key_type, array('image/png', 'image/jpe', 'image/gif')) ? 'img' : 'iframe' ) . '"';
 		}
 		$return = $tmp.'>'.$return.'</a>';
 		unset($tmp);

@@ -10,14 +10,14 @@
 				{$modTopVisitedBlogs[ix].postTitle|escape}
 			</a>
 			<br>{tr}Posted to:{/tr} {$modTopVisitedBlogs[ix].title|escape}
-			<div class="description help-block">
+			<div class="description">
 				{capture name="parse"}{wiki}{$modTopVisitedBlogs[ix].postData}{/wiki}{/capture}
 				{$smarty.capture.parse|strip_tags|truncate:250:'...'|escape}
 				<a class="linkmodule more" href="{$modTopVisitedBlogs[ix].blogId|sefurl:blog}">
 					{tr}(Read More){/tr}
 				</a>
 			</div>
-		{else}
+		{else}	
 			<a class="linkmodule" href="{$modTopVisitedBlogs[ix].blogId|sefurl:blog}">
 				{$modTopVisitedBlogs[ix].title|escape}
 			</a>

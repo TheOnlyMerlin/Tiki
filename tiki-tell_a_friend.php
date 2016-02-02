@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -58,7 +58,7 @@ if (isset($_REQUEST['send'])) {
 		$emails[] = $email;
 	}
 	foreach ($emails as $email) {
-		$registrationlib = TikiLib::lib('registration');
+		include_once ('lib/registration/registrationlib.php');
 		if (function_exists('validate_email')) {
 			$ok = validate_email($email, $prefs['validateEmail']);
 		} else {
@@ -67,7 +67,7 @@ if (isset($_REQUEST['send'])) {
 		}
 		if (!$ok) {
 			if (isset($_REQUEST['report']) && $_REQUEST['report'] == 'y') $errors[] = tra("The mail can't be sent. Contact the administrator");
-			else $errors[] = tra('One of the email addresses that was input is invalid') . ': ' . $email;
+			else $errors[] = tra('One of the email addresses you typed is invalid') . ': ' . $email;
 		}
 	}
 	if (empty($_REQUEST['email'])) {

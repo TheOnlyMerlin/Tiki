@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -24,13 +24,7 @@ class BackupDBCommand extends Command
 				'path',
 				InputArgument::REQUIRED,	
 				'Path to save backup (relative to console.php, or absolute)' 
-			)
-			->addArgument(
-				'dateFormat',
-				InputArgument::OPTIONAL,
-				'Format to use for the date part of the backup file. Defaults to "Y-m-d_H:i:s" and uses the PHP date function format'
-			)
-		;
+			);
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output)
@@ -51,13 +45,6 @@ class BackupDBCommand extends Command
 			return;
 		}
 
-		$dateFormat = $input->getArgument('dateFormat');
-		if (! $dateFormat) {
-			$dateFormat = 'Y-m-d_H:i:s';
-		}
-
-		$user_tiki = $pass_tiki = $host_tiki = $dbs_tiki = '';
-
 		require $local;
 
 		$args = array();
@@ -73,7 +60,7 @@ class BackupDBCommand extends Command
 		$args[] = $dbs_tiki;
 	
 		$args = implode( ' ', $args );
-		$outputFile = $path . '/' . $dbs_tiki . '_' . date($dateFormat) . '.sql.gz';
+		$outputFile = $path . '/' . $dbs_tiki . '_' . date( 'Y-m-d_H:i:s' ) . '.sql.gz';
 		$command = "mysqldump --quick $args | gzip -5 > " . escapeshellarg( $outputFile );
 		exec( $command );
 		$output->writeln('<comment>Database backup completed: '.$outputFile.'</comment>');

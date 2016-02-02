@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,16 +10,13 @@ function wikiplugin_galleriffic_info()
 	return array(
 		'name' => tra('Galleriffic'),
 		'documentation' => 'PluginGalleriffic',
-		'description' => tra('Display a slideshow of images on a page'),
-		'iconname' => 'image',
+		'description' => tra('Displays images in galleriffic'),
 		'prefs' => array('wikiplugin_galleriffic', 'feature_file_galleries'),
-		'introduced' => 8,
 		'params' => array(
 			'fgalId' => array(
 				'required' => true,
 				'name' => tra('File Gallery ID'),
 				'description' => tra('ID number of the file gallery that contains the images to be displayed'),
-				'since' => '8.0',
 				'filter' => 'digits',
 				'accepted' => 'ID',
 				'default' => '',
@@ -28,53 +25,42 @@ function wikiplugin_galleriffic_info()
 			'sort_mode' => array(
 				'required' => false,
 				'name' => tra('Sort Mode'),
-				'description' => tr('Sort by database table field name, ascending (_asc) or descending (_desc). Examples:
-					%0 or %1.', '<code>fileId_asc</code>', '<code>name_desc</code>'),
-				'since' => '8.0',
+				'description' => tra('Sort by database table field name, ascending or descending. Examples: fileId_asc or name_desc.'),
 				'filter' => 'word',
-				'accepted' => tr('%0 or %1 with actual table field name in place of %2.', 'fieldname_asc',
-					'fieldname_desc', 'fieldname'),
+				'accepted' => 'fieldname_asc or fieldname_desc with actual table field name in place of \'fieldname\'.',
 				'default' => 'created_desc',
 			),
 			'thumbsWidth' => array(
 				'required' => false,
-				'name' => tra('Thumbs Width'),
-				'description' => tr('Width in pixels or percentage. (e.g. %0 or %1)', '<code>200px</code>',
-					'<code>100%</code>'),
-				'since' => '8.0',
-				'filter' => 'text',
-				'accepted' => 'Number of pixels followed by \'px\' or percent followed by \'%\' (e.g. "200px" or "100%").',
+				'name' => tra('Thumbs div width'),
+				'description' => tra('Width in pixels or percentage. (e.g. "200px" or "100%")'),
+				'filter' => 'striptags',
+				'accepted' => 'Number of pixels followed by \'px\' or percent followed by % (e.g. "200px" or "100%").',
 				'default' => '300px',
 			),
 			'imgWidth' => array(
 				'required' => false,
-				'name' => tra('Image Slideshow Width'),
-				'description' => tr('Width in pixels or percentage of the largest image. (e.g. %0 or %1)',
-					'<code>200px</code>', '<code>100%</code>'),
-				'since' => '8.0',
-				'filter' => 'text',
-				'accepted' => 'Number of pixels followed by \'px\' or percent followed by \'%\' (e.g. "200px" or "100%").',
+				'name' => tra('Image slideshow width'),
+				'description' => tra('Width in pixels or percentage of the largest image. (e.g. "200px" or "100%")'),
+				'filter' => 'striptags',
+				'accepted' => 'Number of pixels followed by \'px\' or percent followed by % (e.g. "200px" or "100%").',
 				'default' => '550px',
 			),
 			'imgHeight' => array(
 				'required' => false,
-				'name' => tra('Image Slideshow Height'),
-				'description' => tr('Height in pixels or percentage of the largest images. (e.g. %0 or %1)',
-					'<code>200px</code>', '<code>100%</code>'),
-				'since' => '8.0',
-				'filter' => 'text',
-				'accepted' => 'Number of pixels followed by \'px\' or percent followed by \'%\' (e.g. "200px" or "100%").',
+				'name' => tra('Image slideshow height'),
+				'description' => tra('Height in pixels or percentage of the largest images. (e.g. "200px" or "100%")'),
+				'filter' => 'striptags',
+				'accepted' => 'Number of pixels followed by \'px\' or percent followed by % (e.g. "200px" or "100%").',
 				'default' => '502px',
 			),
 			'autoStart' => array(
 				'required' => false,
 				'name' => tra('Start Slideshow'),
 				'description' => tra('Automatically start the slideshow'),
-				'since' => '9.2',
 				'filter' => 'alpha',
 				'default' => 'n',
 				'options' => array(
-					array('text' => '', 'value' => ''),
 					array('text' => tra('No'), 'value' => 'n'),
 					array('text' => tra('Yes'), 'value' => 'y'),
 				),
@@ -83,40 +69,34 @@ function wikiplugin_galleriffic_info()
 				'required' => false,
 				'name' => tra('Delay'),
 				'description' => tra('Delay in milliseconds between each transition'),
-				'since' => '9.2',
-				'filter' => 'digits',
+				'filter' => 'int',
 				'default' => '2500',
 			),
 			'numThumbs' => array(
 				'required' => false,
 				'name' => tra('Number of Thumbnails'),
 				'description' => tra('The number of thumbnails to show per page'),
-				'since' => '9.2',
-				'filter' => 'digits',
+				'filter' => 'int',
 				'default' => '15',
 			),
 			'topPager' => array(
 				'required' => false,
-				'name' => tra('Show Top Pager'),
+				'name' => tra('Show top pager'),
 				'description' => tra('Display thumbnail pager at top'),
-				'since' => '9.2',
 				'filter' => 'alpha',
 				'default' => 'y',
 				'options' => array(
-					array('text' => '', 'value' => ''),
 					array('text' => tra('Yes'), 'value' => 'y'),
 					array('text' => tra('No'), 'value' => 'n'),
 				),
 			),
 			'bottomPager' => array(
 				'required' => false,
-				'name' => tra('Show Bottom Pager'),
+				'name' => tra('Show bottom pager'),
 				'description' => tra('Display thumbnail pager at bottom'),
-				'since' => '9.2',
 				'filter' => 'alpha',
 				'default' => 'y',
 				'options' => array(
-					array('text' => '', 'value' => ''),
 					array('text' => tra('Yes'), 'value' => 'y'),
 					array('text' => tra('No'), 'value' => 'n'),
 				),
@@ -127,7 +107,7 @@ function wikiplugin_galleriffic_info()
 
 function wikiplugin_galleriffic($data, $params)
 {
-	$smarty = TikiLib::lib('smarty');
+	global $smarty;
 	static $igalleriffic = 0;
 	$smarty->assign('igalleriffic', $igalleriffic++);
 	$plugininfo = wikiplugin_galleriffic_info();
@@ -157,11 +137,10 @@ function wikiplugin_galleriffic($data, $params)
 	$bottomPager = $bottomPager === 'n' ? 'false' : 'true';
 
 $jq = <<<JQ
-if (\$('#thumbs').length) {
 	// We only want these styles applied when javascript is enabled
-	\$('div.navigation').css({'width' : '$thumbsWidth', 'float' : 'left'});
-	\$('div.gcontent').css('display', 'block');
-	\$('.thumbs').show();
+\$('div.navigation').css({'width' : '$thumbsWidth', 'float' : 'left'});
+\$('div.gcontent').css('display', 'block');
+\$('.thumbs').show();
 
 	// Initially set opacity on thumbs and add
 	// additional styling for hover effect on thumbs
@@ -195,14 +174,13 @@ if (\$('#thumbs').length) {
         enableKeyboardNavigation:  false, // Specifies whether keyboard navigation is enabled
         autoStart:                 $autoStart, // Specifies whether the slideshow should be playing or paused when the page first loads
         syncTransitions:           false, // Specifies whether the out and in transitions occur simultaneously or distinctly
-        defaultTransitionDuration: 1000   // If using the default transitions, specifies the duration of the transitions
+        defaultTransitionDuration: 1000, // If using the default transitions, specifies the duration of the transitions
     });
-	\$('div.gcontent').css({'width' : '$imgWidth'});
-	\$('div.loader').css({'width' : '$imgWidth', 'height' : '$imgHeight'});
-	\$('div.slideshow a.advance-link').css({'width' : '$imgWidth', 'height' : '$imgHeight', 'line-height' : '$imgHeight'});
-	\$('div.span.image-caption').css({'width' : '$imgWidth'});
-	\$('div.slideshow-container').css({'height' : '$imgHeight'});
-}
+\$('div.gcontent').css({'width' : '$imgWidth'});
+\$('div.loader').css({'width' : '$imgWidth', 'height' : '$imgHeight'});
+\$('div.slideshow a.advance-link').css({'width' : '$imgWidth', 'height' : '$imgHeight', 'line-height' : '$imgHeight'});
+\$('div.span.image-caption').css({'width' : '$imgWidth'});
+\$('div.slideshow-container').css({'height' : '$imgHeight'});
 JQ;
 
 	$headerlib->add_jq_onready($jq);

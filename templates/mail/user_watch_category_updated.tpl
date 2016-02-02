@@ -13,4 +13,5 @@
 {tr}Path:{/tr} {$categoryPath}
 {tr}Description:{/tr} {$description}
 
-{$mail_machine}/{$categoryId|sefurl:category}
+
+{$mail_machine}/tiki-browse_categories.php?parentId={$categoryId}

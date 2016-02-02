@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -129,7 +129,8 @@ if ($prefs['feature_categories'] == 'y') {
 		$smarty->assign('find_categId', $_REQUEST['categId']);
 	}
 
-	$categlib = TikiLib::lib('categ');
+	global $categlib;
+	include_once ('lib/categories/categlib.php');
 	$categories = $categlib->getCategories();
 	$smarty->assign_by_ref('categories', $categories);
 	$smarty->assign('cat_tree', $categlib->generate_cat_tree($categories, true, $selectedCategories));
@@ -211,8 +212,7 @@ if ($prefs['feature_trackers'] == 'y') {
 }
 if (($where == 'wikis' || $where == 'articles') && $prefs['feature_multilingual'] == 'y') {
 	$languages = array();
-	$langLib = TikiLib::lib('language');
-	$languages = $langLib->list_languages(false, 'y');
+	$languages = $tikilib->list_languages(false, 'y');
 	$smarty->assign_by_ref('languages', $languages);
 }
 

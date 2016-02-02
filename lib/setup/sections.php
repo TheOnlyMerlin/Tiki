@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -142,6 +142,18 @@ $sections = array(
 		'objectType' => 'calendar',
 		'itemObjectType' => 'event',
 	),
+	// tra('Map')
+	'maps' => array(
+		'feature' => 'feature_maps',
+		'key' => 'mapId',
+		'itemkey' => '',
+		'objectType' => 'map',
+	),
+	'gmaps' => array(
+		'feature' => 'feature_gmap',
+		'key' => '',
+		'itemkey' => '',
+	),
 	'categories' => array(
 		'feature' => 'feature_categories',
 		'key' => 'categId',
@@ -201,14 +213,6 @@ function current_object()
 		return array(
 			'type' => 'forum post',
 			'object' => $_REQUEST['comments_parentId'],
-		);
-	}
-
-	// Pretty tracker pages
-	if ($section == 'wiki page' && isset($_REQUEST['itemId'])) {
-		return array(
-			'type' => 'trackeritem',
-			'object' => (int) $_REQUEST['itemId'],
 		);
 	}
 

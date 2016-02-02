@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -194,13 +194,7 @@ class Tiki_Webservice
 
 						$response = new OIntegrate_Response();
 						$soaplib->allowCookies = $this->allowCookies;
-						try {
-							$response->data = $soaplib->performRequest($built, $this->operation, $map, $options, $fullReponse);
-						} catch (Exception $e) {
-							TikiLib::lib('errorreport')->report(
-									tr('Webservice error on %0 request "%1"', $this->wstype, $this->url) . '<br>' . $e->getMessage()
-							);
-						}
+						$response->data = $soaplib->performRequest($built, $this->operation, $map, $options, $fullReponse);
 
 						return $response;
 					}
@@ -223,13 +217,7 @@ class Tiki_Webservice
 						$ointegrate->addSchemaVersion($this->schemaVersion);
 					}
 
-				try {
 					$response = $ointegrate->performRequest($built, $builtBody);
-				} catch (Exception $e) {
-					TikiLib::lib('errorreport')->report(
-							tr('Webservice error on %0 request "%1"', $this->wstype, $this->url) . '<br>' . $e->getMessage()
-					);
-				}
 
 					return $response;
 			}

@@ -6,10 +6,10 @@
 		{else}
 			{include file='tiki-calendar_nav.tpl' ajax='n' module='y'}
 
-			<table class="caltable" style="text-align:center;">
+			<table cellpadding="0" cellspacing="0" border="0" class="caltable" style="text-align:center;">
 				<tr>
 					{section name=dn loop=$daysnames_abr}
-						<th class="days" style="width:14%">{$daysnames_abr[dn]|ucfirst}</th>
+						<th class="days" width="14%">{$daysnames_abr[dn]|ucfirst}</th>
 					{/section}
 				</tr>
 				{cycle values="odd,even" print=false}
@@ -41,11 +41,11 @@
 							{if isset($cell[w][d].focus) and $cell[w][d].focus}
 								{cycle values="odd,even" print=false}
 							{else}
-								{cycle values="text-muted" print=false}
+								{cycle values="notoddoreven" print=false}
 							{/if}
 							<td class="{if isset($cell[w][d].day) and $date eq $today}calhighlight calborder{else}{cycle advance=false}{/if}{if isset($cell[w][d].items[0])
 								and ((isset($cell[w][d].items[0].modifiable) and $cell[w][d].items[0].modifiable eq "y")
-								|| $cell[w][d].items[0].visible eq 'y')} calmodfocus{/if}" style="text-align:center; font-size:0.8em; width=14%">
+								|| $cell[w][d].items[0].visible eq 'y')} calmodfocus{/if}" width="14%" style="text-align:center; font-size:0.8em;">
 								{if isset($cell[w][d].over)}
 									{assign var=over value=$cell[w][d].over}
 								{elseif isset($cell[w][d].items[0])}
@@ -54,7 +54,7 @@
 								{if isset($cell[w][d].items[0]) and ((isset($cell[w][d].items[0].modifiable)
 									and $cell[w][d].items[0].modifiable eq "y") || $cell[w][d].items[0].visible eq 'y')}
 									{if empty($calendar_popup) or $calendar_popup eq "y"}
-										<a href="{$myurl}?todate={$date}&amp;viewmode={$viewmodelink}" title="{tr}View{/tr}" {if (isset($sticky_popup) and $sticky_popup eq 'y')
+										<a href="{$myurl}?todate={$date}&amp;viewmode={$viewmodelink}" {if (isset($sticky_popup) and $sticky_popup eq 'y')
 											or ($prefs.calendar_sticky_popup eq "y" and $cell[w][d].items[0].calitemId)}{popup sticky=true fullhtml="1" text=$over|escape:"javascript"|escape:"html"}{else}{popup fullhtml="1" text=$over|escape:"javascript"|escape:"html"}{/if}>
 											{if isset($day_cursor)}
 												{$day_cursor}
@@ -84,7 +84,7 @@
 		{if $tiki_p_add_events eq 'y' && (empty($module_params.showaction) || $module_params.showaction ne 'n')}
 			<p>
 				<a href="tiki-calendar_edit_item.php">
-					{icon name="add"}
+					<img src="img/icons/add.png" alt="">
 					 {tr}Add event{/tr}
 				</a>
 			</p>

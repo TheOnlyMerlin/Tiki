@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -7,18 +7,7 @@
 
 class Tracker_Item
 {
-	/**
-	 * includes itemId, trackerId and fields using the fieldId as key
-	 * @var array - plain from database. 
-	 */
 	private $info;
-	
-
-	/**
-	 * object with tracker definition. includes itemId, items (nr of items for that tracker).
-	 * other important attributes: trackerInfo array, factory null, fields array,  perms Perms_Accessor
-	 * @var object Tracker_Definition - 
-	 */
 	private $definition;
 
 	private $owner;
@@ -27,11 +16,6 @@ class Tracker_Item
 
 	private $isNew = false;
 
-	/**
-	 * @param $itemId int
-	 * @return Tracker_Item Tracker_Item
-	 * @throws Exception
-	 */
 	public static function fromId($itemId)
 	{
 		$info = TikiLib::lib('trk')->get_tracker_item($itemId);
@@ -134,20 +118,6 @@ class Tracker_Item
 		} else {
 			return $this->perms->remove_tracker_items;
 		}
-	}
-	public function getSpecialPermissionUsers($itemId, $operation)
-	{
-		$users = array();
-
-		if ($this->definition->getConfiguration('writerCan' . $operation, 'n') == 'y') {
-			$users[] = $this->owner;
-		}
-
-		if ($this->definition->getConfiguration('writerGroupCan' . $operation, 'n') == 'y' && $this->ownerGroup && in_array($this->ownerGroup, $this->perms->getGroups())) {
-			$users = array_unique(array_merge($users, TikiLib::lib('user')->get_group_users($this->ownerGroup)));
-		}
-
-		return $users;
 	}
 
 	private function canFromSpecialPermissions($operation)
@@ -342,22 +312,11 @@ class Tracker_Item
 		return count($commonGroups) != 0;
 	}
 
-	
-	/**
-	 * Return raw value of a field. Raw means, value as saved in database. 
-	 * @param integer $fieldId
-	 * @return string - note: all values are saved as a string.
-	 */
 	private function getValue($fieldId)
 	{
 		if (isset($this->info[$fieldId])) {
 			return $this->info[$fieldId];
 		}
-	}
-
-	public function getId()
-	{
-		return $this->info['itemId'];
 	}
 
 	private function isNew()
@@ -455,7 +414,7 @@ class Tracker_Item
 
 	public function getViewPermission()
 	{
-		$status = isset($this->info['status']) ? $this->info['status'] : 'o';
+		$status = $this->info['status'];
 
 		if ($status == 'c') {
 			return 'view_trackers_closed';
@@ -466,15 +425,7 @@ class Tracker_Item
 		}
 	}
 
-	/**
-	 * Gets a tracker item's data
-	 *
-	 * @param JitFilter|null $input		optional input object
-	 * @param bool|false $forExport		gets the field output in list_mode=csv not necessarily the stored value
-	 * @return array					[permName => value]
-	 */
-
-	public function getData($input = null, $forExport = false)
+	public function getData($input = null)
 	{
 		$out = array();
 		if ($input) {
@@ -484,7 +435,7 @@ class Tracker_Item
 				$permName = $field['permName'];
 				$out[$permName] = $field['value'];
 
-				if (isset($input->fields) && isset($input->fields[$permName])) {
+				if (isset($input->fields[$permName])) {
 					$out[$permName] = $input->fields->$permName->none();
 				}
 			}
@@ -504,8 +455,6 @@ class Tracker_Item
 		return array(
 			'itemId' => $this->isNew() ? null : $this->info['itemId'],
 			'status' => $this->isNew() ? 'o' : $this->info['status'],
-			'creation_date' => $this->info['created'],
-			'trackerId' => $this->isNew() ? null : $this->info['trackerId'],
 			'fields' => $out,
 		);
 	}
@@ -520,11 +469,7 @@ class Tracker_Item
 		if ($this->definition->getConfiguration('showStatus', 'n') == 'y'
 			|| ($this->definition->getConfiguration('showStatusAdminOnly', 'n') == 'y' && $this->perms->admin_trackers)) {
 
-			$status = $this->isNew()
-				? $this->definition->getConfiguration('newItemStatus', 'o')
-				: $this->info['status'];
-
-			switch ($status) {
+			switch ($this->info['status']) {
 				case 'o':
 					return 'open';
 				case 'p':

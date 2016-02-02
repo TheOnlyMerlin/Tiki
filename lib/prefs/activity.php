@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -9,8 +9,8 @@ function prefs_activity_list()
 {
 	return array(
 		'activity_basic_events' => array(
-			'name' => tr('Record basic events'),
-			'description' => tr('Enable recording of basic internal Tiki events. This is primarily for entry level options. Using custom events is strongly encouraged.'),
+			'name' => tr('Record Basic Events'),
+			'description' => tr('Enable recording of basic internal Tiki events. This is primarily an entry level options. Using custom events is strongly encouraged.'),
 			'help' => 'Activity+Stream',
 			'type' => 'flag',
 			'default' => 'n',
@@ -56,16 +56,9 @@ function prefs_activity_list()
 			'default' => 'n',
 		),
 		'activity_custom_events' => array(
-			'name' => tr('Custom activities'),
-			'description' => tr('"Allows the defining of custom behaviors in addition to internal events.'),
+			'name' => tr('Custom Activities'),
+			'description' => tr('Allows to define custom behaviors on top of internal events.'),
 			'help' => 'Activity+Stream',
-			'type' => 'flag',
-			'default' => 'n',
-		),
-		'activity_notifications' => array(
-			'name' => tr('Enable notifications through activities'),
-			'description' => tr('Allows to users to develop notifications using activities.'),
-			'help' => 'Activity+Notifications',
 			'type' => 'flag',
 			'default' => 'n',
 		),

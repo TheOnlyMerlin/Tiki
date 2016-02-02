@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -20,19 +20,14 @@ function wikiplugin_pagetabs_info()
 	return array(
 		'name' => tra('Page Tabs'),
 		'documentation' => tra('PluginPageTabs'),
-		'description' => tra('Display content of wiki pages in a set of tabs'),
+		'description' => tra('Display page content in a set of tabs'),
 		'prefs' => array( 'wikiplugin_pagetabs' ),
-		'iconname' => 'copy',
-		'introduced' => 9,
 		'body' => NULL,
 		'params' => array(
 			'pages' => array(
 				'required' => false,
 				'name' => tra('Wiki page names'),
-				'description' => tr('The wiki pages you would like to use in this plugin, optional, separate with
-					pipe %0|%1. Or a table with the class of "pagetabs" on the main page. On child pages use as a way
-					to redirect to the parent.', '<code>', '</code>'),
-				'since' => '9.0',
+				'description' => tra('The wiki pages you would like to use in this plugin, optional, separate with pipe "|".  Or a table with the class of "pagetabs" on the main page. On child pages use as a way to redirect to the parent.'),
 				'default' => '',
 				'separator' => '|',
 				'filter' => 'pagename',
@@ -44,11 +39,7 @@ function wikiplugin_pagetabs_info()
 
 function wikiplugin_pagetabs($data, $params)
 {
-	global $user;
-	$headerlib = TikiLib::lib('header');
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
-
+	global $tikilib, $smarty, $headerlib, $user;
 	static $pagetabsindex = 0;
 	++$pagetabsindex;
 	extract($params, EXTR_SKIP);

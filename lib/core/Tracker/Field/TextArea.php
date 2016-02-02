@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -36,31 +36,31 @@ class Tracker_Field_TextArea extends Tracker_Field_Text
 					),
 					'width' => array(
 						'name' => tr('Width'),
-						'description' => tr('Size of the text area, in characters.'),
+						'description' => tr('Size of the text area in characters.'),
 						'filter' => 'int',
 						'legacy_index' => 1,
 					),
 					'height' => array(
 						'name' => tr('Height'),
-						'description' => tr('Size of the text area, in lines.'),
+						'description' => tr('Size of the text area in lines.'),
 						'filter' => 'int',
 						'legacy_index' => 2,
 					),
 					'max' => array(
 						'name' => tr('Character Limit'),
-						'description' => tr('Maximum number of characters to be stored.'),
+						'description' => tr('Maximum amount of characters to be stored.'),
 						'filter' => 'int',
 						'legacy_index' => 3,
 					),
 					'listmax' => array(
 						'name' => tr('Display Limit (List)'),
-						'description' => tr('Maximum number of characters to be displayed in list mode before the value gets truncated.'),
+						'description' => tr('Maximum amount of characters to be displayed in list mode before the value gets truncated.'),
 						'filter' => 'int',
 						'legacy_index' => 4,
 					),
 					'wordmax' => array(
 						'name' => tr('Word Count'),
-						'description' => tr('Limit the length of the text, in number of words.'),
+						'description' => tr('Limit the length of the text in words.'),
 						'filter' => 'int',
 						'legacy_index' => 5,
 					),
@@ -77,7 +77,7 @@ class Tracker_Field_TextArea extends Tracker_Field_Text
 					),
 					'wysiwyg' => array(
 						'name' => tr('Use WYSIWYG'),
-						'description' => tr('Use a rich text editor instead of inputting plain text.'),
+						'description' => tr('Use a rich text editor instead of a plain text box.'),
 						'default' => 'n',
 						'filter' => 'alpha',
 						'options' => array(
@@ -184,157 +184,6 @@ class Tracker_Field_TextArea extends Tracker_Field_Text
 		}
 	}
 
-	function getDocumentPart(Search_Type_Factory_Interface $typeFactory)
-	{
-		$value = $this->getValue();
-		$fieldType = $this->getIndexableType();
-		$baseKey = $this->getBaseKey();
-
-		if ($this->getConfiguration('isMultilingual') == 'y') {
-			if (!empty($value)) {
-				$decoded = json_decode($value, true);
-				$value = implode("\n", $decoded);
-			} else {
-				$decoded = array();
-			}
-
-			$data = array($baseKey => $typeFactory->$fieldType($value));
-			foreach ($decoded as $lang => $content) {
-				$data["{$baseKey}_{$lang}"] = $typeFactory->$fieldType($content);
-				$data["{$baseKey}_{$lang}_raw"] = $typeFactory->identifier($content);
-			}
-
-			return $data;
-		} else {
-			$data = array(
-				$baseKey => $typeFactory->$fieldType($value),
-				"{$baseKey}_raw" => $typeFactory->identifier($value),
-			);
-
-			return $data;
-		}
-	}
-
-	function getProvidedFields()
-	{
-		global $prefs;
-		$baseKey = $this->getBaseKey();
-
-		$data = array($baseKey, "{$baseKey}_raw");
-
-		if ($this->getConfiguration('isMultilingual') == 'y') {
-			foreach ($prefs['available_languages'] as $lang) {
-				$data[] = "{$baseKey}_{$lang}";
-				$data[] = "{$baseKey}_{$lang}_raw";
-			}
-		}
-
-		return $data;
-	}
-
-	function getGlobalFields()
-	{
-		global $prefs;
-		$baseKey = $this->getBaseKey();
-
-		$data = array($baseKey => true);
-
-		if ($this->getConfiguration('isMultilingual') == 'y') {
-			foreach ($prefs['available_languages'] as $lang) {
-				$data[$baseKey . '_' . $lang] = true;
-			}
-		}
-
-		return $data;
-	}
-
-	function getTabularSchema()
-	{
-		global $prefs;
-		$schema = new Tracker\Tabular\Schema($this->getTrackerDefinition());
-		$permName = $this->getConfiguration('permName');
-		$baseKey = $this->getBaseKey();
-		$name = $this->getConfiguration('name');
-
-		$plain = function ($lang) {
-			return function ($value, $extra) use ($lang) {
-				if (isset($extra['text'])) {
-					$value = $extra['text'];
-				} elseif ($lang && isset($value[$lang])) {
-					$value = $lang;
-				}
-
-				return $value;
-			};
-		};
-
-		$render = function ($lang) use ($plain) {
-			$f = $plain($lang);
-			return function ($value, $extra) use ($f) {
-				$value = $f($value, $extra);
-
-				return $this->attemptParse($value);
-			};
-		};
-
-		if ('y' !== $this->getConfiguration('isMultilingual', 'n')) {
-			$schema->addNew($permName, "default")
-				->setLabel($name)
-				->setReadOnly(true)
-				->setPlainReplacement('default-raw')
-				->addQuerySource('text', "{$baseKey}_raw")
-				->setRenderTransform($render(null))
-				;
-			$schema->addNew($permName, 'default-raw')
-				->setLabel($name)
-				->addQuerySource('text', "{$baseKey}_raw")
-				->setRenderTransform($plain(null))
-				->setParseIntoTransform(function (& $info, $value) use ($permName) {
-					$info['fields'][$permName] = $value;
-				})
-				;
-		} else {
-			$lang = $prefs['language'];
-			$schema->addNew($permName, "current")
-				->setLabel($name)
-				->setReadOnly(true)
-				->setPlainReplacement('current-raw')
-				->addQuerySource('text', "{$baseKey}_{$lang}_raw")
-				->setRenderTransform($render($lang))
-				;
-			$schema->addNew($permName, 'current-raw')
-				->setLabel(tr('%0 (%1)', $name, $lang))
-				->setReadOnly(true)
-				->addIncompatibility($permName, 'current')
-				->addQuerySource('text', "{$baseKey}_{$lang}_raw")
-				->setRenderTransform($plain($lang))
-				;
-
-			foreach ($prefs['available_languages'] as $lang) {
-				$schema->addNew($permName, $lang)
-					->setLabel($name)
-					->setPlainReplacement("$lang-raw")
-					->addQuerySource('text', "{$baseKey}_{$lang}_raw")
-					->addIncompatibility($permName, 'current')
-					->addIncompatibility($permName, 'current-raw')
-					->setRenderTransform($render($lang))
-					;
-				$schema->addNew($permName, "$lang-raw")
-					->setLabel(tr('%0 (%1)', $name, $lang))
-					->addQuerySource('text', "{$baseKey}_{$lang}_raw")
-					->addIncompatibility($permName, 'current')
-					->addIncompatibility($permName, 'current-raw')
-					->addIncompatibility($permName, $lang)
-					->setRenderTransform($plain($lang))
-					->setParseIntoTransform(function (& $info, $value) use ($permName, $lang) {
-						$info['fields'][$permName][$lang] = $value;
-					})
-					;
-			}
-		}
-
-		return $schema;
-	}
 
 	protected function attemptParse($text)
 	{

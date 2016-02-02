@@ -4,7 +4,7 @@
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
-class Captcha_ReCaptcha20 extends Zend\Captcha\ReCaptcha
+class Captcha_ReCaptcha20 extends Zend_Captcha_ReCaptcha
 {
     protected $_RESPONSE  = 'g-recaptcha-response';
 
@@ -19,12 +19,12 @@ class Captcha_ReCaptcha20 extends Zend\Captcha\ReCaptcha
     public function isValid($value, $context = null)
     {
         if (!is_array($value) && !is_array($context)) {
-            $this->error(self::MISSING_VALUE);
+            $this->_error(self::MISSING_VALUE);
             return false;
         }
 
         if (empty($value[$this->_RESPONSE])) {
-            $this->error(self::MISSING_VALUE);
+            $this->_error(self::MISSING_VALUE);
             return false;
         }
 
@@ -54,12 +54,12 @@ class Captcha_ReCaptcha20 extends Zend\Captcha\ReCaptcha
         $result = @json_decode(curl_exec($ch), true);
 
         if (!is_array($result)) {
-            $this->error(self::ERR_CAPTCHA);
+            $this->_error(self::ERR_CAPTCHA);
             return false;
         }
 
         if ($result['success'] == false) {
-            $this->error(self::BAD_CAPTCHA);
+            $this->_error(self::BAD_CAPTCHA);
             return false;
         }
 
@@ -72,9 +72,11 @@ class Captcha_ReCaptcha20 extends Zend\Captcha\ReCaptcha
     /**
      * Render captcha
      *
+     * @param  Zend_View_Interface $view
+     * @param  mixed $element
      * @return string
      */
-    public function render()
+    public function render(Zend_View_Interface $view = null, $element = null)
     {
         return '<div class="g-recaptcha" data-sitekey="' . $this->getPubkey() . '" id="antibotcode"></div>';
     }

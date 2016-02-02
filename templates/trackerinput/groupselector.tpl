@@ -1,5 +1,5 @@
 {if $field.options lt 1 or $tiki_p_admin_trackers eq 'y'}
-	<select name="{$field.ins_id}" class="form-control">
+	<select name="{$field.ins_id}">
 		{if $field.isMandatory ne 'y'}
 			<option value="">{tr}None{/tr}</option>
 		{/if}

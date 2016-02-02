@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -209,7 +209,7 @@ class Services_File_FinderController
 							($info['filetype'] === 'application/pdf' or
 									strpos($info['filetype'], 'application/vnd.oasis.opendocument.') !== false)) {
 
-						$url = \ZendOpenId\OpenId::absoluteUrl($prefs['fgal_viewerjs_uri']) . '#' . $url;
+						$url = Zend_OpenId::absoluteUrl($prefs['fgal_viewerjs_uri']) . '#' . $url;
 					}
 				}
 

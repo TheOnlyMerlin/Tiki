@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,7 +11,7 @@
 $section = 'webmail';
 require_once ('tiki-setup.php');
 include_once ('lib/webmail/webmaillib.php');
-$contactlib = TikiLib::lib('contact');
+include_once ('lib/webmail/contactlib.php');
 
 $access->check_feature('feature_webmail');
 $access->check_permission_either(array('tiki_p_use_webmail', 'tiki_p_use_group_webmail'));
@@ -124,13 +124,13 @@ if ($_REQUEST['locSection'] == 'read') {
 			$webmaillib->remove_webmail_message($current['accountId'], $user, $aux['realmsgid']);
 			unset($_REQUEST['msgid']);
 		} catch (Exception $e) {
-			$smarty->assign('conmsg', tra('There was a problem deleting that email message.').'<br />'.$e->getMessage());
+			$smarty->assign('conmsg', tra('There was a problem deleting that mail.').'<br />'.$e->getMessage());
 		}
 	}
 
 	if (isset($_REQUEST['msgid'])) {
 		$message = $mail->getMessage($_REQUEST['msgid']);
-		$aux = $message->getHeaders()->toArray();
+		$aux = $message->getHeaders();
 		$realmsgid = preg_replace('/[<>]/', '', $aux['message-id']);
 		$smarty->assign('msgid', $_REQUEST['msgid']);
 		$smarty->assign('realmsgid', $realmsgid);
@@ -369,7 +369,7 @@ END;
 				}
 			}
 			if (!empty($err)) {
-				$smarty->assign('conmsg', tra('There was a problem while trying to delete these email messages.').'<br />'.$err);
+				$smarty->assign('conmsg', tra('There was a problem while trying to delete these mails.').'<br />'.$err);
 			}
 		}
 	}
@@ -381,7 +381,7 @@ END;
 		try {
 			$mail->removeMessage($_REQUEST['msgdel']);
 		} catch (Exception $e) {
-			$smarty->assign('conmsg', tra('TThere was a problem while trying to delete this email message.').'<br />'.$e->getMessage());
+			$smarty->assign('conmsg', tra('There was a problem while trying to delete that mail.').'<br />'.$e->getMessage());
 		}
 	}
 
@@ -806,15 +806,7 @@ if ($_REQUEST['locSection'] == 'compose') {
 			$a4 = file_get_contents($prefs['fgal_use_dir'].$filedata['path']);
 			
 			$mail->addAttachment($a4, $filedata['filename'], $filedata['filetype']);
-		}		
-
-		if ($_REQUEST['fattId']) {			
-			$filegallib = TikiLib::lib('filegal');
-			$filedata = $filegallib->get_file_info($_REQUEST['fattId']);
-			$a4 = file_get_contents($prefs['fgal_use_dir'].$filedata['path']);
-			
-			$mail->addAttachment($a4, $filedata['filename'], $filedata['filetype']);
-		}		
+		}
 
 	//	$mail->setSMTPParams($current['smtp'], $current['smtpPort'], '', $current['useAuth'], $current['username'], $current['pass']);   // commented out as a temporary fix - might need to do more later
 

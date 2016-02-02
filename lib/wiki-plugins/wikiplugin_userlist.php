@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -13,14 +13,12 @@ function wikiplugin_userlist_info()
 		'description' => tra('Display a list of registered users'),
 		'prefs' => array( 'wikiplugin_userlist' ),
 		'body' => tra('Login Filter'),
-		'iconname' => 'group',
-		'introduced' => 3,
+		'icon' => 'img/icons/group_go.png',
 		'params' => array(
 			'sep' => array(
 				'required' => false,
 				'name' => tra('Separator'),
 				'description' => tra('Separator to use between users in the list. Default: comma'),
-				'since' => '3.0',
 				'default' => ', ',
 				'advanced' => true,
 			),
@@ -28,16 +26,14 @@ function wikiplugin_userlist_info()
 				'required' => false,
 				'name' => tra('Maximum'),
 				'description' => tra('Result limit'),
-				'since' => '3.0',
 				'default' => '',
 				'filter' => 'digits',
 				'advanced' => true,
 			),
 			'sort' => array(
 				'required' => false,
-				'name' => tra('Sort order'),
-				'description' => tra('Set to sort in ascending or descending order'),
-				'since' => '3.0',
+				'name' => tra('Sort Order'),
+				'description' => 'Set to sort in ascending or descending order',
 				'default' => '',
 				'filter' => 'alpha',
 				'options' => array(
@@ -49,8 +45,7 @@ function wikiplugin_userlist_info()
 			'layout' => array(
 				'required' => false,
 				'name' => tra('Layout'),
-				'description' => tra('Set to table to display results in a table'),
-				'since' => '3.0',
+				'description' => 'Set to table to display results in a table',
 				'default' => '',
 				'filter' => 'alpha',
 				'options' => array(
@@ -62,8 +57,7 @@ function wikiplugin_userlist_info()
 			'link' => array(
 				'required' => false,
 				'name' => tra('Link'),
-				'description' => tra('Make the user names listed links to different types of user information'),
-				'since' => '3.0',
+				'description' => 'Make the user names listed links to different types of user information',
 				'default' => '',
 				'filter' => 'alpha',
 				'options' => array(
@@ -78,7 +72,6 @@ function wikiplugin_userlist_info()
 				'filter' => 'alpha',
 				'name' => tra('Real Name'),
 				'description' => tra('Display the user\'s real name (when available) instead of login name'),
-				'since' => '4.0',
 				'default' => '',
 				'options' => array(
 					array('text' => '', 'value' => ''), 
@@ -90,7 +83,6 @@ function wikiplugin_userlist_info()
 				'required' => false,
 				'name' => tra('Group'),
 				'description' => tra('Filter on a group'),
-				'since' => '5.0',
 				'filter' => 'groupname',
 				'default' => '',
 			),
@@ -100,9 +92,7 @@ function wikiplugin_userlist_info()
 
 function wikiplugin_userlist($data, $params)
 {
-	global $prefs, $tiki_p_admin, $tiki_p_admin_users, $user;
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
+	global $tikilib, $userlib, $prefs, $tiki_p_admin, $tiki_p_admin_users, $user;
 
 	extract($params, EXTR_SKIP);
 
@@ -151,7 +141,7 @@ function wikiplugin_userlist($data, $params)
 		if (isset($link)) {
 			if ($link == 'userpage') {
 				if ($prefs['feature_wiki_userpage'] == 'y') {
-					$wikilib = TikiLib::lib('wiki');
+					global $wikilib; include_once('lib/wiki/wikilib.php');
 					$page = $prefs['feature_wiki_userpage_prefix'].$row['login'];
 					if ($tikilib->page_exists($page)) {
 						$res = '<a href="'.$wikilib->sefurl($page).'" title="'.tra('Page').'">';

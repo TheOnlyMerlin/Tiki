@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -37,7 +37,7 @@ class Tracker_Field_StaticText extends Tracker_Field_Abstract implements Tracker
 					),
 					'max' => array(
 						'name' => tr('Maximum Length (List)'),
-						'description' => tr('Maximum number of characters to be displayed in list mode'),
+						'description' => tr('Maximum amount of characters to be displayed in list mode'),
 						'filter' => 'int',
 						'legacy_index' => 1,
 					),

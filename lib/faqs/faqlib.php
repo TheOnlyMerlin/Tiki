@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -231,7 +231,7 @@ class FaqLib extends TikiLib
 	{
 		global $prefs, $user;
 
-		if (StatsLib::is_stats_hit()) {
+		if ($prefs['count_admin_pvs'] == 'y' || $user != 'admin') {
 			$query = "update `tiki_faqs` set `hits`=`hits`+1 where `faqId`=?";
 
 			$result = $this->query($query, array($faqId));
@@ -372,3 +372,4 @@ class FaqLib extends TikiLib
 		return $res;
 	}
 }
+$faqlib = new FaqLib;

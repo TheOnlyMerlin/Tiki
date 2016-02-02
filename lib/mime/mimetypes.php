@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -321,8 +321,8 @@ $mimetypes = array(
 	"pnm" => "image/x-portable-anymap",
 	"pot" => "text/plain",
 	"ppm" => "image/x-portable-pixmap",
-	"pps" => "application/mspowerpoint",
-	"ppt" => "application/mspowerpoint",
+	"pps" => "application/vnd.ms-powerpoint",
+	"ppt" => "application/vnd.ms-powerpoint",
 	"prf" => "application/pics-rules",
 	"prt" => "chemical/x-ncbi-asn1-ascii",
 	"ps" => "application/postscript",
@@ -466,9 +466,9 @@ $mimetypes = array(
 	"xcf" => "application/x-xcf",
 	"xht" => "application/xhtml+xml",
 	"xhtml" => "application/xhtml+xml",
-	"xlb" => "application/msexcel",
-	"xls" => "application/msexcel",
-	"xlt" => "application/msexcel",
+	"xlb" => "application/vnd.ms-excel",
+	"xls" => "application/vnd.ms-excel",
+	"xlt" => "application/vnd.ms-excel",
 	"xml" => "application/xml",
 	"xpi" => "application/x-xpinstall",
 	"xpm" => "image/x-xpixmap",

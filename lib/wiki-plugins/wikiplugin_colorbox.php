@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -13,7 +13,7 @@ function wikiplugin_colorbox_info()
 		'description' => tra('Display a gallery of images in a popup slideshow'),
 		'prefs' => array( 'feature_file_galleries', 'feature_shadowbox', 'wikiplugin_colorbox' ),
 		'introduced' => 5,
-		'iconname' => 'image',
+		'icon' => 'img/icons/pictures.png',
 		'tags' => array( 'basic' ),		
 		'params' => array(
 			'fgalId' => array(
@@ -38,7 +38,7 @@ function wikiplugin_colorbox_info()
 			'fileId' => array(
 				'required' => false,
 				'name' => tra('File ID Filter'),
-				'description' => tra('Colon-separated list of fileIds in a file gallery to show.'),
+				'description' => tra('Filter on fileIds in a file gallery to only show those images. Separate each fileId with \':\''),
 				'filter' => 'digits',
 				'separator' => ':',
 				'accepted' => 'ID separated with :',
@@ -48,7 +48,7 @@ function wikiplugin_colorbox_info()
 			'thumb' => array(
 				'required' => false,
 				'name' => tra('Thumb'),
-				'description' => tr('Display as a thumbnail or full size.'),
+				'description' => tra('Display as a thumbnail (y) or full size (n)'),
 				'filter' => 'alpha',
 				'accepted' => 'y or n',
 				'default' => 'y',
@@ -62,11 +62,9 @@ function wikiplugin_colorbox_info()
 			'sort_mode' => array(
 				'required' => false,
 				'name' => tra('Sort Mode'),
-				'description' => tr('Sort by database table field name, ascending or descending. Examples:
-					%0 or %1.', '<code>fileId_asc</code>', '<code>name_desc</code>'),
+				'description' => tra('Sort by database table field name, ascending or descending. Examples: fileId_asc or name_desc.'),
 				'filter' => 'word',
-				'accepted' => tr('%0 or %1 with actual database field name in place of
-					%2.', '<code>fieldname_asc</code>', '<code>fieldname_desc</code>', '<code>fieldname</code>'),
+				'accepted' => 'fieldname_asc or fieldname_desc with actual table field name in place of \'fieldname\'.',
 				'default' => 'created_desc',
 				'since' => '5.0'
 				),
@@ -131,12 +129,10 @@ function wikiplugin_colorbox_info()
 }
 function wikiplugin_colorbox($data, $params)
 {
-	global $user, $prefs;
+	global $tikilib, $smarty, $user, $prefs;
 	static $iColorbox = 0;
 	$default = array('showfilename' => 'n', 'showtitle'=>'n', 'thumb'=>'y', 'showallthumbs'=>'n', 'parsedescriptions'=>'n');
 	$params = array_merge($default, $params);
-	$smarty = TikiLib::lib('smarty');
-	$tikilib = TikiLib::lib('tiki');
 
 	if (!empty($params['fgalId'])) {
 		if ($prefs['feature_file_galleries'] != 'y') {
@@ -170,7 +166,7 @@ function wikiplugin_colorbox($data, $params)
 		if (!$tikilib->user_has_perm_on_object($user, $params['galId'], 'gallery', 'tiki_p_view_image_gallery')) {
 			return tra('Permission denied');
 		}
-		$imagegallib = TikiLib::lib('imagegal');
+		global $imagegallib; include_once ('lib/imagegals/imagegallib.php');
 		if (empty($params['sort_mode'])) $params['sort_mode'] = 'created_desc';
 		$files = $imagegallib->get_images(0, -1, $params['sort_mode'], '', $params['galId']);
 		$smarty->assign('colorboxUrl', 'show_image.php?id=');

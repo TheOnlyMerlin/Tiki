@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -716,7 +716,7 @@ class DirLib extends TikiLib
     function dir_add_site_hit($siteId)
 	{
 		global $prefs, $user;
-		if (StatsLib::is_stats_hit()) {
+		if ($prefs['count_admin_pvs'] == 'y' || $user != 'admin') {
 			$query = "update `tiki_directory_sites` set `hits`=`hits`+1 where `siteId`=?";
 			$this->query($query, array((int)$siteId));
 		}
@@ -728,7 +728,7 @@ class DirLib extends TikiLib
     function dir_add_category_hit($categId)
 	{
 		global $prefs, $user;
-		if (StatsLib::is_stats_hit()) {
+		if ($prefs['count_admin_pvs'] == 'y' || $user != 'admin') {
 			$query = "update `tiki_directory_categories` set `hits`=`hits`+1 where `categId`=?";
 			$this->query($query, array((int)$categId));
 		}

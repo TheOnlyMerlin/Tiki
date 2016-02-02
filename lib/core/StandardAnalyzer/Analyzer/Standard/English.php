@@ -24,10 +24,8 @@ class StandardAnalyzer_Analyzer_Standard_English extends StandardAnalyzer_Analyz
 	
     public function __construct()
     {
-		global $prefs;
-
-        $this->addFilter(new ZendSearch\Lucene\Analysis\TokenFilter\LowerCaseUtf8());
-        $this->addFilter(new ZendSearch\Lucene\Analysis\TokenFilter\StopWords($prefs['unified_stopwords']));
+        $this->addFilter(new Zend_Search_Lucene_Analysis_TokenFilter_LowerCaseUtf8());
+        $this->addFilter(new Zend_Search_Lucene_Analysis_TokenFilter_StopWords($this->_stopWords));
         $this->addFilter(new StandardAnalyzer_Analysis_TokenFilter_EnglishStemmer());	
     }
 }

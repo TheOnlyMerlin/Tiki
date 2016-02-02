@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -33,7 +33,7 @@ class Search_QueryTest extends PHPUnit_Framework_TestCase
 
 		$expr = new Search_Expr_And(
 			array(
-				new Search_Expr_ImplicitPhrase(
+				new Search_Expr_Or(
 					array(
 						new Search_Expr_Token('hello', 'plaintext', 'contents'),
 						new Search_Expr_Token('world', 'plaintext', 'contents'),
@@ -262,13 +262,13 @@ class Search_QueryTest extends PHPUnit_Framework_TestCase
 			array(
 				new Search_Expr_Or(
 					array(
-						new Search_Expr_ImplicitPhrase(
+						new Search_Expr_Or(
 							array(
 								new Search_Expr_Token('hello', 'plaintext', 'contents'),
 								new Search_Expr_Token('world', 'plaintext', 'contents'),
 							)
 						),
-						new Search_Expr_ImplicitPhrase(
+						new Search_Expr_Or(
 							array(
 								new Search_Expr_Token('hello', 'plaintext', 'title'),
 								new Search_Expr_Token('world', 'plaintext', 'title'),
@@ -372,16 +372,6 @@ class Search_QueryTest extends PHPUnit_Framework_TestCase
 
 		$this->assertEquals($expr, $index->getLastQuery());
 		$this->assertEquals(array('hello'), $query->getTerms());
-	}
-
-	function testQueryCloning()
-	{
-		$query = new Search_Query('Hello World');
-		$clone = clone $query;
-
-		$query->filterCategory('1 OR 2');
-
-		$this->assertNotEquals($query, $clone);
 	}
 }
 

@@ -1,15 +1,10 @@
 <?php
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\Config\FileLocator;
-use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
-use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
-
 /**
  * Tiki initialization functions and classes
  *
  * @package TikiWiki
  * @subpackage lib\init
- * @copyright (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project. All Rights Reserved. See copyright.txt for details and a complete list of authors.
+ * @copyright (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project. All Rights Reserved. See copyright.txt for details and a complete list of authors.
  * @licence Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
  */
 // $Id$
@@ -23,7 +18,7 @@ if (strpos($_SERVER['SCRIPT_NAME'], basename(__FILE__)) !== false) {
 if (! file_exists(__DIR__ . '/../../vendor/autoload.php')) {
 	echo "Your Tiki is not completely installed because Composer has not been run to fetch package dependencies.\n";
 	echo "You need to run 'sh setup.sh' from the command line.\n";
-	echo "See https://dev.tiki.org/Composer for details.\n";
+	echo "See http://dev.tiki.org/Composer for details.\n";
 	exit;
 }
 
@@ -38,77 +33,8 @@ class TikiInit
 	/**
 	 * dummy constructor
 	 */
-	function __construct()
+	function TikiInit()
 	{
-	}
-
-	static function getContainer()
-	{
-		static $container;
-
-		if ($container) {
-			return $container;
-		}
-
-		$cache = TIKI_PATH . '/temp/cache/container.php';
-		if (is_readable($cache)) {
-			require_once $cache;
-			$container = new TikiCachedContainer;
-
-			/* If the server moved, the container must be recreated */
-			if (TIKI_PATH == $container->getParameter('kernel.root_dir')) {
-				if (TikiDb::get()) {
-					$container->set('tiki.lib.db', TikiDb::get());
-				}
-				return $container;
-			} else {
-				/* This server moved, container must be recreated */
-				unlink($cache);
-			}
-
-		}
-
-		$path = TIKI_PATH . '/db/config';
-		$container = new ContainerBuilder;
-		$container->addCompilerPass(new \Tiki\MailIn\Provider\CompilerPass);
-		$container->addCompilerPass(new \Tiki\Recommendation\Engine\CompilerPass);
-		$container->addCompilerPass(new \Tiki\Wiki\SlugManager\CompilerPass);
-		$container->addCompilerPass(new \Search\Federated\CompilerPass);
-		$container->addCompilerPass(new \Tracker\CompilerPass);
-
-		$container->setParameter('kernel.root_dir', TIKI_PATH);
-		$loader = new XmlFileLoader($container, new FileLocator($path));
-
-		$loader->load('tiki.xml');
-		$loader->load('controllers.xml');
-		$loader->load('mailin.xml');
-
-		try {
-			$loader->load('custom.xml');
-		} catch (InvalidArgumentException $e) {
-			// Do nothing, absence of custom.xml file is expected
-		}
-
-		foreach ( glob( TIKI_PATH . '/addons/*/lib/libs.xml' ) as $file ) {
-			try {
-				$loader->load($file);
-			} catch (InvalidArgumentException $e) {
-				// Do nothing, absence of libs.xml file is expected
-			}
-		}
-
-		if (TikiDb::get()) {
-			$container->set('tiki.lib.db', TikiDb::get());
-		}
-
-		$container->compile();
-
-		$dumper = new PhpDumper($container);
-		file_put_contents($cache, $dumper->dump([
-			'class' => 'TikiCachedContainer',
-		]));
-
-		return $container;
 	}
 
 /** Return 'windows' if windows, otherwise 'unix'
@@ -300,7 +226,7 @@ class TikiInit
 
 	static function getCredentialsFile()
 	{
-		global $default_api_tiki, $api_tiki, $db_tiki, $dbversion_tiki, $host_tiki, $user_tiki, $pass_tiki, $dbs_tiki, $tikidomain, $tikidomainslash, $dbfail_url;
+		global $default_api_tiki, $api_tiki, $db_tiki, $dbversion_tiki, $host_tiki, $user_tiki, $pass_tiki, $dbs_tiki, $tikidomain, $tikidomainslash;
 		// Please use the local.php file instead containing these variables
 		// If you set sessions to store in the database, you will need a local.php file
 		// Otherwise you will be ok.
@@ -314,7 +240,6 @@ class TikiInit
 		$pass_tiki		= '';
 		$dbs_tiki			= 'tiki';
 		$tikidomain		= '';
-		$dbfail_url		= '';
 
 		/*
 		SVN Developers: Do not change any of the above.
@@ -478,7 +403,6 @@ function tiki_error_handling($errno, $errstr, $errfile, $errline)
 			$back.= "</div>";
 			$phpErrors[] = $back;
 		}
-		break;
 	default:
     	break;
 	}

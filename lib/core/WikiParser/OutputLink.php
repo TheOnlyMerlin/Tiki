@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -122,12 +122,12 @@ class WikiParser_OutputLink
 			);
 		} else {
 			$page = $this->getTargetPage($page);
-			return $this->outputLink(
-				$description,
+			return $description . $this->outputLink(
+				'?',
 				array(
 					'href' => $this->getEditLink($page),
 					'title' => tra('Create page:') . ' ' . $page,
-					'class' => 'wiki wikinew text-danger tips',
+					'class' => 'wiki wikinew',
 				)
 			);
 		}
@@ -184,8 +184,6 @@ class WikiParser_OutputLink
 
 	private function renderPageName($info)
 	{
-		global $prefs;
-
 		if (! isset($info['namespace_parts'])) {
 			return $info['pageName'];
 		}
@@ -198,9 +196,6 @@ class WikiParser_OutputLink
 
 		$last = count($info['namespace_parts']) - 1;
 		foreach ($info['namespace_parts'] as $key => $part) {
-			if ($prefs['namespace_force_links'] == 'y') {
-				break;
-			}
 			$class = 'namespace';
 			if ($key === 0) {
 				$class .= ' first';

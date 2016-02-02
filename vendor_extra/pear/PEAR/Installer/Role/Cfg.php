@@ -105,3 +105,4 @@ class PEAR_Installer_Role_Cfg extends PEAR_Installer_Role_Common
         return $test;
     }
 }
+?>

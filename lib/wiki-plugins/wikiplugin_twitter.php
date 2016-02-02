@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,20 +10,15 @@ function wikiplugin_twitter_info()
 	return array(
 		'name' => tra('Twitter'),
 		'documentation' => 'PluginTwitter',
-		'description' => tra('Display the activity for a twitter account'),
+		'description' => tra('Twitter Timeline. Display the activity for a twitter account'),
 		'prefs' => array('wikiplugin_twitter'),
 		'body' => '',
-		'iconname' => 'twitter',
-		'introduced' => 7,
+		'icon' => 'img/icons/twitter.png',
 		'params' => array(
 			'tweet' => array(
 				'required' => true,
 				'name' => tra('Twitter Path'),
-				'description' => tr('Depends on the type of timeline (Users, Collections, Favorites or Lists). For a
-					 User, it is the Account Name (like %0twitterdev%1), for Favorites, something like
-					 %0twitterdev/favorites%1. For lists, something like %0twitterdev/lists/listname%1, etc. ',
-					'<code>', '</code>'),
-				'since' => '7.0',
+				'description' => tra('Depends on the type of timeline (Users, Collections, Favorites or Lists). For an User, it is the Account Name (like twitterdev), for Favorites it is like (twitterdev/favorites), for lists it is like twitterdev/lists/listname, etc. '),
 				'filter' => 'text',
 				'default' => ''
 			),
@@ -31,20 +26,15 @@ function wikiplugin_twitter_info()
 				'required' => true,
 				'name' => tra('Widget Id'),
 				'description' => tra('Numeric identifier of the widget'),
-				'since' => '13.1',
 				'filter' => 'digits',
 				'default' => ''
 			),
 			'theme' => array(
 				'required' => false,
 				'name' => tra('Theme'),
-				'description' => tr('Embedded timelines are available in light and dark themes for customization.
-					The light theme is for pages that use a light colored background, while the dark theme is for pages
-					that use a dark colored background. Default is %0light%1.', '<code>', '</code>'),
-				'since' => '13.1',
+				'description' => tra('Embedded timelines are available in light and dark themes for customization. The light theme is for pages that use a light colored background, while the dark theme is for pages that use a dark colored background. Default is light'),
 				'filter' => 'alpha',
 				'options' => array(
-					array('text' => '', 'value' => ''),
 					array('text' => tra('light'), 'value' => 'light'),
 					array('text' => tra('dark'), 'value' => 'dark'),
 				),
@@ -52,44 +42,38 @@ function wikiplugin_twitter_info()
 			),
 			'tweetcolor' => array(
 				'required' => false,
-				'name' => tra('Link Color'),
+				'name' => tra('Link color'),
 				'description' => tra('Text color for individual tweets. Default is theme default.'),
-				'since' => '7.0',
 				'accepted' => tra('Valid HTML color codes (with beginning #) or names.'),
 				'filter' => 'text'
 			),
 			'tweetbg' => array(
 				'required' => false,
-				'name' => tra('Border Color'),
+				'name' => tra('Border color'),
 				'description' => tra('Change the border color used by the widget. Default is theme default.'),
-				'since' => '7.0',
 				'accepted' => tra('Valid HTML color codes (with beginning #) or names.'),
 				'filter' => 'text'
 			),
 			'height' => array(
 				'required' => false,
 				'name' => tra('Height'),
-				'description' => tr('Height of widget in pixels. Default is %0.', '<code>300</code>'),
-				'since' => '7.0',
+				'description' => tra('Height of widget in pixels. Default is 300.'),
 				'filter' => 'digits',
 				'default' => 300
 			),
 			'width' => array(
 				'required' => false,
 				'name' => tra('Width'),
-				'description' => tr('Width of widget in pixels or \'auto\' to fit to width of page. Default is %0.',
-					'<code>auto</code>'),
+				'description' => tra('Width of widget in pixels or \'auto\' to fit to width of page. Default is auto.'),
 				'accepted' => tra('Number of pixels or the word \'auto\'.'),
-				'since' => '7.0',
 				'filter' => 'text',
 				'default' => 'auto'
 			),
 			'noheader' => array(
 				'required' => false,
 				'advanced' => true,
-				'name' => tra('No Header'),
+				'name' => tra('Layout Option: No Header'),
 				'description' => tra('Default is with Header'),
-				'since' => '13.1',
 				'filter' => 'text',
 				'options' => array(
 					array('text' => tra('Header'), 'value' => ''),
@@ -99,9 +83,8 @@ function wikiplugin_twitter_info()
 			'nofooter' => array(
 				'required' => false,
 				'advanced' => true,
-				'name' => tra('No Footer'),
+				'name' => tra('Layout Option: No Footer'),
 				'description' => tra('Default is with Footer'),
-				'since' => '13.1',
 				'filter' => 'text',
 				'options' => array(
 					array('text' => tra('Footer'), 'value' => ''),
@@ -113,7 +96,6 @@ function wikiplugin_twitter_info()
 				'advanced' => true,
 				'name' => tra('Layout Option: No Borders'),
 				'description' => tra('Default is with Borders'),
-				'since' => '13.1',
 				'filter' => 'text',
 				'options' => array(
 					array('text' => tra('Borders'), 'value' => ''),
@@ -123,9 +105,8 @@ function wikiplugin_twitter_info()
 			'noscrollbar' => array(
 				'required' => false,
 				'advanced' => true,
-				'name' => tra('No Scrollbar'),
+				'name' => tra('Layout Option: No Scrollbar'),
 				'description' => tra('Default is with Scrollbar'),
-				'since' => '13.1',
 				'filter' => 'text',
 				'options' => array(
 					array('text' => tra('Scrollbar'), 'value' => ''),
@@ -135,9 +116,8 @@ function wikiplugin_twitter_info()
 			'shellbg' => array(
 				'required' => false,
 				'advanced' => true,
-				'name' => tra('Transparent Background'),
+				'name' => tra('Layout Option: Transparent Background'),
 				'description' => tra('Transparent Shell Background. Default is theme default'),
-				'since' => '7.0',
 				'filter' => 'text',
 				'options' => array(
 					array('text' => tra('Theme default'), 'value' => ''),

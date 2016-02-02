@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -75,7 +75,7 @@ class JitFilter_AccessTest extends TikiTestCase
 	function testAsArraySplit()
 	{
 		$test = new JitFilter(array('foo' => '1|2a|3'));
-		$test->setDefaultFilter(new Zend\Filter\Digits);
+		$test->setDefaultFilter(new Zend_Filter_Digits);
 
 		$this->assertEquals(array('1', '2', '3'), $test->asArray('foo', '|'));
 	}
@@ -107,7 +107,7 @@ class JitFilter_AccessTest extends TikiTestCase
 
 	function testGetSingleWithoutPresetGeneric()
 	{
-		$this->assertEquals($this->array->foo->filter(new Zend\Filter\StringToUpper), 'BAR');
+		$this->assertEquals($this->array->foo->filter(new Zend_Filter_StringToUpper), 'BAR');
 	}
 
 	function testGetSinfleWithoutPresetNamed()
@@ -117,7 +117,7 @@ class JitFilter_AccessTest extends TikiTestCase
 
 	function testGetStructuredWithoutPresetGeneric()
 	{
-		$filtered = $this->array->baz->filter(new Zend\Filter\StringToUpper);
+		$filtered = $this->array->baz->filter(new Zend_Filter_StringToUpper);
 		$this->assertEquals($filtered, array('HELLO', 'WORLD'));
 	}
 

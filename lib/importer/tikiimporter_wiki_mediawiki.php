@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -87,15 +87,10 @@ class TikiImporter_Wiki_Mediawiki extends TikiImporter_Wiki
 	 * @return void
 	 * @throws UnexpectedValueException if invalid file mime type
 	 */
-	function import($filePath = null)
+	function import($filePath)
 	{
-        if ($filePath == null)
-        {
-            die("This particular implementation of the method requires an explicity file path.");
-        }
-
 		if (isset($_FILES['importFile']) && !in_array($_FILES['importFile']['type'], $this->validTypes)) {
-			throw new UnexpectedValueException(tra('Invalid file MIME type'));
+			throw new UnexpectedValueException(tra('Invalid file mime type'));
 		}
 
 		if (!empty($_POST['importAttachments']) && $_POST['importAttachments'] == 'on') {
@@ -168,7 +163,7 @@ class TikiImporter_Wiki_Mediawiki extends TikiImporter_Wiki
 					$xmlDtdFile = dirname(__FILE__) . "/mediawiki_dump_v$xmlVersion.xsd";
 					break;
 				default:
-					throw new DOMException(tr("MediaWiki XML file version %0 is not supported.", $xmlVersion));
+					throw new DOMException(tr("Mediawiki XML file version %0 is not supported.", $xmlVersion));
 					break;
 			}
 
@@ -177,7 +172,7 @@ class TikiImporter_Wiki_Mediawiki extends TikiImporter_Wiki
 			}
 		}
 
-		throw new DOMException(tra('The XML file does not validate against the MediaWiki XML schema'));
+		throw new DOMException(tra('XML file does not validate against the Mediawiki XML schema'));
 	}
 
 	/**
@@ -198,7 +193,7 @@ class TikiImporter_Wiki_Mediawiki extends TikiImporter_Wiki
 		if (ini_get('allow_url_fopen') === false) {
 			$this->saveAndDisplayLog(
 				tra(
-					"Aborting: you need to enable the PHP setting 'allow_url_fopen' to be able to import attachments. Fix the problem or try to import without the attachments."
+					"ABORTING: you need to enable the PHP setting 'allow_url_fopen' to be able to import attachments. Fix the problem or try to import without the attachments."
 				) . '\n'
 			);
 			die;
@@ -207,7 +202,7 @@ class TikiImporter_Wiki_Mediawiki extends TikiImporter_Wiki
 		if (!file_exists($this->attachmentsDestDir)) {
 			$this->saveAndDisplayLog(
 				tr(
-					'Aborting: the destination directory for attachments (%0) does not exist. Correct this problem or try to import without the attachments.',
+					'ABORTING: destination directory for attachments (%0) does no exist. Fix the problem or try to import without the attachments.',
 					$this->attachmentsDestDir
 				) . '\n'
 			);
@@ -215,7 +210,7 @@ class TikiImporter_Wiki_Mediawiki extends TikiImporter_Wiki
 		} elseif (!is_writable($this->attachmentsDestDir)) {
 			$this->saveAndDisplayLog(
 				tr(
-					'Aborting: the destination directory for attachments (%0) is not writable. Correct this problem or try to import without attachments.', $this->attachmentsDestDir
+					'ABORTING: destination directory for attachments (%0) is not writable. Fix the problem or try to import without attachments.', $this->attachmentsDestDir
 				) . "\n"
 			);
 			die;
@@ -273,7 +268,7 @@ class TikiImporter_Wiki_Mediawiki extends TikiImporter_Wiki
 		if ($this->dom->getElementsByTagName('upload')->length == 0) {
 			$this->saveAndDisplayLog(
 				"\n\n".
-				tra("No attachments were found to import. Be sure to create the XML file with the dumpDump.php script and with the option --uploads. This is the only way to import attachments.") .
+				tra("No attachments found to import! Make sure you have created your XML file with the dumpDump.php script and with the option --uploads. This is the only way to import attachment.") .
 				"\n",
 				true
 			);
@@ -295,7 +290,7 @@ class TikiImporter_Wiki_Mediawiki extends TikiImporter_Wiki
 				if (file_exists($this->attachmentsDestDir . $fileName)) {
 					$this->saveAndDisplayLog(
 						tr(
-							'File %0 is not being imported because there is already a file with the same name in the destination directory (%1)',
+							'NOT importing file %0 as there is already a file with the same name in the destination directory (%1)',
 							$fileName,
 							$this->attachmentsDestDir
 						) . "\n",
@@ -360,7 +355,7 @@ class TikiImporter_Wiki_Mediawiki extends TikiImporter_Wiki
 							} catch (ImporterParserException $e) {
 								$this->saveAndDisplayLog(
 									tr(
-										'Error while parsing revision %0 of the page "%1". There could be a problem in the page syntax or in the Text_Wiki parser used by the importer.',
+										'Error while parsing revision %0 of the page "%1". Or there is a problem on the page syntax or on the Text_Wiki parser (the parser used by the importer).',
 										$i,
 										$data['name']
 									) . "\n",

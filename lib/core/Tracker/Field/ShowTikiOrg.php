@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -13,7 +13,7 @@ class Tracker_Field_ShowTikiOrg extends Tracker_Field_Abstract
 
 		return array(
 			'STO' => array(
-				'name' => tr('show.tiki.org'),
+				'name' => tr('Show.tiki.org'),
 				'description' => tr('Create, display or manage show.tiki.org instances.'),
 				'prefs' => array('trackerfield_showtikiorg'),
 				'tags' => array('experimental'),
@@ -27,8 +27,8 @@ class Tracker_Field_ShowTikiOrg extends Tracker_Field_Abstract
 						'legacy_index' => 0,
 					),
 					'remoteShellUser' => array(
-						'name' => tr('Shell username on remote server'),
-						'description' => tr('The shell username on the show server'),
+						'name' => tr('Shell user name on remote server'),
+						'description' => tr('The shell user name on the show server'),
 						'filter' => 'text',
 						'legacy_index' => 1,
 					),
@@ -55,8 +55,8 @@ class Tracker_Field_ShowTikiOrg extends Tracker_Field_Abstract
 						'legacy_index' => 4,
 					),
 					'fixedUserId' => array(
-						'name' => tr('Fixed user ID'),
-						'description' => tr('Set fixed user ID instead of using the user ID of the creator of the tracker item'),
+						'name' => tr('Fixed user id'),
+						'description' => tr('Set fixed user id instead of using user id of creator of tracker item'),
 						'filter' => 'int',
 						'legacy_index' => 5,
 					),

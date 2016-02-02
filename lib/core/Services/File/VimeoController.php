@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -54,7 +54,7 @@ class Services_File_VimeoController
 		$availableHD = 0;
 
 		if ($ticket['stat'] !== 'ok') {
-			$errMsg = tra($ticket['err']['msg']);				// get_strings tra('The upload limit was exceeded')
+			$errMsg = tra($ticket['err']['msg']);				// get_strings tra('Uploads exceeded')
 			if ($tiki_p_admin === 'y') {
 				$errMsg .= '<br>' . tra($ticket['err']['expl']); // get_strings tra('The user has exceeded the daily number of uploads allowed.')
 			}
@@ -62,7 +62,7 @@ class Services_File_VimeoController
 			$errMsg = tra($quota['err']['msg']);				// get_strings tra('Permission Denied') tra('Invalid signature')
 																// get_strings tra('Invalid consumer key')
 			if ($tiki_p_admin === 'y') {
-				$errMsg .= '<br>' . tra($quota['err']['expl']);	// get_strings tra('The OAuth token that was passed has either expired or was not valid.')
+				$errMsg .= '<br>' . tra($quota['err']['expl']);	// get_strings tra('The oauth_token passed was either not valid or has expired.')
 																// get_strings tra('The oauth_signature passed was not valid.')
 																// get_strings tra('The consumer key passed was not valid.')
 			}
@@ -135,23 +135,6 @@ class Services_File_VimeoController
 			'url' => $url,
 			'fileId' => $fileId,
 			'err' => $errMsg,
-		);
-	}
-
-	/**
-	 * View controller function. Best-used when called from a bootstrap_modal smarty function.
-	 * @param $input
-	 * @return array
-	 * @throws Exception
-	 */
-	function action_view($input){
-		$fileId = $input->file_id->text();
-
-		$filelib = TikiLib::lib("filegal");
-		$file = $filelib->get_file_info($fileId);
-		return array(
-			"title" => $file["filename"],
-			"file_id" => $fileId,
 		);
 	}
 }

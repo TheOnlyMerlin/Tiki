@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -51,7 +51,7 @@ class RankLib extends TikiLib
 				$disableBestLang = false;
 				if ($res['lang'] > '' && $prefs['feature_best_language'] == 'y') {
 					// find best language equivalent
-					$multilinguallib = TikiLib::lib('multilingual');
+					global $multilinguallib; include_once('lib/multilingual/multilinguallib.php');
 					if ($multilinguallib->useBestLanguage()) {
 						$bestLangPageId = $multilinguallib->selectLangObj('wiki page', $res['page_id'], null, 'tiki_p_view');
 						if ($res['page_id'] != $bestLangPageId) {
@@ -120,7 +120,7 @@ class RankLib extends TikiLib
 		}
 
 		$retval["data"] = $ret;
-		$retval["title"] = tra("Most-relevant pages");
+		$retval["title"] = tra("Most relevant pages");
 		$retval["y"] = tra("Relevance");
 		$retval["type"] = "nb";
 		return $retval;
@@ -292,7 +292,7 @@ $query = "select a.*, tf.*, max(b.`commentDate`) as `lastPost` from
 		}
 
 		$retval["data"] = $ret;
-		$retval["title"] = tra("Forums most-read topics");
+		$retval["title"] = tra("Forums most read topics");
 		$retval["y"] = tra("Reads");
 		$retval["type"] = "nb";
 		return $retval;
@@ -359,7 +359,7 @@ $query = "select a.*, tf.*, max(b.`commentDate`) as `lastPost` from
 		}
 
 		$retval["data"] = $ret;
-		$retval["title"] = tra("Most-visited forums");
+		$retval["title"] = tra("Forums most visited forums");
 		$retval["y"] = tra("Visits");
 		$retval["type"] = "nb";
 		return $retval;
@@ -524,7 +524,7 @@ $query = "select a.*, tf.*, max(b.`commentDate`) as `lastPost` from
 		}
 
 		$retval["data"] = $ret;
-		$retval["title"] = tra("Wiki most-recent images");
+		$retval["title"] = tra("Wiki last images");
 		$retval["y"] = tra("Upload date");
 		$retval["type"] = "date";
 		return $retval;
@@ -552,7 +552,7 @@ $query = "select a.*, tf.*, max(b.`commentDate`) as `lastPost` from
 		}
 
 		$retval["data"] = $ret;
-		$retval["title"] = tra("Wiki most-recent files");
+		$retval["title"] = tra("Wiki last files");
 		$retval["y"] = tra("Upload date");
 		$retval["type"] = "date";
 		return $retval;
@@ -608,7 +608,7 @@ $query = "select a.*, tf.*, max(b.`commentDate`) as `lastPost` from
 		}
 
 		$retval["data"] = $ret;
-		$retval["title"] = tra("Most-visited blogs");
+		$retval["title"] = tra("Most visited blogs");
 		$retval["y"] = tra("Visits");
 		$retval["type"] = "nb";
 		return $retval;
@@ -636,7 +636,7 @@ $query = "select a.*, tf.*, max(b.`commentDate`) as `lastPost` from
 		}
 
 		$retval["data"] = $ret;
-		$retval["title"] = tra("Most-active blogs");
+		$retval["title"] = tra("Most-active Blogs");
 		$retval["y"] = tra("Activity");
 		$retval["type"] = "nb";
 		return $retval;

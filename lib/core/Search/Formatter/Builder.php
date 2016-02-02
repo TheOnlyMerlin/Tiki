@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -13,9 +13,6 @@ class Search_Formatter_Builder
 	private $formatterPlugin;
 	private $subFormatters = array();
 	private $alternateOutput;
-	private $id;
-	private $count;
-	private $tsOn;
 
 	function __construct()
 	{
@@ -52,11 +49,6 @@ class Search_Formatter_Builder
 			if ($name == 'alternate') {
 				$this->handleAlternate($match);
 			}
-
-			if ($name == 'tablesorter') {
-				$this->handleTablesorter($match);
-			}
-
 		}
 	}
 
@@ -100,26 +92,15 @@ class Search_Formatter_Builder
 
 	private function handleOutput($output)
 	{
-        $smarty = TikiLib::lib('smarty');
 		$arguments = $this->parser->parse($output->getArguments());
 
 		if (isset($arguments['template'])) {
 			if ($arguments['template'] == 'table') {
-				$arguments['template'] = dirname(__FILE__) . '/../../../../templates/search/list/table.tpl';
+				$arguments['template'] = dirname(__FILE__) . '/../../../../templates/table.tpl';
 				$arguments['pagination'] = true;
-			} elseif ($arguments['template'] == 'medialist') {
-				$arguments['template'] = dirname(__FILE__) . '/../../../../templates/search/list/medialist.tpl';
-			} elseif ($arguments['template'] == 'carousel') {
-				$arguments['template'] = dirname(__FILE__) . '/../../../../templates/search/list/carousel.tpl';
-			} elseif ($arguments['template'] == 'count') {
-				$arguments['template'] = dirname(__FILE__) . '/../../../../templates/search/list/count.tpl';
-			} elseif (!file_exists($arguments['template'])) {
-                $temp = $smarty->get_filename($arguments['template']);
-                if (empty($temp)){ //if get_filename cannot find template, return error
-                    TikiLib::lib('errorreport')->report(tr('Missing template "%0"', $arguments['template']));
-                    return '';
-                }
-                $arguments['template'] = $temp;
+			} else if (!file_exists($arguments['template'])) {
+				TikiLib::lib('errorreport')->report(tr('Missing template "%0"', $arguments['template']));
+				return '';
 			}
 			$abuilder = new Search_Formatter_ArrayBuilder;
 			$outputData = $abuilder->getData($output->getBody());
@@ -131,9 +112,9 @@ class Search_Formatter_Builder
 			$plugin = new Search_Formatter_Plugin_SmartyTemplate($arguments['template']);
 			$plugin->setData($outputData);
 			$plugin->setFields($this->findFields($outputData, $templateData));
-		} elseif (isset($arguments['wiki']) && TikiLib::lib('tiki')->page_exists($arguments['wiki'])) {
+		} elseif (isset($arguments['wiki']) && TikiLib::lib('tiki')->page_exists($arguments['wiki'])) {	
 			$wikitpl = "tplwiki:" . $arguments['wiki'];
-			$wikicontent = $smarty->fetch($wikitpl);
+			$wikicontent = TikiLib::lib('smarty')->fetch($wikitpl);
 			$plugin = new Search_Formatter_Plugin_WikiTemplate($wikicontent);
 		} else {
 			$plugin = new Search_Formatter_Plugin_WikiTemplate($output->getBody());
@@ -145,34 +126,6 @@ class Search_Formatter_Builder
 		}
 
 		$this->formatterPlugin = $plugin;
-	}
-
-	private function handleTablesorter($match)
-	{
-		$args = $this->parser->parse($match->getArguments());
-		if (!$this->tsOn) {
-			return false;
-		}
-		if (!Table_Check::isAjaxCall()) {
-			$ts = new Table_Plugin;
-			$ts->setSettings(
-				$this->id,
-				isset($args['server']) ? $args['server'] : 'n',
-				isset($args['sortable']) ? $args['sortable'] : 'y',
-				isset($args['sortList']) ? $args['sortList'] : null,
-				isset($args['tsortcolumns']) ? $args['tsortcolumns'] : null,
-				isset($args['tsfilters']) ? $args['tsfilters'] : null,
-				isset($args['tsfilteroptions']) ? $args['tsfilteroptions'] : null,
-				isset($args['tspaginate']) ? $args['tspaginate'] : null,
-				isset($args['tscolselect']) ? $args['tscolselect'] : null,
-				$GLOBALS['requestUri'],
-				$this->count
-			);
-			if (is_array($ts->settings)) {
-				$ts->settings['ajax']['offset'] = 'offset';
-				Table_Factory::build('PluginWithAjax', $ts->settings);
-			}
-		}
 	}
 
 	private function findFields($outputData, $templateData)
@@ -190,24 +143,9 @@ class Search_Formatter_Builder
 		preg_match_all('/\$(result|row|res)\.([a-z0-9_]+)[\|\}\w]+/', $templateData, $matches);
 		$fields = array_merge($fields, $matches[2]);	
 
-		$fields = array_fill_keys(array_unique($fields), null);
+		$fields = array_flip(array_unique($fields));
 
 		return $fields;
-	}
-
-	public function setId($id)
-	{
-		$this->id = $id;
-	}
-
-	public function setCount($count)
-	{
-		$this->count = $count;
-	}
-
-	public function setTsOn($tsOn)
-	{
-		$this->tsOn = $tsOn;
 	}
 }
 

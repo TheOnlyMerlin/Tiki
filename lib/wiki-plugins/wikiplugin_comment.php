@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,20 +10,18 @@ function wikiplugin_comment_info()
 	return array(
 		'name' => tra('Comment'),
 		'documentation' => 'PluginComment',
-		'description' => tra('Display a comment area for a specified object'),
+		'description' => tra('Display a comment area for any specified object'),
 		'prefs' => array( 'wikiplugin_comment' ),
 		'format' => 'html',
-		'iconname' => 'comment',
-		'introduced' => 8,
+		'icon' => 'img/icons/comments.png',
 		'params' => array(
 			'objectType' => array(
 				'required' => true,
 				'name' => tra('Object Type'),
-				'description' => tra('Object type the comment is associated with'),
-				'since' => '8.0',
+				'description' => tra('Object Type'),
 				'filter' => 'text',
 				'options' => array(
-					array('text' => tr('Tracker Item'), 'value' => 'trackeritem'),
+					array('text' => tr('Tracker'), 'value' => 'tracker'),
 					array('text' => tr('Image Gallery'), 'value' => 'image gallery'),
 					array('text' => tr('Image'), 'value' => 'image'),
 					array('text' => tr('File Gallery'), 'value' => 'file gallery'),
@@ -45,8 +43,7 @@ function wikiplugin_comment_info()
 				'required' => true,
 				'name' => tra('Object ID'),
 				'description' => tra('Object ID'),
-				'since' => '8.0',
-				'filter' => 'digits',
+				'filter' => 'int',
 				'default' => tr('The current wiki page you have added the plugin to'),
 				'profile_reference' => 'type_in_param',
 			),
@@ -56,8 +53,8 @@ function wikiplugin_comment_info()
 
 function wikiplugin_comment($data, $params)
 {
-	global $page;
-	$smarty = TikiLib::lib('smarty');
+	global $smarty, $page;
+
 	$params = array_merge(
 		array(
 			"objectId"=> $page,

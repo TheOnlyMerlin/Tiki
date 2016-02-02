@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -21,7 +21,7 @@ if ($tiki_p_admin_tikitests != 'y' and $tiki_p_play_tikitests != 'y') {
 }
 
 if (!extension_loaded('http') and !extension_loaded('curl')) {
-	$smarty->assign('msg', tra('The pecl HTTP extension or the Curl extension is needed to replay the TikiTest'));
+	$smarty->assign('msg', tra('You need one of the extension pecl HTTP or Curl to replay the TikiTest'));
 	$smarty->display('error.tpl');
 	die;
 }
@@ -52,10 +52,9 @@ function get_from_dom($element)
  */
 function verif_url($url, $use_tidy = TRUE)
 {
-	global $cookies;
+	global $smarty, $cookies;
 	static $purifier;
 	static $loaded = false;
-	$smarty = TikiLib::lib('smarty');
 
 	$result = array();
 	$get = get_from_dom($url->getElementsByTagName('get')->item(0));
@@ -170,8 +169,8 @@ function verif_url($url, $use_tidy = TRUE)
 			$data = '<html><body>' . $purifier->purify($data) . '</body></html>';
 			$buffer = '<html><body>' . $purifier->purify($buffer) . '</body></html>';
 		}
-		$result['ref_error_msg'] = tra('The Tidy extension is not present');
-		$result['replay_error_msg'] = tra('The Tidy extension is not present');
+		$result['ref_error_msg'] = tra('Tidy Extension not present');
+		$result['replay_error_msg'] = tra('Tidy Extension not present');
 	}
 	// If we have a XPath then we extract the new DOM and print it in HTML
 	if (trim($xpath) != '') {

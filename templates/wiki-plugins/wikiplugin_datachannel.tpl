@@ -12,16 +12,13 @@
 		{elseif $datachannel_inputfields.$name eq "hidden"}
 			<input type="hidden" name="{$name|escape}" value="{$label}">
 		{else}
-			<div class="form-group">
-				<label>{$label|escape}:</label>
-				<div>
-					<input type="text" name="{$name|escape}" class="form-control">
-				</div>
+			<div>
+				{$label|escape}: <input type="text" name="{$name|escape}">
 			</div>
 		{/if}
 	{/foreach}
 	<div class="submit_row">
 		<input type="hidden" name="datachannel_execution" value="{$datachannel_execution|escape}">
-		<input type="submit" class="btn btn-default btn-sm" value="{tr}{$button_label}{/tr}">
+		<input type="submit" class="btn btn-default" value="{tr}{$button_label}{/tr}">
 	</div>
 </form>

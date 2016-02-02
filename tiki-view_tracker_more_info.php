@@ -2,14 +2,14 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 require_once ('tiki-setup.php');
-$trklib = TikiLib::lib('trk');
+include_once ('lib/trackers/trackerlib.php');
 
 $access->check_feature('feature_trackers');
 
@@ -22,7 +22,7 @@ $info = $trklib->get_moreinfo($_REQUEST["attId"]);
 $trackerId = $info['trackerId'];
 unset($info['trackerId']);
 if (!$trackerId) {
-	$smarty->assign('msg', tra('That tracker does not use extras.'));
+	$smarty->assign('msg', tra("That tracker don't use extras."));
 	$smarty->display("error_simple.tpl");
 	die;
 }

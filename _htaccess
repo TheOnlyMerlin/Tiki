@@ -32,7 +32,7 @@
 	deny from all
 </FilesMatch>
 
-<FilesMatch "(changelog.txt|_htaccess)$">
+<FilesMatch "^(changelog.txt|_htaccess)$">
 	order deny,allow
 	deny from all
 </FilesMatch>
@@ -67,18 +67,9 @@
 # but, be aware of the possible disadvantages!
 # http://httpd.apache.org/docs/current/en/mod/core.html#keepalive
 
-<IfModule mod_headers.c>
-    #Header set Connection Keep-Alive
-
-    # When to update client cache
-    # Google suggests to use Expires in favour of Cache-Control
-    #Header unset Expires
-    Header unset Cache-Control
-    
-    # How to figure out if client cache needs an update
-    # Google wants either Last-Modified or ETag
-    #Header unset ETag
-</IfModule>
+# <IfModule mod_headers.c>
+#    Header set Connection Keep-Alive
+# </IfModule>
 
 
 # Using ETags will improve the YSlow scores
@@ -86,11 +77,7 @@ FileETag none
 
 # Expires headers: If the site is in active development, you may want to comment out this section.
 <IfModule mod_expires.c>
-	<FilesMatch "(?i)\.(png|gif|jpg|ico)$">
-		ExpiresActive on
-		ExpiresDefault "access plus 1 month"
-	</FilesMatch>
-	<FilesMatch "(?i)\.(js|css)$">
+	<FilesMatch "\.(js|png|gif|jpg|css|ico)$">
 		ExpiresActive on
 		ExpiresDefault "access plus 1 month"
 	</FilesMatch>
@@ -151,8 +138,6 @@ FileETag none
 
 # Set a timezone (needed for dates and times to work properly in PHP)
 # php_value date.timezone "America/New_York"
-# if the php one doesn't work then this should set the apache environment variable
-# SetEnv TZ America/New_York
 
 # Set a character set
 #php_value default_charset utf-8

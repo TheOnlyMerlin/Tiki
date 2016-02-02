@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -116,10 +116,7 @@ function module_search_info()
 				'name' => tra('Compact mode'),
 				'description' => tra('Makes the three buttons only appear on mouse-over.') . ' ' . tra('Default:') . ' "n"'
 			),
-			'additional_filters' => array(
-				'name' => tr('Additional filters'),
-				'description' => tr('Filters to be applied to the search results, as a URL-encoded string. Ex.: catgories=1+AND+2&prefix~title=Test'),
-			),
+
 		)
 	);
 }
@@ -130,8 +127,7 @@ function module_search_info()
  */
 function module_search($mod_reference, $smod_params) 	// modifies $smod_params so uses & reference
 {
-	$smarty = TikiLib::lib('smarty');
-	global $prefs;
+	global $smarty, $prefs;
 	static $search_mod_usage_counter = 0;
 	$smarty->assign('search_mod_usage_counter', ++$search_mod_usage_counter);
 
@@ -155,13 +151,6 @@ function module_search($mod_reference, $smod_params) 	// modifies $smod_params s
 		unset($smod_params['go_action']);
 	}
 
-	if (isset($smod_params['additional_filters'])) {
-		parse_str($smod_params['additional_filters'], $out);
-		$smod_params['additional_filters'] = $out ?: [];
-	} else {
-		$smod_params['additional_filters'] = [];
-	}
-
 	// set up other param defaults
 	$defaults = array(
 		'legacy_mode' => '',
@@ -182,6 +171,7 @@ function module_search($mod_reference, $smod_params) 	// modifies $smod_params s
 		'go_submit' => tra('Titles'),
 		'edit_action' => 'tiki-editpage.php',
 		'edit_submit' => tra('Edit'),
+		'default_button' => 'search',
 		'search_heading' => '',
 		'templateId' => '',
 		'categId' => '',

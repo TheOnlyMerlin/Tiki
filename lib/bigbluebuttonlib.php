@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -42,7 +42,7 @@ class BigBlueButtonLib
      */
     public function getMeetings()
 	{
-		$cachelib = TikiLib::lib('cache');
+		global $cachelib;
 
 		if ( ! $meetings = $cachelib->getSerialized('bbb_meetinglist') ) {
 			$meetings = array();
@@ -122,9 +122,8 @@ class BigBlueButtonLib
      */
     public function createRoom( $room, array $params = array() )
 	{
-		global $prefs;
-		$cachelib = TikiLib::lib('cache');
-		$tikilib = TikiLib::lib('tiki');
+		global $tikilib, $cachelib, $prefs;
+
 		$params = array_merge(
 			array('logout' => $tikilib->tikiUrl(''),),
 			$params
@@ -199,8 +198,7 @@ class BigBlueButtonLib
 			)
 		);
 
-		$client->getRequest()->setMethod(Zend\Http\Request::METHOD_POST);
-		$response = $client->send();
+		$response = $client->request('POST');
 		$document = $response->getBody();
 
 		$dom = new DOMDocument;
@@ -472,4 +470,7 @@ class BigBlueButtonLib
 		return ($a['startTime'] > $b['startTime']) ? -1 : 1;
 	}
 }
+
+global $bigbluebuttonlib;
+$bigbluebuttonlib = new BigBlueButtonLib;
 

@@ -11,37 +11,26 @@ function wikiplugin_datachannel_info()
 	return array(
 		'name' => tra('Data Channel'),
 		'documentation' => 'PluginDataChannel',
-		'description' => tra('Display a form to access data channels'),
+		'description' => tra('Display a form to access data channels.'),
 		'prefs' => array('wikiplugin_datachannel'),
-		'body' => tr('List of fields to display. One field per line. Comma delimited: %0', '<code>fieldname,label</code>')
-			. '<br /><br />' . tr('To use values from other forms on the same page as parameters for the data-channel
-			use %0 or %1 can be used where a value is simply listed on the same page where each value has the %2
-			as an html id tag.', '<code>fieldname, external=fieldid</code>',
-			'<code>fieldname, external=fieldid,text</code>', '<code>fieldid</code>') . ' ' . tr('Where %0 is
-			the id (important) of the external input to use, and %1 is the name of the parameter in the
-			data-channel', '<code>fieldid</code>', '<code>fieldname</code>') . ' . ' . tr('To use fixed hidden preset
-			values use %0', '<code>fieldname, hidden=value</code>'),
+		'body' => tra('List of fields to display. One field per line. Comma delimited: fieldname,label') . '<br /><br />' .
+					tra('To use values from other forms on the same page as parameters for the data-channel use "fieldname, external=fieldid" or "fieldname, external=fieldid,text" can be used where a value is simply listed on the same page where each value has the fieldid as an html id tag.') . ' ' .
+					tra('Where "fieldid" is the id (important) of the external input to use, and "fieldname" is the name of the parameter in the data-channel') . ' . ' .
+					tra('To use fixed hidden preset values use "fieldname, hidden=value."'),
 		'extraparams' => true,
-		'iconname' => 'move',
-		'introduced' => 4,
+		'icon' => 'img/icons/transmit_blue.png',
 		'params' => array(
 			'channel' => array(
 				'required' => true,
 				'name' => tra('Channel Name'),
 				'description' => tra('Name of the channel as registered by the administrator.'),
-				'since' => '4.0',
-				'filter' => 'text',
 				'default' => '',
 				'profile_reference' => 'datachannel',
 			),
 			'returnURI' => array(
 				'required' => false,
 				'name' => tra('Return URL'),
-				'description' => tr('URL to go to after data channel has run. Defaults to current page. Can contain
-					placeholders %0 or %1, where reference matches a profile object ref,
-					allowing to redirect conditionally to a freshly created object.', '<code>~np~%reference%~/np~</code>',
-					'<code>~np~%reference:urlencode%~/np~</code>'),
-				'since' => '6.0',
+				'description' => tra('URL to go to after data channel has run. Defaults to current page. Can contain placeholders %reference% or %reference:urlencode%, where reference matches a profile object ref, allowing to redirect conditionally to a freshly created object.'),
 				'filter' => 'url',
 				'default' => '',
 			),
@@ -49,53 +38,33 @@ function wikiplugin_datachannel_info()
 				'required' => false,
 				'name' => tra('Return URL on error'),
 				'description' => tra('URL to go to after data channel has run and failed. If not specified, use the success URL.'),
-				'since' => '12.0',
 				'filter' => 'url',
 				'default' => '',
 			),
 			'quietReturn' => array(
 				'required' => false,
 				'name' => tra('Do not use returnURI but instead return true quietly'),
-				'description' => tr('If set to %0, will return quietly after data channel has run which would be needed
-					if plugin is used in non-wiki page context.', '<code>y</code>'),
-				'since' => '6.2',
-				'options' => array(
-					array('text' => '', 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'y'),
-					array('text' => tra('No'), 'value' => 'n')
-				),
-				'filter' => 'alpha',
+				'description' => tra('If set to y, will return quietly after data channel has run which would be needed if plugin is used in non-wiki page context.'),
 				'default' => 'n',
 			),
 			'buttonLabel' => array(
 				'required' => false,
 				'name' => tra('Button Label'),
 				'description' => tra('Label for the submit button. Default: "Go".'),
-				'since' => '6.0',
 				'default' => 'Go',
 			),
 			'class' => array(
 				'required' => false,
 				'name' => tra('Class'),
 				'description' => tra('CSS class for this form'),
-				'since' => '6.0',
 				'default' => '',
-			),
-			'template' => array(
-				'required' => false,
-				'name' => tra('Template'),
-				'description' => tra('Template to be used to render the form, instead of the default template'),
-				'default' => '',
-				'since' => '15.0',
-				'filter' => 'text',
 			),
 			'emptyCache' => array(
 				'required' => false,
 				'name' => tra('Empty Caches'),
 				'description' => tra('Which caches to empty. Default "Clear all Tiki caches"'),
-				'since' => '6.0',
 				'default' => 'all',
-				'filter' => 'text',
+				'filter' => 'word',
 				'options' => array(
 					array('text' => '', 'value' => ''),
 					array('text' => tra('Clear all Tiki caches'), 'value' => 'all'), 
@@ -111,7 +80,6 @@ function wikiplugin_datachannel_info()
 				'required' => false,
 				'name' => tra('Price'),
 				'description' => tr('Price to execute the datachannel (%0).', $prefs['payment_currency']),
-				'since' => '6.0',
 				'prefs' => array('payment_feature'),
 				'default' => '',
 				'filter' => 'text',
@@ -119,7 +87,6 @@ function wikiplugin_datachannel_info()
 			'paymentlabel' => array(
 				'required' => false,
 				'name' => tra('Payment Label'),
-				'since' => '6.0',
 				'prefs' => array('payment_feature'),
 				'default' => '',
 				'filter' => 'text',
@@ -127,11 +94,9 @@ function wikiplugin_datachannel_info()
 			'debug' => array(
 				'required' => false,
 				'name' => tra('Debug'),
-				'description' => tra('Be careful, if debug is on, the page will not be refreshed and previous modules
-					can be obsolete (not on by default)'),
-				'since' => '5.0',
+				'description' => tra('Be careful, if debug is on, the page will not be refreshed and previous modules can be obsolete (not on by default)'),
 				'default' => 'n',
-				'filter' => 'alpha',
+				'filter' => 'word',
 				'advanced' => true,
 				'options' => array(
 					array('text' => '', 'value' => ''), 
@@ -142,9 +107,7 @@ function wikiplugin_datachannel_info()
 			'array_values' => array(
 				'required' => false,
 				'name' => tra('Multiple Values'),
-				'description' => tr('Accept arrays of multiple values in the POST. e.g. %0 etc.
-					(multiple values not accepted by default)', '<code>itemId[]=42&itemId=43</code>'),
-				'since' => '6.0',
+				'description' => tra('Accept arrays of multiple values in the POST. e.g. itemId[]=42&itemId=43 etc. (multiple values not accepted by default)'),
 				'default' => 'n',
 				'filter' => 'alpha',
 				'advanced' => true,
@@ -161,12 +124,8 @@ function wikiplugin_datachannel_info()
 function wikiplugin_datachannel( $data, $params )
 {
 	static $execution = 0;
-	global $prefs;
-	$smarty = TikiLib::lib('smarty');
-	$headerlib = TikiLib::lib('header');
+	global $prefs, $smarty, $headerlib;
 	$executionId = 'datachannel-exec-' . ++$execution;
-
-	$datachannelWithTemplate = empty($params['template']) ? false : true;
 
 	if (isset($params['price']) && $params['price'] == 0) {
 		// Convert things like 0.00 to empty
@@ -185,10 +144,6 @@ function wikiplugin_datachannel( $data, $params )
 	foreach ( $lines as $line ) {
 		$parts = explode(',', $line, 2);
 		$parts = array_map('trim', $parts);
-
-		if ($datachannelWithTemplate && (count($parts) == 1)) { // copy name as lablel, for datachannels with templates
-			$parts[1] = $parts[0];
-		}
 
 		if ( count($parts) == 2 ) {
 			if (strpos($parts[1], 'external') === 0) {	// e.g. "fieldid,external=fieldname"
@@ -239,17 +194,7 @@ function wikiplugin_datachannel( $data, $params )
 			&& $_POST['datachannel_execution'] == $executionId
 			&& $config->canExecuteChannels(array( $params['channel'] ), $groups) ) {
 
-			$input = array_intersect_key($_POST, $inputfields);
-
-			$trimAndMapArraysAsYaml = function($element) {
-				if(!is_array($element)){
-					return trim($element);
-				}
-				$element = array_map(trim, $element);
-				return '[' . implode(', ', $element) . ']';
-			};
-
-			$input = array_map($trimAndMapArraysAsYaml, $input);
+			$input = array_intersect_key(array_map('trim', $_POST), $inputfields);
 			
 			$itemIds = array();					// process possible arrays in post
 			if ($params['array_values'] === 'y') {
@@ -308,7 +253,7 @@ function wikiplugin_datachannel( $data, $params )
 			}
 			
 			if (!empty($params['price'])) {
-				$paymentlib = TikiLib::lib('payment');
+				global $paymentlib; require_once 'lib/payment/paymentlib.php';
 				$desc = empty($params['paymentlabel'])? tr('Datachannel:', $prefs['site_language']) . ' ' . $params['channel'] : $params['paymentlabel'];
 				$posts = array();
 				foreach ($input as $key => $post) {
@@ -343,12 +288,10 @@ function wikiplugin_datachannel( $data, $params )
 				if (!empty($params['debug']) && $params['debug'] === 'y') {
 					$installer->setDebug();
 				}
-
-				$installer->disablePrefixDependencies();
-
 				$params['emptyCache'] = isset($params['emptyCache']) ? $params['emptyCache'] : 'all';
 				$success = $installer->install($profile, $params['emptyCache']) && $success;
-				foreach ($profile->getLoadedObjects() as $object) {
+
+				foreach ($profile->getObjects() as $object) {
 					$arguments["%{$object->getRef()}%"] = $object->getValue();
 					$arguments["%{$object->getRef()}:urlencode%"] = rawurlencode($object->getValue());
 				}
@@ -387,11 +330,7 @@ function wikiplugin_datachannel( $data, $params )
 			$smarty->assign('datachannel_form_onsubmit', '');
 		}
 
-    if (empty($params['template'])){
-      return '~np~' . $smarty->fetch('wiki-plugins/wikiplugin_datachannel.tpl') . '~/np~';
-    } else {
-      return '~np~' . $smarty->fetch($params['template']) . '~/np~';
-    }
+		return '~np~' . $smarty->fetch('wiki-plugins/wikiplugin_datachannel.tpl') . '~/np~';
 	}
 }
 

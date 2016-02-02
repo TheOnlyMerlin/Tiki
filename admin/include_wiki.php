@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -84,8 +84,23 @@ if (isset($_REQUEST['wikifeatures'])) {
 	}
 
 	if (isset($backlinksChange) && $backlinksChange) {
-		$wikilib = TikiLib::lib('wiki');
+		global $wikilib;
+		include_once ('lib/wiki/wikilib.php');
 		$wikilib->refresh_backlinks();
+	}
+}
+
+if (isset($_REQUEST['wikiset3d'])) {
+	check_ticket('admin-inc-wiki');
+	if (isset($_REQUEST['wiki_3d_autoload']) && $_REQUEST['wiki_3d_autoload'] == 'on') {
+		$tikilib->set_preference('wiki_3d_autoload', 'true');
+	} else {
+		$tikilib->set_preference('wiki_3d_autoload', 'false');
+	}
+	if (isset($_REQUEST['wiki_3d_adjust_camera']) && $_REQUEST['wiki_3d_adjust_camera'] == 'on') {
+		$tikilib->set_preference('wiki_3d_adjust_camera', 'true');
+	} else {
+		$tikilib->set_preference('wiki_3d_adjust_camera', 'false');
 	}
 }
 

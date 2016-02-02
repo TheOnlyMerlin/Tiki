@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -57,8 +57,6 @@ class Tiki_Profile_InstallHandler_Tracker extends Tiki_Profile_InstallHandler
 			'section_format' => 'sectionFormat',
 			'popup_fields' => 'showPopup',
 			'admin_only_view' => 'adminOnlyViewEditItem',
-			'use_form_classes' => 'useFormClasses',
-			'form_classes' => 'formClasses',
 		);
 	} // }}}
 
@@ -70,6 +68,7 @@ class Tiki_Profile_InstallHandler_Tracker extends Tiki_Profile_InstallHandler
 		$defaults['creation_date_format'] = '';
 		$defaults['modification_date_format'] = '';
 		$defaults['email'] = '';
+		$defaults['outboundEmail'] = '';
 		$defaults['default_status'] = 'o';
 		$defaults['modification_status'] = '';
 		$defaults['list_default_status'] = 'o';
@@ -77,8 +76,6 @@ class Tiki_Profile_InstallHandler_Tracker extends Tiki_Profile_InstallHandler
 		$defaults['sort_default_field'] = '';
 		$defaults['restrict_start'] = '';
 		$defaults['restrict_end'] = '';
-		$defaults['popup_fields'] = '';
-		$defaults['section_format'] = 'flat';
 		return $defaults;
 	} // }}}
 

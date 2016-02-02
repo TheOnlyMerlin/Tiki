@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -28,10 +28,10 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
  */
 function smarty_function_html_select_duration($params, $smarty)
 {
-	$smarty = TikiLib::lib('smarty');
+	global $smarty;
 	$smarty->loadPlugin('smarty_function_html_options');
 	$html_result = '';
-	$default = array('prefix'=>'Duration_', 'default_unit'=>'week', 'default'=>'', 'default_value'=>'', 'id'=>'');
+	$default = array('prefix'=>'Duration_', 'default_unit'=>'week', 'default'=>'', 'default_value'=>'');
 	$params = array_merge($default, $params);
 	$values = array(31536000, 2628000, 604800, 86400, 3600, 60);
 	$output = array(tra('Year'), tra('Month'), tra('Week'), tra('Day'), tra('Hour'), tra('Minute'));
@@ -50,15 +50,13 @@ function smarty_function_html_select_duration($params, $smarty)
 	} else {
 		$selected = 604800;
 	}
-	$id = !empty($params['id']) ? ' id="' . $params['id'] . '" ' : '';
-	$html_result .= '<div class="col-sm-1">';
-	$html_result .= '<input ' . $id . 'name="'.$params['prefix'].'" type="text" size="5" value="'.$params['default'].'" class="form-control"></div>';
+	$html_result .= '<input name="'.$params['prefix'].'" type="text" size="5" value="'.$params['default'].'" />';
 	if (strstr($params['prefix'], '[]')) {
 		$prefix = str_replace('[]', '_unit[]', $params['prefix']);
 	} else {
 		$prefix = $params['prefix'].'_unit';
 	}
-	$html_result .= '<div class="col-sm-2"><select name="'.$prefix.'" class="form-control">';
+	$html_result .= '<select name="'.$prefix.'">';
 
 	$html_result .= smarty_function_html_options(
 		array(
@@ -69,7 +67,7 @@ function smarty_function_html_select_duration($params, $smarty)
 		$smarty
 	);
 
-	$html_result .= '</select></div>';
+	$html_result .= '</select>';
 	return $html_result;
 }
 

@@ -1,7 +1,7 @@
 <?php
 
 /////////////////////////////////////////////////////////////////////////////
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -581,8 +581,8 @@ class OpenPGPLib
 	function getPublickeyArmorBlock($req_priority,$req_to,$req_cc)
 	{
 
-		global $user;
-		$userlib = TikiLib::lib('user');
+		global $user, $userlib;
+		include_once('lib/userslib.php');
 
 		// get user email for publickey armor block retrieval
 		$user_email = '';
@@ -699,10 +699,7 @@ class OpenPGPLib
 							$user_pubkeyarmor,   // NOTE this
 							$priority, $replyto_hash='', $replyto_email='', $bcc_sender = '')
 	{
-		global $prefs;
-		$userlib = TikiLib::lib('user');
-		$tikilib = TikiLib::lib('tiki');
-		$smarty = TikiLib::lib('smarty');
+		global $smarty, $tikilib, $userlib, $prefs;
 
 		$subject = strip_tags($subject);
 		$body = strip_tags($body, '<a><b><img><i>');
@@ -1104,13 +1101,99 @@ class OpenPGPLib
         	$item = $prefix . ': ' . $item;
 	}
 
+	//////////////////////////////////////////////////////////////////////////////
+	/**
+	 * AS THE Subject-header is hidden and contains a hash only in a pgp/mime encrypted message subject-header
+	 * extract the original subject	and prepend it into the text & html part
+	 * @param  OpenPGP_Zend_Mail object $mail (false|OpenPGP_Zend_Mail)
+	 * @access public
+	 * @return array
+	 *		0 => string $prepend_to_text
+	 *		1 => string $prepend_to_html
+	 */
+	function getPrependOriginalSubject($mail)
+	{
+
+		if ($mail === false) {
+			// NOTE: this is an error, but return just empty pair of strings
+			return array('','');
+		}
+
+		$orig_subject = '';
+		$go_loop = true; // NOTE: see usage below!
+
+	        // Get headers
+		if (($text = $mail->getBodyText())
+        	    && ($html = $mail->getBodyHtml())) {
+			// Set directly into loop variable
+        		$mail_headers = $mail->getHeaders();
+		} else {
+        		$auxheaders = $mail->getHeaders();
+		        // If not multipart, then get the body
+			if (false !== ($auxpartbody = $mail->getBodyHtml())) {
+        			$auxpartheaders = $auxpartbody->getHeadersArray($this->EOL);
+			} elseif (false !== ($auxpartbody = $mail->getBodyText())) {
+        			$auxpartheaders = $auxpartbody->getHeadersArray($this->EOL);
+			}
+		        if (!$auxpartbody) {
+		            /**
+			     * NOTE: actually, need to thow exeption here already, but just ignore here
+			     * (see in the end of the Zend/Mail/Transport/Abstract->_buildBody() function,
+			     * from where this was copied)
+		             */
+				$go_loop = false; // NOTE: see below; leaves orig_subject to ''
+		        }
+        		foreach ($auxpartheaders as $auxpartheader) {
+        		    // Headers in Zend_Mime_Part are kept as arrays with two elements, a
+        		    // key and a value
+        		    $auxheaders[$auxpartheader[0]] = array($auxpartheader[1]);
+		        }
+			// Finally, set into loop variable
+			$mail_headers = $auxheaders;
+		}
+		if (go_loop) {
+	       		foreach ($mail_headers as $headeritem => $content) {
+        		    if (isset($content['append'])) {
+				// do not unset	here; subject disappears in that case; see loop in _prepareHeaders,
+				// where it is originally necessary
+       			        $value = implode(',' . $this->EOL . ' ', $content);
+				if ($headeritem == 'Subject') {
+					//then add Subject to header and break out from foreach-loop
+			                $orig_subject = $value;
+					break;
+				}
+       			    } else {
+				// use function from above in array_walk
+       			        array_walk($content, array(get_class($this), '_formatHeader'), $headeritem);
+				if (strpos(implode(' ', $content), 'Subject') !== false) {
+					//then add Subject to header and break out from foreach-loop
+					$subject_str = stristr(implode($this->EOL, $content), ': ');
+					if ($subject_str != false) {
+						$subject_str = substr($subject_str, 2);
+					}
+					$orig_subject = $subject_str;
+					break;
+				}
+       			    }
+       			}
+		}
+		$prepend_to_text = "******** PGP/MIME-ENCRYPTED MESSAGE ********\n"
+				   . "Subject: "  .$orig_subject
+			  	   . "\n\n";
+		$prepend_to_html = "******** PGP/MIME-ENCRYPTED MESSAGE ********<br>"
+				   . "Subject: "  .$orig_subject
+				   . "<br><br>";
+
+		return array($prepend_to_text,$prepend_to_html);
+	}
+
 	//////////////////////////////////////////////////////////
 	/**
 	 * Prepate encryption of a mail using gnupg
 	 *
 	 * @param  string $original_mail_headers
 	 * @param  string $original_mail_body
-	 * @param  array|string $recipients
+	 * @param  OpenPGP_Zend_Mail $mail
 	 * @access public
 	 * @return array
 	 *		0 => string $pgpmime_header

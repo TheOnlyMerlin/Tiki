@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,15 +10,15 @@ function prefs_metatag_list()
 	return array(
 		'metatag_keywords' => array(
 			'name' => tra('Keywords'),
-			'description' => tra('A list of keywords (separated by commas) that describe this website.'),
+			'description' => tra('A list of key words (separated by commas) that describe your site.'),
 			'type' => 'textarea',
 			'size' => '4',
 			'default' => '',
 			'tags' => array('basic'),
 		),
 		'metatag_freetags' => array(
-			'name' => tra('Include tags'),
-			'description' => tra('If the Tags feature is enabled, the tags for each page with tags set will be used as meta keywords. This allows individual pages at the site to have different meta tags.'),
+			'name' => tra('Include freetags'),
+			'description' => tra('If the freetags feature is enabled, use the freetags in the meta keywords for each page with freetags set. This allows individual pages on the site to carry different meta tags.'),
 			'type' => 'flag',
 			'dependencies' => array(
 				'feature_freetags',
@@ -35,7 +35,7 @@ function prefs_metatag_list()
 			'default' => 'n',
 		),
 		'metatag_imagetitle' => array(
-			'name' => tra('Use the image title instead'),
+			'name' => tra('Use image title instead'),
 			'description' => tra('Use the image title in the meta title tag'),
 			'type' => 'flag',
 			'dependencies' => array(
@@ -45,21 +45,21 @@ function prefs_metatag_list()
 		),
 		'metatag_description' => array(
 			'name' => tra('Description'),
-			'description' => tra('A short description of the website. Some search engines display this information with the website\'s listing.'),
+			'description' => tra('A short description of your site. Some search engines display this information with your site\'s listing.'),
 			'type' => 'textarea',
 			'size' => '5',
 			'default' => '',
 			'tags' => array('basic'),
 		),
 		'metatag_pagedesc' => array(
-			'name' => tra('Page description'),
-			'description' => tra('Use each page description as a meta tag for that page.'),
+			'name' => tra('Page Description'),
+			'description' => tra('Use individual page description as a met tag for the page.'),
 			'type' => 'flag',
 			'default' => 'n',
 		),
 		'metatag_author' => array(
 			'name' => tra('Author'),
-			'description' => tra('The author of this website. Typically this is the Admin or Webmaster.'),
+			'description' => tra('The author of your site. Typically this will be the Admin or Webmaster.'),
 			'type' => 'text',
 			'size' => '50',
 			'default' => '',
@@ -74,7 +74,7 @@ function prefs_metatag_list()
 		),
 		'metatag_georegion' => array(
 			'name' => tra('geo.region'),
-			'description' => tra('The ISO-3166 country and region codes for your location. For example, "US-NY".'),
+			'description' => tra('The ISO-3166 Country and Region Codes for your location. For example, "US-NY".'),
 			'type' => 'text',
 			'size' => '50',
 			'default' => '',
@@ -88,14 +88,14 @@ function prefs_metatag_list()
 		),
 		'metatag_robots' => array(
 			'name' => tra('Meta robots'),
-			'description' => tra('Specify how Web robots should index your site. Valid values include: INDEX or NOINDEX, and FOLLOW or NOFOLLOW'),
+			'description' => tra('Specify how web-bots should index your site. Valid values include: INDEX or NOINDEX, and FOLLOW or NOFOLLOW'),
 			'type' => 'text',
 			'size' => '50',
 			'default' => '',
 		),
 		'metatag_revisitafter' => array(
 			'name' => tra('Revisit after'),
-			'description' => tra('Specify how often (in days) Web robots should visit your site.'),
+			'description' => tra('Specify how often (in days) web-bots should visit your site.'),
 			'type' => 'text',
 			'size' => '50',
 			'default' => '',

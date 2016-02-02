@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -9,20 +9,16 @@ function wikiplugin_sign_info()
 {
 	return array(
 		'name' => tr('Signature'),
-		'documentation' => 'PluginSign',
-		'description' => tr('Sign and date your contribution to a page'),
+		'description' => tr('By writing {sign} in a wiki page, it will be converted to your username with a timestamp.'),
 		'prefs' => array('wikiplugin_sign'),
 		'tags' => array('basic'),
 		'inline' => true,
 		'format' => 'html',
-		'iconname' => 'pencil',
-		'introduced' => 10,
 		'params' => array(
 			'user' => array(
 				'required' => false,
 				'name' => tr('User'),
 				'description' => tr('Auto-generated, the username.'),
-				'since' => '10.0',
 				'default' => '',
 				'filter' => 'text',
 				'advanced' => true,
@@ -31,7 +27,6 @@ function wikiplugin_sign_info()
 				'required' => false,
 				'name' => tr('Date and time'),
 				'description' => tr('Auto-generated, the timestamp'),
-				'since' => '10.0',
 				'default' => '',
 				'filter' => 'text',
 				'advanced' => true,
@@ -78,7 +73,7 @@ function wikiplugin_sign($data, $params, $offset)
 	$tip = $smarty->fetch('wiki-plugins/wikiplugin_sign.tpl');
 
 	$smarty->loadPlugin('smarty_function_icon');
-	$icon = smarty_function_icon(array('name' => 'pencil', 'title' => '', 'iclass' => 'wp-sign-icon'), $smarty);
+	$icon = smarty_function_icon(array('_id' => 'text_signature', 'title' => '', 'class' => 'wp-sign-icon'), $smarty);
 
 	TikiLib::lib('header')-> add_jq_onready(
 		'

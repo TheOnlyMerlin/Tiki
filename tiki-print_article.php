@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,7 +10,7 @@
 
 $section = 'cms';
 require_once ('tiki-setup.php');
-$artlib = TikiLib::lib('art');
+include_once ('lib/articles/artlib.php');
 $access->check_feature('feature_cms_print');
 if (!isset($_REQUEST["articleId"])) {
 	$smarty->assign('msg', tra("No article indicated"));
@@ -51,9 +51,13 @@ if (isset($_REQUEST['switchlang']) && $_REQUEST['switchlang'] == 'y' && $prefs['
 	die;
 }
 
-$statslib = TikiLib::lib('stats');
+global $statslib;
+include_once ('lib/stats/statslib.php');
+global $artlib;
+include_once ('lib/articles/artlib.php');
 if ($prefs['feature_categories'] == 'y') {
-	$categlib = TikiLib::lib('categ');
+	global $categlib;
+	include_once ('lib/categories/categlib.php');
 }
 
 $artlib->add_article_hit($_REQUEST["articleId"]);
@@ -209,7 +213,7 @@ if (isset($is_categorized) && $is_categorized) {
 		}
 	}
 	if ($prefs['feature_categories'] == 'y' && $prefs['category_morelikethis_algorithm'] != '') {
-		$freetaglib = TikiLib::lib('freetag');
+		global $freetaglib; include_once('lib/freetag/freetaglib.php');
 		$category_related_objects = $freetaglib->get_similar('article', $_REQUEST['articleId'], empty($prefs['category_morelikethis_mincommon_max'])? $prefs['maxRecords']: $prefs['category_morelikethis_mincommon_max'], null, 'category');
 		$smarty->assign_by_ref('category_related_objects', $category_related_objects);
 	}
@@ -218,7 +222,7 @@ if (isset($is_categorized) && $is_categorized) {
 }
 
 if ($prefs['feature_multilingual'] == 'y' && $article_data['lang']) {
-	$multilinguallib = TikiLib::lib('multilingual');
+	include_once ("lib/multilingual/multilinguallib.php");
 	$trads = $multilinguallib->getTranslations('article', $article_data['articleId'], $article_data["title"], $article_data['lang']);
 	$smarty->assign('trads', $trads);
 }

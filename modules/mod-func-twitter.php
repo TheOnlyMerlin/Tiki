@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -33,11 +33,6 @@ function module_twitter_info()
 				'description' => tra('Show public|friends timeline. '),
 				'default' => 'public',
 			),
-			'search' => array(
-				'name' => 'search',
-				'description' => tra('Search string.'),
-				'default' => 'tikiwiki',
-			),
 			'showuser' => array(
 				'name' => 'showuser',
 				'description' => tra('Show username in timeline. y|n'),
@@ -54,23 +49,19 @@ function module_twitter_info()
  */
 function module_twitter( $mod_reference, $module_params )
 {
-	global $prefs;
+	global $tikilib, $smarty, $prefs;
 	global $socialnetworkslib; require_once ('lib/socialnetworkslib.php');
-	$smarty = TikiLib::lib('smarty');
-	$tikilib = TikiLib::lib('tiki');
-
 	if ( !empty($module_params['user']) ) {
 		$user = $module_params['user'];
 
 		$token=$tikilib->get_user_preference($user, 'twitter_token', '');
 		$smarty->assign('twitter', ($token!=''));
 
-		$response=$socialnetworkslib->getTwitterTimeline($user, $mod_reference['params']['timelinetype'], $module_params['search']);
+		$response=$socialnetworkslib->getTwitterTimeline($user, $mod_reference['params']['timelinetype']);
 		if ($response == -1) {
 			$timeline[0]['text'] = tra('user not registered with twitter').": $user";
 		}
 
-		$module_params['timelinetype'] == 'search' ? $response = $response->statuses : true;
 		for ($i = 0, $count_response_status = count($response); $i < $count_response_status; $i++) {
 
 			$timeline[$i]['text']=$response[$i]->text;
@@ -86,5 +77,6 @@ function module_twitter( $mod_reference, $module_params )
 	}
 
 	$timeline=array_splice($timeline, 0, $mod_reference['rows']?$mod_reference['rows']:10);
+
 	$smarty->assign('timeline', $timeline);
 }

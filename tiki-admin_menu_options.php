@@ -2,14 +2,14 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 require_once ('tiki-setup.php');
-$menulib = TikiLib::lib('menu');
+include_once ('lib/menubuilder/menulib.php');
 $access->check_permission(array('tiki_p_edit_menu_option'));
 if (!isset($_REQUEST["menuId"])) {
 	$smarty->assign('msg', tra("No menu indicated"));
@@ -25,7 +25,12 @@ $auto_query_args = array(
 	'preview_css',
 	'preview_type',
 );
-
+if (!empty($_REQUEST['import']) && !empty($_FILES['csvfile']['tmp_name'])) {
+	$menulib->import_menu_options();
+}
+if (!empty($_REQUEST['export'])) {
+	$menulib->export_menu_options();
+}
 $maxPos = $menulib->get_max_option($_REQUEST["menuId"]);
 $smarty->assign('menuId', $_REQUEST["menuId"]);
 $editable_menu_info = $menulib->get_menu($_REQUEST["menuId"]);
@@ -47,7 +52,6 @@ if ($_REQUEST["optionId"]) {
 	$info["userlevel"] = '';
 	$info["type"] = 'o';
 	$info["icon"] = '';
-	$info["class"] = '';
 	$info["position"] = $maxPos + 10;
 }
 $smarty->assign('name', $info["name"]);
@@ -59,8 +63,6 @@ $smarty->assign('icon', $info["icon"]);
 $smarty->assign('position', $info["position"]);
 $smarty->assign('groupname', $info["groupname"]);
 $smarty->assign('userlevel', $info["userlevel"]);
-$smarty->assign('class', $info["class"]);
-
 if (isset($_REQUEST["remove"])) {
 	$access->check_authenticity();
 	$menulib->remove_menu_option($_REQUEST["remove"]);
@@ -88,9 +90,9 @@ if (isset($_REQUEST["save"])) {
 	if (!isset($_REQUEST['groupname'])) $_REQUEST['groupname'] = '';
 	elseif (is_array($_REQUEST['groupname'])) $_REQUEST['groupname'] = implode(',', $_REQUEST['groupname']);
 	if (!isset($_REQUEST['level'])) $_REQUEST['level'] = 0;
-	$modlib = TikiLib::lib('mod');
+	include_once ('lib/modules/modlib.php');
 	check_ticket('admin-menu-options');
-	$menulib->replace_menu_option($_REQUEST["menuId"], $_REQUEST["optionId"], $_REQUEST["name"], $_REQUEST["url"], $_REQUEST["type"], $_REQUEST["position"], $_REQUEST["section"], $_REQUEST["perm"], $_REQUEST["groupname"], $_REQUEST['level'], $_REQUEST['icon'], $_REQUEST['class']);
+	$menulib->replace_menu_option($_REQUEST["menuId"], $_REQUEST["optionId"], $_REQUEST["name"], $_REQUEST["url"], $_REQUEST["type"], $_REQUEST["position"], $_REQUEST["section"], $_REQUEST["perm"], $_REQUEST["groupname"], $_REQUEST['level'], $_REQUEST['icon']);
 	$modlib->clear_cache();
 	$smarty->assign('position', $_REQUEST["position"] + 10);
 	$smarty->assign('name', '');
@@ -102,7 +104,6 @@ if (isset($_REQUEST["save"])) {
 	$smarty->assign('userlevel', 0);
 	$smarty->assign('type', 'o');
 	$smarty->assign('icon', '');
-	$smarty->assign('class', '');
 	$cookietab = 1;
 }
 if (!isset($_REQUEST["sort_mode"])) {
@@ -153,6 +154,7 @@ if (isset($info['groupname']) && !is_array($info['groupname'])) $info['groupname
 $all_groups = $userlib->list_all_groups();
 if (is_array($all_groups)) foreach ($all_groups as $g) $option_groups[$g] = (is_array($info['groupname']) && in_array($g, $info['groupname'])) ? 'selected="selected"' : '';
 $smarty->assign_by_ref('option_groups', $option_groups);
+$smarty->assign('escape_menu_labels', ($prefs['menus_item_names_raw'] === 'n' && $editable_menu_info['parse'] === 'n'));
 
 ask_ticket('admin-menu-options');
 // disallow robots to index page:

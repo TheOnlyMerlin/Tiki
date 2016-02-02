@@ -9,7 +9,7 @@
 					{button href="#" _onclick="hide('pollzone');hide('polledit');show('pollopen');return false;" _text="{tr}[-]{/tr}"}
 					{button href="#" _onclick="show('pollzone');hide('polledit');hide('pollopen');return false;" class="link" _text="{tr}View{/tr}"}
 				</div>
-
+				
 				{foreach from=$ratings item=r}
 					{if $r.title}
 						<div>{$r.title|escape}</div>
@@ -26,7 +26,7 @@
 									<td valign="top" {if $r.vote eq $option.optionId}class="highlight"{/if}>
 										<input type="radio" name="polls_optionId" value="{$option.optionId|escape}" id="poll{$r.info.pollId|escape}{$option.optionId|escape}" {if $r.vote eq $option.optionId} checked="checked"{/if}>
 									</td>
-									<td valign="top" {if $r.vote eq $option.optionId}class="highlight"{/if}>
+									<td valign="top" {if $r.vote eq $option.optionId}class="highlight"{/if}> 
 										<label for="poll{$r.info.pollId|escape}{$option.optionId|escape}">{$option.title|escape}</label>
 									</td>
 									<td valign="top" {if $r.vote eq $option.optionId}class="highlight"{/if}>
@@ -36,7 +36,7 @@
 							{/foreach}
 						</table>
 						<div align="center">
-							<input type="submit" class="btn btn-default btn-sm" name="pollVote" value="{tr}vote{/tr}" style="border:1px solid #666666;font-size:.8em;">
+							<input type="submit" class="btn btn-default" name="pollVote" value="{tr}vote{/tr}" style="border:1px solid #666666;font-size:.8em;">
 						</div>
 					</form>
 				{/foreach}

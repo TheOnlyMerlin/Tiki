@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -7,15 +7,17 @@
 
 function prefs_site_list()
 {
-	global $prefs;
-
-	$available_layouts = TikiLib::lib('css')->list_user_selectable_layouts(isset($prefs['site_theme']) ? $prefs['site_theme'] : '', isset($prefs['theme_option']) ? $prefs['theme_option'] : '');
-	$available_admin_layouts = TikiLib::lib('css')->list_user_selectable_layouts(isset($prefs['site_theme_admin']) ? $prefs['site_theme_admin'] : '', isset($prefs['theme_option_admin']) ? $prefs['theme_option_admin'] : '');
+    $available_layouts = array();
+	foreach (scandir('templates/layouts/') as $layoutName) {
+		if ($layoutName[0] != '.' && $layoutName != 'index.php') {
+			$available_layouts[$layoutName] = ucfirst($layoutName);
+		}   
+	}   
 
 	return array (
 		'site_closed' => array(
-			'name' => tra('Close site'),
-			'description' => tra('Close the site (except for those with access permission)'),
+			'name' => tra('Close site (except for those with permission)'),
+			'description' => tra('Close site (except for those with permission)'),
 			'type' => 'flag',
 			'perspective' => false,
 			'tags' => array('basic'),
@@ -68,11 +70,11 @@ function prefs_site_list()
 		),
 		'site_title_breadcrumb' => array(
 			'name' => tra('Browser title display mode'),
-			'description' => tra('When breadcrumbs are used, method to display the browser title.'),
+			'description' => tra('When breadcrumbs are used, method in which the browser title should be displayed.'),
 			'type' => 'list',
 			'options' => array(
-				'invertfull' => tra('Most-specific first'),
-				'fulltrail' => tra('Least-specific first (site)'),
+				'invertfull' => tra('Most specific first'),
+				'fulltrail' => tra('Least specific first (site)'),
 				'pagetitle' => tra('Current only'),
 				'desc' => tra('Description'),
 			),
@@ -99,7 +101,7 @@ function prefs_site_list()
 			'tags' => array('basic'),
 		),
 		'site_terminal_active' => array(
-			'name' => tra('Site terminal'),
+			'name' => tra('Site Terminal'),
 			'description' => tra('Allows users to be directed to a specific perspective depending on the origin IP address. Can be used inside intranets to use different configurations for users depending on their departements or discriminate people in web contexts. Unspecified IPs will fall back to default behavior, including multi-domain handling. Manually selected perspectives take precedence over this.'),
 			'type' => 'flag',
 			'dependencies' => array(
@@ -108,7 +110,7 @@ function prefs_site_list()
 			'default' => 'n',
 		),
 		'site_terminal_config' => array(
-			'name' => tra('Site terminal configuration'),
+			'name' => tra('Site Terminal Configuration'),
 			'description' => tra('Provides the mapping from subnets to perspective.'),
 			'type' => 'textarea',
 			'perspective' => false,
@@ -117,8 +119,8 @@ function prefs_site_list()
 			'default' => '',
 		),
 		'site_google_analytics_account' => array(
-			'name' => tr('Google Analytics account number'),
-			'description' => tra('The account number for the site. The account number from Google is something like UA-XXXXXXX-YY. Enter only XXXXXXX-YY'),
+			'name' => tr('Google Analytics Account Number'),
+			'description' => tra('The account number for the site. Your account number from Google looks like UA-XXXXXXX-YY. All you need to enter is XXXXXXX-YY'),
 			'type' => 'text',
 			'size' => 15,
 			'default' => '',
@@ -128,56 +130,11 @@ function prefs_site_list()
 			),
 		),
 		'site_layout' => array(
-			'name' => tr('Site layout'),
-			'description' => tr('Changes the template for the overall site layout'),
+			'name' => tr('Site Layout'),
+			'description' => tr('Changes the overall site layout templates'),
 			'type' => 'list',
-			'default' => 'basic',
-			'help' => 'Site Layout',
-			'tags' => array('advanced'),
+			'default' => 'classic',
 			'options' => $available_layouts,
-		),
-		'site_layout_admin' => array(
-			'name' => tr('Admin layout'),
-			'description' => tr('Changes the layout templates for admin pages'),
-			'type' => 'list',
-			'default' => 'basic',
-			'tags' => array('advanced'),
-			'options' => $available_admin_layouts,
-		),
-		'site_layout_per_object' => array(
-			'name' => tr('Allow per-object layout'),
-			'description' => tr('Allows objects to define an alternate layout for their rendering.'),
-			'tags' => array('experimental'),
-			'type' => 'flag',
-			'default' => 'n',
-		),
-		'site_piwik_analytics_server_url' => array(
-			'name' => tr('Piwik server url'),
-			'description' => tr('The url to your Piwik Server') . '<br />'
-					. tr('In your Piwik, your selected site (Site Id) MUST have view permission for anonymous OR you can insert in your Piwik server url a token authentification parameter.'),
-			'type' => 'text',
-			'filter' => 'url',
-			'size' => 30,
-			'default' => '',
-			'hint' => 'http(s)://yourpiwik.tld/index.php(?token_auth=yourtokencode)',
-		),
-		'site_piwik_site_id' => array(
-			'name' => tra('Site Id'),
-			'description' => tr('The ID of your website in Piwik.'),
-			'type' => 'text',
-			'size' => '5',
-			'default' => '',
-			'dependencies' => array(
-				'site_piwik_analytics_server_url',
-			),
-		),
-		'site_google_credentials' => array(
-			'name' => tra('Google Authentication Credentials File'),
-			'description' => tr('Path to you Google Service Account credentials JSON file.'),
-			'type' => 'text',
-			'size' => 30,
-			'default' => '',
-			'warning' => 'Must be kept private and not accessible on the internet directly',
-		),
+		),  
 	);
 }

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -9,8 +9,8 @@ function prefs_default_list()
 {
 	return array(
 		'default_mail_charset' => array(
-			'name' => tra('Default character set for sending mail'),
-			'description' => tra('Default character set for sending mail'),
+			'name' => tra('Default charset for sending mail'),
+			'description' => tra('Default charset for sending mail'),
 			'type' => 'list',
 			'options' => array(
 				'utf-8' => tra('utf-8'),

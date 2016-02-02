@@ -2,15 +2,14 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 require_once('tiki-setup.php');
-global $monitor_filename, $stat_array;
-$access = TikiLib::lib('access');
+global $monitor_filename, $stat_array, $access;
 
 if ($prefs['feature_trackers'] != 'y') {
 	$access->output_serialized(array('msg' => tra('This feature is disabled').': feature_trackers'));
@@ -53,7 +52,7 @@ if (isset($_REQUEST['trackerId']) && isset($_REQUEST['xuser'])) {
 	$json_data = array();
 	foreach ($stat_array as $k => $v) {
 		if ($k == 'user' && $v != $user) {
-			$json_data['msg'] = tra("Another user is currently exporting that tracker. Please try again later.").' '.tra('Or delete the file: '.$monitor_filename);
+			$json_data['msg'] = tra("Another user is currently exporting that tracker, please try again later.").' '.tra('Or delete the file: '.$monitor_filename);
 			break;
 		} else {
 			$json_data[$k] = $v;

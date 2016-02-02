@@ -58,8 +58,7 @@ function wikiplugin_useringroup_info()
 
 function wikiplugin_useringroup( $data, $params )
 {
-	global $tikilib, $prefs, $info;
-	$userlib = TikiLib::lib('user');
+	global $tikilib, $prefs, $info, $userlib;
 	
 	$plugindata = array();
 

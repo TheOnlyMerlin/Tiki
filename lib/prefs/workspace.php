@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,7 +10,7 @@ function prefs_workspace_list()
 	return array(
 		'workspace_ui' => array(
 			'name' => tr('Workspace UI'),
-			'description' => tr('Combines multiple site features to create a workspace experience for workgroups.'),
+			'description' => tr('Binds multiple features in Tiki to form a workspace experience for workgroups.'),
 			'type' => 'flag',
 			'default' => 'n',
 			'perspective' => false,

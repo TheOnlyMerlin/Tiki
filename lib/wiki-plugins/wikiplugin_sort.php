@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -14,15 +14,13 @@ function wikiplugin_sort_info()
 		'prefs' => array( 'wikiplugin_sort' ),
 		'body' => tra('Data to sort, one entry per line.'),
 		'filter' => 'text',
-		'iconname' => 'sort-desc',
-		'introduced' => 1,
+		'icon' => 'img/icons/table_sort.png',
 		'tags' => array( 'basic' ),
 		'params' => array(
 			'sort' => array(
 				'required' => false,
 				'name' => tra('Order'),
 				'description' => tra('Set the sort order of lines of content (default is ascending)'),
-				'since' => '1',
 				'filter' => 'alpha',
 				'default' => 'asc',
 				'options' => array(

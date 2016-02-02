@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -38,12 +38,12 @@ function prefs_search_list()
 		),
 		'search_default_interface_language' => array(
 			'name' => tra('Restrict search language by default'),
-			'description' => tra('If enabled, only search content that is in the interface language, otherwise show the language menu.'),
+			'description' => tra('If enabled, only search content in the interface language, otherwise show language menu.'),
 			'type' => 'flag',
 			'default' => 'n',
 		),
 		'search_autocomplete' => array(
-			'name' => tra('Autocomplete page names'),
+			'name' => tra('Autocomplete on page names'),
 			'type' => 'flag',
 			'dependencies' => array('feature_jquery_autocomplete', 'javascript_enabled'),
 			'warning' => tra('deprecated'),
@@ -60,7 +60,7 @@ function prefs_search_list()
 			'default' => 'n',
 		),
 		'search_show_sort_order' => array(
-			'name' => tra('Sort order'),
+			'name' => tra('Sort Order'),
 			'type' => 'flag',
 			'default' => 'n',
 		),
@@ -72,7 +72,7 @@ function prefs_search_list()
 		),
 		'search_facet_default_amount' => array(
 			'name' => tra('Facet result count'),
-			'description' => tra('DDefault number of facet results to obtain.'),
+			'description' => tra('Default amount of facet results to obtain.'),
 			'type' => 'text',
 			'size' => 8,
 			'filter' => 'digits',

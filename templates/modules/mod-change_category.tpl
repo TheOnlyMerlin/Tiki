@@ -14,72 +14,67 @@
 			{/foreach}
 		{else}
 
-			{if $detailed eq 'y'}
-				<div class="table-responsive">
-					<table class="table">
-						{foreach key=k item=i from=$modcatlist}
-							{if $i.incat eq 'y'}
-								<tr>
-									<td class="{cycle advance=false}">
-										{if isset($module_params.path) and $module_params.path eq 'n'}
-											{$i.name|escape}
-										{else}
-											{$i.relativePathString|escape}
-										{/if}
-									</td>
-									{if !isset($module_params.del) or $module_params.del eq 'y'}
-										<td>
-											{self_link remove=$i.categId _class='tips' _title=":{tr}Delete{/tr}"}{icon name='delete'}{/self_link}
-										</td>
-									{/if}
-								</tr>
-							{/if}
-						{/foreach}
-					</table>
-				</div>
-			{/if}
-
-			{if $detailed eq 'n' or ($add eq 'y' and not $isInAllManagedCategories)}
-				<div class="text-center">
-					<form method="post" target="_self">
-						<input type="hidden" name="page" value="{$page|escape}" />
-						<input type="hidden" name="modcatid" value="{$modcatid}" />
-
-						<div class="form-group">
-							{if $multiple eq 'y'}
-								<select name="modcatchange[]" multiple="multiple" class="form-control">
-							{else}
-								<select name="modcatchange" size="1" onchange="this.form.submit();" class="form-control">
-							{/if}
-							{if $add eq 'y'}
-								{if !isset($module_params.notop)}
-									<option value="0" style="font-style: italic;">{tr}None{/tr}</option>
+		{if $detailed eq 'y'}
+			{cycle values="odd,even" print=false}
+			<table class="table normal">
+				{foreach key=k item=i from=$modcatlist}
+					{if $i.incat eq 'y'}
+						<tr>
+							<td class="{cycle advance=false}">
+								{if isset($module_params.path) and $module_params.path eq 'n'}
+									{$i.name|escape}
+								{else}
+									{$i.relativePathString|escape}
 								{/if}
+							</td>
+							{if !isset($module_params.del) or $module_params.del eq 'y'}
+								<td class="{cycle}">
+									{self_link remove=$i.categId}{icon _id=cross alt="{tr}Delete{/tr}"}{/self_link}
+								</td>
 							{/if}
-							{foreach key=k item=i from=$modcatlist}
-								{if $detailed eq 'n' or $i.incat ne 'y'}
-									{if ($add eq 'y' or $i.incat eq 'y')}
-										<option value="{$k}"{if $multiple eq 'y' and $i.incat eq 'y'} selected="selected"{/if}>
-											{if !empty($module_params.path) and $module_params.path eq 'n'}
-												{$i.name|escape}
-											{else}
-												{$i.relativePathString|escape}
-											{/if}
-										</option>
-									{/if}
-								{/if}
-							{/foreach}
-							</select>
-						</div>
+						</tr>
+					{/if}
+				{/foreach}
+			</table>
+		{/if}
 
-						{if $multiple eq 'y' and $add eq 'y'}
-							<div class="form-group">
-								<input type="submit" class="btn btn-default btn-sm" name="categorize" value="{if isset($module_params.categorize)}{tr}{$module_params.categorize}{/tr}{else}{tr}Categorize{/tr}{/if}" />
-							</div>
+		{if $detailed eq 'n' or ($add eq 'y' and not $isInAllManagedCategories)}
+			<div align="center">
+				<form method="post" target="_self">
+					<input type="hidden" name="page" value="{$page|escape}" />
+					<input type="hidden" name="modcatid" value="{$modcatid}" />
+					{if $multiple eq 'y'}
+						<select name="modcatchange[]" multiple="multiple">
+					{else}
+						<select name="modcatchange" size="1" onchange="this.form.submit();">
+					{/if}
+					{if $add eq 'y'}
+						{if !isset($module_params.notop)}
+							<option value="0" style="font-style: italic;">{tr}None{/tr}</option>
 						{/if}
-					</form>
-				</div>
-			{/if}
+					{/if}
+					{foreach key=k item=i from=$modcatlist}
+						{if $detailed eq 'n' or $i.incat ne 'y'}
+							{if ($add eq 'y' or $i.incat eq 'y')}
+								<option value="{$k}"{if $multiple eq 'y' and $i.incat eq 'y'} selected="selected"{/if}>
+									{if !empty($module_params.path) and $module_params.path eq 'n'}
+										{$i.name|escape}
+									{else}
+										{$i.relativePathString|escape}
+									{/if}
+								</option>
+							{/if}
+						{/if}
+					{/foreach}
+					</select>
+					{if $multiple eq 'y' and $add eq 'y'}
+						<div align="center">
+							<input type="submit" class="btn btn-default" name="categorize" value="{if isset($module_params.categorize)}{tr}{$module_params.categorize}{/tr}{else}{tr}Categorize{/tr}{/if}" />
+						</div>
+					{/if}
+				</form>
+			</div>
+		{/if}
 
 		{/if}
 

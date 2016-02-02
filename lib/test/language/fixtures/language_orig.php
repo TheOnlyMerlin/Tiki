@@ -1,5 +1,5 @@
 <?php // -*- coding:utf-8 -*-
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -88,7 +88,7 @@ $lang=Array(
 // "Approved Status" => "Approved Status",
 // "Queued" => "Queued",
 // "The file is already locked by %s" => "The file is already locked by %s",
-// "Warning: The file is used in" => "Warning: The file is used in",
+// "WARNING: The file is used in" => "WARNING: The file is used in",
 // "You do not have permission to edit this file" => "You do not have permission to edit this file",
 // "Not modified since" => "Not modified since",
 // "Test special \"characters\" escaping" => "Test special \"characters\" escaping",
@@ -104,19 +104,19 @@ $lang=Array(
 "No blog indicated" => "Nenhum blog indicado",
 "No cache information available" => "Informação de cache não disponível",
 "No faq indicated" => "Nenhum faq indicado",
-"You do not have permission to remove someone else\\'s post!" => "Você não pode remover a mensagem postada por outra pessoa!",
+"You are not permitted to remove someone else\\'s post!" => "Você não pode remover a mensagem postada por outra pessoa!",
 "No thread indicated" => "Nenhuma seqüência indicada",
 "A SheetId is required." => "Id da planilha é necessário.",
-"That tracker does not use extras." => "Aquele formulário não usa extras.",
+"That tracker don't use extras." => "Aquele formulário não usa extras.",
 "Aborted" => "Abortado",
 "Remove" => "Remover",
 "Top pages" => "Páginas mais populares",
 "Last pages" => "Páginas recentes",
 "Tiki RSS feed for the wiki pages" => "Fonte RSS para páginas wiki",
-"Latest wiki page changes." => "Últimas modificações no wiki.",
-"There was an error deleting the file" => "Erro ao deletar o arquivo",
+"Last modifications to the Wiki." => "Últimas modificações no wiki.",
+"Error deleting the file" => "Erro ao deletar o arquivo",
 "The page is empty" => "A página está vazia",
-"You do not have permission to view maps" => "Você não possui permissões para ver os mapas",
+"You do not have permissions to view the maps" => "Você não possui permissões para ver os mapas",
 "Second test special \"characters\" escaping" => "Alguma tradução \"characters\"",
 );
 

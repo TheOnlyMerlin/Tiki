@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -133,7 +133,7 @@ class RSSLib extends TikiDb_Bridge
 	}
 
 	/**
-	 * Generate a feed (ATOM 1.0 or RSS 2.0 using Zend\Feed\Writer\Feed
+	 * Generate a feed (ATOM 1.0 or RSS 2.0 using Zend_Feed_Writer_Feed
 	 *
 	 * @param string $section Tiki feature the feed is related to
 	 * @param string $uniqueid
@@ -157,18 +157,15 @@ class RSSLib extends TikiDb_Bridge
 			, $fromcache=false
 			)
 	{
-		global $tiki_p_admin, $prefs;
-		$userlib = TikiLib::lib('user');
-		$tikilib = TikiLib::lib('tiki');
-		$smarty = TikiLib::lib('smarty');
+		global $tikilib, $tiki_p_admin, $prefs, $userlib, $prefs, $smarty;
 
 		// both title and description fields cannot be null
 		if (empty($title) || empty($desc)) {
-			$msg = tra('The title and description must be entered, to generate a feed.');
+			$msg = tra('The fields title and description are mandatory to generate a feed.');
 			if ($tiki_p_admin) {
 				$msg .= ' ' . tra('To fix this error go to Admin -> Feeds.');
 			} else {
-				$msg .= ' ' . tra('Please contact the site administrator and request this error to be corrected');
+				$msg .= ' ' . tra('Please contact the site administrator and ask him to fix this error');
 			}
 			$smarty->assign('msg', $msg);
 			$smarty->display('error.tpl');
@@ -205,7 +202,7 @@ class RSSLib extends TikiDb_Bridge
 		$desc = htmlspecialchars($desc);
 		$read = $URLPrefix.$itemurl;
 
-		$feed = new Zend\Feed\Writer\Feed();
+		$feed = new Zend_Feed_Writer_Feed();
 		$feed->setTitle($title);
 		$feed->setDescription($desc);
 
@@ -307,8 +304,7 @@ class RSSLib extends TikiDb_Bridge
 	 */
 	function process_item_author($login)
 	{
-		$userlib = TikiLib::lib('user');
-		$tikilib = TikiLib::lib('tiki');
+		global $userlib, $tikilib;
 
 		$author = array();
 
@@ -318,7 +314,8 @@ class RSSLib extends TikiDb_Bridge
 
 			if ($tikilib->get_user_preference($login, 'email is public', 'n') != 'n') {
 				$res = $userlib->get_user_info($login, false);
-				$author['email'] = TikiMail::scrambleEmail($res['email']);
+				require_once('lib/userprefs/scrambleEmail.php');
+				$author['email'] = scrambleEmail($res['email']);
 			}
 		} else {
 			$author['name'] = $login;
@@ -482,8 +479,8 @@ class RSSLib extends TikiDb_Bridge
 
 		try {
 			$content = $tikilib->httprequest($url);
-			$feed = Zend\Feed\Reader\Reader::importString($content);
-		} catch( Zend\Feed\Exception\ExceptionInterface $e ) {
+			$feed = Zend_Feed_Reader::importString($content);
+		} catch( Zend_Exception $e ) {
 			$this->modules->update(
 				array(
 					'lastUpdated' => $tikilib->now,
@@ -511,8 +508,6 @@ class RSSLib extends TikiDb_Bridge
 
 			$authors = $entry->getAuthors();
 
-			$categories = $entry->getCategories();
-		
 			$data = $filter->filter(
 				array(
 					'title' => $entry->getTitle(),
@@ -520,13 +515,12 @@ class RSSLib extends TikiDb_Bridge
 					'description' => $entry->getDescription(),
 					'content' => $entry->getContent(),
 					'author' => $authors ? implode(', ', $authors->getValues()) : '',
-					'categories' => $categories ? json_encode($categories->getValues()) : json_encode(array()),
 				)
 			);
 
 			$data['guid'] = $guid;
 			if ( method_exists($entry, 'getDateCreated') && $createdDate = $entry->getDateCreated() ) {
-				$data['publication_date'] = $createdDate->getTimestamp();
+				$data['publication_date'] = $createdDate->get(Zend_Date::TIMESTAMP);
 			} else {
 				global $tikilib;
 				$data['publication_date'] = $tikilib->now;
@@ -541,51 +535,6 @@ class RSSLib extends TikiDb_Bridge
 		}
 	}
 
-	function get_feed_source_categories( $rssId ) {
-		$feeds = $this->items->fetchAll(array('categories'), array('rssId' => $rssId));
-		$categories = array();
-		foreach ($feeds as $feed) {
-			if (isset($feed['categories'])) {
-				foreach (json_decode($feed['categories']) as $sourcecat) {
-					 $categories[$sourcecat] = array(); 
-				}
-			}
-		}
-		$custom_info = $this->get_article_custom_info( $rssId );
-		$categories = array_merge($categories, $custom_info);
-		ksort($categories, SORT_NATURAL);
-		return $categories;
-	}
-
-	function get_article_custom_info( $rssId ) {
-		$result = $this->modules->fetchOne('actions', array('rssId' => $rssId));
-		$actions = json_decode($result);
-		$categories = array();
-		foreach ($actions as $action) {
-			if (isset($action->custom_atype)) {
-				foreach ($action->custom_atype as $source_category => $atype) {
-					$categories[$source_category]['atype'] = $atype;	
-				}
-			}
-			if (isset($action->custom_topic)) {
-				foreach ($action->custom_topic as $source_category => $topic) {
-					$categories[$source_category]['topic'] = $topic;
-				}
-			}
-			if (isset($action->custom_rating)) {
-				foreach ($action->custom_rating as $source_category => $rating) {
-					$categories[$source_category]['rating'] = $rating;
-				}
-			}
-			if (isset($action->custom_priority)) {
-				foreach ($action->custom_priority as $source_category => $priority) {
-					$categories[$source_category]['priority'] = $priority;
-				}
-			}
-		}
-		return $categories;
-	}
-
 	private function insert_item( $rssId, $data, $actions )
 	{
 		$this->items->insert(
@@ -598,22 +547,18 @@ class RSSLib extends TikiDb_Bridge
 				'author' => $data['author'],
 				'description' => $data['description'],
 				'content' => $data['content'],
-				'categories' => $data['categories'],
 			)
 		);
 
 		$actions = json_decode($actions, true);
 
 		if (!empty($actions)) {
-			$pagecontentlib = TikiLib::lib('pagecontent');
-			$data = $pagecontentlib->augmentInformation($data);
-
 			foreach ( $actions as $action ) {
 				$method = 'process_action_' . $action['type'];
 				unset( $action['type'] );
 
 				if ( $action['active'] ) {
-					$this->$method( $action, $data , $rssId );
+					$this->$method( $action, $data );
 				}
 			}
 		}
@@ -635,57 +580,11 @@ class RSSLib extends TikiDb_Bridge
 		);
 	}
 
-	private function process_action_article( $configuration, $data, $rssId )
+	private function process_action_article( $configuration, $data )
 	{
 		$tikilib = TikiLib::lib('tiki');
 		$artlib = TikiLib::lib('art');
 		$publication = $data['publication_date'];
-
-		// First override with custom settings for source categories if any
-		if (isset($data['categories'])) {
-			$source_categories = json_decode($data['categories'], true);
-		}
-		if (!empty($source_categories)) {
-			$custominfo = $this->get_article_custom_info( $rssId );
-
-			$oldcats = array_keys($custominfo);
-
-			if ($newcats = array_diff($source_categories, $oldcats)) {
-				// send a notification if there are new categories
-				$nots = $tikilib->get_event_watches('article_submitted', '*');
-				if (count($nots)) {
-					$title = $this->modules->fetchOne('name', array('rssId' => $rssId));
-					include_once('lib/notifications/notificationemaillib.php');
-					$smarty = TikiLib::lib('smarty');
-					$smarty->assign('mail_site', $_SERVER['SERVER_NAME']);
-					$smarty->assign('rssId', $rssId);
-					$smarty->assign('title', $title);
-					$smarty->assign('newcats', $newcats);
-					sendEmailNotification($nots, 'watch', 'rss_new_source_category_subject.tpl', $_SERVER['SERVER_NAME'], 'rss_new_source_category.tpl');
-				}
-			}
-
-			$current_priority = 0;
-			foreach ($custominfo as $source_category => $settings) {
-				if (in_array($source_category, $source_categories)) {
-					if (isset($settings['priority']) && $settings['priority'] < $current_priority) {
-						continue;
-					}
-					if (!empty($settings['atype'])) {
-						$configuration['atype'] = $settings['atype'];
-					}
-					if (isset($settings['topic']) && $settings['topic'] > '') {
-						// need to match 0
-						$configuration['topic'] = $settings['topic'];
-					}
-					if (isset($settings['rating']) && $settings['rating'] > '') {
-						// need to match 0
-						$configuration['rating'] = $settings['rating'];
-					}
-					$current_priority = isset($settings['priority']) ? $settings['priority'] : 0;
-				}
-			}
-		}
 
 		if ( $configuration['future_publish'] > 0 ) {
 			$publication = $tikilib->now + $configuration['future_publish']*60;
@@ -786,14 +685,6 @@ class RSSLib extends TikiDb_Bridge
 					$categlib->categorize($objectId, $categId);
 				}
 			}
-	
-			TikiLib::lib('relation')->add_relation('tiki.rss.source', 'article', $id, 'rss', $rssId);
-			require_once('lib/search/refresh-functions.php');
-			refresh_index('articles', $id);
-			$related_items = TikiLib::lib('relation')->get_relations_to('article', $id, 'tiki.article.attach');
-			foreach ($related_items as $item) {
-				refresh_index($item['type'], $item['itemId']);	
-			}
 		}
 	}
 
@@ -860,7 +751,7 @@ class RSSLib extends TikiDb_Bridge
 		require_once 'lib/smarty_tiki/modifier.sefurl.php';
 
 		$tikilib = TikiLib::lib('tiki');
-		$writer = new Zend\Feed\Writer\Feed();
+		$writer = new Zend_Feed_Writer_Feed;
 		$writer->setTitle($feed_descriptor['feedTitle']);
 		$writer->setDescription($feed_descriptor['feedDescription']);
 		$writer->setLink($tikilib->tikiUrl(''));
@@ -896,3 +787,5 @@ class RSSLib extends TikiDb_Bridge
 		return $writer;
 	}
 }
+global $rsslib;
+$rsslib = new RSSLib;

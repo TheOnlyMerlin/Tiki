@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -12,8 +12,8 @@ $section = 'wiki page';
 $section_class = "tiki_wiki_page manage";	// This will be body class instead of $section
 
 require_once ('tiki-setup.php');
-$histlib = TikiLib::lib('hist');
-$wikilib = TikiLib::lib('wiki');
+include_once ('lib/wiki/histlib.php');
+include_once ('lib/wiki/wikilib.php');
 
 $access->check_feature('feature_wiki');
 
@@ -48,19 +48,17 @@ if (!$tikilib->page_exists($page)) {
 	die;
 }
 if (isset($_REQUEST["remove"])) {
+	check_ticket('remove-page');
 	if (isset($_REQUEST["all"]) && $_REQUEST["all"] == 'on') {
-		$access->check_authenticity(tr('Are you sure you want to completely remove page "%0"', $_REQUEST['page']));
 		$tikilib->remove_all_versions($_REQUEST["page"]);
 		$access->redirect();
 		die;
 	} else {
 		$smarty->loadPlugin('smarty_modifier_sefurl');
 		if ($version == "last") {
-			$access->check_authenticity(tr('Are you sure you want to remove the most recent version of page "%0"', $_REQUEST['page']));
 			$wikilib->remove_last_version($_REQUEST["page"]);
 			$access->redirect(smarty_modifier_sefurl($_REQUEST['page']));
 		} else {
-			$access->check_authenticity(tr('Are you sure you want to remove version %0 of page "%1"', $_REQUEST['version'], $_REQUEST['page']));
 			$histlib->remove_version($_REQUEST['page'], $_REQUEST['version'], $_REQUEST['historyId']);
 			$access->redirect(smarty_modifier_sefurl($_REQUEST['page']));
 		}

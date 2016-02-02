@@ -9,12 +9,12 @@
 {/if}
 {if $mail_contributions}{tr}Contribution:{/tr} {$mail_contributions}{/if}
 
-{if $mail_action eq 'delete'}{tr}The page {$prefs.mail_template_custom_text}"{$mail_page}" was deleted but used to be here:{/tr}
+{if $mail_action eq 'delete'}{tr}The {$prefs.mail_template_custom_text}page "{$mail_page}" was deleted but used to be here:{/tr}
 {else}{tr}You can view the page by following this link:{/tr}
-{/if}
-{$mail_machine_raw}/{$mail_page|sefurl}
+{/if} 
+{$mail_machine_raw}/tiki-index.php?page={$mail_page|escape:"url"}
 
-{if $mail_action eq 'edit'}{tr}You can view a diff back to the previous version by following this link:{/tr} {* Using the full diff syntax so the links are still valid, even after a new version has been made. -rlpowell *}
+{if $mail_action eq 'edit'}{tr}You can view a diff back to the previous version by following this link:{/tr} {* Using the full diff syntax so the links are still valid, even after a new version has been made.  -rlpowell *}
 {$mail_machine_raw}/tiki-pagehistory.php?page={$mail_page|escape:"url"}&compare=1&oldver={$mail_oldver}&newver={$mail_newver}
 {elseif $mail_action eq 'attach'}{$mail_data} : {$mail_machine_raw}/tiki-download_wiki_attachment.php?attId={$mail_attId}
 {/if}

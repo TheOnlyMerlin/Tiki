@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -29,11 +29,7 @@ function module_who_is_there_info()
 			'cluster' => array(
 				'name' => tra('Cluster Mode'),
 				'description' => tra('If set to "1", separate users based on which host/server they logged on.')
-			),
-			'silent' => array(
-				'name' => tra('Silent Mode'),
-				'description' => tra('If set to "1" hides the module, which allows another "who is there" module to include users that should not see it.')
-			),
+			)
 		)
 	);
 }
@@ -44,8 +40,8 @@ function module_who_is_there_info()
  */
 function module_who_is_there($mod_reference, $module_params)
 {
-	$tikilib = TikiLib::lib('tiki');
-	$smarty = TikiLib::lib('smarty');
+	global $tikilib, $smarty;
+
 	$count = !isset($module_params['content']) || $module_params['content'] != 'list';
 	$list = !isset($module_params['content']) || $module_params['content'] != 'count';
 	$smarty->assign('count', $count);

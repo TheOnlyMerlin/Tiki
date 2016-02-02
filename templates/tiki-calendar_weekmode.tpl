@@ -30,8 +30,8 @@
 						{/if}
 						{* add additional check to NOT show add event icon if no calendar displayed *}
 						{if $tiki_p_add_events eq 'y' and count($listcals) > 0 and $displayedcals|@count > 0}
-							<a class="tips" title=":{tr}Add Event{/tr}" href="tiki-calendar_edit_item.php?todate={$viewWeekDays[dn]}{if $displayedcals|@count eq 1}&amp;calendarId={$displayedcals[0]}{/if}">
-								{icon name='add'}
+							<a href="tiki-calendar_edit_item.php?todate={$viewWeekDays[dn]}{if $displayedcals|@count eq 1}&amp;calendarId={$displayedcals[0]}{/if}">
+								{icon _id='calendar_add' alt="{tr}Add Event{/tr}"}
 							</a>
 						{/if}
 					</td>
@@ -46,7 +46,7 @@
 				{section name=weekday loop=$weekdays}
 					{if isset($smarty.section.weekday.index) and in_array($smarty.section.weekday.index,$viewdays)}
 						<td id="row_{$h[0]}_{$smarty.section.weekday.index}" class="calWeek">&nbsp;
-
+							
 						</td>
 					{/if}
 				{/section}
@@ -62,15 +62,14 @@
 						{assign var=calendarId value=$event.calendarId}
 						{assign var=over value=$event.over|escape:"javascript"|escape:"html"}
 						{if !empty($event.calitemId)}
-							<div id="event_{$h}_{$smarty.section.weekday.index}_{$event.calitemId}" {if $event.calname ne ""}class="Cal{$event.type} vevent tips"{/if} style="overflow:visible;position:absolute;top:{$event.top}px;height:{$event.duree-1}px;left:{$event.left}%;width:{$event.width}%;background-color:#{$infocals.$calendarId.custombgcolor};border-color:#{$infocals.$calendarId.customfgcolor};color:#{$infocals.$cellcalendarId.customfgcolor};opacity:{if $event.status eq '0'}0.8{else}1{/if};filter:alpha(opacity={if $event.status eq '0'}80{else}100{/if});text-align:center;overflow:hidden;cursor:pointer;{if $prefs.feature_jquery_ui eq 'y'}display:none;{/if}"
-								title="{tr}Details{/tr}"
+							<div id="event_{$h}_{$smarty.section.weekday.index}_{$event.calitemId}" {if $event.calname ne ""}class="Cal{$event.type} vevent"{/if} style="overflow:visible;position:absolute;top:{$event.top}px;height:{$event.duree-1}px;left:{$event.left}%;width:{$event.width}%;background-color:#{$infocals.$calendarId.custombgcolor};border-color:#{$infocals.$calendarId.customfgcolor};color:#{$infocals.$cellcalendarId.customfgcolor};opacity:{if $event.status eq '0'}0.8{else}1{/if};filter:alpha(opacity={if $event.status eq '0'}80{else}100{/if});text-align:center;overflow:hidden;cursor:pointer;{if $prefs.feature_jquery_ui eq 'y'}display:none;{/if}"
 								{if $prefs.calendar_sticky_popup eq "y"}
 									{popup vauto=true hauto=true sticky=true fullhtml="1" trigger="onClick" text=$over}
 								{else}
 									{popup vauto=true hauto=true sticky=false fullhtml="1" text=$over}
 								{/if}>
 								<span style="padding-top:4px;float:right">
-									<a style="padding:0 3px;"
+									<a {if $prefs.mobile_mode eq "y"}data-role="button" data-inline="true" data-mini="true" {/if}style="padding:0 3px;"
 										{if $event.modifiable eq "y" || $event.visible eq 'y'}
 											{if $prefs.calendar_sticky_popup eq "y"}
 												href="#"
@@ -78,7 +77,8 @@
 												href="tiki-calendar_edit_item.php?viewcalitemId={$event.calitemId}"
 											{/if}
 										{/if}
-									   title="{tr}Details{/tr}">{icon name='info'}
+									>
+										<img src="img/icons/more_info.gif" alt="{tr}Details{/tr}">
 									</a>
 								</span>
 								<abbr class="dtstart" title="{if $event.result.allday eq '1'}{tr}All day{/tr}{else}{$event.startTimeStamp|isodate}{/if}" style="{if $event.status eq '2'}text-decoration:line-through;{/if}{if isset($infocals.$cellcalendarId.customfgcolor)}color:#{$infocals.$cellcalendarId.customfgcolor};{/if}">
@@ -114,7 +114,6 @@
 							{else}
 								{popup vauto=true hauto=true sticky=false fullhtml="1" text=$overMany}
 							{/if}
-							title="{tr}Details{/tr}"
 						>
 							<div style="position:absolute;top:50%;left:50%;margin-left:-40px;margin-top:-30px">
 								<a style="padding:0 3px;" href="{$myurl}?viewmode=day&todate={$viewWeekDays[weekday]}">

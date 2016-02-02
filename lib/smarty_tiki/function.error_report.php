@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -12,27 +12,6 @@ function smarty_function_error_report($params, $smarty)
 
 	$pre = '<div id="error_report">';
 	$post = '</div>';
-
-	$repeat = false;
-	$legacy = $smarty->getTemplateVars('display_msg');
-	$type = $smarty->getTemplateVars('display_msgtype');
-	$type = empty($type) ? 'note' : $type;
-	$titles = [
-		'confirm' => tra('Success'),
-		'feedback' => tra('Success'),
-		'error' => tra('Error'),
-		'errors' => tra('Errors'),
-		'warning' => tra('Warning'),
-		'note' => tra('Notice')
-	];
-	if ($legacy) {
-		// Handle reporting ofthe display_msg smarty variable
-		$smarty->loadPlugin('smarty_block_remarksbox');
-		$post .= smarty_block_remarksbox(array(
-			'type' => $type,
-			'title' => $titles[$type],
-		), $legacy, $smarty, $repeat);
-	}
 
 	TikiLib::lib('header')->add_js(
 		'
@@ -50,6 +29,10 @@ function smarty_function_error_report($params, $smarty)
 			return false;
 		});
 	});
+	$("#error_report .clear").on("click", function () {
+		$("#error_report").empty();
+		return false;
+	});
 	'
 	);
 
@@ -62,7 +45,9 @@ function smarty_function_error_report($params, $smarty)
 				'type' => 'errors',
 				'title' => tra('Error(s)'),
 			),
-			'<ul><li>' . implode('</li><li>', $errors) . '</li></ul>',
+			'<a class="clear" style="float: right;" href="#">' .
+			tr('Clear errors') . '</a><ul><li>' .
+			implode('</li><li>', $errors) . '</li></ul>',
 			$smarty,
 			$repeat
 		) . $post;

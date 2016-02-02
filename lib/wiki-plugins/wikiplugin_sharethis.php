@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -12,36 +12,29 @@ function wikiplugin_sharethis_info()
 		'documentation' => 'PluginSharethis',
 		'description' => tra('Add a ShareThis button'),
 		'prefs' => array( 'wikiplugin_sharethis' ),
-		'iconname' => 'sharethis',
-		'introduced' => 3,
+		'icon' => 'img/icons/sharethis.png',
 		'tags' => array( 'basic' ),
 		'params' => array(
 			'sendsvcs' => array(
 				'required' => false,
 				'name' => tra('Send Services'),
-				'description' => tr('By default, %0email%1, %0aim%1 and %0sms%1 are available. Input one or two of the
-					services separated by a %0|%1 to limit the choice of send services.', '<code>', '</code>'),
-				'since' => '3.2',
+				'description' => tra('By default, email, aim and sms are available. Input one or two of the services separated by a | to limit the choice of send services.'),
 				'default' => '',
 				'advanced' => true,
-				'separator' => '|',
-				'filter' => 'word',
 				'options' => array(
 					array('text' => '', 'value' => ''),
 					array('text' => tra('Aim'), 'value' => 'aim'),
-					array('text' => tra('Aim and Email'), 'value' => 'aim|email'),
-					array('text' => tra('Aim and Sms'), 'value' => 'aim|sms'),
+					array('text' => tra('Aim $ Email'), 'value' => 'aim|email'),
+					array('text' => tra('Aim $ Sms'), 'value' => 'aim|sms'),
 					array('text' => tra('Email'), 'value' => 'email'),
-					array('text' => tra('Email and Sms'), 'value' => 'email|sms'),
+					array('text' => tra('Email $ Sms'), 'value' => 'email|sms'),
 				)
 			),
 			'style' => array(
 				'required' => false,
 				'name' => tra('Button Style'),
-				'description' => tra('Set button style.'),
-				'since' => '5.0',
+				'description' => tra('Set button style: horizontal, vertical or rotate.'),
 				'default' => '',
-				'filter' => 'word',
 				'options' => array(
 					array('text' => tra(''), 'value' => ''),
 					array('text' => tra('Horizontal'), 'value' => 'horizontal'),
@@ -52,11 +45,8 @@ function wikiplugin_sharethis_info()
 			'rotateimage' => array(
 				'required' => false,
 				'name' => tra('Rotate Image'),
-				'description' => tr('A value of %0y%1 (Yes) will cause the button icon to rotate every 3 seconds between
-					a few icons, cycling through twice before stopping.', '<code>', '</code>'),
-				'since' => '3.2',
+				'description' => tra('A value of y (Yes) will cause the button icon to rotate every 3 seconds between a few icons, cycling through twice before stopping.'),
 				'default' => '',
-				'filter' => 'alpha',
 				'options' => array(
 					array('text' => '', 'value' => ''),
 					array('text' => tra('Yes'), 'value' => 'y'),
@@ -66,21 +56,14 @@ function wikiplugin_sharethis_info()
 			'multiple' => array(
 				'required' => false,
 				'name' => tra('Multiple Icons'),
-				'description' => tr('Enter pipe-separated list of services, e.g., %0.',
-					'<code>email|facebook|twitter|sharethis</code>'),
-				'since' => '5.0',
-				'separator' => '|',
-				'filter' => 'word',
+				'description' => tra('Enter list: email | facebook | twitter | sharethis, depending on which icons you\'d like.'),
 				'default' => '',
 			),
 			'postfirst' => array(
 				'required' => false,
 				'name' => tra('First Services Shown'),
-				'description' => tr('Input a list of post services (like %0Facebook|Myspace|Digg%1, etc.) separated by a
-					%0|%1 to customize the services that are shown in the opening panel of the widget.', '<code>', '</code>'),
-				'since' => '3.2',
-				'separator' => '|',
-				'filter' => 'word',
+				'description' => tra('Input a list of post services (like Facebook, Myspace, Digg, etc.) separated by a | to customize the services that are shown in the opening panel of the widget.'),
+				'filter' => 'alpha',
 				'advanced' => true,
 				'default' => '',
 			),
@@ -88,72 +71,55 @@ function wikiplugin_sharethis_info()
 				'required' => false,
 				'name' => tra('Button Text'),
 				'description' => tra('Custom link text for the button.'),
-				'since' => '3.2',
-				'filter' => 'text',
 				'default' => '',
 			),
 			'headertitle' => array(
 				'required' => false,
 				'name' => tra('Header Title'),
 				'description' => tra('Optional header title text for the widget.'),
-				'since' => '3.2',
-				'filter' => 'text',
 				'default' => '',
 			),
 			'headerbg' => array(
 				'required' => false,
 				'name' => tra('Header Background'),
-				'description' => tra('HTML color code (not color name) for the background color for the header if an
-					optional header title is used.'),
-				'since' => '3.0',
+				'description' => tra('HTML color code (not color name) for the background color for the header if an optional header title is used.'),
 				'advanced' => true,
-				'filter' => 'text',
 				'default' => '',
 			),
 			'headertxtcolor' => array(
 				'required' => false,
 				'name' => tra('Header Text Color'),
 				'description' => tra('HTML color code (not color name) for the header text if an optional header title is used.'),
-				'since' => '3.2',
 				'advanced' => true,
-				'filter' => 'text',
 				'default' => '',
 			),
 			'linkfg' => array(
 				'required' => false,
 				'name' => tra('Link text color for services'),
 				'description' => tra('HTML color code (not color name) for the link text for all send and post services shown in the widget'),
-				'since' => '3.0',
 				'advanced' => true,
-				'filter' => 'text',
 				'default' => '',
 			),
 			'popup' => array(
 				'required' => false,
 				'name' => tra('Pop-up'),
-				'description' => tra('Set whether the widget will show in a pop-up window.'),
-				'since' => '3.0',
+				'description' => tra('A value of true will cause the widget to show in a pop-up window.'),
 				'advanced' => true,
-				'filter' => 'word',
 				'default' => '',
 				'options' => array(
 					array('text' => '', 'value' => ''),
-					array('text' => tra('No'), 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'true'),
+					array('text' => tra('True'), 'value' => 'true'),
 				)
 			),
 			'embed' => array(
 				'required' => false,
 				'name' => tra('Embedded Elements'),
-				'description' => tra('Allow embedded elements (like flash) to be seen while iframe is loading.'),
-				'since' => '3.0',
+				'description' => tra('A value of true will allow embedded elements (like flash) to be seen while iframe is loading.'),
 				'advanced' => true,
-				'filter' => 'word',
 				'default' => '',
 				'options' => array(
 					array('text' => '', 'value' => ''),
-					array('text' => tra('No'), 'value' => ''),
-					array('text' => tra('Yes'), 'value' => 'true'),
+					array('text' => tra('True'), 'value' => 'true'),
 				)
 			),
 		)
@@ -161,7 +127,7 @@ function wikiplugin_sharethis_info()
 }
 function wikiplugin_sharethis($data, $params)
 {
-	$headerlib = TikiLib::lib('header');
+	global $headerlib; include_once('lib/headerlib.php');
 	extract($params, EXTR_SKIP);
 	$sharethis_options = array();
 	$iconcode = '';

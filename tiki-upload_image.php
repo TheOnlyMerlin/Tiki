@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,8 +10,8 @@
 
 $section = 'galleries';
 require_once ('tiki-setup.php');
-$categlib = TikiLib::lib('categ');
-$imagegallib = TikiLib::lib('imagegal');
+include_once ('lib/categories/categlib.php');
+include_once ('lib/imagegals/imagegallib.php');
 
 $access->check_feature('feature_galleries');
 
@@ -139,7 +139,7 @@ if (isset($_REQUEST["upload"])) {
 				$imginfo = @getimagesize($tmp_dest);
 				unlink($tmp_dest);
 				if (!$data || !$imginfo) { // Not in Image format
-					$error_msg = tra('The uploaded file is not recognized as a image');
+					$error_msg = tra('The uploaded file ist not recognized as a image');
 					$smarty->assign('errortype', 'no_redirect_login');
 				}
 			} else {
@@ -174,6 +174,16 @@ if (isset($_REQUEST["upload"])) {
 	}
 	$lat = NULL;
 	$lon = NULL;
+	if ($prefs['feature_maps'] == 'y') {
+		if (isset($_REQUEST["lat"])) {
+			$lat = (float)$_REQUEST["lat"];
+			$smarty->assign('lat', $lat);
+		}
+		if (isset($_REQUEST["lon"])) {
+			$lon = (float)$_REQUEST["lon"];
+			$smarty->assign('lon', $lon);
+		}
+	}
 	if (isset($data)) {
 		if (!$up_thumb) {
 			if (function_exists("ImageCreateFromString") && (!strstr($type, "gif"))) {
@@ -205,7 +215,7 @@ if (isset($_REQUEST["upload"])) {
 					$t_type = 'image/jpg'; // . $t_type;
 					$imageId = $imagegallib->insert_image($_REQUEST["galleryId"], $name, $_REQUEST["description"], $filename, $type, $data, $size, $size_x, $size_y, $user, $t_data, $t_type, $lat, $lon, $gal_info);
 				} else { // Not in Image format
-					$smarty->assign('msg', tra('The uploaded file is not recognized as a image'));
+					$smarty->assign('msg', tra('The uploaded file ist not recognized as a image'));
 					$smarty->display('error.tpl');
 					die;
 				}
@@ -220,7 +230,7 @@ if (isset($_REQUEST["upload"])) {
 					$size_y = imagesy($img);
 				} else {
 					// Not in Image format
-					$smarty->assign('msg', tra('The uploaded file is not recognized as a image'));
+					$smarty->assign('msg', tra('The uploaded file ist not recognized as a image'));
 					$smarty->display('error.tpl');
 					die;
 				}
@@ -296,6 +306,16 @@ for ($i = 0; $i < $temp_max; $i++) {
 	}
 }
 $smarty->assign_by_ref('galleries', $galleries["data"]);
+if ($prefs['feature_maps'] == 'y' && isset($_REQUEST["galleryId"])) {
+	$gal_info = $imagegallib->get_gallery($_REQUEST["galleryId"]);
+	if ($gal_info['geographic'] == 'y') {
+		$smarty->assign('geogallery', 'y');
+	} else {
+		$smarty->assign('geogallery', 'n');
+	}
+} else {
+	$smarty->assign('geogallery', 'n');
+}
 $cat_type = 'image';
 $cat_objid = '0';
 include_once ("categorize_list.php");

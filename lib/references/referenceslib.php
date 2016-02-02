@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -133,8 +133,6 @@ class ReferencesLib extends TikiLib
 
 	public function list_lib_references()
 	{
-		global $page;
-
 		$query = 'select * from `tiki_page_references` WHERE `page_id` IS NULL ORDER BY `biblio_code`';
 		$query_cant = 'select count(*) from `tiki_page_references` WHERE `page_id` IS NULL';
 		$result = $this->query($query, array($page));
@@ -165,6 +163,96 @@ class ReferencesLib extends TikiLib
 			$query,
 			array(
 				$page,
+				$biblio_code,
+				$author,
+				$title,
+				$part,
+				$uri,
+				$code,
+				$year,
+				$style,
+				$template,
+				$publisher,
+				$location
+			)
+		);
+
+		return true;
+	}
+
+	public function add_reference_ajax($page, $biblio_code, $author, $title,
+															$part, $uri, $code, $year, $style,
+															$template, $publisher, $location)
+	{
+		$query = 'insert `tiki_page_references`' .
+							' (`page_id`, `biblio_code`, `author`, `title`, `part`, `uri`,' .
+							' `code`, `year`, `style`, `template`, `publisher`, `location`)' .
+							' values (?,?,?,?,?,?,?,?,?,?,?,?)';
+
+		$this->query(
+			$query,
+			array(
+				$page,
+				$biblio_code,
+				$author,
+				$title,
+				$part,
+				$uri,
+				$code,
+				$year,
+				$style,
+				$template,
+				$publisher,
+				$location
+			)
+		);
+
+		return $this->lastInsertId();
+	}
+
+	public function add_lib_reference_ajax($biblio_code, $author, $title, $part,
+																	$uri, $code, $year, $style, $template,
+																	$publisher, $location)
+	{
+		$query = 'insert `tiki_page_references`' .
+							' (`page_id`, `biblio_code`, `author`, `title`, `part`, `uri`, `code`,' .
+							' `year`, `style`, `template`, `publisher`, `location`)' .
+							' values (?,?,?,?,?,?,?,?,?,?,?,?)';
+
+		$this->query(
+			$query,
+			array(
+				null,
+				$biblio_code,
+				$author,
+				$title,
+				$part,
+				$uri,
+				$code,
+				$year,
+				$style,
+				$template,
+				$publisher,
+				$location
+			)
+		);
+
+		return $this->lastInsertId();
+	}
+
+	public function add_lib_reference($biblio_code, $author, $title, $part,
+															$uri, $code, $year, $style, $template,
+															$publisher, $location)
+	{
+		$query = 'insert `tiki_page_references`' .
+							' (`page_id`, `biblio_code`, `author`, `title`, `part`, `uri`,' .
+							' `code`, `year`, `style`, `template`, `publisher`, `location`)' .
+							' values (?,?,?,?,?,?,?,?,?,?,?,?)';
+
+		$this->query(
+			$query,
+			array(
+				null,
 				$biblio_code,
 				$author,
 				$title,
@@ -249,7 +337,44 @@ class ReferencesLib extends TikiLib
 		return true;
 	}
 
+	public function edit_libReference($ref_id, $biblio_code, $author, $title,
+															$part, $uri, $code, $year, $style,
+															$template, $publisher, $location)
+	{
+		$query = 'update `tiki_page_references`' .
+								' SET `biblio_code`=?, `author`=?, `title`=?, `part`=?, `uri`=?, `code`=?,' .
+									' `year`=?, `style`=?, `template`=?, `publisher`=?, `location`=?' .
+								' where `ref_id`=?';
+
+		$this->query(
+			$query,
+			array(
+					$biblio_code,
+					$author,
+					$title,
+					$part,
+					$uri,
+					$code,
+					$year,
+					$style,
+					$template,
+					$publisher,
+					$location,
+					(int) $ref_id
+			)
+		);
+
+		return true;
+	}
+
 	public function remove_reference($id)
+	{
+		$query = 'delete from `tiki_page_references` where `ref_id`=?';
+		$this->query($query, array((int) $id));
+		return true;
+	}
+
+	public function remove_libReference($id)
 	{
 		$query = 'delete from `tiki_page_references` where `ref_id`=?';
 		$this->query($query, array((int) $id));
@@ -270,4 +395,33 @@ class ReferencesLib extends TikiLib
 
 		return $result->numrows;
 	}
+
+	public function get_permission($perm)
+	{
+		global $user, $userlib, $tiki_p_admin;
+
+		if (isset($tiki_p_admin) && $tiki_p_admin == 'y') {
+			return 'y';
+		}
+
+		$all_groups = $userlib->get_user_groups($user);
+
+		if (count($all_groups)) {
+			foreach ($all_groups as $k => $v) {
+				$all_groups[$k] = "'" . $v . "'";
+			}
+			$all_groups = implode(',', $all_groups);
+		} else {
+			$all_groups = '';
+		}
+
+		$all_groups = '(' . $all_groups . ')';
+		$query = "SELECT * FROM `users_grouppermissions` WHERE `groupName` IN $all_groups AND `permName` = ?";
+		$result = $this->query($query, array($perm));
+
+		return ($result->numrows > 0) ? 'y' : 'n';
+	}
+
 }
+global $referenceslib;
+$referenceslib = new ReferencesLib();

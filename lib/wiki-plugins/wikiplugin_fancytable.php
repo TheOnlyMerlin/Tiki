@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -7,86 +7,64 @@
 
 function wikiplugin_fancytable_info()
 {
-	$tsOn = Table_Check::isEnabled();
-	if ($tsOn === true) {
-		$ts = new Table_Plugin;
-		$ts->createParams();
-		$tsparams = $ts->params;
-		unset($tsparams['server']);
-	} else {
-		$tsparams = array();
-	}
+
+	$ts = new Table_Plugin;
+	$ts->createParams();
+	$tsparams = $ts->params;
+	unset($tsparams['server']);
 	$params = array_merge(
 		array(
 			 'head' => array(
 				 'required' => false,
 				 'name' => tra('Heading Row'),
-				 'description' => tr('Header rows of the table. Use %0 to separate multiple rows.', '<code>>></code>'),
+				 'description' => tra('Header rows of the table. Use >> to separate multiple rows.'),
 				 'default' => '',
-				 'since' => '1'
 			 ),
 			 'headclass' => array(
 				 'required' => false,
 				 'name' => tra('Heading CSS Class'),
 				 'description' => tra('CSS class to apply to the heading row.'),
 				 'default' => '',
-				 'since' => '1'
 			 ),
 			 'headaligns' => array(
 				 'required' => false,
 				 'name' => tra('Header Horizontal Align'),
-				 'description' => tr('Horizontal alignments for header cells separated by %0. Choices: %1', '<code>|</code>',
-					 '<code>left</code>, <code>right</code>, <code>center</code>, <code>justify</code>'),
+				 'description' => tra('Horizontal alignments for header cells separated by |. Choices: left, right, center, justify.'),
 				 'default' => '',
-				 'since' => '4.1',
-				 'filter' => 'text',
 			 ),
 			 'headvaligns' => array(
 				 'required' => false,
 				 'name' => tra('Header Vertical Align'),
-				 'description' => tr('Vertical alignments for header cells separated by %0. Choices: %1', '<code>|</code>',
-					 '<code>top</code>, <code>middle</code>, <code>bottom</code>, <code>baseline</code>'),
+				 'description' => tra('Vertical alignments for header cells separated by |. Choices: top, middle, bottom, baseline.'),
 				 'default' => '',
-				 'since' => '4.1',
-				 'filter' => 'text',
 			 ),
 			 'colwidths' => array(
 				 'required' => false,
 				 'name' => tra('Column Widths'),
-				 'description' => tr('Column widths followed by px for pixels or % for percentages. Each column
-				    separated by %0.', '<code>|</code>'),
+				 'description' => tra('Column widths followed by px for pixels or % for percentages. Each column separated by |.'),
 				 'default' => '',
-				 'since' => '4.1'
 			 ),
 			 'colaligns' => array(
 				 'required' => false,
 				 'name' => tra('Cell Horizontal Align'),
-				 'description' => tr('Table body column horizontal alignments separated by %0. Choices: %1', '<code>|</code>',
-					 '<code>left</code>, <code>right</code>, <code>center</code>, <code>justify</code>'),
+				 'description' => tra('Table body column horizontal alignments separated by |. Choices: left, right, center, justify.'),
 				 'default' => '',
-				 'since' => '4.1',
-				 'filter' => 'text',
 			 ),
 			 'colvaligns' => array(
 				 'required' => false,
 				 'name' => tra('Cell Vertical Align'),
-				 'description' => tr('Table body column vertical alignments separated by %0. Choices: %1', '<code>|</code>',
-					 '<code>top</code>, <code>middle</code>, <code>bottom</code>, <code>baseline</code>'),
+				 'description' => tra('Table body column vertical alignments separated by |. Choices: top, middle, bottom, baseline.'),
 				 'default' => '',
-				 'since' => '4.1',
-				 'filter' => 'text',
 			 ),
 		), $tsparams
 	);
 	return array(
 		'name' => tra('Fancy Table'),
 		'documentation' => 'PluginFancyTable',
-		'description' => tra('Create a formatted table that can be filtered and sorted'),
+		'description' => tra('Create a formatted table'),
 		'prefs' => array('wikiplugin_fancytable'),
-		'body' => tr('Rows separated by %0 in the header; for the table body, one row per line. Cells separated by %1 (since Tiki4) or %2 in both cases.',
-			'<code>>></code>', '<code>|</code>', '<code>~|~</code>'),
-		'iconname' => 'table',
-		'introduced' => 1,
+		'body' => tra('Rows separated by >> in the header; for the table body, one row per line. Cells separated by | in both cases.'),
+		'icon' => 'img/icons/table.png',
 		'tags' => array( 'basic' ),
 		'params' => $params,
 	);
@@ -104,30 +82,24 @@ function wikiplugin_fancytable($data, $params)
 	$msg = '';
 
 	if ((isset($sortable) && $sortable != 'n')) {
-		if (Table_Check::isEnabled()) {
-			$ts = new Table_Plugin;
+		$ts = new Table_Plugin;
+		if ($ts->perms !== false) {
 			$ts->setSettings(
-				'wpfancytable' . $iFancytable,
+				'fancytable_' . $iFancytable,
 				'n',
 				$sortable,
 				isset($sortList) ? $sortList : null,
 				isset($tsortcolumns) ? $tsortcolumns : null,
 				isset($tsfilters) ? $tsfilters : null,
 				isset($tsfilteroptions) ? $tsfilteroptions : null,
-				isset($tspaginate) ? $tspaginate : null,
-				isset($tscolselect) ? $tscolselect : null,
-				null,
-				null,
-				isset($tstotals) ? $tstotals : null,
-				isset($tstotaloptions) ? $tstotaloptions : null
+				isset($tspaginate) ? $tspaginate : null
 			);
-			if (is_array($ts->settings)) {
-				$ts->settings['resizable'] = true;
-				Table_Factory::build('plugin', $ts->settings);
-				$sort = true;
-			} else {
-				$sort = false;
-			}
+		} else {
+			$sort = false;
+		}
+		if (is_array($ts->settings)) {
+			Table_Factory::build('plugin', $ts->settings);
+			$sort = true;
 		} else {
 			$sort = false;
 		}
@@ -136,7 +108,7 @@ function wikiplugin_fancytable($data, $params)
 			if ($prefs['feature_jquery_tablesorter'] === 'n') {
 				$msg = '<em>' . tra('The jQuery Sortable Tables feature must be activated for the sort feature to work.')
 					. '</em>';
-			} elseif ($prefs['javascript_enabled'] !== 'y') {
+			} elseif ($prefs['disableJavascript'] === 'y') {
 				$msg =  '<em>' . tra('Javascript must be enabled for the sort feature to work.') . '</em>';
 			} else {
 				$msg = '<em>' . tra('Unable to load the jQuery Sortable Tables feature.') . '</em>';
@@ -148,8 +120,8 @@ function wikiplugin_fancytable($data, $params)
 
 	//Start the table
 	$style = $sort === true ? ' style="visibility:hidden"' : '';
-	$wret = '<div id="wpfancytable' . $iFancytable . '-div"' . $style . ' class="ts-wrapperdiv">' . "\r\t";
-	$wret .= '<table class="table table-striped table-hover normal" id="wpfancytable' . $iFancytable . '">' . "\r\t";
+	$wret = '<div id="fancytable_' . $iFancytable . '"' . $style . '>' . "\r\t";
+	$wret .= '<table class="normal" id="fancytable_' . $iFancytable . '_table">' . "\r\t";
 
 	//Header
 	if (isset($head)) {
@@ -179,10 +151,9 @@ function wikiplugin_fancytable($data, $params)
 		);
 
 		//restore original tags and plugin syntax
-		$headhtml = $headrows['html'];
-		postprocess_section($headhtml, $tagremove, $pluginremove);
+		postprocess_section($headrows, $tagremove, $pluginremove);
 
-		$wret .= '<thead>' . $headhtml . "\r\t" . '</thead>' . "\r\t";
+		$wret .= '<thead>' . $headrows . "\r\t" . '</thead>' . "\r\t" . '<tbody>';
 	}
 
 	//Body
@@ -208,17 +179,13 @@ function wikiplugin_fancytable($data, $params)
 	);
 
 	//restore original tags and plugin syntax
-	$bodyhtml = $bodyrows['html'];
-	postprocess_section($bodyhtml, $tagremove, $pluginremove);
+	postprocess_section($bodyrows, $tagremove, $pluginremove);
 
-	//end the tbody
-	$wret .= '<tbody>' . $bodyhtml . "\r\t" . '</tbody>';
+	$wret .= $bodyrows;
 
-	if (isset($ts->settings)) {
-		$footer = Table_Totals::getTotalsHtml($ts->settings, $bodyrows['cols']);
-		if ($footer) {
-			$wret .= $footer;
-		}
+	//end the table
+	if (isset($head)) {
+		$wret .= "\r\t" . '</tbody>';
 	}
 	$wret .= "\r" . '</table></div>' . "\r" . $msg;
 	return $wret;
@@ -425,9 +392,7 @@ function process_section ($data, $type, $line_sep, $cellbeg, $cellend, $widths, 
 		}
 		$l++;//increment row number
 	}
-	$ret['html'] = $wret;
-	$ret['cols'] = count($parts);
-	return $ret;
+	return $wret;
 }
 
 /**

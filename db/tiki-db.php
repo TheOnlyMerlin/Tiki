@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -22,7 +22,7 @@ if (!empty($_REQUEST['lang'])) {
 include_once('lib/init/tra.php');
 
 $local_php = TikiInit::getCredentialsFile();
-global $default_api_tiki, $api_tiki, $db_tiki, $dbversion_tiki, $host_tiki, $user_tiki, $pass_tiki, $dbs_tiki, $tikidomain, $tikidomainslash, $dbfail_url;
+global $default_api_tiki, $api_tiki, $db_tiki, $dbversion_tiki, $host_tiki, $user_tiki, $pass_tiki, $dbs_tiki, $tikidomain, $tikidomainslash;
 $re = false;
 if ( file_exists($local_php) ) {
 	$re = include($local_php);
@@ -70,9 +70,15 @@ if ($parts = TikiInit::getEnvironmentCredentials()) {
 unset($host_map, $db_tiki, $host_tiki, $user_tiki, $pass_tiki, $dbs_tiki, $shadow_user, $shadow_pass, $shadow_host, $shadow_dbs);
 
 global $systemConfiguration;
-$systemConfiguration = new Zend\Config\Config(
+$systemConfiguration = new Zend_Config(
 	array(
-		'preference' => array(),
+		'preference' => array(
+			'feature_jison_wiki_parser' => 'n',		// hard code json parser off, as it's more than just "experimental"
+													// Developer Notice:
+													// if you want to help improve this feature then either comment out the line above
+													// or add 'feature_jison_wiki_parser' = 'y' to your tiki.ini file
+													// and enable that in your db/local.php
+		),
 		'rules' => array(),
 	),
 	array('readOnly' => false)
@@ -82,10 +88,10 @@ if (isset ($_SERVER['TIKI_INI_FILE'])) {
 		die('Configuration file could not be read.');
 	}
 
-	$configReader = new Tiki_Config_Ini();
-	$configReader->setFilterSection(isset($_SERVER['TIKI_INI_IDENTIFIER']) ? $_SERVER['TIKI_INI_IDENTIFIER'] : null);
-	$configData = $configReader->fromFile($_SERVER['TIKI_INI_FILE']);
-	$systemConfiguration = $systemConfiguration->merge(new Zend\Config\Config($configData));
+	$systemConfiguration = $systemConfiguration->merge(new Zend_Config_Ini(
+		$_SERVER['TIKI_INI_FILE'],
+		isset($_SERVER['TIKI_INI_IDENTIFIER']) ? $_SERVER['TIKI_INI_IDENTIFIER'] : null
+	));
 }
 if (isset ($system_configuration_file)) {
 	if (! is_readable($system_configuration_file)) {
@@ -94,19 +100,12 @@ if (isset ($system_configuration_file)) {
 	if (! isset($system_configuration_identifier)) {
 		$system_configuration_identifier = null;
 	}
-	$configReader = new Tiki_Config_Ini();
-	$configReader->setFilterSection($system_configuration_identifier);
-	$configData = $configReader->fromFile($system_configuration_file);
-	$systemConfiguration = $systemConfiguration->merge(new Zend\Config\Config($configData));
+	$systemConfiguration = $systemConfiguration->merge(new Zend_Config_Ini($system_configuration_file, $system_configuration_identifier));
 }
 
 if ( $re === false ) {
 	if (! defined('TIKI_IN_INSTALLER')) {
-		if(!empty($dbfail_url)) {
-			header('location: '.$dbfail_url);
-		} else {
-			header('location: tiki-install.php');
-		}
+		header('location: tiki-install.php');
 		exit;
 	} else {
 		// we are in the installer don't redirect...
@@ -131,8 +130,8 @@ class TikiDb_LegacyErrorHandler implements TikiDb_ErrorHandler
      */
     function handle( TikiDb $db, $query, $values, $result ) // {{{
 	{
-		global $prefs;
-		$smarty = TikiLib::lib('smarty');
+		global $smarty, $prefs;
+
 		$msg = $db->getErrorMessage();
 		$q=$query;
 		if (is_array($values)) {
@@ -150,6 +149,18 @@ class TikiDb_LegacyErrorHandler implements TikiDb_ErrorHandler
 		}
 
 		if (function_exists('xdebug_get_function_stack')) {
+            /**
+             * @param $stack
+             * @return string
+             */
+            function mydumpstack($stack)
+			{
+				$o='';
+				foreach ($stack as $line) {
+					$o.='* '.$line['file']." : ".$line['line']." -> ".$line['function']."(".var_export($line['params'], true).")<br />";
+				}
+				return $o;
+			}
 			$stacktrace = mydumpstack(xdebug_get_function_stack());
 		} else {
 			$stacktrace = false;
@@ -209,11 +220,7 @@ $initializer->setInitializeCallback(
 $db = $initializer->getConnection($credentials['primary']);
 
 if (! $db && ! defined('TIKI_IN_INSTALLER')) {
-	if(!empty($dbfail_url)) {
-		header('location: '.$dbfail_url);
-	} else {
-		header('location: tiki-install.php');
-	}
+	header('location: tiki-install.php');
 	exit;
 } elseif ($db) {
 	TikiDb::set($db);
@@ -235,16 +242,3 @@ if ($credentials['shadow']) {
 }
 
 unset($credentials);
-
-/**
- * @param $stack
- * @return string
- */
-function mydumpstack($stack)
-{
-	$o='';
-	foreach ($stack as $line) {
-		$o.='* '.$line['file']." : ".$line['line']." -> ".$line['function']."(".var_export($line['params'], true).")<br />";
-	}
-	return $o;
-}

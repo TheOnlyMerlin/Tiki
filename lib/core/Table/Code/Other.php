@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -25,28 +25,11 @@ class Table_Code_Other extends Table_Code_Manager
 
 	public function setCode()
 	{
-		$smarty = TikiLib::lib('smarty');
-		$smarty->loadPlugin('smarty_function_icon');
 		$jq = array();
-		//column selector
-		if (parent::$s['colselect']['type'] === true) {
-			$buttons[] = '<button id="' . parent::$s['colselect']['button']['id']
-				. '" type="button" class="btn btn-default btn-sm" title="' . parent::$s['colselect']['button']['text']
-				. '" style="margin-right:3px">' . smarty_function_icon(['name' => 'columns'], $smarty) . '</button>';
-			$jq[] = '$(\'button#' . parent::$s['colselect']['button']['id'] . '\').popover({'
-				. $this->nt2 . 'placement: \'right\','
-				. $this->nt2 . 'html: true,'
-				. $this->nt2 . 'content: \'<div id="' . parent::$s['colselect']['div']['id'] . '"></div>\''
-				. $this->nt . '}).on(\'shown.bs.popover\', function () {'
-				. $this->nt2 . '$.tablesorter.columnSelector.attachTo( $(\'' . parent::$tid
-				. '\'), \'#' . parent::$s['colselect']['div']['id'] . '\');'
-				. $this->nt . '});';
-		}
-
-			//reset sort button
 		$sr = '';
+		//reset sort button
 		$x = array('reset' => '', 'savereset' => '');
-		$s = parent::$s['sorts'];
+		$s = parent::$s['sort'];
 		$s = isset($s['type']) && $s['type'] !== true && array_key_exists($s['type'], $x) ? $s : false;
 		if ($s) {
 			if ($s['type'] === 'savereset') {
@@ -54,9 +37,7 @@ class Table_Code_Other extends Table_Code_Manager
 			}
 			$jq[] = '$(\'button#' . $s['reset']['id'] . '\').click(function(){$(\'' . parent::$tid
 				.'\').trigger(\'sortReset\')' . $sr . ';});';
-			$buttons[] = '<button id="' . $s['reset']['id']
-				. '" type="button" class="btn btn-default btn-sm tips" title=":' . $s['reset']['text']
-				.  '" style="margin-right:3px">' . smarty_function_icon(['name' => 'sort'], $smarty) . '</button>';
+			$html[] = '<button id="' . $s['reset']['id'] . '" type="button">' . $s['reset']['text'] . '</button>';
 		}
 
 		//filters
@@ -64,60 +45,48 @@ class Table_Code_Other extends Table_Code_Manager
 			$f = parent::$s['filters'];
 			//reset button
 			if ($f['type'] === 'reset') {
-				$buttons[] = '<button id="' . $f['reset']['id']
-					. '" type="button" class="btn btn-default btn-sm tips" title=":' . $f['reset']['text'] . '">'
-					. smarty_function_icon(['name' => 'filter'], $smarty) . '</button>';
+				$html[] = '<button id="' . $f['reset']['id'] . '" type="button">' . $f['reset']['text'] . '</button>';
 			}
-			if (isset($buttons) && count($buttons) > 0) {
-				$htmlbefore[] = $this->iterate($buttons, '<div style="float:left">', '</div>', '', '', '');
-			}
+
 			//external dropdowns
-			if (isset($f['external']) && is_array($f['external'])) {
-				$options = array_column($f['external'], 'options');
-				if (count($options) > 0) {
-					foreach($f['external'] as $key => $info) {
-						$xopt[] = ' value="" selected disabled>' . tr('Select a filter');
-						foreach($info['options'] as $label => $val) {
-							$xopt[] = ' value="' . $val . '">' . $label;
-						}
-						//create dropdown
-						$divr[] = $this->iterate(
-							$xopt,
-							'<select id="' . $f['external'][$key]['id'] . '" class="form-control ts-external-select">',
-							'</select>',
-							'<option',
-							'</option>',
-							''
-						);
-						//trigger table update and filter when dropdown value is changed
-						$jq[] = '$(\'#' . $f['external'][$key]['id'] . '\').bind(\'change\', function(e){'
-							. $this->nt2 . '$(\'' . parent::$tid .'\').trigger(\'search\', [ [this.value] ]);'
-							. $this->nt . '});';
-						//filter-reset also clears any external dropdown filter (column filters cleared by tablesorter)
-						if ($f['type'] === 'reset') {
-							$reset[] = 'if ($(\'#' . $f['external'][$key]['id'] . '\').prop(\'selectedIndex\') != 0) {'
-								. $this->nt3 . '$(\'#' . $f['external'][$key]['id'] . ' option\')[0].selected = true;'
-								. $this->nt3 . '$(\'#' . $f['external'][$key]['id'] . '\').change();'
-								. $this->nt2 . '}';
-						}
+			if (is_array($f['external'])) {
+				foreach($f['external'] as $key => $info) {
+					$xopt[] = ' value="">' . tra('Select a value');
+					foreach($info['options'] as $label => $val) {
+						$xopt[] = ' value="' . $val . '">' . $label;
 					}
-					unset($key, $info);
-					if ($f['type'] === 'reset' && count($reset) > 0) {
-						$jq[] = $this->iterate(
-							$reset,
-							'$(\'#' . $f['reset']['id'] . '\').click(function(){',
-							$this->nt . '});',
-							$this->nt2,
-							'',
-							''
-						);
+					//create dropdown
+					$divr[] = $this->iterate(
+						$xopt,
+						'<select id="' . $f['external'][$key]['id'] . '">',
+						'</select>',
+						'<option',
+						'</option>',
+						''
+					);
+					//trigger table update and filter when dropdown value is changed
+					$jq[] = '$(\'#' . $f['external'][$key]['id'] . '\').bind(\'change\', function(e){'
+						. $this->nt2 . '$(\'' . parent::$tid .'\').trigger(\'search\', [ [this.value] ]);'
+						. $this->nt . '});';
+					//filter-reset also clears any external dropdown filter (column filters cleared by tablesorter)
+					if ($f['type'] === 'reset') {
+						$reset[] = 'if ($(\'#' . $f['external'][$key]['id'] . '\').prop(\'selectedIndex\') != 0) {'
+							. $this->nt3 . '$(\'#' . $f['external'][$key]['id'] . ' option\')[0].selected = true;'
+							. $this->nt3 . '$(\'#' . $f['external'][$key]['id'] . '\').change();'
+							. $this->nt2 . '}';
 					}
-					$htmlbefore[] = $this->iterate($divr, '<div style="float:right">', '</div>', '', '', '');
 				}
-			}
-		} else {
-			if (isset($buttons) && count($buttons) > 0) {
-				$htmlbefore[] = $this->iterate($buttons, '<div style="float:left">', '</div>', '', '', '');
+				if ($f['type'] === 'reset' && count($reset) > 0) {
+					$jq[] = $this->iterate(
+						$reset,
+						'$(\'#' . $f['reset']['id'] . '\').click(function(){',
+						$this->nt . '});',
+						$this->nt2,
+						'',
+						''
+					);
+				}
+				$html[] = $this->iterate($divr, '<div style="float:right">', '</div>', '', '', '');
 			}
 		}
 
@@ -125,86 +94,100 @@ class Table_Code_Other extends Table_Code_Manager
 		$p = parent::$s['pager'];
 		//pager controls
 		if (parent::$pager) {
-			$pagerdiv = array(
-				'<div class="btn-group">',
-					'<div class="btn-group">',
-					'	<label for="gotoPage" class="selectlabels">Page</label>',
-					'	<select id="gotoPage" class="gotoPage form-control"></select>',
-					'</div>',
-				'</div>',
-				'<div class="btn-group middle">',
-				'	<span class="first tips" title=":' . tr('First page') . '">',
-				'		' . smarty_function_icon(['name' => 'backward_step'], $smarty),
-				'	</span>',
-				'	<span class="prev tips" title=":' . tr('Previous page') . '">',
-				'		' . smarty_function_icon(['name' => 'backward'], $smarty),
-				'	</span>',
-				'	<span class="pagedisplay">',
-				'	</span>',
-				'	<span class="next tips" title=":' . tr('Next page') . '">',
-				'		' . smarty_function_icon(['name' => 'forward'], $smarty),
-				'	</span>',
-				'	<span class="last tips" title=":' . tr('Last page') . '">',
-				'		' . smarty_function_icon(['name' => 'forward_step'], $smarty),
-				'	</span>',
-				'</div>',
+			$div = array(
+				'Page: <select class="gotoPage"></select>',
+				'<span class="first arrow">mg</span>',
+				'<span class="prev arrow">img</span>',
+				'<span class="pagedisplay"></span>',
+				'<span class="next arrow">img</span>',
+				'<span class="last arrow">mg</span>',
 			);
 			foreach ($p['expand'] as $option) {
 				$sel = $p['max'] === $option ? ' selected="selected"' : '';
 				$opt[] = $sel . ' value="' . $option . '">' . $option;
 			}
-			unset($option);
 			if (isset($opt)) {
-				$pagerdiv[] = $this->iterate(
-					$opt,
-					'<div class="btn-group"><label for="pagesize" class="selectlabels">Rows</label><select id="pagesize" class="pagesize form-control">',
-					'</select></div>',
-					'<option',
-					'</option>',
-					''
-				);
+				$div[] = $this->iterate($opt, '<select class="pagesize">', '</select>', '<option', '</option>', '');
 			}
 			//put all pager controls in a div
-			$pagerstring = $this->iterate(
-				$pagerdiv,
-				'<div id="' . $p['controls']['id'] . '" class="ts-pager ts-pager-top btn-toolbar">',
+			$html[] = $this->iterate(
+				$div,
+				'<div id="' . $p['controls']['id'] . '" class="tablesorter-pager">',
 				'</div>',
 				'',
 				'',
 				''
 			);
-			$htmlbefore[] = $pagerstring;
-			$pagerstring = $this->iterate(
-				$pagerdiv,
-				'<div id="' . $p['controls']['id'] . '" class="ts-pager ts-pager-bottom btn-toolbar">',
-				'</div>',
-				'',
-				'',
-				''
-			);
-			$htmlafter[] = $pagerstring;
-		}
-		//add math total column if set
-		if (!empty(parent::$s['math']['totals']['row'])) {
-			foreach(parent::$s['math']['totals']['row'] as $total) {
-				$label = $total['label'] ? $total['label'] : tr('Total');
-				$class = parent::$s['ajax']['type'] !== false ? ' class="sorter-false filter-false"' : '';
-				$jq[] = $this->nt . '$(\'' . parent::$tid . '\').find(\'thead tr\').append(\'<th' . $class . '>'
-					. $total['label'] . '</th>\');'
-					. $this->nt . '$(\'' . parent::$tid . '\').find(\'tbody tr\').append(\'<td data-tsmath="row-'
-					. $total['formula'] . '"></td>\')'
-					. $this->nt . '$(\'' . parent::$tid . '\').find(\'tfoot tr:not(.ts-foot-row)\').append(\'<th></th>\');';
-			}
 		}
 
 		//add any reset/disable buttons just above the table
-		if (isset($htmlbefore)) {
-			$allhtmlbefore = $this->iterate($htmlbefore, '', '', '', '', '');
-			$allhtmlafter = !empty($htmlafter) && is_array($htmlafter) ?
-				$this->iterate($htmlafter, '', '', '', '', '') : '';
-			$allhtmlafter = !empty($allhtmlafter) ? '.after(\'' . $allhtmlafter . '\'' . $this->nt . ');' : '';
-			array_unshift($jq, '$(\'' . parent::$tid . '\').before(\'' . $allhtmlbefore . '\'' . $this->nt
-				. ')' . $allhtmlafter);
+		if (isset($html)) {
+			$allhtml = $this->iterate($html, '', '', '', '', '');
+			array_unshift($jq, '$(\'' . parent::$tid . '\').before(\'' . $allhtml . '\'' . $this->nt . ');');
+		}
+
+		if (parent::$ajax) {
+			//bind to ajax event to show processing
+			$bind = array(
+					//note processing type for later use in applying processing formatting
+				'	$(\'' . parent::$tid . '\').data(\'tsEventType\', e.type);',
+			);
+			$jq[] = $this->iterate(
+				$bind,
+				'$(\'' . parent::$tid . '\').bind(\'filterStart sortStart pageMoved\', function(e){',
+				$this->nt2 . '});',
+				$this->nt3,
+				'',
+				''
+			);
+			//un-dim rows after ajax processing
+			$bind = array(
+				'	$(\'' . parent::$tid . ' tbody tr td\').css(\'opacity\', 1);',
+			);
+			$jq[] = $this->iterate(
+				$bind,
+				'$(document).bind(\'ajaxComplete\', function(e){',
+				$this->nt . '});',
+				$this->nt2,
+				'',
+				''
+			);
+			//change pages dropdown when filtering to show only filtered pages
+			$bind = array(
+				'var ret = c.pager.ajaxData;',
+				'var opts = $(c.pager.$goto.selector + \' option\').length;',
+				'if (ret.filtered > 0) {',
+				'	if (ret.fp != opts && opts != 0) {',
+				'		$(c.pager.$goto.selector).empty();',
+				'		for (var i = 1; i <= ret.fp; i++) {',
+				'			$(c.pager.$goto.selector).append($(\'<option>\', {',
+				'				text: i',
+				'			}));',
+				'		}',
+				'	}',
+				'	var page = ret.offset == 0 ? 0 : Math.ceil(ret.offset / c.pager.size);',
+				'	$(c.pager.$goto.selector + \' option\')[page].selected = true;',
+				'	if (ret.end == ret.filtered) {',
+				'		$(c.pager.$container.selector + \' span.next\').addClass(\'disabled\');',
+				'		$(c.pager.$container.selector + \' span.last\').addClass(\'disabled\');',
+				'	}',
+				'	if (page != c.pager.page) {',
+				'		$(\'' . parent::$tid . '\').trigger(\'pageSet\', page);',
+				'	}',
+				'} else {',
+				'	$(c.pager.$goto.selector).empty();',
+				'	$(c.pager.$container.selector + \' span.next\').addClass(\'disabled\');',
+				'	$(c.pager.$container.selector + \' span.last\').addClass(\'disabled\');',
+				'}',
+			);
+			$jq[] = $this->iterate(
+				$bind,
+				'$(\'' . parent::$tid . '\').bind(\'pagerComplete\', function(e, c){',
+				$this->nt . '});',
+				$this->nt2,
+				'',
+				''
+			);
 		}
 		if (count($jq) > 0) {
 			$code = $this->iterate($jq, '', '', $this->nt, '', '');

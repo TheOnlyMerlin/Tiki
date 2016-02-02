@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -46,11 +46,11 @@ if (isset($_REQUEST["remind"])) {
 	} else if (!empty($_REQUEST['email'])) {
 		if (!($_REQUEST['name'] = $userlib->get_user_by_email($_REQUEST['email']))) {
 			$showmsg = 'e';
-			$smarty->assign('msg', tra('Invalid or unknown email address') . ': ' . $_REQUEST['email']);
+			$smarty->assign('msg', tra('Invalid or unknown email') . ': ' . $_REQUEST['email']);
 		}
 	} else {
 		$showmsg = 'e';
-		$smarty->assign('msg', tra('Please provide a username or email address.'));
+		$smarty->assign('msg', tra('Please provide a username or email.'));
 	}
 	if (isset($showmsg) && $showmsg == 'e') {
 		$smarty->assign('showmsg', 'e');

@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -41,8 +41,8 @@ function module_since_last_visit_new_info()
 				'description' => tra('If set to "y", fold automatically sections and show only the title (user has to click on each section in order to see the details of modifications).') . ' ' . tra('Default:') . ' "n"'
 			),
 			'use_jquery_ui' => array(
-				'name' => tra('Use tabbed presentation'),
-				'description' => tra('If set to "y", use Bootstrap tabs to show the result.') . ' ' . tra('Default:') . ' "n"'
+				'name' => tra('Use jQuery presentation'),
+				'description' => tra('If set to "y", use jQuery to show the result.') . ' ' . tra('Default:') . ' "n"'
 			),
 			'daysAtLeast' => array(
 				'name' => tra('Minimum timespan'),
@@ -67,8 +67,8 @@ function module_since_last_visit_new_info()
  */
 function module_since_last_visit_new($mod_reference, $params = null)
 {
-	global $user;
-	$smarty = TikiLib::lib('smarty');
+	global $smarty, $user;
+
 	include_once('tiki-sefurl.php');
 
 	if (!$user) {
@@ -101,9 +101,7 @@ function module_since_last_visit_new($mod_reference, $params = null)
 
 	$resultCount = $mod_reference['rows'];
 
-	global $prefs;
-	$userlib = TikiLib::lib('user');
-	$tikilib = TikiLib::lib('tiki');
+	global $tikilib, $userlib, $prefs;
 	$smarty->loadPlugin('smarty_modifier_username');
 
 	$ret = array();
@@ -112,8 +110,8 @@ function module_since_last_visit_new($mod_reference, $params = null)
 	}
 
 	if ((empty($params['calendar_focus']) || $params['calendar_focus'] != 'ignore')
-			&& strpos($_SERVER['SCRIPT_NAME'], 'tiki-calendar.php') !== false
-			&& ! empty($_REQUEST['todate'])
+			&& strpos($_SERVER['SCRIPT_NAME'], 'tiki-calendar.php')
+			&& isset($_REQUEST['todate']) && $_REQUEST['todate']
 	) {
 		$last = $_REQUEST['todate'];
 		$_SESSION['slvn_last_login'] = $last;
@@ -495,7 +493,8 @@ function module_since_last_visit_new($mod_reference, $params = null)
 		$count = 0;
 		$counta = array();
 		$tracker_name = array();
-		$cachelib = TikiLib::lib('cache');
+		global $cachelib;
+		require_once('lib/cache/cachelib.php');
 		while ($res = $result->fetchRow()) {
 			if ($userlib->user_has_perm_on_object($user, $res['trackerId'], 'tracker', 'tiki_p_view_trackers')) {
 				// Initialize tracker counter if needed.
@@ -553,7 +552,8 @@ function module_since_last_visit_new($mod_reference, $params = null)
 
 		$count = 0;
 		$countb = array();
-		$cachelib = TikiLib::lib('cache');
+		global $cachelib;
+		require_once('lib/cache/cachelib.php');
 
 		while ($res = $result->fetchRow()) {
 			if ($userlib->user_has_perm_on_object($user, $res['trackerId'], 'tracker', 'tiki_p_view_trackers')) {

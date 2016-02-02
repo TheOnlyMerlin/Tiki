@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -297,7 +297,7 @@ class ContactLib extends TikiLib
 	{
 		tra('Personal Phone'); tra('Personal Mobile'); tra('Personal Fax'); tra('Work Phone'); tra('Work Mobile');
 		tra('Work Fax'); tra('Company'); tra('Organization'); tra('Department'); tra('Division'); tra('Job Title');
-		tra('Street Address'); tra('City'); tra('State'); tra('Postal Code'); tra('Country');
+		tra('Street Address'); tra('City'); tra('State'); tra('Zip Code'); tra('Country');
 	}
 
 	function get_ext_list($user)
@@ -311,7 +311,7 @@ class ContactLib extends TikiLib
 		if (!$res->numRows()) {
 			$exts=array('Personal Phone', 'Personal Mobile', 'Personal Fax', 'Work Phone', 'Work Mobile',
 					'Work Fax', 'Company', 'Organization', 'Department', 'Division', 'Job Title',
-					'Street Address', 'City', 'State', 'Postal Code', 'Country');
+					'Street Address', 'City', 'State', 'Zip Code', 'Country');
 			if (($user == NULL) || (empty($user))) return $exts;
 			foreach ($exts as $ext) $this->add_ext($user, $ext);
 			$res = $this->query($query, $bindvars);
@@ -392,3 +392,4 @@ class ContactLib extends TikiLib
 		}
 	}
 }
+$contactlib = new ContactLib;

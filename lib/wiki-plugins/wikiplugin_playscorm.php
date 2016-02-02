@@ -9,36 +9,32 @@ function wikiplugin_playscorm_info() {
 	return array(
 		'name' => tra('PlayScorm'),
 		'documentation' => 'PluginPlayScorm',
-		'description' => tra('Play a SCORM learning object in an iframe using Moodle'),
+		'description' => tra('Play a SCORM learning object in an iframe. Requires Moodle to be installed.'),
 		'prefs' => array( 'wikiplugin_playscorm' ),
 		'tags' => array( 'experimental' ),
 		'format' => 'html',
-		'iconname' => 'play',
-		'introduced' => 12,
+		'icon' => 'pics/icons/page_copy.png',
 		'params' => array(
 			'fileId' => array(
                                 'required' => true,
                                 'name' => tra('File ID'),
                                 'area' => 'fgal_picker_id',
                                 'description' => tra('Numeric ID of a SCORM zip file in a File Gallery'),
-				'since' => '12.0',
-				'filter' => 'digits',
+                                'filter' => 'striptags',
                                 'default' => '',
                         ),
 			'moodle_url' => array(
 				'required' => true,
 				'name' => tra('Moodle Url'),
 				'description' => tra('URL where the moodle instance is at'),
-				'since' => '12.0',
-				'filter' => 'url',
+				'filter' => 'striptags',
 				'default' => '',
 			),
 			'moodle_course_id' => array(
 				'required' => true,
 				'name' => tra('Moodle Course ID'),
 				'description' => tra('Course ID in Moodle to upload SCORM objects to'),
-				'since' => '12.0',
-				'filter' => 'digits',
+				'filter' => 'int',
 				'default' => '', 
 			),
 			'width' => array(
@@ -46,8 +42,6 @@ function wikiplugin_playscorm_info() {
 				'required' => false,
 				'name' => tra('Frame Width'),
 				'description' => tra('Width in pixels or %'),
-				'since' => '12.0',
-				'filter' => 'text',
 				'default' => '1160',
 			),
 			'height' => array(
@@ -55,8 +49,6 @@ function wikiplugin_playscorm_info() {
 				'required' => false,
 				'name' => tra('Frame Height'),
 				'description' => tra('Pixels or %'),
-				'since' => '12.0',
-				'filter' => 'text',
 				'default' => '740',
 			),
 			'scrolling' => array(
@@ -64,9 +56,7 @@ function wikiplugin_playscorm_info() {
 				'required' => false,
 				'name' => tra('Scrolling'),
 				'description' => tra('Choose whether to add a scroll bar'),
-				'since' => '12.0',
-				'default' => 'y',
-				'filter' => 'alpha',
+				'default' => 'Yes',
 				'options' => array(
 					array('text' => '', 'value' => ''), 
 					array('text' => tra('Yes'), 'value' => 'y'), 
@@ -77,9 +67,8 @@ function wikiplugin_playscorm_info() {
 				'required' => false,
 				'name' => tra('Numeric ID'),
 				'description' => tra('Numeric ID to distinguish multiple plugins of there is more than one'),
-				'since' => '12.0',
 				'default' => '',
-				'filter' => 'digits'
+				'filter' => 'int'
 			) 
 		), 
 	);
@@ -87,10 +76,7 @@ function wikiplugin_playscorm_info() {
 
 function wikiplugin_playscorm($data, $params) {
 
-	global $base_url, $tikiroot, $tikipath, $user, $prefs;
-	$userlib = TikiLib::lib('user');
-	$smarty = TikiLib::lib('smarty');
-	$tikilib = TikiLib::lib('tiki');
+	global $smarty, $tikilib, $base_url, $tikiroot, $tikipath, $userlib, $user, $prefs;
 
 	extract ($params, EXTR_SKIP);
 
@@ -182,8 +168,7 @@ function wikiplugin_playscorm($data, $params) {
 		);
 
 		$client->setParameterPost( $moodleform );
-		$client->setMethod(Zend\Http\Request::METHOD_POST);
-		$response = $client->send();
+		$response = $client->request( 'POST' ); 
 
 		$body = $response->getBody();
 

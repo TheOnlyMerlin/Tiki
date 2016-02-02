@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -13,9 +13,7 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
 
 function smarty_function_jscalendar($params, $smarty)
 {
-	global $prefs;
-	$headerlib = TikiLib::lib('header');
-	$tikilib = TikiLib::lib('tiki');
+	global $headerlib, $prefs, $tikilib;
 
 	$uiCalendarInstance = uniqid();
 
@@ -109,8 +107,8 @@ function smarty_function_jscalendar($params, $smarty)
 
 	$datepicker_options .= $datepicker_options_common;
 
-	$html = '<input type="hidden" id="' . $params['id'] . '"' . $name  . ' value="'.$params['date'].'">';
-	$html .= '<input type="text" style="width:225px" class="form-control" id="' . $params['id'] . '_dptxt" value="">';	// text version of datepicker date
+	$html = '<input type="hidden" id="' . $params['id'] . '"' . $name  . ' value="'.$params['date'].'" />';
+	$html .= '<input type="text" id="' . $params['id'] . '_dptxt" value="" />';	// text version of datepicker date
 
 	$display_tz = $tikilib->get_display_timezone();
 	if ( $display_tz == '' ) {
@@ -127,8 +125,7 @@ function smarty_function_jscalendar($params, $smarty)
 	if (!isset($params['showtime']) || $params['showtime'] === 'n') {
 
 		$command = 'datepicker';
-		$js_val = empty($params['date']) ? '""' : '$.datepicker.formatDate( "' .
-			$prefs['short_date_format_js'] . '", new Date('.$params['date'].'* 1000))';
+		$js_val = empty($params['date']) ? '""' : '$.datepicker.formatDate( "yy-mm-dd", new Date('.$params['date'].'* 1000))';
 		$headerlib->add_jq_onready(
 			'$("#' . $params['id'] . '_dptxt").val(' . $js_val . ').tiki("' .
 			$command . '", "jscalendar", ' . $datepicker_options . ');'
@@ -145,16 +142,13 @@ function smarty_function_jscalendar($params, $smarty)
 var dt = new Date('.$params['date'].'* 1000);
 var tm = { hour: dt.getHours(), minute: dt.getMinutes(), second: dt.getSeconds() };
 ';
-		$js_val2 = empty($params['date']) ? '""' : '$.datepicker.formatDate( "' .
-					$prefs['short_date_format_js'] . '", dt) + " " + $.datepicker.formatTime("' .
-					$prefs['short_time_format_js'] . '", tm)';
-
+		$js_val2 = empty($params['date']) ? '""' : '$.datepicker.formatDate( "yy-mm-dd", dt) + " " + $.datepicker.formatTime("HH:mm", tm)';
 		$headerlib->add_jq_onready(
 			$js_val1 . '$("#' . $params['id'] . '_dptxt").val(' . $js_val2 . ').tiki("' . 
 			$command . '", "jscalendar", ' . $datepicker_options . ');'
 		);
 	}
-	return '<div class="jscal" style="margin-bottom:10px">' . $html . '</div>';
+	return '<span class="jscal">' . $html . '</span>';
 }
 
 function smarty_function_jscalendar_tra($str)

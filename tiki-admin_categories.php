@@ -2,14 +2,14 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
 // $Id$
 
 require_once ('tiki-setup.php');
-$categlib = TikiLib::lib('categ');
+include_once ('lib/categories/categlib.php');
 
 @ini_set('max_execution_time', 0);	// as pagination is broken and almost every object gets fully loaded on this page
 @ini_set('memory_limit', -1);		// at least try and avoid WSoD on large sites (TODO better still - see r30064)
@@ -229,13 +229,13 @@ if (isset($_REQUEST['import']) && isset($_FILES['csvlist']['tmp_name'])) {
 	check_ticket('admin-categories');
 	$fhandle = fopen($_FILES['csvlist']['tmp_name'], 'r');
 	if (!$fhandle) {
-		$smarty->assign('msg', tra("The file has incorrect syntax or is not a CSV file"));
+		$smarty->assign('msg', tra("The file is not a CSV file or has not a correct syntax"));
 		$smarty->display("error.tpl");
 		die;
 	}
 	$fields = fgetcsv($fhandle, 1000);
 	if (!$fields[0]) {
-		$smarty->assign('msg', tra('The file has incorrect syntax or is not a CSV file'));
+		$smarty->assign('msg', tra('The file is not a CSV file or has not a correct syntax'));
 		$smarty->display('error.tpl');
 		die;
 	}
@@ -298,40 +298,26 @@ $smarty->assign('categories', $categories);
 
 $treeNodes = array();
 $smarty->loadPlugin('smarty_function_icon');
-$smarty->loadPlugin('smarty_function_popup');
-$smarty->loadPlugin('smarty_function_permission_link');
 foreach ($categories as $category) {
 	$perms = Perms::get(array('type' => 'category', 'object' => $category['categId']));
 	if ($perms->admin_categories == 'y') {
-		$data = '<a href="tiki-admin_categories.php?parentId=' . $category['parentId'] . '&amp;categId='
-			. $category['categId'] . '">' . smarty_function_icon(array('name'=>'edit', '_menu_text' => 'y',
-				'_menu_icon' => 'y', 'alt' =>  tra('Edit')), $smarty) . '</a>';
-		$data .= '<a href="tiki-admin_categories.php?parentId=' . $category['parentId'] . '&amp;removeCat='
-			. $category['categId'] . '">' . smarty_function_icon(array('name'=>'remove', '_menu_text' => 'y',
-				'_menu_icon' => 'y', 'alt' =>  tra('Delete')), $smarty) . '</a>';
+		$data = '<a href="tiki-admin_categories.php?parentId=' . $category['parentId'] . '&amp;categId=' . $category['categId'] . '" title="' . tra('Edit') . '">' . smarty_function_icon(array('_id'=>'page_edit'), $smarty) . '</a>';
+		$data .= '<a href="tiki-admin_categories.php?parentId=' . $category['parentId'] . '&amp;removeCat=' . $category['categId'] . '" title="' . tra('Delete') . '">' . smarty_function_icon(array('_id'=>'cross'), $smarty) . '</a>';
 
 		if ($userlib->object_has_one_permission($category['categId'], 'category')) {
 			$title = tra('Edit permissions for this category');
+			$icon = 'key_active';
 		} else {
-			$title = tra('Assign permissions');
+			$title = tra('Assign Permissions');
+			$icon = 'key';
 		}
-		$data .= smarty_function_permission_link([
-			'id'=> $category['categId'],
-			'type' => 'category',
-			'mode' => 'text',
-		], $smarty);
-		$escapeddata = htmlspecialchars(strtr($data, array("\\" => "\\\\", "'" => "\\'", "\"" => "\\\"", "\r" => "\\r",
-			"\n" => "\\n", "</" => "<\/" )), ENT_QUOTES, 'UTF-8', true);
-		$popupparams = ['trigger' => 'click', 'fullhtml' => 1, 'center' => true, 'text' =>  $escapeddata];
-		$newdata =  '<a class="tips" title="' . tra('Actions') . '" href="#" '. smarty_function_popup( $popupparams, $smarty)
-		. 'style="padding:0; margin:0; border:0">' . smarty_function_icon(['name'=> 'wrench'], $smarty) . '</a>';
-
-		$catlink = '<a class="catname" href="tiki-admin_categories.php?parentId=' . $category["categId"] .
-			'" style="margin-left:5px">' . htmlspecialchars($category['name']) .'</a> ';
+		$data .= '<a href="tiki-objectpermissions.php?objectType=category&amp;objectId=' . $category['categId'] . '&amp;objectName=' . urlencode($category['name']) . '&amp;permType=category">' . smarty_function_icon(array('_id'=>$icon, 'alt'=>$title), $smarty) . '</a>';
+	
+		$data .= '<a class="catname" href="tiki-admin_categories.php?parentId=' . $category["categId"] . '">' . htmlspecialchars($category['name']) .'</a> ';
 		$treeNodes[] = array(
 			'id' => $category['categId'],
 			'parent' => $category['parentId'],
-			'data' => $newdata . $catlink
+			'data' => $data 
 		);
 	}
 }
@@ -376,7 +362,7 @@ if ($prefs['feature_search'] !== 'y' || $prefs['unified_add_to_categ_search'] !=
 	 */
 	function admin_categ_assign( &$max, $data_key, $data = null )
 	{
-		$smarty = TikiLib::lib('smarty');
+		global $smarty;
 
 		if ( is_null($data) ) {
 			$data = array( 'data' => array(), 'cant' => 0 );
@@ -403,7 +389,7 @@ if ($prefs['feature_search'] !== 'y' || $prefs['unified_add_to_categ_search'] !=
 	}
 
 	if ( $prefs['feature_file_galleries'] == 'y' ) {
-		$filegallib = TikiLib::lib('filegal');
+		include_once ('lib/filegals/filegallib.php');
 		$file_galleries = $filegallib->list_file_galleries($offset, -1, 'name_desc', 'admin', $find_objects, $prefs['fgal_root_id']);
 	}
 
@@ -413,12 +399,12 @@ if ($prefs['feature_search'] !== 'y' || $prefs['unified_add_to_categ_search'] !=
 	}
 
 	if ( $prefs['feature_polls'] == 'y' ) {
-		$polllib = TikiLib::lib('poll');
+		include_once ('lib/polls/polllib.php');
 		$polls = $polllib->list_polls($offset, $maxRecords, 'title_asc', $find_objects);
 	}
 
 	if ( $prefs['feature_blogs'] == 'y' ) {
-		$bloglib = TikiLib::lib('blog');
+		require_once('lib/blogs/bloglib.php');
 		$blogs = $bloglib->list_blogs($offset, -1, 'title_asc', $find_objects);
 	}
 
@@ -452,12 +438,12 @@ if ($prefs['feature_search'] !== 'y' || $prefs['unified_add_to_categ_search'] !=
 	}
 
 	if ( $prefs['feature_trackers'] == 'y' ) {
-		$trklib = TikiLib::lib('trk');
+		include_once ('lib/trackers/trackerlib.php');
 		$trackers = $trklib->list_trackers($offset, -1, 'name_asc', $find_objects);
 	}
 
 	if ( $prefs['feature_articles'] == 'y' ) {
-		$artlib = TikiLib::lib('art');
+		global $artlib; require_once 'lib/articles/artlib.php';
 		$articles = $artlib->list_articles($offset, -1, 'title_asc', $find_objects, '', '', $user, '', '', 'n');
 	}
 

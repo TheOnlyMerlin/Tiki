@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -8,8 +8,8 @@
 $section = 'galleries';
 require_once ('tiki-setup.php');
 
-$imagegallib = TikiLib::lib('imagegal');
-$categlib = TikiLib::lib('categ');
+global $imagegallib; include_once ('lib/imagegals/imagegallib.php');
+global $categlib; include_once ('lib/categories/categlib.php');
 include_once ('lib/map/usermap.php');
 $access->check_feature('feature_galleries');
 
@@ -398,6 +398,29 @@ if (isset($_REQUEST['removegal'])) {
 }
 $smarty->assign('category_needed', $category_needed);
 
+if ($prefs['feature_maps'] == 'y') {
+	$map_error = '';
+	if (isset($_REQUEST['make_map'])) {
+		if ($_REQUEST['galleryId'] > 0) {
+			$info = $imagegallib->get_gallery_info($_REQUEST['galleryId']);
+
+			if ($tiki_p_admin != 'y' || !$user || $info['user'] != $user) {
+				$smarty->assign('errortype', 401);
+				$smarty->assign('msg', tra('You do not have permission to make the map of this gallery'));
+				$smarty->display('error.tpl');
+				die;
+			}
+
+			$tdo = 'gal.' . strtr(trim($info['name']), ' ', '_');
+			if ($tikidomain) {
+				$tdo = '$tikidomain.' . $tdo;
+			}
+			$map_error = $mapslib->makeimagemap($tdo, $_REQUEST['galleryId']);
+		}
+	}
+	$smarty->assign('map_error', $map_error);
+}
+
 if (!isset($_REQUEST['sort_mode'])) {
 	$sort_mode = 'name_asc';
 } else {
@@ -415,7 +438,10 @@ if (!isset($_REQUEST['offset'])) {
 $smarty->assign_by_ref('offset', $offset);
 
 // Get the list of libraries available for this user (or public galleries)
-$imagegallib = TikiLib::lib('imagegal');
+global $imagegallib;
+if (!is_object($imagegallib)) {
+	require_once('lib/imagegals/imagegallib.php');
+}
 
 $galleries = $imagegallib->list_galleries($offset, $maxRecords, $sort_mode, 'admin', $find);
 Perms::bulk(array( 'type' => 'image gallery' ), 'object', $galleries, 'galleryId');

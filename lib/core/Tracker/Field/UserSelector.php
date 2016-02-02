@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,7 +11,7 @@
  * Letter key: ~u~
  *
  */
-class Tracker_Field_UserSelector extends Tracker_Field_Abstract implements Tracker_Field_Synchronizable, Tracker_Field_Exportable
+class Tracker_Field_UserSelector extends Tracker_Field_Abstract implements Tracker_Field_Synchronizable
 {
 	public static function getTypes()
 	{
@@ -54,12 +54,6 @@ class Tracker_Field_UserSelector extends Tracker_Field_Abstract implements Track
 						'filter' => 'int',
 						'legacy_index' => 2,
 					),
-					'canChangeGroupIds' => array(
-						'name' => tr('Groups that can modify autoassigned values'),
-						'description' => tr('List of group IDs who can change this field, even without tracker_admin permission.'),
-						'separator' => '|',
-						'filter' => 'int',
-					),
 					'showRealname' => array(
 						'name' => tr('Show real name if possible'),
 						'description' => tr('Show real name if possible'),
@@ -77,7 +71,7 @@ class Tracker_Field_UserSelector extends Tracker_Field_Abstract implements Track
 
 	function getFieldData(array $requestData = array())
 	{
-		global $user, $prefs;
+		global $tiki_p_admin_trackers, $user, $prefs;
 
 		$ins_id = $this->getInsertId();
 
@@ -86,7 +80,7 @@ class Tracker_Field_UserSelector extends Tracker_Field_Abstract implements Track
 		$autoassign = (int) $this->getOption('autoassign');
 
 		if ( isset($requestData[$ins_id])) {
-			if ($autoassign == 0 || $this->canChangeValue()) {
+			if ($autoassign == 0 || $tiki_p_admin_trackers === 'y') {
 				$auser = $requestData[$ins_id];
 				$userlib = TikiLib::lib('user');
 				if (! $auser || $userlib->user_exists($auser)) {
@@ -126,7 +120,7 @@ class Tracker_Field_UserSelector extends Tracker_Field_Abstract implements Track
 
 	function renderInput($context = array())
 	{
-		global $user, $prefs;
+		global $tiki_p_admin_trackers, $user, $prefs;
 		$smarty = TikiLib::lib('smarty');
 
 		$value = $this->getConfiguration('value');
@@ -134,7 +128,7 @@ class Tracker_Field_UserSelector extends Tracker_Field_Abstract implements Track
 		if ((empty($value) && $autoassign == 1) || $autoassign == 2) {	// always use $user for last mod autoassign
 			$value = $user;
 		}
-		if ($autoassign == 0 || $this->canChangeValue()) {
+		if ($autoassign == 0 || $tiki_p_admin_trackers === 'y') {
 			$groupIds = $this->getOption('groupIds', '');
 
 			if ($prefs['user_selector_realnames_tracker'] === 'y' && $this->getOption('showRealname')) {
@@ -252,112 +246,6 @@ class Tracker_Field_UserSelector extends Tracker_Field_Abstract implements Track
 			'value' => $value,
 		);
 
-	}
-
-	function getTabularSchema()
-	{
-		$permName = $this->getConfiguration('permName');
-		$baseKey = $this->getBaseKey();
-		$name = $this->getConfiguration('name');
-
-		$schema = new Tracker\Tabular\Schema($this->getTrackerDefinition());
-
-		$schema->addNew($permName, 'userlink')
-			->setLabel($name)
-			->setPlainReplacement('username')
-			->setRenderTransform(function ($value) {
-				$smarty = TikiLib::lib('smarty');
-				$smarty->loadPlugin('smarty_modifier_userlink');
-
-				if ($value) {
-					return smarty_modifier_userlink($value);
-				}
-			})
-			;
-
-		$schema->addNew($permName, 'realname')
-			->setLabel($name)
-			->setReadOnly(true)
-			->setRenderTransform(function ($value) {
-				$smarty = TikiLib::lib('smarty');
-				$smarty->loadPlugin('smarty_modifier_username');
-
-				if ($value) {
-					return smarty_modifier_username($value, true, false, false);
-				}
-			})
-			;
-
-		$schema->addNew($permName, 'username-itemlink')
-			->setLabel($name)
-			->setPlainReplacement('username')
-			->addQuerySource('itemId', 'object_id')
-			->setRenderTransform(function ($value, $extra) {
-				$smarty = TikiLib::lib('smarty');
-				$smarty->loadPlugin('smarty_function_object_link');
-
-				if ($value) {
-					return smarty_function_object_link([
-						'type' => 'trackeritem',
-						'id' => $extra['itemId'],
-						'title' => $value,
-					], $smarty);
-				}
-			})
-			;
-
-		$schema->addNew($permName, 'realname-itemlink')
-			->setLabel($name)
-			->setPlainReplacement('realname')
-			->addQuerySource('itemId', 'object_id')
-			->setRenderTransform(function ($value, $extra) {
-				$smarty = TikiLib::lib('smarty');
-				$smarty->loadPlugin('smarty_function_object_link');
-				$smarty->loadPlugin('smarty_modifier_username');
-
-				if ($value) {
-					return smarty_function_object_link([
-						'type' => 'trackeritem',
-						'id' => $extra['itemId'],
-						'title' => smarty_modifier_username($value, true, false, false),
-					], $smarty);
-				}
-			})
-			;
-
-		$schema->addNew($permName, 'username')
-			->setLabel($name)
-			->setRenderTransform(function ($value) {
-				return $value;
-			})
-			->setParseIntoTransform(function (& $info, $value) use ($permName) {
-				$info['fields'][$permName] = $value;
-			})
-			;
-
-		return $schema;
-	}
-
-	/** Checks if the current user can modify the value even if autoassigned usually
-	 *
-	 * @return boolean
-	 */
-	private function canChangeValue()
-	{
-		$groupsCanChangeValue = $this->getOption('canChangeGroupIds');
-		if ($groupsCanChangeValue) {
-			global $user;
-
-			foreach ($groupsCanChangeValue as $groupId) {
-				$groupName = TikiDb::get()->table('users_groups')->fetchOne('groupName', ['id' => $groupId]);
-				if ($groupName && TikiLib::lib('user')->user_is_in_group($user, $groupName)) {
-					return true;
-				}
-			}
-		}
-		$perms = Perms::get('tracker', $this->getConfiguration('trackerId'));
-
-		return $perms->admin_trackers;
 	}
 }
 

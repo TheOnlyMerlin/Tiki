@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -7,7 +7,7 @@
 
 require_once ('tiki-setup.php');
 // do we need it?
-$adminlib = TikiLib::lib('admin');
+require_once ('lib/admin/adminlib.php');
 $access->check_permission('tiki_p_admin');
 
 // tikiwiki preferences check
@@ -45,7 +45,7 @@ if ($prefs['wikiplugin_regex'] == 'y') {
 	$tikisettings['wikiplugin_regex'] = array(
 		'risk' => tra('unsafe') ,
 		'setting' => tra('Enabled') ,
-		'message' => tra('The "Regex Wikiplugin" is activated. It can be used by wiki editors to create any HTML via regex replacement.')
+		'message' => tra('The "Regex Wikiplugin" is activated. It can be used by wiki editors to create any html via regex replacement.')
 	);
 }
 if ($prefs['wikiplugin_lsdir'] == 'y') {
@@ -135,7 +135,7 @@ if ($prefs['https_login'] != 'required') {
 
 // Check if any of the mail-in accounts uses "Allow anonymous access"
 if ($prefs['feature_mailin'] == 'y') {
-	$mailinlib = TikiLib::lib('mailin');
+	require_once('lib/mailin/mailinlib.php');
 	$accs = $mailinlib->list_active_mailin_accounts(0, -1, 'account_desc', '');
 	
 	// Check anonymous access
@@ -205,19 +205,6 @@ if (!file_exists('db/'.$tikidomainslash.'lock')) {
 		'message' => tra('The installer is not locked. The installer could be accessed, putting the database at risk of being altered or destroyed.')
 	);
 }
-
-$fmap = [
-	'good' => ['icon' => 'ok', 'class' => 'success'],
-	'safe' => ['icon' => 'ok', 'class' => 'success'],
-	'bad' => ['icon' => 'ban', 'class' => 'danger'],
-	'unsafe' => ['icon' => 'ban', 'class' => 'danger'],
-	'risky' => ['icon' => 'warning', 'class' => 'warning'],
-	'ugly' => ['icon' => 'warning', 'class' => 'warning'],
-	'info' => ['icon' => 'information', 'class' => 'info'],
-	'unknown' => ['icon' => 'help', 'class' => 'muted'],
-];
-$smarty->assign('fmap', $fmap);
-
 
 ksort($tikisettings);
 $smarty->assign_by_ref('tikisettings', $tikisettings);

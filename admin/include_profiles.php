@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 		foreach ($_POST as $key => $value) {
 			if ($key != 'url' && $key != 'forget') {
-				$data[$key] = $value;
+				$data[str_replace('_', ' ', $key) ] = $value;
 			}
 		}
 		set_time_limit(0);
@@ -45,23 +45,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		$installer->install($profile);
 		$transaction->commit();
 
-		$profilefeedback = $installer->getFeedback();
-
 		if ($target = $profile->getInstructionPage()) {
-
-			foreach ($profilefeedback as $feedback) {
-				if (strpos($feedback, tra('An error occurred: ')) === 0) {
-					TikiLib::lib('errorreport')->report($feedback);
-				}
-			}
-
-			$wikilib = TikiLib::lib('wiki');
+			global $wikilib;
+			require_once 'lib/wiki/wikilib.php';
 			$target = $wikilib->sefurl($target);
 			header('Location: ' . $target);
-            exit;
+			exit;
 		} else {
-			if (count($profilefeedback) > 0) {
-				$smarty->assign_by_ref('profilefeedback', $profilefeedback);
+			if (count($installer->getFeedback()) > 0) {
+				$smarty->assign_by_ref('profilefeedback', $installer->getFeedback());
 			}
 			// need to reload sources as cache is cleared after install
 			$sources = $list->getSources();
@@ -69,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	}
 
 	if (isset($_POST['install'], $_POST['pd'], $_POST['pp'])) {
-        $data = array();
+		$data = array();
 
 		foreach ($_POST as $key => $value) {
 			if ($key != 'url' && $key != 'install') {
@@ -83,14 +75,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		$installer->install($profile);
 
 		if (($profile != null) && ($target = $profile->getInstructionPage())) {
-			$wikilib = TikiLib::lib('wiki');
+			global $wikilib;
+			require_once 'lib/wiki/wikilib.php';
 			$target = $wikilib->sefurl($target);
 			header('Location: ' . $target);
-            exit;
+			exit;
 		} else {
-			$profilefeedback = $installer->getFeedback();
-			if (count($profilefeedback) > 0) {
-				$smarty->assign_by_ref('profilefeedback', $profilefeedback);
+			if (count($installer->getFeedback()) > 0) {
+				$smarty->assign_by_ref('profilefeedback', $installer->getFeedback());
 			}
 			// need to reload sources as cache is cleared after install
 			$sources = $list->getSources();
@@ -98,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	}
 
 	if (isset($_POST['test'], $_POST['profile_tester'], $_POST['profile_tester_name'])) {
-        $test_source = $_POST['profile_tester'];
+		$test_source = $_POST['profile_tester'];
 		if (strpos($test_source, '{CODE}') === false) {
 			// wrap in CODE tags if none there
 			$test_source = "{CODE(caption=>YAML)}\n$test_source\n{CODE}";
@@ -117,20 +109,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		$installer->install($profile, $empty_cache);
 
 		if ($target = $profile->getInstructionPage()) {
-			$wikilib = TikiLib::lib('wiki');
+			global $wikilib;
+			require_once 'lib/wiki/wikilib.php';
 			$target = $wikilib->sefurl($target);
 			header('Location: ' . $target);
-            exit;
+			exit;
 		} else {
-			$profilefeedback = $installer->getFeedback();
-			if (count($profilefeedback) > 0) {
-				$smarty->assign_by_ref('profilefeedback', $profilefeedback);
+			if (count($installer->getFeedback()) > 0) {
+				$smarty->assign_by_ref('profilefeedback', $installer->getFeedback());
 			}
 		}
 	} // }}}
 
 	if (isset($_GET['refresh'])) {
-        $toRefresh = (int) $_GET['refresh'];
+		$toRefresh = (int) $_GET['refresh'];
 		if (isset($sources[$toRefresh])) {
 			echo json_encode(
 				array(
@@ -141,11 +133,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		} else {
 			echo '{}';
 		}
-        exit;
+		exit;
 	}
 
 	if (isset($_GET['getinfo'], $_GET['pd'], $_GET['pp'])) {
-        $installer = new Tiki_Profile_Installer;
+		$installer = new Tiki_Profile_Installer;
 		$profile = Tiki_Profile::fromNames($_GET['pd'], $_GET['pp']);
 		$error = '';
 
@@ -155,7 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			$error = "Profile is not available: ".$_GET['pd'].", ". $_GET['pp'];
 		}
 
-        try {
+		try {
 			if (!empty($error)) {
 				$sequencable = false;
 			} else if (!$deps = $installer->getInstallOrder($profile)) {
@@ -176,7 +168,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		$url = '';
 		$feedback = '';
 
-        if ($profile !== false) {
+		if ($profile !== false) {
 			foreach ($deps as $d) {
 				$dependencies[] = $d->pageUrl;
 				$userInput = array_merge($userInput, $d->getRequiredInput());
@@ -188,7 +180,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 			$url =  $profile->url;
 			$feedback = $profile->getFeedback();
 		}
-        echo json_encode(
+		echo json_encode(
 			array(
 				'dependencies' => $dependencies,
 				'userInput' => $userInput,
@@ -200,7 +192,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 				'feedback' => $feedback,
 			)
 		);
-        exit;
+		exit;
 	} // }}}
 
 }
@@ -263,7 +255,8 @@ if ($openSources == count($sources)) {
 }
 $smarty->assign('tikiMajorVersion', substr($TWV->version, 0, 2));
 
-$modlib = TikiLib::lib('mod');
+global $modlib;
+include_once('lib/modules/modlib.php');
 $modified = $prefslib->getModifiedPrefsForExport(!empty($_REQUEST['export_show_added']) ? true : false);
 $smarty->assign('modified_list', $modified);
 

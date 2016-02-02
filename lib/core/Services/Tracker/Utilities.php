@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -9,36 +9,24 @@ class Services_Tracker_Utilities
 {
 	function insertItem($definition, $item)
 	{
-		$newItem = $this->replaceItem($definition, 0, $item['status'], $item['fields'], [
-			'validate' => true,
-			'skip_categories' => false,
-			'bulk_import' => false,
-		]);
+		$newItem = $this->replaceItem($definition, 0, $item['status'], $item['fields']);
 
 		return $newItem;
 	}
 
 	function updateItem($definition, $item)
 	{
-		return $this->replaceItem($definition, $item['itemId'], $item['status'], $item['fields'], [
-			'validate' => true,
-			'skip_categories' => false,
-			'bulk_import' => false,
-		]);
+		return $this->replaceItem($definition, $item['itemId'], $item['status'], $item['fields']);
 	}
 
 	function resaveItem($itemId)
 	{
 		$tracker = TikiLib::lib('trk')->get_item_info($itemId);
 		$definition = Tracker_Definition::get($tracker['trackerId']);
-		$this->replaceItem($definition, $itemId, null, array(), [
-			'validate' => false,
-			'skip_categories' => true,
-			'bulk_import' => true,
-		]);
+		$this->replaceItem($definition, $itemId, null, array(), false);
 	}
 
-	private function replaceItem($definition, $itemId, $status, $fieldMap, array $options)
+	private function replaceItem($definition, $itemId, $status, $fieldMap, $validate = true)
 	{
 		$trackerId = $definition->getConfiguration('trackerId');
 		$fields = array();
@@ -78,17 +66,11 @@ class Services_Tracker_Utilities
 		$categorizedFields = $definition->getCategorizedFields();
 		$errors = $trklib->check_field_values(array('data' => $fields), $categorizedFields, $trackerId, $itemId ? $itemId : '');
 
-		if ($options['skip_categories']) {
-			foreach ($categorizedFields as $fieldId) {
-				unset($fields[$fieldId]);
-			}
-		}
-
 		if (count($errors['err_mandatory']) == 0 && count($errors['err_value']) == 0) {
-			$newItem = $trklib->replace_item($trackerId, $itemId, array('data' => $fields), $status, 0, $options['bulk_import']);
+			$newItem = $trklib->replace_item($trackerId, $itemId, array('data' => $fields), $status, 0, true);
 			return $newItem;
-		} elseif (! $options['validate']) {
-			$newItem = $trklib->replace_item($trackerId, $itemId, array('data' => $fields), $status, 0, $options['bulk_import']);
+		} elseif (! $validate) {
+			$newItem = $trklib->replace_item($trackerId, $itemId, array('data' => $fields), $status, 0, true);
 			return $newItem;
 		}
 
@@ -99,7 +81,7 @@ class Services_Tracker_Utilities
 				$names[] = $f['name'];
 			}
 
-			$errorreportlib->report(tr('The following mandatory fields are missing: %0', implode(', ', $names)));
+			$errorreportlib->report(tr('Following mandatory fields are missing: %0', implode(', ', $names)));
 		}
 
 		foreach ($errors['err_value'] as $f) {
@@ -238,20 +220,6 @@ class Services_Tracker_Utilities
 		$item = reset($items);
 
 		return $item;
-	}
-	
-	function getTitle($definition, $item)
-	{
-		$parts = [];
-
-		foreach ($definition->getFields() as $field) {
-			if ($field['isMain'] == 'y') {
-				$permName = $field['permName'];
-				$parts[] = $item['fields'][$permName];
-			}
-		}
-
-		return implode(' ', $parts);
 	}
 
 	function processValues($definition, $item)

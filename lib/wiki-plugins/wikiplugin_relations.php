@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -9,12 +9,11 @@ function wikiplugin_relations_info()
 {
 	return array(
 		'name' => tra('Relations'),
-		'description' => tra('Display the relation of an object to the rest of the site'),
+		'description' => tra('Displays the relations between the current object or a specified one and the rest of Tiki.'),
 		'filter' => 'int',
 		'format' => 'html',
 		'prefs' => array('wikiplugin_relations'),
 		'introduced' => 8,
-		'iconname' => 'move',
 		'documentation' => 'PluginRelations',
 		'params' => array(
 			'qualifiers' => array(
@@ -29,7 +28,7 @@ function wikiplugin_relations_info()
 			'object' => array(
 				'required' => false,
 				'name' => tra('Object'),
-				'description' => tr('Object identifier as %0type:itemId%1', '<code>', '</code>'),
+				'description' => tra('Object identifier as type:itemId'),
 				'filter' => 'text',
 				'default' => null,
 				'since' => '8.0',
@@ -43,18 +42,9 @@ function wikiplugin_relations_info()
 				'since' => '8.0',
 				'default' => 0,
 				'options' => array(
-					array('text' => '', 'value' => ''),
 					array('text' => tra('No'), 'value' => 0),
 					array('text' => tra('Yes'), 'value' => 1),
 				),
-			),
-			'emptymsg' => array(
-				'required' => false,
-				'name' => tra('Empty Message'),
-				'description' => tra('Message to give if result is empty and no relations are found.'),
-				'filter' => 'text',
-				'since' => '15.0',
-				'default' => "No relations found.",
 			),
 		),
 	);
@@ -77,11 +67,6 @@ function wikiplugin_relations($data, $params)
 		$singlelist = true;
 	}
 
-	$emptymsg = "No relations found.";
-	if (isset($params['emptymsg']) && $params['emptymsg']) {
-		$emptymsg = $params['emptymsg'];
-	}
-
 	$data = array();
 
 	$relationlib = TikiLib::lib('relation');
@@ -100,7 +85,6 @@ function wikiplugin_relations($data, $params)
 	$smarty = TikiLib::lib('smarty');
 	$smarty->assign('wp_relations', $data);
 	$smarty->assign('wp_singlelist', $singlelist);
-	$smarty->assign('wp_emptymsg', $emptymsg);
 	return $smarty->fetch('wiki-plugins/wikiplugin_relations.tpl');
 }
 

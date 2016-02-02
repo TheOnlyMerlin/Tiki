@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 // 
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -11,7 +11,7 @@ function prefs_art_list()
 		'publishDate_desc' => tra('Newest first'),
 	);
 
-	$prefslib = TikiLib::lib('prefs');
+	global $prefslib;
 	$advanced_columns = $prefslib->getExtraSortColumns();
 
 	foreach ( $advanced_columns as $key => $label ) {
@@ -22,13 +22,13 @@ function prefs_art_list()
 	return array(
 		'art_sort_mode' => array(
 			'name' => tra('Article ordering'),
-			'description' => tra('Default sort mode for the articles on the list-articles page'),
+			'description' => tra('Default sort mode for the articles on the article listing'),
 			'type' => 'list',
 			'options' => $article_sort_orders,
 			'default' => 'publishDate_desc',
 		),
 		'art_home_title' => array(
-			'name' => tra('Title of articles homepage'),
+			'name' => tra('Title of articles home page'),
 			'type' => 'list',
 			'options' => array(
 				'' => '',
@@ -86,17 +86,17 @@ function prefs_art_list()
 			'default' => 'y',
 		),
 		'art_list_authorName' => array(
-			'name' => tra('Author name (as displayed)'),
+			'name' => tra('Author Name (as displayed)'),
 			'type' => 'flag',
 			'default' => 'n',
 		),
 		'art_list_rating' => array(
-			'name' => tra('Author rating'),
+			'name' => tra('Author Rating'),
 			'type' => 'flag',
 			'default' => 'n',
 		),
 		'art_list_usersRating' => array(
-			'name' => tra('Users rating'),
+			'name' => tra('Users Rating'),
 			'type' => 'flag',
 			'default' => 'n',
 		),
@@ -117,11 +117,6 @@ function prefs_art_list()
 		),
 		'art_list_id' => array(
 			'name' => tra('Id'),
-			'type' => 'flag',
-			'default' => 'y',
-		),
-		'art_list_ispublished' => array(
-			'name' => tra('Is published'),
 			'type' => 'flag',
 			'default' => 'y',
 		),

@@ -137,12 +137,8 @@ class KalturaClientBase
 				$matches = null;
 				if(preg_match('/^([^.]+).php$/', $fileName, $matches))
 				{
-					if ($fileName != 'index.php') {
-						require_once("$pluginsFolder/$fileName");
-					} else {
-						continue;
-					}
-	
+					require_once("$pluginsFolder/$fileName");
+					
 					$pluginClass = $matches[1];
 					if(!class_exists($pluginClass) || !in_array('IKalturaClientPlugin', class_implements($pluginClass)))
 						continue;

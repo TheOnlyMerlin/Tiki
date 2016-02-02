@@ -1,4 +1,4 @@
-<h1 class="pagetitle">{tr}Your OpenID identity is valid{/tr}</h1>
+<h1>{tr}Your OpenID identity is valid{/tr}</h1>
 <p>
 	{tr}Your identity gives you access to multiple user accounts.{/tr}
 </p>
@@ -14,6 +14,6 @@
 		{/foreach}
 
 		<input type="hidden" name="action" value="select">
-		<input type="submit" class="btn btn-default btn-sm" value="{tr}Select{/tr}">
+		<input type="submit" class="btn btn-default" value="{tr}Select{/tr}">
 	</fieldset>
 </form>

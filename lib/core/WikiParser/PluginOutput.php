@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -53,7 +53,7 @@ class WikiParser_PluginOutput
 
 	public static function error( $label, $message )
 	{
-		$smarty = TikiLib::lib('smarty');
+		global $smarty;
 		$smarty->loadPlugin('smarty_block_remarksbox');
 		$repeat = false;
 
@@ -76,7 +76,7 @@ class WikiParser_PluginOutput
 		$content = tr('Plugin <strong>%0</strong> cannot be executed.', $name);
 
 		if ( Perms::get()->admin ) {
-			$smarty = TikiLib::lib('smarty');
+			global $smarty;
 			$smarty->loadPlugin('smarty_function_preference');
 			$smarty->loadPlugin('smarty_modifier_escape');
 			$content .= '<form method="post" action="tiki-admin.php">';
@@ -85,7 +85,7 @@ class WikiParser_PluginOutput
 			}
 			$check = key_get(null, null, null, false);
 			$content .= '<input type="hidden" name="ticket" value="' . $check['ticket'] . '">';
-			$content .= '<input type="submit" class="btn btn-default btn-sm" value="' . smarty_modifier_escape(tra('Set')) . '">';
+			$content .= '<input type="submit" value="' . smarty_modifier_escape(tra('Set')) . '"/>';
 			$content .= '</form>';
 		}
 		return self::error(tra('Plugin disabled'), $content);

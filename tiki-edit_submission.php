@@ -2,7 +2,7 @@
 /**
  * @package tikiwiki
  */
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -10,10 +10,10 @@
 
 $section = 'cms';
 require_once ('tiki-setup.php');
-$artlib = TikiLib::lib('art');
+include_once ('lib/articles/artlib.php');
 
 if ($prefs['feature_freetags'] == 'y') {
-	$freetaglib = TikiLib::lib('freetag');
+	include_once('lib/freetag/freetaglib.php');
 }
 
 $access->check_feature('feature_submissions');
@@ -61,9 +61,8 @@ $smarty->assign(
 	(isset($_REQUEST['imageIsChanged']) && $_REQUEST['imageIsChanged']=='y') ? 'y' : 'n'
 );
 
-$templateslib = TikiLib::lib('template');
-
 if (isset($_REQUEST['templateId']) && $_REQUEST['templateId'] > 0) {
+	global $templateslib; require_once 'lib/templates/templateslib.php';
 	$template_data = $templateslib->get_template($_REQUEST['templateId'], $prefs['language']);
 	$_REQUEST['preview'] = 1;
 	$_REQUEST['body'] = $template_data['content'];
@@ -77,7 +76,7 @@ $publishDate = $tikilib->now;
 $expireDate = $tikilib->make_time(0, 0, 0, $tikilib->date_format("%m"), $tikilib->date_format("%d"), $tikilib->date_format("%Y") + 1);
 
 //Use 12- or 24-hour clock for $publishDate time selector based on admin and user preferences
-$userprefslib = TikiLib::lib('userprefs');
+include_once ('lib/userprefs/userprefslib.php');
 $smarty->assign('use_24hr_clock', $userprefslib->get_user_clock_pref($user));
 
 $smarty->assign('arttitle', '');
@@ -107,6 +106,7 @@ $smarty->assign('rating', 7);
 $smarty->assign('edit_data', 'n');
 
 if (isset($_REQUEST['templateId']) && $_REQUEST['templateId'] > 0) {
+	global $templateslib; require_once 'lib/templates/templateslib.php';
 	$template_data = $templateslib->get_template($_REQUEST['templateId'], $prefs['language']);
 	$_REQUEST['preview'] = 1;
 	$_REQUEST['body'] = $template_data['content'];
@@ -355,7 +355,7 @@ if (isset($_REQUEST['preview']) || !empty($errors)) {
 // Pro
 if ((isset($_REQUEST['save']) || isset($_REQUEST['submitarticle'])) && empty($errors)) {
 	check_ticket('edit-submission');
-	$imagegallib = TikiLib::lib('imagegal');
+	include_once ('lib/imagegals/imagegallib.php');
 
 	# convert from the displayed 'site' time to UTC time
 	//Convert 12-hour clock hours to 24-hour scale to compute time
@@ -546,7 +546,8 @@ if ($prefs['article_custom_attributes'] == 'y') {
 }
 $smarty->assign_by_ref('types', $types);
 
-if ($prefs['feature_cms_templates'] == 'y') {
+if ($prefs['feature_cms_templates'] == 'y' && $tiki_p_use_content_templates == 'y') {
+	global $templateslib; require_once 'lib/templates/templateslib.php';
 	$templates = $templateslib->list_templates('cms', 0, -1, 'name_asc', '');
 }
 
@@ -554,8 +555,7 @@ $smarty->assign_by_ref('templates', $templates['data']);
 
 if ($prefs['feature_multilingual'] == 'y') {
 	$languages = array();
-	$langLib = TikiLib::lib('language');
-	$languages = $langLib->list_languages();
+	$languages = $tikilib->list_languages();
 	$smarty->assign_by_ref('languages', $languages);
 }
 
@@ -574,7 +574,7 @@ $smarty->assign('publishDate', $publishDate);
 $smarty->assign('expireDate', $expireDate);
 $smarty->assign('siteTimeZone', $prefs['display_timezone']);
 
-$wikilib = TikiLib::lib('wiki');
+global $wikilib; include_once('lib/wiki/wikilib.php');
 $plugins = $wikilib->list_plugins(true, 'body');
 $smarty->assign_by_ref('plugins', $plugins);
 $smarty->assign('errors', $errors);

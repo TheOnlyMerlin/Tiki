@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -14,18 +14,16 @@ function wikiplugin_file_info()
 	$info = array(
 		'name' => tra('File'),
 		'documentation' => 'PluginFile',
-		'description' => tra('Link to a file that\'s attached or in a gallery or archive'),
+		'description' => tra('Link to a file that\'s attached or in a file gallery or archive. See PluginFiles for more functionality.'),
 		'prefs' => array( 'wikiplugin_file' ),
 		'body' => tra('Label for the link to the file (ignored if the file is a wiki attachment)'),
-		'iconname' => 'file',
-		'introduced' => 3,
+		'icon' => 'img/icons/file-manager.png',
 		'tags' => array( 'basic' ),
 		'params' => array(
 			'type' => array(
 				'required' => true,
 				'name' => tra('Type'),
 				'description' => tra('Indicate whether the file is in a file gallery or is a wiki page attachment'),
-				'since' => '6.1',
 				'filter' => 'alpha',
 				'default' => '',
 				'options' => array(
@@ -35,10 +33,7 @@ function wikiplugin_file_info()
 			'name' => array(
 				'required' => true,
 				'name' => tra('Name'),
-				'description' => tra('Identify an attachment by entering its file name, which will show as a link to the
-					file. If the page parameter is empty, it must be a file name of an attachment to the page where the
-					plugin is used.'),
-				'since' => '3.0',
+				'description' => tra('Identify an attachment by entering its file name, which will show as a link to the file. If the page parameter is empty, it must be a file name of an attachment to the page where the plugin is used.'),
 				'default' => '',
 				'parent' => array('name' => 'type', 'value' => 'attachment'),
 			),
@@ -46,7 +41,6 @@ function wikiplugin_file_info()
 				'required' => false,
 				'name' => tra('Custom Description'),
 				'description' => tra('Custom text that will be used for the link instead of the file name or file description'),
-			    'since' => '3.0',
 				'parent' => array('name' => 'type', 'value' => 'attachment'),
 				'advanced' => true,
 				'default' => '',
@@ -54,9 +48,7 @@ function wikiplugin_file_info()
 			'page' => array(
 				'required' => false,
 				'name' => tra('Page'),
-				'description' => tra('Name of the wiki page the file is attached to. Defaults to the wiki page where the
-					plugin is used if empty.'),
-				'since' => '3.0',
+				'description' => tra('Name of the wiki page the file is attached to. Defaults to the wiki page where the plugin is used if empty.'),
 				'parent' => array('name' => 'type', 'value' => 'attachment'),
 				'default' => '',
 				'advanced' => true,
@@ -66,7 +58,6 @@ function wikiplugin_file_info()
 				'required' => false,
 				'name' => tra('Attachment Description'),
 				'description' => tra('Show the attachment description as the link label instead of the attachment file name.'),
-				'since' => '3.0',
 				'options' => array(
 					array('text' => '', 'value' => ''),
 					array('text' => tra('Yes'), 'value' => 1),
@@ -80,7 +71,6 @@ function wikiplugin_file_info()
 				'required' => false,
 				'name' => tra('Image'),
 				'description' => tra('Indicates that this attachment is an image, and should be displayed inline using the img tag'),
-				'since' => '3.0',
 				'parent' => array('name' => 'type', 'value' => 'attachment'),
 				'advanced' => true,
 				'default' => '',
@@ -93,9 +83,7 @@ function wikiplugin_file_info()
 			'fileId' => array(
 				'required' => true,
 				'name' => tra('File ID'),
-				'description' => tra('File ID of a file in a file gallery or an archive.') . ' ' . tra('Example value:')
-					. ' <code>42</code>',
-				'since' => '5.0',
+				'description' => tra('File ID of a file in a file gallery or an archive.') . ' ' . tra('Example value:') . ' 42',
 				'type' => 'fileId',
 				'area' => 'fgal_picker_id',
 				'filter' => 'digits',
@@ -106,9 +94,7 @@ function wikiplugin_file_info()
 			'date' => array(
 				'required' => false,
 				'name' => tra('Date'),
-				'description' => tr('For an archive file, the archive created just before this date will be linked to.
-					Special values : %0 and %1.', '<code>PAGE_LAST_MOD</code>', '<code>PAGE_VIEW_DATE</code>'),
-				'since' => '5.0',
+				'description' => tra('For an archive file, the archive created just before this date will be linked to. Special values : PAGE_LAST_MOD and PAGE_VIEW_DATE.'),
 				'parent' => array('name' => 'type', 'value' => 'gallery'),
 				'default' => '',
 				'advanced' => true,
@@ -117,7 +103,6 @@ function wikiplugin_file_info()
 				'required' => false,
 				'name' => tra('Show Icon'),
 				'description' => tra('Show an icon version of the file or file type with the link to the file.'),
-				'since' => '6.1',
 				'filter' => 'alpha',
 				'parent' => array('name' => 'type', 'value' => 'gallery'),
 				'default' => '',
@@ -143,7 +128,7 @@ function wikiplugin_file( $data, $params )
 {
 	global $tikilib, $prefs, $info, $page_view_date;
 	if (isset($params['fileId'])) {
-		$filegallib = TikiLib::lib('filegal');
+		global $filegallib; include_once ('lib/filegals/filegallib.php');
 		if ($prefs['feature_file_galleries'] != 'y') {
 			return;
 		}

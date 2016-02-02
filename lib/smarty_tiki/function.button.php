@@ -1,5 +1,5 @@
 <?php
-// (c) Copyright 2002-2015 by authors of the Tiki Wiki CMS Groupware Project
+// (c) Copyright 2002-2013 by authors of the Tiki Wiki CMS Groupware Project
 //
 // All Rights Reserved. See copyright.txt for details and a complete list of authors.
 // Licensed under the GNU LESSER GENERAL PUBLIC LICENSE. See license.txt for details.
@@ -15,8 +15,6 @@ if (strpos($_SERVER["SCRIPT_NAME"], basename(__FILE__)) !== false) {
  * smarty_function_button: Display a Tiki button
  *
  * params will be used as params for as smarty self_link params, except those special params specific to smarty button :
- *  - _icon: DEPRECATED previously used for file path for legacy icons
- *  - _icon_name: use icon name to show appropriate icon regardless of iconset chosen
  *	- _text: Text that will be shown in the button
  *	- _auto_args: comma separated list of URL arguments that will be kept from _REQUEST (like $auto_query_args) (in addition of course of those you can specify in the href param)
  *                    You can also use _auto_args='*' to specify that every arguments listed in the global var $auto_query_args has to be kept from URL
@@ -41,8 +39,6 @@ function smarty_function_button($params, $smarty)
 {
 	if ( ! is_array($params) || ! isset($params['_text']) ) return;
 	global $tikilib, $prefs, $auto_query_args;
-
-	$class = null;
 
 	$smarty->loadPlugin('smarty_block_self_link');
 
@@ -116,7 +112,7 @@ function smarty_function_button($params, $smarty)
 				. "');flip('"
 				. $params['_flip_id']
 				. "_close','inline');return false;";
-			if ( ! empty($params['_escape']) && $params['_escape'] === 'y') {
+			if ( ! empty($params['_escape']) ) {
 				$params['_onclick'] = addslashes($params['_onclick']);
 			}
 			if ( ! isset($params['_flip_hide_text']) || $params['_flip_hide_text'] != 'n' ) {
@@ -177,9 +173,11 @@ function smarty_function_button($params, $smarty)
 		);
 	}
 
-	$type = isset($params['_type']) ? $params['_type'] : 'default';
-
 	$auto_query_args = $auto_query_args_orig;
-	$html = preg_replace('/<a /', '<a class="btn btn-' . $type . ' ' . $class . '" data-role="button" data-inline="true" ' . $id . ' ', $html);
+	if ($prefs['mobile_feature'] !== 'y' || $prefs['mobile_mode'] !== 'y') {
+		$html = '<span type="button" class="'.(!empty($params['_noborder']) ? '' : 'btn btn-default button').(!empty($class)?" $class":'').'"'.$id.'>'.$html.'</span>';
+	} else {
+		$html = preg_replace('/<a /', '<a class="btn btn-default" data-role="button" data-inline="true" ' . $id, $html);
+	}
 	return $html;
 }
